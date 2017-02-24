@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript" src="easymap.js"></script>
+<link rel="stylesheet" type="text/css" href="easymap.css">	
+</head>
+
+<body>
+<div id="wrapper">
+	<form id="form1">
+		<div id="formLeft">
+			
+			Project name:<br>
+			<input type="text" name="projectName" value="My project" />
+			
+			<br>
+			
+			Mapping strategy:<br>
+			<div>
+				<div class="mx-button">
+					<input type="radio" class="analysisType" name="mx12" id="button1" />
+					<label for="button1" unselectable>Tagged sequence mapping</label>
+				</div>
+				<div class="mx-button">
+					<input type="radio" class="analysisType" name="mx12" id="button2" />
+					<label for="button2" unselectable>Recombinant mapping</label>
+				</div>
+			</div>
+			
+			<br><br><br>
+			
+			Data source:<br>
+			<div>
+				<div class="mx-button">
+					<input type="radio" class="dataSource" name="mx34" id="button3" />
+					<label for="button3" unselectable>Use my own data</label>
+				</div>
+				<div class="mx-button">
+					<input type="radio" class="dataSource" name="mx34" id="button4" />
+					<label for="button4" unselectable>Simulate data</label>
+				</div>
+			</div>
+			
+			<br><br><br>
+			
+			Type of NGS library:<br>
+			<div>
+				<div class="mx-button">
+					<input type="radio" class="libType" name="mx56" id="button5" />
+					<label for="button5" unselectable>Single end</label>
+				</div>
+				<div class="mx-button">
+					<input type="radio" class="libType" name="mx56" id="button6" />
+					<label for="button6" unselectable>Paired end</label>
+				</div>
+			</div>
+			
+			<br><br><br>
+			
+			Genome sequence:<br>
+			<select multiple id="refSeqs">
+				<option value="chr1">Chr1</option>
+				<option value="chr2">Chr2</option>
+				<option value="chr3">Chr3</option>
+				<option value="chr4">Chr4</option>
+			</select>
+			
+			<br>
+			
+			<select id="insSeq">
+				<option value="default">Choose insertion sequence file</option>
+				<option value="insertion.fa">insertion.fa</option>
+				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+				<option value="reads_f.fq">reads_f.fq</option>
+				<option value="reads_r.fq">reads_r.fq</option>
+				<option value="reads_se.fq">reads_se.fq</option>
+			</select>
+			
+			<br>
+			
+			<select id="gffFile">
+				<option value="default">Choose GFF3 file</option>
+				<option value="insertion.fa">insertion.fa</option>
+				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+				<option value="reads_f.fq">reads_f.fq</option>
+				<option value="reads_r.fq">reads_r.fq</option>
+				<option value="reads_se.fq">reads_se.fq</option>
+			</select>
+			
+			<br>
+			
+			<select id="annFile">
+				<option value="default">Choose gene annotation file</option>
+				<option value="insertion.fa">insertion.fa</option>
+				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+				<option value="reads_f.fq">reads_f.fq</option>
+				<option value="reads_r.fq">reads_r.fq</option>
+				<option value="reads_se.fq">reads_se.fq</option>
+			</select>
+			
+			<br>
+
+			<input type="button" class="button" id="runButton" value="Run analysis" />
+
+		</div>
+	
+		<div id="formRight">
+
+			<br>Reads:<br>
+			<select name="ins">
+				<option value="default">Choose reads</option>
+				<option value="insertion.fa">insertion.fa</option>
+				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+				<option value="reads_f.fq">reads_f.fq</option>
+				<option value="reads_r.fq">reads_r.fq</option>
+				<option value="reads_se.fq">reads_se.fq</option>
+
+			</select>
+
+		</div>
+
+	</form>
+	
+	<div id="command">
+		<p>
+			$project_name $workflow $data_source $lib_type $ref_seq $ins_seq $read_s
+			$reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
+		</p>
+		<p id="commandString">
+			
+		</p>
+	</div>
+<div>
+</body>
+</html>
