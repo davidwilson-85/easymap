@@ -1,2 +1,2 @@
-# easymap
-Nothing for now
+# Easymap
+Under development...
