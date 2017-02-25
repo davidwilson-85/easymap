@@ -10,12 +10,12 @@
 <div id="wrapper">
 	<form id="form1">
 		<div id="formLeft">
-			
+		
 			Project name:<br>
 			<input type="text" name="projectName" value="My project" />
-			
+		
 			<br>
-			
+		
 			Mapping strategy:<br>
 			<div>
 				<div class="mx-button">
@@ -27,9 +27,9 @@
 					<label for="button2" unselectable>Recombinant mapping</label>
 				</div>
 			</div>
-			
+		
 			<br><br><br>
-			
+		
 			Data source:<br>
 			<div>
 				<div class="mx-button">
@@ -41,9 +41,9 @@
 					<label for="button4" unselectable>Simulate data</label>
 				</div>
 			</div>
-			
+		
 			<br><br><br>
-			
+		
 			Type of NGS library:<br>
 			<div>
 				<div class="mx-button">
@@ -55,9 +55,9 @@
 					<label for="button6" unselectable>Paired end</label>
 				</div>
 			</div>
-			
+		
 			<br><br><br>
-			
+		
 			Genome sequence:<br>
 			<select multiple id="refSeqs">
 				<option value="chr1">Chr1</option>
@@ -65,9 +65,9 @@
 				<option value="chr3">Chr3</option>
 				<option value="chr4">Chr4</option>
 			</select>
-			
+		
 			<br>
-			
+		
 			<select id="insSeq">
 				<option value="default">Choose insertion sequence file</option>
 				<option value="insertion.fa">insertion.fa</option>
@@ -77,9 +77,9 @@
 				<option value="reads_r.fq">reads_r.fq</option>
 				<option value="reads_se.fq">reads_se.fq</option>
 			</select>
-			
+		
 			<br>
-			
+		
 			<select id="gffFile">
 				<option value="default">Choose GFF3 file</option>
 				<option value="insertion.fa">insertion.fa</option>
@@ -89,9 +89,9 @@
 				<option value="reads_r.fq">reads_r.fq</option>
 				<option value="reads_se.fq">reads_se.fq</option>
 			</select>
-			
+		
 			<br>
-			
+		
 			<select id="annFile">
 				<option value="default">Choose gene annotation file</option>
 				<option value="insertion.fa">insertion.fa</option>
@@ -101,29 +101,142 @@
 				<option value="reads_r.fq">reads_r.fq</option>
 				<option value="reads_se.fq">reads_se.fq</option>
 			</select>
+		</div>
+
+		<div id="formRight">
+		
+			<!--
+				All the divs inside <div id="formRight"> are hidden until the user
+				interacts with button in the first half of the form.
+			-->
 			
-			<br>
-
-			<input type="button" class="button" id="runButton" value="Run analysis" />
-
+			<div id="simDataInterface">
+				Simulated data chosen
+			</div>
+			
+			<div id="expDataInterface">
+				Experimental data chosen
+				
+				<div id="expDataParameters">
+				The mutant is in the reference strain<br>
+				The mutant is not in the reference strain<br><br>
+				
+				Backcross<br>
+				Outcross<br><br>
+				
+				F2 parental provided is the mutant's<br>
+				F2 parental provided is not the mutant's<br>
+				</div>
+				
+				<div id="expDataIns">
+					<div id="expDataSingle">
+						<select id="readsSingle">
+							<option value="default">Choose single-end reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+					</div>
+					
+					<div id="expDataPaired">
+						<select id="readsForward">
+							<option value="default">Choose forward reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+						<select id="readsReverse">
+							<option value="default">Choose reverse reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+					</div>
+				</div>
+					
+				<div id="expDataSnp">
+					<div id="expDataSingleTwosamples">
+						<select id="readsSinglePar">
+							<option value="default">Parental - choose reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+						<br>
+						<select id="readsSingleF2">
+							<option value="default">F2 - choose reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+					</div>
+				
+					<div id="expDataPairedTwosamples">
+						<select id="readsForwardPar">
+							<option value="default">Parental - choose forward reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+						<select id="readsReversePar">
+							<option value="default">Parental - choose reverse reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+						<br>
+						<select id="readsReversePar">
+							<option value="default">F2 - choose forward reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+						<select id="readsReverseF2">
+							<option value="default">F2 - choose reverse reads</option>
+							<option value="insertion.fa">insertion.fa</option>
+							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+							<option value="reads_f.fq">reads_f.fq</option>
+							<option value="reads_r.fq">reads_r.fq</option>
+							<option value="reads_se.fq">reads_se.fq</option>
+						</select>
+					</div>
+					
+				</div>
+				
+			</div>
+			
 		</div>
 	
-		<div id="formRight">
-
-			<br>Reads:<br>
-			<select name="ins">
-				<option value="default">Choose reads</option>
-				<option value="insertion.fa">insertion.fa</option>
-				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-				<option value="reads_f.fq">reads_f.fq</option>
-				<option value="reads_r.fq">reads_r.fq</option>
-				<option value="reads_se.fq">reads_se.fq</option>
-
-			</select>
-
+		<div id="formButtons">
+			<input type="button" class="button" id="runButton" value="Run analysis" /> 
+			<input type="button" class="button" id="otherButton" value="Other button" />
 		</div>
-
+		
 	</form>
 	
 	<div id="command">

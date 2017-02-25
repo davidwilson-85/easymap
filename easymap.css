@@ -17,6 +17,32 @@
 	display: inline-block;
 	width: 49%;
 	vertical-align: top;
+	padding: 3px;
+}
+
+#formRight {
+	border: 1px solid gray;
+	border-radius: 5px;
+}
+
+#formButtons {
+	vertical-align: top;
+	padding: 3px;
+}
+
+#simDataInterface,
+#expDataInterface,
+#expDataSingle,
+#expDataPaired,
+#expDataSingleTwosamples,
+#expDataPairedTwosamples {
+	display: none;
+}
+
+/* Temporary div that shows the command arguments */
+#command > p {
+	font-family: monospace;
+	font-size: 12px;
 }
 
 
@@ -53,9 +79,9 @@ exclusive button choices.
 
 /* Text inputs */
 input[type=text], select {
-	width: 50%;
-	padding: 12px 20px;
-	margin: 8px 0;
+	width: 75%;
+	padding: 8px 12px;
+	margin: 8px;
 	display: inline-block;
 	border: 1px solid #ccc;
 	border-radius: 4px;
@@ -71,14 +97,10 @@ input[type=text]:focus {
 	background-color: #f2f2f2;
 }
 
-/* Just the temporary div that shows the command arguments */
-#command > p {
-	font-family: monospace;
-	font-size: 12px;
-}
 
+/* Buttons */
 .button {
-	width: 50%;
+	width: 30%;
 	padding: 12px 20px;
 	margin: 8px 0;
 	border: 1px solid #ccc;
@@ -97,4 +119,10 @@ input[type=text]:focus {
 	border-color: #737373;
 	background-color: red;
 }
+
+
+
+
+
+
 
