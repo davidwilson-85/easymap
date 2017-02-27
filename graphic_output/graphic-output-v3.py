@@ -1,0 +1,49 @@
+#from __future__ import division
+import argparse
+from draw import fa_vs_pos, insertions_overview_and_histograms, gene_plot, gene_plot2
+parser = argparse.ArgumentParser()
+#INPUT VARIABLES FOR SNP
+parser.add_argument('-my_mut', action="store", dest = 'my_mut')			#snp or lin
+parser.add_argument('-asnp', action="store", dest = 'input_snp')		
+parser.add_argument('-bsnp', action="store", dest = 'input_f_snp')			#Fasta genome input
+#parser.add_argument('-gff', action="store", dest = 'gff')				#Genome feature file
+#parser.add_argument('-iva', action="store", dest = 'input_va') 		#Output de varanalyzer
+#parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region lenght
+#parser.add_argument('-f', action="store", dest = 'output_html')
+
+
+#INPUT VARIABLES FOR LIN
+parser.add_argument('-a', action="store", dest = 'input')		
+parser.add_argument('-b', action="store", dest = 'input_f')				#Fasta genome input
+parser.add_argument('-gff', action="store", dest = 'gff')				#Genome feature file
+parser.add_argument('-iva', action="store", dest = 'input_va')	 		#Output de varanalyzer
+parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region lenght
+parser.add_argument('-f', action="store", dest = 'output_html')
+parser.add_argument('-m', action="store", dest = 'mode', default = 'pe')
+parser.add_argument('-pname', action="store", dest='project_name')
+parser.add_argument('-my_mutbackground', action="store", dest='my_mutbackground')
+
+
+args = parser.parse_args()
+project = args.project_name
+
+
+if args.my_mut == 'snp':
+
+	#FA vs POS image
+	fa_vs_pos()
+
+	#Gene gene_plot
+	gene_plot()
+
+
+
+
+elif args.my_mut == 'lin':
+
+	#Insertions overview and histogram
+	insertions_overview_and_histograms()
+
+	#Gene gene_plot
+	gene_plot()
+

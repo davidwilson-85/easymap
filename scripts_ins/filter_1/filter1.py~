@@ -1,0 +1,17 @@
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-a', action="store", dest = 'input')
+parser.add_argument('-b', action="store", dest = 'output')
+args = parser.parse_args()
+
+#Now we select in the .sam file the unpaired reads whose mates are paired 
+with open(str(args.input)) as f1: #We open the input file and create the output, both as objects (f1, f2)
+	with open(str(args.output), 'w') as f2:
+		lines = f1.readlines() 
+		for i, line in enumerate(lines):#To read through the lines of the file
+			if not line.startswith('@'): #We create a contition to eliminate the headers in the sam file
+				sp = line.split() #Now we split each line into an array 
+				if sp[2] != '*' and sp[5] == '*': #Sp[2] no es un asterisco porque se toma el contig al que se ha alineado la pareja. El cigar revela si la lectura no se ha alineado. 
+						f2.write('@'+sp[0] + '\n' + sp[9] + '\n' + '+' + '\n' + sp[10] + '\n' ) #The selected reads are written as a fastq file
+f2.close()

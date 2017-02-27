@@ -1,0 +1,127 @@
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-a', action="store", dest = 'input')
+parser.add_argument('-b', action="store", dest = 'output')
+parser.add_argument('-c', action="store", dest = 'finput')
+args = parser.parse_args()
+
+#Input file 
+
+input = args.input
+f1 = open(input, 'r')
+lines = f1.readlines()	
+
+
+#fasta input
+fasta_input = str(args.finput)
+fasta_f1 = open(fasta_input, 'r')
+fasta_lines = fasta_f1.readlines()
+
+
+output = args.output
+f2 = open(output, 'a')
+
+contigs = []
+
+#create a list with all the genome contigs
+for i, line in enumerate(fasta_lines):
+	if line.startswith('>'): #fasta sequences start with '>'
+		sp = line.split(' ')  #because some names have whitespaces and extra info that is not written to sam file
+		cont = sp[0].strip()  #strip() is to remove the '\r\n' hidden chars
+		cont = cont[1:]       #to remove the first char of string (>)
+		if cont not in contigs:
+			contigs.append(cont)
+
+#analyze SAM file
+for c in contigs: 
+	di_left = dict()
+	di_right = dict()
+	di_total = dict()
+	d2_1 = []
+	d2_2 = []
+	for i, line in enumerate(lines):
+		if not line.startswith('@'):
+			sp = line.split('\t')
+			cont = sp[2]
+			if cont == c and cont != '*':				
+				p = int(sp[3]) #Read position
+				cigar = sp[5].strip() 		#Then we define the CIGAR parameter, from which we will extract the aligned nucleotides
+				if cigar != '*':
+					x = ''
+					x2 = ''
+					l = 0
+					for i in cigar: 
+						if i != 'M' and i != 'S' : 
+							x += str(i) 
+						else:
+							x += str(i) + '\t'
+					sp2 = x.split()
+					for i in sp2:
+						if 'M' in i:
+							x2 += '1'
+						if 'S' in i:
+							x2 += '0'
+					if x2.startswith('0'): #Aqui quiero guardar la posicion donde se empieza a alinear = pf - 'S' 
+						d2_2.append(str(p))
+					elif x2.endswith('0'): #Aqui quiero empezar a contar desde el principio, hasta pf incluyendo solo los nts alineados
+						for i in sp2: 	
+							if 'M' in i:
+								num = i.replace('M', '')
+								l = int(l) + int(num)
+							if 'D' in i:
+								num = i.replace('D', '')
+								l = int(l) + int(num)
+							if 'I' in i:
+								num = i.replace('I', '')
+								l = int(l) - int(num)
+						pf = int(p) + int(l) - 1
+						d2_1.append(str(pf))				
+					elif x2 == '1':
+						pass
+
+	#Key count
+	#DICCIONARIO TOTAL 
+	for i in d2_1:
+		try: 
+			di_total[i] =  1 + di_total[i]
+		
+		except KeyError:
+			di_total[i] = 1
+			
+	for i in d2_2:
+		try: 
+			di_total[i] =  1 + di_total[i]
+		except KeyError:
+			di_total[i] = 1
+	
+	#DICCIONARIOS LEFF Y RIGHT
+	for i in d2_1:
+		try: 
+			di_left[i] = 1 + di_left[i]
+		
+		except KeyError:
+			di_left[i] = 1
+
+	for i in d2_2:
+		try: 
+			di_right[i] =  1 + di_right[i]
+		except KeyError:
+			di_right[i] = 1
+		
+	#Writting in the output file
+
+	for key,value in sorted(di_left.items(), key=lambda i: int(i[0])):
+		f2.write('LOCAL\t' + c + '\t' + str(key) + '\t'+ str(value) + '\tLEFT\n')
+	for key,value in sorted(di_right.items(), key=lambda i: int(i[0])):
+		f2.write('LOCAL\t' + c + '\t' + str(key) + '\t'+ str(value) + '\tRIGHT\n')
+	for key,value in sorted(di_total.items(), key=lambda i: int(i[0])):
+		f2.write('LOCAL\t' + c + '\t' + str(key) + '\t'+ str(value) + '\tTOTAL\n')
+
+f2.close()
+#f2.write('@' + 'c =' + str(de1).strip() + '\n' + 'd =' + str(de2).strip() +'\n')
+'''
+	#Max and min
+	de1 = str(max(d2_1))
+	de2 = str(min(d2_2))
+'''

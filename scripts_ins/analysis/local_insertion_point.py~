@@ -1,0 +1,68 @@
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-a', action="store", dest = 'input')
+args = parser.parse_args()
+
+#Imput file 
+input = 'alignment4.sam' 
+f1 = open(input, 'r')
+lines = f1.readlines()	
+
+#Delimiters
+d2_1 = []
+d2_2 = []
+
+
+#Now we loop through the lines and split them
+for i, line in enumerate(lines):
+	if not line.startswith('@'):
+		sp = line.split('\t')
+		
+		p = int(sp[3]) #Read position
+		#Then we define the CIGAR parameter, from which we will extract the aligned nucleotides
+		cigar = sp[5].strip()
+		if cigar != '*':
+		
+			#The varialbe X will generate a list of each part of the CIGAR code
+			x = ''
+			x2 = ''
+			l = 0
+
+			for i in cigar: 
+				if i != 'M' and i != 'S' : 
+					x += str(i) 
+				else:
+					x += str(i) + '\t'
+			sp2 = x.split()
+				
+			for i in sp2:
+				if 'M' in i:
+					x2 += '1'
+				if 'S' in i:
+					x2 += '0'
+
+			if x2.startswith('0'): #Aqui quiero guardar la posicion donde se empieza a alinear = pf - 'S' 
+				d2_2.append(str(p) + '\t')
+				
+			elif x2.endswith('0'): #Aqui quiero empezar a contar desde el principio, hasta pf incluyendo solo los nts alineados
+				for i in sp2: 	
+					if 'M' in i:
+						num = i.replace('M', '')
+						l = int(l) + int(num)
+					if 'D' in i:
+						num = i.replace('D', '')
+						l = int(l) + int(num)
+					if 'I' in i:
+						num = i.replace('I', '')
+						l = int(l) - int(num)
+				
+				pf = int(p) + int(l) - 1
+				d2_1.append(str(pf) + '\t')
+				
+					
+			elif x2 == '1':
+				pass
+
+print '\n' + 'Forward cut: ' + str(d2_1) + '\n' + '\n'
+print 'Reverse cut: ' + str(d2_2) + '\n'
