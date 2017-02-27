@@ -16,18 +16,20 @@ window.onload = function() {
 			document.getElementById("commandString").innerHTML = cmdArgs;
 	}
 	
-function verifyProjectName(){
-	var text = document.getElementById("form1").projectName.value;
-	if( /[^a-zA-Z0-9]/.test( text ) ) {
-		alert('Input is not alphanumeric');
-	} else if (text == '') {
-		alert('Yoy must give a name to the project');
-	} else {
-		cmdArgs[0] = document.getElementById("form1").projectName.value;
-		updateCmd()
+	//
+	function verifyProjectName(){
+		var text = document.getElementById("form1").projectName.value;
+		if( /[^a-zA-Z0-9]/.test( text ) ) {
+			alert('Input is not alphanumeric');
+		} else if (text == '') {
+			alert('Yoy must give a name to the project');
+		} else {
+			cmdArgs[0] = document.getElementById("form1").projectName.value;
+			updateCmd()
+		}
 	}
-}
-
+	
+	//
 	function projectName() {
 		cmdArgs[0] = document.getElementById("form1").projectName.value;
 		updateCmd()
@@ -171,6 +173,9 @@ function verifyProjectName(){
 	document.getElementById("form1").readsReverse.onblur = processSingleSelectors;
 
 }
+
+
+var test = "";
 
 
 
