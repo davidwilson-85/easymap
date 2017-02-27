@@ -1,4 +1,4 @@
-#python analysis_Sergio.py -fichero ejemplo -window_size 500000 -window_space 500000 -fasta at_chr1.fas -mode back 
+#python analysis.py -fichero ejemplo -window_size 500000 -window_space 500000 -fasta at_chr1.fas -mode back 
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-fichero', action="store", dest = 'input', required = "True")
