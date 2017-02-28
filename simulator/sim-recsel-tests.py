@@ -53,9 +53,8 @@ from random import randint
 # Parse command arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-outdir', action="store", dest='out_dir', required=True)
-#parser.add_argument('-achr', action="store", dest='at_chr', 
-#type=int, required=True, choices=set((1,2,3,4,5))) # Choose between 1, 2, 3, 4, 5
-parser.add_argument('-recombination_frequency', action ="store", dest = "rfd", required = True)
+parser.add_argument('-achr', action="store", dest='at_chr', 
+type=int, required=True, choices=set((1,2,3,4,5))) # Choose between 1, 2, 3, 4, 5
 parser.add_argument('-parmut', action="store", dest='parental_a_mutant', required=True) #mutated genome
 parser.add_argument('-parpol', action="store", dest='parental_b_polymorphic', required=True) #polymorphic genome
 parser.add_argument('-mutapos', action="store", dest='mut_a_pos', type=int, required=True)
@@ -66,33 +65,14 @@ parser.add_argument('-nrec', action="store", dest='nbr_rec_chrs', type=int, requ
 args = parser.parse_args()
 
 out_dir = args.out_dir
-#at_chr = int(args.at_chr)
-rfd = args.rfd
+at_chr = int(args.at_chr)
 parental_a_mutant = args.parental_a_mutant
 parental_b_polymorphic = args.parental_b_polymorphic
 mut_a_pos = args.mut_a_pos
 mut_b_pos = args.mut_b_pos
 selection_mode = args.selection_mode # "r" = recessive, "d" = dominant mt-phe, "di" = dominant wt-phe, "dr" = double recessive
 nbr_rec_chrs = args.nbr_rec_chrs
-def chr_freq_generator(rfd):
-	i = 0
-	f = 0
-	former_value = 0
-	chr_xo_freq = []
-	for items in rfd.split(";"):
-		items = items.split(",")
-		position = []
-		if f != 0:
-			i = i + int(former_value)
-		position.append(i)
-		former_value = items[1]
-		f += int(items[1])
-		position.append(f)
-		position.append(int(items[0]))
-		chr_xo_freq.append(position)
-	return chr_xo_freq
 
-	
 if selection_mode == 'dr' and mut_b_pos is None:
 	quit('Quit. Selected mode is "double recessive" but no position for mutation b was provided. See program description.')		
 
@@ -180,8 +160,16 @@ chr_len = len(seq_parental_a)
 #	x = left interval (open)
 #	y = right interval (closed)
 
-
-chr_xo_freq = chr_freq_generator(rfd)
+if at_chr == 1:
+	chr_xo_freq = [[0,14,0],[14,45,1],[45,78,2],[78,93,3],[93,98,4],[98,100,5]]
+if at_chr == 2:
+	chr_xo_freq = [[0,26,0],[26,68,1],[68,93,2],[93,98,3],[98,99,4],[99,100,5]]
+if at_chr == 3:
+	chr_xo_freq = [[0,20,0],[20,59,1],[59,87,2],[87,97,3],[97,99,4],[99,100,5]]
+if at_chr == 4:
+	chr_xo_freq = [[0,24,0],[24,67,1],[67,92,2],[92,98,3],[98,99,4],[99,100,5]]
+if at_chr == 5:
+	chr_xo_freq = [[0,16,0],[16,50,1],[50,81,2],[81,95,3],[95,99,4],[99,100,5]]
 
 
 # Create a defined number of recombinant chromosomes 
@@ -251,7 +239,6 @@ while iter1 < nbr_rec_chrs:
 		if chr_carries_mutation_a == True:
 			rec_chr = create_rec_seq()
 			create_rec_chr_file()
-			print rec_chr
 			iter1 +=1
 	
 	# Select all chromosomes that carry mutation A and also some that do not, so the final

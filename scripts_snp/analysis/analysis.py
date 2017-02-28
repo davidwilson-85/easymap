@@ -1,4 +1,18 @@
-#python analysis_Sergio.py -fichero ejemplo -window_size 500000 -window_space 500000 -fasta at_chr1.fas -mode back 
+#Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. The script can take as input three different situations,
+# a backcross, an outcross when the mutated ecotype is not in the reference background and an outcross when the mutated ecotype is in the reference background.
+
+#Sergio Andreu Sánchez; sergio_andreu@hotmail.es
+
+
+##Arguments:
+	#"fichero" which is the file that comes as an input.
+	#"output" refers to the name of the output file is going to be generated.
+	#"window_size" it is a number which indicates the size of the windows that will be created in order to generate alele frequencies averages
+	#"window_space" number which indicates the space between the number which is in the middle of a window
+	#"fasta" corresponds to the fasta file from which the input has been obtained
+	#"mode" can be back meaning backcross or out meaning outcross
+	#"correction factor" is a value will be used in the outcross mode in order to amplify the range of the most-likely to have the mutation window
+	#"Parental_modality" takes as values ref and noref, meaning if the line sequenced is from the reference background or not.
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-fichero', action="store", dest = 'input', required = "True")
@@ -8,7 +22,7 @@ parser.add_argument('-window_space', action="store", dest = 'space', required = 
 parser.add_argument('-fasta', action="store", dest = 'fasta_input', required = "True")
 parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-correction_factor', action="store", dest = 'FC') 
-parser.add_argument('-parental_modality', action="store", dest = 'modality') #same = parental in reference background; different = parental not in reference background
+parser.add_argument('-parental_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
 args = parser.parse_args()
 fasta_input = args.fasta_input
 size = int(args.size)
@@ -17,12 +31,14 @@ mode = args.mode
 output = args.output
 result= open( output ,"w")
 modality = args.modality
+if mode == "back":
+	modality = "n"
 result.write("if outcross:"+"\n"+"@ lines: window, average, boost, chromosome" +"\n" + "! line: min_max_window, max_max_window, max_boost, chromosome" + "\n" + "? lines: chromosome, min_big_window, max_big_window"+ "\n" + "* lines: chromosome, min_window, max_window, boost_value" + "\n" "if backcross:"+"\n"+ "@ line: window, average, chromosome" +"\n" + "! line: min_window. max_window, max_average, chromosome" + "\n"+ "? line: chromosome, min_big_window, max_big_window" + "\n" + "* line: chormosome, min_window, max_window, average"+ "\n")
 result.close()
 
 #Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored]
 def getinfo(chro, inpu):
-	n = 0
+	n = 0 			#counter n will be used in order not to take into account the header
 	dicpos = {} 
 	for lines in inpu.readlines():
 		if n == 0:
@@ -38,9 +54,9 @@ def getinfo(chro, inpu):
 
 #Calculates average of a list of AF in a window. Two modes are present, if mutant is in the reference background or if it is in a different background.	
 def calculation_average(li, modality):
-	if modality == "same":
+	if modality == "ref":
 		c = 0.65
-	elif modality == "different":
+	elif modality == "noref" or "n": #if we are dealing with a backcross, eventhough it is in the ref background we are looking for high AF SNP, that's why modality is n
 		c = 0.35
 	new_list = []
 	for items in li:
@@ -64,9 +80,9 @@ def calcular_sd(lista):
 def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality):
 	windowsize = float(size)
 	windowspace = float(space)
-	i = 0 																								 
+	i = 0 	#is the value in the middle of the windows and the one will be used in order to identify a concrete window																							 
 	chromosomal_size = float(chromosomal_lenght) 										
-	final = {} 													
+	dictionary_windows = {} 													
 	a = 0 																								
 	b = 0 																								
 	while i < chromosomal_size:      								
@@ -80,17 +96,17 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality)
 		 		snps_window.append(AF)
 		if len(snps_window) != 0:										
 			average_FA = calculation_average(snps_window, modality)
-			final[i] = []
-			final[i].append(average_FA)
-			if mode == "out":
+			dictionary_windows[i] = []
+			dictionary_windows[i].append(average_FA)
+			if mode == "out": #standard deviation is another parameter could be use in the outcross mode, we are not using it so far though.
 				sd_FA = calcular_sd(snps_window)		
-				final[i].append(sd_FA)
-		elif len(snps_window) == 0 and modality == "same":
+				dictionary_windows[i].append(sd_FA)
+		elif len(snps_window) == 0 and modality == "ref":  #in the modality outcross of mutant in the reference background, it is possible that a window will not contain any SNP. We will suppose a value near 0.
 			average_FA = 0.01	
-			final[i] = []
-			final[i].append(average_FA)                       
+			dictionary_windows[i] = []
+			dictionary_windows[i].append(average_FA)                       
 		i += windowspace
-	return final		
+	return dictionary_windows		
 
 #This is a threshold step that will remove windows which do not overpass certain values, which will be chosen depending on the mode. This is meant to make the process faster.
 def threshold_step(windows, mini_average, maxi_average, mini_Cv):
@@ -115,7 +131,7 @@ def data_backcross(window, position, chromosome, best_parameter, size):
 	result= open(output ,"a") 
 	for items in position:			
 		average = window[items][0]
-		result.write("@"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n")   
+		result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n")   
 		if best_parameter == "T" or float(average) > float(best_parameter):
 			maximum_position = []
 			items = float(items)
@@ -135,7 +151,7 @@ def data_outcross(window, position, chromosome, real_best, size):
 		average = str(average)
 		boost = str(boost)
 		dic_paramet[items]= boost
-		result.write("@"+items+"\t"+ average+"\t"+ boost+ "\t"+str(chromosome)+ "\n")   
+		result.write("@"+"\t"+items+"\t"+ average+"\t"+ boost+ "\t"+str(chromosome)+ "\n")   
 		if float(boost) > float(real_best) or real_best == 0:   
 			best_position = []
 			items = float(items)
@@ -171,10 +187,10 @@ if mode == "out":
 		inpu = open(args.input, "r")	
 		genome = getinfo(chromosome,inpu)		
 		windows = chromosomal_position(size, space, genome,chromosome, ch[chromosome], mode, modality)
-		if modality == "different":
+		if modality == "noref":
 			mini_average = 0.4
 			maxi_average = 1
-		elif modality == "same":
+		elif modality == "ref":
 			mini_average= 0
 			maxi_average= 0.6    
 		filtered_windows= threshold_step(windows, mini_average, maxi_average, 0) 
@@ -202,12 +218,12 @@ if mode == "out":
 	min_i = a - b
 	maxi_i = c+b
 	r= open(output ,"a")
-	r.write("!"+ str(result[0][0])+"\t" + str(result[0][1]) + "\t"+ str(result[1])+"\t"+ result[2] + "\n") 
-	escribir ="?"+result[2]+ "\t"+str(min_i)+"\t"+str(maxi_i)+"\n"
+	r.write("!"+"\t"+ str(result[0][0])+"\t" + str(result[0][1]) + "\t"+ str(result[1])+"\t"+ result[2] + "\n") 
+	escribir ="?"+"\t"+result[2]+ "\t"+str(min_i)+"\t"+str(maxi_i)+"\n"
 	r.write(escribir)
 	for windos in possible_windows:
 		windos = str(windos)
-		escribir = "*"+result[2] +"\t" + str(int(windos)-size/2)+ "\t" + str(int(windos)+size/2)+"\t" + result[3][windos] + "\n"
+		escribir = "*"+ "\t"+result[2] +"\t" + str(int(windos)-size/2)+ "\t" + str(int(windos)+size/2)+"\t" + result[3][windos] + "\n"
 		r.write(escribir)  
 		
 #The calling of the different functions depends on whether we are working in an outcross or backcross
@@ -215,8 +231,8 @@ elif mode == "back":
 	#Call of the function chromosome by chromosome, the final result comes from the chromosome with the higher parameters
 	for chromosome in ch: 
 		inpu = open(args.input, "r")
-		genome = getinfo(chromosome, inpu)		
-		windows = chromosomal_position(size, space, genome,chromosome, ch[chromosome], mode)    
+		genome = getinfo(chromosome, inpu)	
+		windows = chromosomal_position(size, space, genome,chromosome, ch[chromosome], mode, modality)    
 		x_value= union_points(windows)
 		if z ==0 : 								
 			result = data_backcross(windows, x_value, chromosome, "T", size)
@@ -232,7 +248,7 @@ elif mode == "back":
 	min_i = min(candidate_list)- size/2
 	maxi_d = max(candidate_list) + size/2
 	r= open(output ,"a")
-	r.write("!"+str(result[0][0])+"\t"+str(result[0][1]) + "\t"+ str(result[1])+"\t"+str(result[2]) + "\n") 
-	r.write("?"+result[2] +"\t"+ min_i+"\t"+ maxi_i +"\n")
+	r.write("!"+"\t"+str(result[0][0])+"\t"+str(result[0][1]) + "\t"+ str(result[1])+"\t"+str(result[2]) + "\n") 
+	r.write("?"+"\t"+str(result[2]) +"\t"+ str(min_i)+"\t"+ str(maxi_d) +"\n")
 	for widos in candidate_list:
-		r.write("*"+result[2] +"\t" + int(windos)-size/2 +"\t"+ int(windos)+size/2+"\t" + result[-1][windos]+ "\n")
+		r.write("*"+"\t"+str(result[2]) +"\t" + str(int(widos)-size/2) +"\t"+ str(int(widos)+size/2)+"\t" + str(result[-1][widos][0])+ "\n")
