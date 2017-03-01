@@ -38,11 +38,10 @@ elif step == '2':
 	f3lines = f3.readlines()
 	for i, line in enumerate(f3lines):
 		if line.startswith('?'):
-			line = line.strip('?')
 			sp = line.split()
-			args.chr = sp[0].strip('>')
-			args.pos_min = int(sp[1].strip())
-			args.pos_max = int(sp[2].strip())
+			args.chr = sp[1].strip('>')
+			args.pos_min = int(sp[2].strip())
+			args.pos_max = int(sp[3].strip())
 #__________________________________________________________________________________________________________________________________________
 
 def limits():

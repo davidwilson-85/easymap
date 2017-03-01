@@ -325,7 +325,8 @@ fi
 }
 echo VCF operations finished >> $my_log_file
 
-'''
+
+
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
 
@@ -345,7 +346,7 @@ fi
 
 #Execute vcf analysis 
 {
-	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f0/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/map-info.txt -parental_modality $my_mutbackgroud -correction_factor 0.6
+	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f0/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/map_info.txt -parental_modality $my_mutbackgroud -correction_factor 0.6
 
 
 } || {
@@ -356,13 +357,12 @@ fi
 }
 echo VCF analysis finished >> $my_log_file
 
-
 #__________________________________________________________________________________FILTER____________________________________________________________________________________________
 
 
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map-info.txt 	#<--------------------------------     Filtrar con los valores de cromosoma, region candidato, ems/natural...
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map_info.txt 	#<--------------------------------     Filtrar con los valores de cromosoma, region candidato, ems/natural...
 
 } || {
 	echo 'error: variants-filter.py' >> $my_log_file
@@ -438,7 +438,7 @@ echo snp-to-varanalyzer.py finished. >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f0/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl   
+	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f0/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl   -pname $project_name
 
 } || {
 	echo 'error: varanalyzer_v1.py' >> $my_log_file
@@ -448,7 +448,7 @@ echo snp-to-varanalyzer.py finished. >> $my_log_file
 }
 echo Varanalyzer finished. >> $my_log_file
 
-
+'''
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -463,7 +463,7 @@ echo Varanalyzer finished. >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f3/F2_parental_comparison.va -bsnp $f0/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -my_mutbackgroud $my_mutbackgroud
+	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_parental_comparison.va -bsnp $f0/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -mutbackground $my_mutbackgroud
 	
 } || {
 	echo 'error: graphic-output-v3.py' >> $my_log_file
