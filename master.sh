@@ -61,6 +61,8 @@
 
 # ./master.sh project ins exp pe genome.fa pbinprok2.fa n/p pe-for_reads_20170105123045.fq pe-rev_reads_20170105123045.fq TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
 
+# ./master.sh project snp exp se genome.fa n/p col-lab-mut_BC.fq n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
+
 #
 #
 # ./master.sh project snp exp se 34k_genome.fa n/p se_reads.fq n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
