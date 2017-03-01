@@ -56,7 +56,11 @@
 # example: ./master.sh project ins sim se genome.fa ins.fa n/p n/p n/p gff.gff n/p 1+ins n/p 10+30,0+0,0+0.1+50
 #
 #
-# ./master.sh project ins sim se genome.fa pbinprok2.fa n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 1+ins n/p 10+30,0+0,0+1+50
+# ./master.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 10+ins n/p 30+100,0+0,0+1+50
+
+
+# ./master.sh project ins exp pe genome.fa pbinprok2.fa n/p pe-for_reads_20170105123045.fq pe-rev_reads_20170105123045.fq TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
+
 #
 #
 # ./master.sh project snp exp se 34k_genome.fa n/p se_reads.fq n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
@@ -69,9 +73,9 @@ start_time=`date +%s`
 	
 # Store the location of each folder in a variables				<--------------------------Nombres correctos ? para que son ? 
 f0=0_input
-f1=1_intermediate-files				
+f1=1_intermediate_files				
 f2=2_logs
-f3=3_workflow-output
+f3=3_workflow_output
 
 
 
@@ -140,6 +144,7 @@ echo $(date)": Project data directories created." >> $my_log_file
 echo $(date)": STARTING INPUT PROCESSING..." >> $my_log_file
 
 process_input=`./process-input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
+
 
 if [ $process_input == 0 ]
 then
