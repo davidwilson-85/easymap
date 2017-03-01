@@ -24,8 +24,6 @@
 # ./simulator.sh $my_log_file $project_name $analysis_type $lib_type $ins_seq $sim-mut{nbr+mod} $sim-recsel{} $sim-seq{rd+rl+fl+ber+gbs}
 # example: ./simulator.sh project/log.log project ins se ins.fa 1+ins {} 10+30,0+0,0+1+50
 
-
-
 # Set 'exit_code' (flag variable) to it's initial value (0)
 exit_code=0
 
@@ -52,8 +50,9 @@ rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pa
 mut_pos=${sim_recsel_array[1]}
 sel_mode=${sim_recsel_array[2]}
 nbr_rec_chrs=${sim_recsel_array[3]}
-mutant_parental=$project/$f0/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
-polymorphic_parental=$project/$f0/gnm_ref_merged/genome.fa
+mutant_parental=$project_name/$f0/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
+polymorphic_parental=$project_name/$f0/gnm_ref_merged/genome.fa
+
 
 # Get the string taht contains the parameters for sim-seq.py and extract them by splitting the string by the '+' character
 sim_seq_statement=$8
@@ -136,32 +135,23 @@ then
 		# Run sim-mut.py
 		{
 			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder
-	
+
 		} || {
-			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
+			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_f
 			exit_code=1
 			exit
 		}
 		echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
 
 		# Run sim-recsel.py
-		#{
-			#python simulator/sim-recsel.py #WAIT UNTIL THIS PROGRAM IS SIMPLIFIED
-			# -outdir $sim_recsel_output_folder
-			# -rfd $rec_freq_distr
-			# -achr DEPRECATED
-			# -parmut $mutant_parental
-			# -parpol $polymorphic parental
-			# -mutapos (integer) ---> -mutpos $mut_pos 
-			# -mutbpos (integer) DEPRECATED
-			# -smod [r, d, di, dr] $sel_mode KEEP ONLY THOSE USEFUL
-			# -nrec $nbr_rec_chrs
-		#} || {
-			#echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
-			#exit_code=1
-			#exit
-		#}
-		#echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
+		{
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -recombination_frequency $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+		} || {
+			echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
+			exit_code=1
+			exit
+		}
+		echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
 
 		# Run sim-seq.py. The input is a folder becasuse the program works with all the fasta files that finds in a folder. Thos is necessary to simulate the sequencing of bulked DNA.
 		{
@@ -177,5 +167,3 @@ then
 fi
 
 echo $exit_code
-
-
