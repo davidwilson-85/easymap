@@ -77,7 +77,7 @@ export location="$PWD"
 
 
 
-
+'''
 #Execute bowtie2-build on genome sequence 
 {
 	$location/bowtie2/bowtie2-build $f0/$my_gs $f1/$my_ix 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
@@ -168,7 +168,7 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-
+'''
 
 #Execute vcf filter
 {
@@ -183,7 +183,7 @@ echo VCF grooming finished >> $my_log_file
 echo VCF filter finished >> $my_log_file
 
 
-
+'''
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -261,7 +261,7 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-
+'''
 
 #Execute vcf filter
 {

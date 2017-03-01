@@ -31,9 +31,9 @@ f2 = open(output, 'w')
 
 #_________________________________CANDIDATE REGION FILTER___________________________________________________________________________________
 step = args.step
-if step = '1':
-	continue
-elif step = '2':
+if step == '1':
+	pass
+elif step == '2':
 	f3 = open(args.cand_reg_file, 'r')
 	f3lines = f3.readlines()
 	for i, line in enumerate(f3lines):
