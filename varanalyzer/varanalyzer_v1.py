@@ -387,7 +387,7 @@ del input_mut, input_gff, variants_info
 
 # If no gene annotation file provided, simply print 'variants_info2' to output file.
 if gene_ann_source == None:
-	output = open(project + '/3_workflow_output/varanalyzer_output.txt', 'w')
+	output = open(project + '/3_workflow_output/variants.txt', 'w')
 	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\n')
 
 	for variant in variants_info2:	
@@ -444,7 +444,7 @@ else:
 			variants_info3.append(variant_info2)
 	
 	# print 'variants_info3' to output file
-	output = open(project + '/3_workflow_output/varanalyzer_output.txt', 'w')
+	output = open(project + '/3_workflow_output/variants.txt', 'w')
 	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_info\n')
 	
 	for variant in variants_info3:		

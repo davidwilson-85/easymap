@@ -77,7 +77,7 @@ export location="$PWD"
 
 
 
-'''
+
 #Execute bowtie2-build on genome sequence 
 {
 	$location/bowtie2/bowtie2-build $f0/$my_gs $f1/$my_ix 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
@@ -159,29 +159,29 @@ echo Variant calling finished >> $my_log_file
 
 #Groom vcf
 {
-	python $location/scripts_snp/groomer/vcf_groomer.py -a $f1/raw_variants.vcf -b $f1/clean_f2_vcf.cvcf 
+	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va 
 
 } || {
-	echo 'error: vcf_groomer.py' >> $my_log_file
+	echo 'error: vcf-groomer.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
 echo VCF grooming finished >> $my_log_file
 
-'''
+
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/filter.py -a $f1/clean_f2_vcf.cvcf -b $f1/filtered_f2_variants.cvcf -step 1
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 1
 
 } || {
-	echo 'error: filter.py' >> $my_log_file
+	echo 'error: variants-filter.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
 echo VCF filter finished >> $my_log_file
-'''
+
 
 
 ##################################################################################################################################################################################
@@ -252,23 +252,23 @@ echo Variant calling finished >> $my_log_file
 
 #Groom vcf
 {
-	python $location/scripts_snp/groomer/vcf_groomer.py -a $f1/raw_p_variants.vcf -b $f1/clean_vcf_p.cvcf 
+	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/parental_raw.va 
 
 } || {
-	echo 'error: vcf_groomer.py' >> $my_log_file
+	echo 'error: vcf-groomer.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-'''
+
 
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/filter.py -a $f1/clean_vcf_p.cvcf -b $f1/filtered_p_variants.cvcf -step 1
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/parental_raw.va -b $f1/parental_filtered.va -step 1
 
 } || {
-	echo 'error: filter.py' >> $my_log_file
+	echo 'error: variants-filter.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
@@ -315,7 +315,7 @@ fi
 
 #Execute vcf operations
 {
-	python $location/scripts_snp/operations/vcf_operations.py -a $f1/filtered_f2_variants.cvcf -b $f1/filtered_p_variants.cvcf -c $f1/analysis_variants.cvcf -mode $my_operation_mode -primary 1  
+	python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/parental_filtered.va -c $f1/F2_parental_comparison.va -mode $my_operation_mode -primary 1  
 
 } || {
 	echo 'error: operations.py' >> $my_log_file
@@ -345,28 +345,27 @@ fi
 
 #Execute vcf analysis 
 {
-	python $location/scripts_snp/analysis/analysis.py -fichero $f1/analysis_variants.cvcf -fasta $f0/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/analysis_output.txt 
+	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f0/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/map-info.txt 
 
 
 } || {
-	echo 'error: analysis.py' >> $my_log_file
+	echo 'error: map-mutation.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
 echo VCF analysis finished >> $my_log_file
 
-'''
 
 #__________________________________________________________________________________FILTER____________________________________________________________________________________________
 
 
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/filter.py -a $f1/clean_f2_vcf.cvcf -b $f1/filtered_f2_variants_2.cvcf -step 2 -cand_reg_file $f1/analysis_output.txt 	#<--------------------------------     Filtrar con los valores de cromosoma, region candidato, ems/natural...
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map-info.txt 	#<--------------------------------     Filtrar con los valores de cromosoma, region candidato, ems/natural...
 
 } || {
-	echo 'error: filter.py' >> $my_log_file
+	echo 'error: variants-filter.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
@@ -407,7 +406,7 @@ fi
 
 #Execute vcf operations
 {
-	python $location/scripts_snp/operations/vcf_operations.py -a $f1/filtered_f2_variants_2.cvcf -b $f1/filtered_p_variants.cvcf -c $f1/candidate_variants.cvcf -mode $my_operation_mode -primary 1  
+	python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered2.va -b $f1/parental_filtered.va -c $f1/final_variants.txt -mode $my_operation_mode -primary 1  
 
 } || {
 	echo 'error: operations.py' >> $my_log_file
@@ -422,7 +421,7 @@ echo vcf operations finished >> $my_log_file
 
 #snp-to-varanalyzer.py
 {
-	python $location/scripts_snp/snp-to-varanalyzer.py -a $f1/candidate_variants.cvcf -b $f1/snp-to-varanalyzer.txt	
+	python $location/scripts_snp/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
 	
 } || {
 	echo 'error: snp-to-varanalyzer.py' >> $my_log_file
@@ -439,7 +438,7 @@ echo snp-to-varanalyzer.py finished. >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f0/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl   
+	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f0/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl   
 
 } || {
 	echo 'error: varanalyzer_v1.py' >> $my_log_file
@@ -464,7 +463,7 @@ echo Varanalyzer finished. >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f3/analysis_variants.cvcf -bsnp $f0/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -my_mutbackgroud $my_mutbackgroud
+	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f3/F2_parental_comparison.va -bsnp $f0/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -my_mutbackgroud $my_mutbackgroud
 	
 } || {
 	echo 'error: graphic-output-v3.py' >> $my_log_file
@@ -475,4 +474,6 @@ echo Varanalyzer finished. >> $my_log_file
 echo Graphic output created. >> $my_log_file
 
 echo $exit_code
-'''
+
+
+#HTML file
