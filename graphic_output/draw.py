@@ -153,7 +153,7 @@ def fa_vs_pos():
 					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
 
 					try:
-						draw.line((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(0, 0, 0, 0), width=int(0.02/100.0*wide))	
+						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(0, 0, 0, 0), width=int(0.02/100.0*wide))	
 						window_position_img_2 = window_position_img
 						boost_value_img_2 = boost_value_img
 
@@ -778,7 +778,7 @@ def gene_plot():
 		for p in intermediate_list: 
 			for i, line in enumerate(lines): 
 				sp = line.split()
-				if p[0] == sp[1] and p[1] == sp[3] and sp[5] == 'TOTAL' and sp[2] not in p[2]:
+				if p[0].lower().strip() == sp[1].lower().strip() and p[1].strip() == sp[3].strip() and sp[5] == 'TOTAL' and sp[2] not in p[2]:
 					p[2] = sp[2]
 
 
