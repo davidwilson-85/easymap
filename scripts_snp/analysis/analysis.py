@@ -1,7 +1,6 @@
 #Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. The script can take as input three different situations,
 # a backcross, an outcross when the mutated ecotype is not in the reference background and an outcross when the mutated ecotype is in the reference background.
 
-#Sergio Andreu Sánchez; sergio_andreu@hotmail.es
 
 
 ##Arguments:
