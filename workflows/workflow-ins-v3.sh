@@ -315,7 +315,7 @@ echo Done. >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f0/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/varanalyzer_output.txt -rrl $my_rrl -pname $project_name
+	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f0/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/variants.txt -rrl $my_rrl -pname $project_name
 	
 } || {
 	echo 'error:graphic-output-v3.py' >> $my_log_file

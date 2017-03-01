@@ -56,7 +56,7 @@
 # example: ./master.sh project ins sim se genome.fa ins.fa n/p n/p n/p gff.gff n/p 1+ins n/p 10+30,0+0,0+0.1+50
 #
 #
-# ./master.sh project ins sim pe 34k_genome_1chr.fa pbinprok2.fa n/p n/p n/p gff.gff n/p 10+ins n/p 50+100,0+500,100+1+50
+# ./master.sh project ins sim se genome.fa pbinprok2.fa n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 1+ins n/p 10+30,0+0,0+1+50
 #
 #
 # ./master.sh project snp exp se 34k_genome.fa n/p se_reads.fq n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p

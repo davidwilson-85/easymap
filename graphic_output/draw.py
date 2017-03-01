@@ -153,7 +153,7 @@ def fa_vs_pos():
 					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
 
 					try:
-						draw.line((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(0, 0, 0, 0), width=int(0.02/100.0*wide))	
+						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(0, 0, 0, 0), width=int(0.02/100.0*wide))	
 						window_position_img_2 = window_position_img
 						boost_value_img_2 = boost_value_img
 
