@@ -1,7 +1,6 @@
 #Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. The script can take as input three different situations,
 # a backcross, an outcross when the mutated ecotype is not in the reference background and an outcross when the mutated ecotype is in the reference background.
 
-#Sergio Andreu Sánchez; sergio_andreu@hotmail.es
 
 
 ##Arguments:
@@ -33,7 +32,7 @@ result= open( output ,"w")
 modality = args.modality
 if mode == "back":
 	modality = "n"
-result.write("if outcross:"+"\n"+"@ lines: window, average, boost, chromosome" +"\n" + "! line: min_max_window, max_max_window, max_boost, chromosome" + "\n" + "? lines: chromosome, min_big_window, max_big_window"+ "\n" + "* lines: chromosome, min_window, max_window, boost_value" + "\n" "if backcross:"+"\n"+ "@ line: window, average, chromosome" +"\n" + "! line: min_window. max_window, max_average, chromosome" + "\n"+ "? line: chromosome, min_big_window, max_big_window" + "\n" + "* line: chormosome, min_window, max_window, average"+ "\n")
+result.write("if outcross:"+"\n"+"-@ lines: window, average, boost, chromosome" +"\n" + "-! line: min_max_window, max_max_window, max_boost, chromosome" + "\n" + "-? lines: chromosome, min_big_window, max_big_window"+ "-n" + "-\* lines: chromosome, min_window, max_window, boost_value" + "\n" "if backcross:"+"\n"+ "-@ line: window, average, chromosome" +"\n" + "-! line: min_window. max_window, max_average, chromosome" + "\n"+ "-? line: chromosome, min_big_window, max_big_window" + "\n" + "-* line: chormosome, min_window, max_window, average"+ "\n")
 result.close()
 
 #Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored]

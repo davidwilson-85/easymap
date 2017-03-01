@@ -171,7 +171,7 @@ then
 				if [ $fq == 0 ]
 				then
 					{
-						echo $(date)": Paired-end reverse fastq input passed." $my_log_file
+						echo $(date)": Paired-end reverse fastq input passed." >> $my_log_file
 					}
 				else
 					{
