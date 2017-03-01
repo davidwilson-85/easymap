@@ -128,7 +128,7 @@ def fa_vs_pos():
 		for l, line in enumerate(lines):
 			sp = line.split()
 			if i[0].lower() == sp[0].lower():
-				fa = float(sp[5])/float(sp[6])
+				fa = float(sp[5])/(float(sp[6])+float(sp[5]))
 				fa_img = int(fa/scaling_factor_y + int(17/100.0*height))
 				pos_img = int(float(sp[1])/scaling_factor_x) + int(12/100.0*wide)
 
@@ -142,18 +142,22 @@ def fa_vs_pos():
 		#Boost / mm 																						
 		if my_mutbackground == 'noref':
 			boost_input = open(project + '/1_intermediate_files/map_info.txt', 'r')
-			lines = boost_input.readlines()
-			for k, line in enumerate(lines):
-				sp = line.split()
-				if line.startswith('@') and sp[3].lower().strip('>') == i[0].lower():
-					boost_value = float(sp[2].strip())
+			blines = boost_input.readlines()
+			for b, bline in enumerate(blines):
+				sp = bline.split()
+				if bline.startswith('!'):
+					boost_max = float(sp[3])
+			for b, bline in enumerate(blines):
+				sp = bline.split()					
+				if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+					boost_value = float(sp[3].strip())/boost_max
 					boost_value_img = int(boost_value/scaling_factor_y + int(17/100.0*height))
 
-					window_position = int(sp[0].strip('@'))
+					window_position = int(sp[1])
 					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
 
 					try:
-						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(0, 0, 0, 0), width=int(0.02/100.0*wide))	
+						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=int(0.2/100.0*wide))	
 						window_position_img_2 = window_position_img
 						boost_value_img_2 = boost_value_img
 
@@ -220,7 +224,7 @@ def fa_vs_pos():
 
 
 		#save image, specifying the format with the extension
-		im.save(project + '/3_workflow_output/img_2_ins_' + str(i[0]) + '.png')
+		im.save(project + '/3_workflow_output/img_2_' + str(i[0]) + '.png')
 
 
 #############################################################################################################

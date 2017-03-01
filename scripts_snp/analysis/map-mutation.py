@@ -44,7 +44,7 @@ def getinfo(chro, inpu):
 			n +=1
 			continue
 		indiv = lines.split("\t")
-		if ">"+indiv[0] != chro:
+		if indiv[0] != chro:
 			continue
 		dicpos[indiv[1]] = []
 		for n in range(2,len(indiv)):
@@ -177,7 +177,7 @@ ch = {}
 #From the data of read_fasta, I create a dictionary with the name of the contigs and its lenght
 with open(fasta_input) as fp:
 	for name_contig, seq_contig in read_fasta(fp):
-		ch[name_contig] = len(seq_contig)
+		ch[name_contig[1,len(name_contig)]] = len(seq_contig)
 
 #The calling of the different functions depends on whether we are working in an outcross or backcross
 if mode == "out":
