@@ -11,11 +11,11 @@
 	<form id="form1">
 		<div id="formLeft">
 		
-			Project name:<br>
+			Step 1. Give a name to this project:<br>
 			<input type="text" name="projectName" value="My project" />
-		
-			<br>
-		
+			<br><br>
+			Step 2. Choose your analysis setup:
+			<br><br>
 			Mapping strategy:<br>
 			<div>
 				<div class="mx-button">
@@ -116,32 +116,7 @@
 			
 			<div id="expDataInterface">
 				Experimental data chosen
-				
-				<div id="expDataParameters">
-				The mutant is in the reference strain<br>
-				The mutant is not in the reference strain<br><br>
-				
-				Backcross<br>
-				Outcross<br><br>
-				
-				F2 parental provided is the mutant's<br>
-				F2 parental provided is not the mutant's<br>
-				
-				<ul>
-					<li>
-						<input type="radio" id="f-option" name="selector">
-						<label for="f-option">Option 1</label>
-						<div class="check"></div>
-					</li>
-					<li>
-						<input type="radio" id="s-option" name="selector">
-						<label for="s-option">Option 2</label>
-						<div class="check"><div class="inside"></div></div>
-					</li>
-				</ul>				
-				
-				</div>
-				
+							
 				<div id="expDataIns">
 					<div id="expDataSingle">
 						<select id="readsSingle">
@@ -178,6 +153,36 @@
 				</div>
 					
 				<div id="expDataSnp">
+					
+					<div id="expDataSnpInfo">				
+						<div>
+							Mutant strain<br>
+							<input type="radio" id="f-option" name="selector">
+							<label for="f-option">The same as reference strain</label>
+							<br>
+							<input type="radio" id="s-option" name="selector">
+							<label for="s-option">Other than the reference strain</label>
+						</div>
+						<br>
+						<div>
+							Type of mapping cross performed<br>
+							<input type="radio" id="f-option" name="selector">
+							<label for="f-option">Backcross</label>
+							<br>
+							<input type="radio" id="s-option" name="selector">
+							<label for="s-option">Outcross</label>
+						</div>
+						<br>
+						<div>
+							Coss parental reads provided<br>
+							<input type="radio" id="f-option" name="selector">
+							<label for="f-option">The mutant's</label>
+							<br>
+							<input type="radio" id="s-option" name="selector">
+							<label for="s-option">The other</label>
+						</div>
+					</div>
+				
 					<div id="expDataSingleTwosamples">
 						<select id="readsSinglePar">
 							<option value="default">Parental - choose reads</option>
@@ -258,9 +263,7 @@
 			$project_name $workflow $data_source $lib_type $ref_seq $ins_seq $read_s
 			$reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
 		</p>
-		<p id="commandString">
-			
-		</p>
+		<p id="commandString"></p>
 	</div>
 <div>
 </body>

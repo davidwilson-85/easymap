@@ -87,7 +87,8 @@ else
 		exit_code=1
 		echo $exit_code
 		exit # Exit because fasta files are required for fasta-concat.py and for fasta-gff comparison
-		     # In any other check I do not exit prematurely of process-input.sh
+		     # In any other check I do not exit prematurely of process-input.sh so the program checks
+		     # all the files and therefore several incorrect files can be revealed in a single run.
 	}
 fi
 
