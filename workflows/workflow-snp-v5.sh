@@ -168,7 +168,7 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-'''
+
 
 #Execute vcf filter
 {
@@ -183,7 +183,7 @@ echo VCF grooming finished >> $my_log_file
 echo VCF filter finished >> $my_log_file
 
 
-'''
+
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -261,7 +261,7 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-'''
+
 
 #Execute vcf filter
 {
@@ -325,7 +325,7 @@ fi
 }
 echo VCF operations finished >> $my_log_file
 
-
+'''
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
 
@@ -345,7 +345,7 @@ fi
 
 #Execute vcf analysis 
 {
-	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f0/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/map-info.txt 
+	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f0/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/map-info.txt -parental_modality $my_mutbackgroud -correction_factor 0.6
 
 
 } || {
