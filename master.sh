@@ -164,6 +164,8 @@ then
 		
 		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type $ins_seq $sim_mut $sim_recsel $sim_seq`
 
+		exit
+
 		if [ $simulator == 0 ]
 		then
 			{

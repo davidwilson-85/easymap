@@ -15,9 +15,9 @@
 # -outdir: Name of directory relative to current location where to place the recombinant chromosomes
 # 		created.
 # 
-# -achr (integer) [1, 2, 3, 4, 5]: Chromosome number from Arabidopsis thaliana. Used to apply the
-# 		recombination frequency distribution corresponding to that particular chromosome. It must match
-# 		the chromosomes provided in 'parmut' and 'parpol'.
+# -rfd: List of ';'-separated pairs (Nbr XO events, freq (%)). Example: "0,15; 1,20; 2,18; 3,10; ..."
+#			Sum of freq values must be 100%. This distribution is determined experimentally (e.g. in
+#			Arabidopsis: Salome et al 2012, Heredity (2012) 108, 447-455; doi:10.1038/hdy.2011.95.) 
 # 
 # -parmut: Parental A. In modes 'r', 'd', and 'di', this parental must be the mutant parental. It
 # 		must be a fasta-formatted file with a single contig. The length of the contig must be equal to the
@@ -39,10 +39,7 @@
 # 		each causal mutation is provided in a different parental.
 # 
 # -nrec (integer): Number of recombinant chromosomes to create. This number corresponds to the number
-# 		of chromosomes after the selection has been performed. 
-#
-# 
-# 2016 - David Wilson - dws1985@hotmail.com
+# 		of chromosomes after the selection has been performed.
 
 
 
@@ -53,8 +50,6 @@ from random import randint
 # Parse command arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-outdir', action="store", dest='out_dir', required=True)
-#parser.add_argument('-achr', action="store", dest='at_chr', 
-#type=int, required=True, choices=set((1,2,3,4,5))) # Choose between 1, 2, 3, 4, 5
 parser.add_argument('-recombination_frequency', action ="store", dest = "rfd", required = True)
 parser.add_argument('-parmut', action="store", dest='parental_a_mutant', required=True) #mutated genome
 parser.add_argument('-parpol', action="store", dest='parental_b_polymorphic', required=True) #polymorphic genome
@@ -66,7 +61,6 @@ parser.add_argument('-nrec', action="store", dest='nbr_rec_chrs', type=int, requ
 args = parser.parse_args()
 
 out_dir = args.out_dir
-#at_chr = int(args.at_chr)
 rfd = args.rfd
 parental_a_mutant = args.parental_a_mutant
 parental_b_polymorphic = args.parental_b_polymorphic
@@ -74,6 +68,13 @@ mut_a_pos = args.mut_a_pos
 mut_b_pos = args.mut_b_pos
 selection_mode = args.selection_mode # "r" = recessive, "d" = dominant mt-phe, "di" = dominant wt-phe, "dr" = double recessive
 nbr_rec_chrs = args.nbr_rec_chrs
+
+if selection_mode == 'dr' and mut_b_pos is None:
+	quit('Quit. Selected mode is "double recessive" but no position for mutation b was provided. See program description.')
+
+# Functions
+
+# Function to transform 'rfd' input into 'chr_xo_freq'
 def chr_freq_generator(rfd):
 	i = 0
 	f = 0
@@ -91,11 +92,6 @@ def chr_freq_generator(rfd):
 		position.append(int(items[0]))
 		chr_xo_freq.append(position)
 	return chr_xo_freq
-
-	
-if selection_mode == 'dr' and mut_b_pos is None:
-	quit('Quit. Selected mode is "double recessive" but no position for mutation b was provided. See program description.')		
-
 
 # Function to parse fasta files
 def read_fasta(fp):
@@ -184,6 +180,7 @@ chr_len = len(seq_parental_a)
 chr_xo_freq = chr_freq_generator(rfd)
 
 
+
 # Create a defined number of recombinant chromosomes 
 iter1 = 0
 while iter1 < nbr_rec_chrs:
@@ -200,7 +197,7 @@ while iter1 < nbr_rec_chrs:
 	# The XO frequency table represents the frequency of each number of XOs in a chromosome
 	# By comparing a series of random numbers with this table, it can be created a series of XOs
 	# numbers that follow exactly the real frequencies
-	rand_nbr = randint(1, 100) # 100 different options (values 0 and 100 are included)
+	rand_nbr = randint(1, 100) # 100 different options (values 1 and 100 are included)
 	for i in chr_xo_freq:
 		if rand_nbr > i[0] and rand_nbr <= i[1]:
 			nbr_crossovers = i[2] # This is the number of XOs the current rec chr will have 
@@ -251,7 +248,6 @@ while iter1 < nbr_rec_chrs:
 		if chr_carries_mutation_a == True:
 			rec_chr = create_rec_seq()
 			create_rec_chr_file()
-			print rec_chr
 			iter1 +=1
 	
 	# Select all chromosomes that carry mutation A and also some that do not, so the final
