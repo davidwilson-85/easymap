@@ -20,7 +20,7 @@ parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region
 parser.add_argument('-f', action="store", dest = 'output_html')
 parser.add_argument('-m', action="store", dest = 'mode', default = 'P')
 parser.add_argument('-pname', action="store", dest='project_name')
-parser.add_argument('-my_mutbackground', action="store", dest='my_mutbackground')
+parser.add_argument('-mutbackground', action="store", dest='my_mutbackground')
 
 args = parser.parse_args()
 
@@ -138,10 +138,10 @@ def fa_vs_pos():
 
 
 ################################################################################################################################################################################################################
-
+		my_mutbackground = str(args.my_mutbackground)
 		#Boost / mm 																						
 		if my_mutbackground == 'noref':
-			boost_input = open(project + '1_intermediate_files/analysis_output.txt', 'r')
+			boost_input = open(project + '/1_intermediate_files/map_info.txt', 'r')
 			lines = boost_input.readlines()
 			for k, line in enumerate(lines):
 				sp = line.split()
