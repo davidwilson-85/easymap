@@ -92,7 +92,7 @@ echo bowtie2-build genome index finished. >> $my_log_file
 if [ $my_mode == 'pe' ]
 then  
 	{
-		$location/bowtie2/bowtie2 -x $f1/$my_ix2 -1 $f0/$my_rf -2 $f0/$my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 	
 	} || {
 		echo 'bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
@@ -107,7 +107,7 @@ fi
 if [ $my_mode == 'se' ] 
 then
 	{
-		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $f0/$my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 	
 	} || {
 		echo 'bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
@@ -178,7 +178,7 @@ if [ $my_mode == 'pe' ]
 then  
 	#Execute bowtie2 to make a local aligment of the reads with the insertion
 	{
-		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -1 $f0/$my_rf -2 $f0/$my_rr -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
+		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
 	
 	} || {
 		echo 'bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file
@@ -194,7 +194,7 @@ if [ $my_mode == 'se' ]
 then  	
 	#Execute bowtie2 to make a local aligment of the reads with the insertion
 	{
-		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -U $f0/$my_rd -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
+		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -U $my_rd -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
 	
 	} || {
 		echo 'bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file

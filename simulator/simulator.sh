@@ -111,6 +111,7 @@ then
 		} || {
 			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
 			exit_code=1
+			echo exit_code
 			exit
 		}
 		echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
@@ -122,6 +123,7 @@ then
 		} || {
 			echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
 			exit_code=1
+			echo exit_code
 			exit
 		}
 		echo $(date)": Simulation of high-throughput sequencing completed." >> $my_log_file
@@ -139,6 +141,7 @@ then
 		} || {
 			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_f
 			exit_code=1
+			echo exit_code
 			exit
 		}
 		echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
@@ -149,6 +152,7 @@ then
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
 			exit_code=1
+			echo exit_code
 			exit
 		}
 		echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
@@ -160,6 +164,7 @@ then
 		} || {
 			echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
 			exit_code=1
+			echo exit_code
 			exit
 		}
 		echo $(date)": Simulation of high-throughput sequencing completed." >> $my_log_file

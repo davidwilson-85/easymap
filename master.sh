@@ -15,7 +15,7 @@
 # [10] $gff_file                 *
 # [11] $ann_file                 *
 # [12] $sim_mut                  .                      nbr+mod
-# [13] $sim_recsel               .                      {rfd}+pos+mod+nre
+# [13] $sim_recsel               .                      rfd+pos+mod+nre
 # [14] $sim_seq                  .                      rd+rl+fl+ber+gbs
 #
 # sim-mut.py
@@ -53,7 +53,7 @@
 # ./master.sh $project_name $workflow $data_source $ref_seq $ins_seq $read_s
 # $reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
 #
-# example: ./master.sh project ins sim se genome.fa ins.fa n/p n/p n/p gff.gff n/p 1+ins n/p 10+30,0+0,0+0.1+50
+# example: ./master.sh project ins sim se genome.fa ins.fa n/p n/p n/p gff.gff n/p 1+ins n/p 10+30,0+0,0+1+50
 #
 #
 # ./master.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 10+ins n/p 30+100,0+0,0+1+50
@@ -70,6 +70,7 @@
 #
 #
 #
+
 
 start_time=`date +%s`
 	
@@ -170,8 +171,6 @@ then
 		echo $(date)": STARTING DATA SIMULATION..." >> $my_log_file
 		
 		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type $ins_seq $sim_mut $sim_recsel $sim_seq`
-
-		exit
 
 		if [ $simulator == 0 ]
 		then

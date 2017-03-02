@@ -149,7 +149,7 @@ window.onload = function() {
 	document.getElementById("form1").projectName.onblur = verifyProjectName;
 	//document.getElementById("form1").projectName.onblur = projectName;
 	
-	// Change the content of the attribute href of a specific link
+	// Create the command string for the first time (for development purposes only)
 	updateCmd();
 	
 	// React to interactions with 2-way selectors
@@ -163,7 +163,7 @@ window.onload = function() {
 	// React to interactions with genome contigs selector
 	document.getElementById("form1").refSeqs.onblur = refSeqs;
 	
-	// React to single selectots (insSeq, gffFile, annFile...)
+	// React to single selectors (insSeq, gffFile, annFile...)
 	document.getElementById("form1").insSeq.onblur = processSingleSelectors;
 	document.getElementById("form1").gffFile.onblur = processSingleSelectors;
 	document.getElementById("form1").annFile.onblur = processSingleSelectors;
