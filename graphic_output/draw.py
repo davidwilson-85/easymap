@@ -99,11 +99,6 @@ def fa_vs_pos():
 
 
 
-	#get fonts from foler 'fonts'
-	fnt1 = ImageFont.truetype('fonts/arial.ttf', 30)
-	fnt2 = ImageFont.truetype('fonts/arial.ttf', 16)
-	fnt3 = ImageFont.truetype('fonts/arial.ttf', 24)
-	fnt4 = ImageFont.truetype('fonts/arial.ttf', 20)
 
 
 	#FA vs POS graphs 
@@ -113,11 +108,12 @@ def fa_vs_pos():
 		im = Image.new("RGB", (wide, int(height)), (255,255,255))
 		draw = ImageDraw.Draw(im)
 		
-		#Axes
-		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(12/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#Y axis
-		draw.line((int(12/100.0*wide), int(80/100.0*height)) + (int(85/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#X axis
-		draw.text(((int(5/100.0*wide)), (int(17/100.0*height))), ('AF'), font=fnt1, fill=(0,0,0,255))
-		
+		#get fonts from foler 'fonts'
+		fnt1 = ImageFont.truetype('fonts/arial.ttf', int(30/1000.0*wide))
+		fnt2 = ImageFont.truetype('fonts/arial.ttf', int(16/1000.0*wide))
+		fnt3 = ImageFont.truetype('fonts/arial.ttf', int(24/1000.0*wide))
+		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(20/1000.0*wide))
+
 
 		#Scaling factors
 		scaling_factor_x = (float(i[1])/(73/100.0*wide))			#nts/pixel
@@ -128,11 +124,11 @@ def fa_vs_pos():
 		for l, line in enumerate(lines):
 			sp = line.split()
 			if i[0].lower() == sp[0].lower():
-				fa = float(sp[5])/(float(sp[6])+float(sp[5]))
-				fa_img = int(fa/scaling_factor_y + int(17/100.0*height))
+				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 				pos_img = int(float(sp[1])/scaling_factor_x) + int(12/100.0*wide)
 
-				draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(15, 25, 216))
+				draw.ellipse((pos_img, fa_img, pos_img, fa_img), fill=(147, 147, 147))
 
 
 
@@ -143,6 +139,8 @@ def fa_vs_pos():
 		if my_mutbackground == 'noref':
 			boost_input = open(project + '/1_intermediate_files/map_info.txt', 'r')
 			blines = boost_input.readlines()
+
+			#Boost line
 			for b, bline in enumerate(blines):
 				sp = bline.split()
 				if bline.startswith('!'):
@@ -151,7 +149,7 @@ def fa_vs_pos():
 				sp = bline.split()					
 				if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
 					boost_value = float(sp[3].strip())/boost_max
-					boost_value_img = int(boost_value/scaling_factor_y + int(17/100.0*height))
+					boost_value_img = int(80/100.0*height) - int(boost_value/scaling_factor_y )
 
 					window_position = int(sp[1])
 					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
@@ -165,9 +163,42 @@ def fa_vs_pos():
 						window_position_img_2 = window_position_img
 						boost_value_img_2 = boost_value_img
 
+			window_position_img = None 
+			boost_value_img = None
+			window_position_img_2 = None 
+			boost_value_img_2 = None
+
+			#MM line
+			for b, bline in enumerate(blines):
+				sp = bline.split()					
+				if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+					mm_value = float(sp[2].strip())
+					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+
+					window_position = int(sp[1])
+					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
+
+					try:
+						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.3/100.0*wide))	
+						window_position_img_2 = window_position_img
+						mm_value_img_2 = mm_value_img
+
+					except:
+						window_position_img_2 = window_position_img
+						mm_value_img_2 = mm_value_img
+
+			window_position_img = None 
+			mm_value_img = None
+			window_position_img_2 = None 
+			mm_value_img_2 = None
+
 ################################################################################################################################################################################################################
 
-
+		#Axes
+		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(12/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#Y axis
+		draw.line((int(12/100.0*wide), int(80/100.0*height)) + (int(85/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#X axis
+		draw.text(((int(5/100.0*wide)), (int(17/100.0*height))), ('AF'), font=fnt1, fill=(0,0,0,255))
+		
 
 		#Axis rulers 
 		#X axis
