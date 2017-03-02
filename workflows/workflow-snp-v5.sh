@@ -292,13 +292,13 @@ echo VCF filter finished >> $my_log_file
 #Mutation in refference backgroud, outcross with non-refference background, sequencing refference parental
 if [ $my_mutbackgroud == ref ] && [ $my_pseq == mut ] && [ $my_cross == oc ]
 then
-	my_operation_mode=I
+	my_operation_mode=A
 fi
 
 #Mutation in refference backgroud, outcross with non-refference background, sequencing non-refference parental
 if [ $my_mutbackgroud == ref ] && [ $my_pseq == nomut ] && [ $my_cross == oc ]
 then
-	my_operation_mode=A
+	my_operation_mode=I
 fi
 
 #Mutation in refference backgroud, backcross with non-refference background, sequencing refference parental
@@ -388,13 +388,13 @@ fi
 #Mutation in refference backgroud, outcross with non-refference background, sequencing non-refference parental
 if [ $my_mutbackgroud == ref ] && [ $my_pseq == nomut ] && [ $my_cross == oc ]
 then
-	my_operation_mode=N
+	my_operation_mode=A
 fi
 
 #Mutation in refference backgroud, backcross with non-refference background, sequencing refference parental
 if [ $my_mutbackgroud == ref ] && [ $my_pseq == mut ] && [ $my_cross == bc ]
 then
-	my_operation_mode=N
+	my_operation_mode=A
 fi
 
 #Mutant in non-reference background, outcross with reference, sequencing non-refference parental
