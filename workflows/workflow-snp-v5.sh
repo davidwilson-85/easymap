@@ -168,7 +168,7 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-
+'''
 
 #Execute vcf filter
 {
@@ -183,7 +183,7 @@ echo VCF grooming finished >> $my_log_file
 echo VCF filter finished >> $my_log_file
 
 
-
+'''
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -261,7 +261,7 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-
+'''
 
 #Execute vcf filter
 {
@@ -326,7 +326,7 @@ fi
 echo VCF operations finished >> $my_log_file
 
 
-'''
+
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
 
@@ -463,7 +463,7 @@ echo Varanalyzer finished. >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_parental_comparison.va -bsnp $f0/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -mutbackground $my_mutbackgroud
+	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_parental_comparison.va -bsnp $f0/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross
 	
 } || {
 	echo 'error: graphic-output-v3.py' >> $my_log_file

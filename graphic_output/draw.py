@@ -20,7 +20,7 @@ parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region
 parser.add_argument('-f', action="store", dest = 'output_html')
 parser.add_argument('-m', action="store", dest = 'mode', default = 'P')
 parser.add_argument('-pname', action="store", dest='project_name')
-parser.add_argument('-mutbackground', action="store", dest='my_mutbackground')
+parser.add_argument('-cross', action="store", dest='my_cross')
 
 args = parser.parse_args()
 
@@ -134,13 +134,14 @@ def fa_vs_pos():
 
 
 ################################################################################################################################################################################################################
-		my_mutbackground = str(args.my_mutbackground)
+		my_cross = str(args.my_cross)
 		#Boost / mm 																						
-		if my_mutbackground == 'noref':
-			boost_input = open(project + '/1_intermediate_files/map_info.txt', 'r')
-			blines = boost_input.readlines()
+	
+		binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
+		blines = binput.readlines()
 
-			#Boost line
+		#Boost line
+		if my_cross == 'oc':
 			for b, bline in enumerate(blines):
 				sp = bline.split()
 				if bline.startswith('!'):
@@ -168,29 +169,29 @@ def fa_vs_pos():
 			window_position_img_2 = None 
 			boost_value_img_2 = None
 
-			#MM line
-			for b, bline in enumerate(blines):
-				sp = bline.split()					
-				if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
-					mm_value = float(sp[2].strip())
-					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+		#MM line
+		for b, bline in enumerate(blines):
+			sp = bline.split()					
+			if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+				mm_value = float(sp[2].strip())
+				mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
 
-					window_position = int(sp[1])
-					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
+				window_position = int(sp[1])
+				window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
 
-					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.3/100.0*wide))	
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
+				try:
+					draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.3/100.0*wide))	
+					window_position_img_2 = window_position_img
+					mm_value_img_2 = mm_value_img
 
-					except:
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
+				except:
+					window_position_img_2 = window_position_img
+					mm_value_img_2 = mm_value_img
 
-			window_position_img = None 
-			mm_value_img = None
-			window_position_img_2 = None 
-			mm_value_img_2 = None
+		window_position_img = None 
+		mm_value_img = None
+		window_position_img_2 = None 
+		mm_value_img_2 = None
 
 ################################################################################################################################################################################################################
 
