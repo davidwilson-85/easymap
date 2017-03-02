@@ -60,9 +60,9 @@ def calculation_average(li, modality):
 	new_list = []
 	for items in li:
 		items = float(items)
-		if c == 0.65 and items < c:
+		if c == 0.7 and items < c:
 			new_list.append(items)
-		elif c == 0.35 and items> c:
+		elif c == 0.3 and items> c:
 			new_list.append(items)
 	average_list = sum(new_list)/len(new_list)
 	return average_list
@@ -177,7 +177,7 @@ ch = {}
 #From the data of read_fasta, I create a dictionary with the name of the contigs and its lenght
 with open(fasta_input) as fp:
 	for name_contig, seq_contig in read_fasta(fp):
-		ch[name_contig[1,len(name_contig)]] = len(seq_contig)
+		ch[name_contig[1:len(name_contig)]] = len(seq_contig)
 
 #The calling of the different functions depends on whether we are working in an outcross or backcross
 if mode == "out":
