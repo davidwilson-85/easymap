@@ -243,9 +243,14 @@ then
 elif [ $match == 2 ]
 then
 	{
-		echo $(date)": Contigs match check between FASTA and GFF3 inputs failed. The contig names in the FASTA and GFF3 inputs do not match. Please provide new files." >> $my_log_file
+		echo $(date)": Contigs match check between FASTA and GFF3 inputs failed. The contig names in the FASTA are not in GFF3. Please provide new files." >> $my_log_file
 		exit_code=1
 	}
+elif [ $match == 3 ]
+then
+	{
+		echo $(date)": Contigs match check between FASTA and GFF3 inputs failed. Some contig names in the GFF3 are not in FASTA. The process will proceed, please mind the existance of such differences." >> $my_log_file
+	}	
 fi
 
 echo $exit_code

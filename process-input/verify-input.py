@@ -164,13 +164,12 @@ if fa_match != None and gff_match != None:
 	
 	match_result = 0 
 	
-	
 	# First, verify that the files are not empty	
 	if os.stat(fa_match).st_size == 0 or os.stat(gff_match).st_size == 0:
 		match_result = 1
 	
 	# If files are not empty...
-	'''
+	
 	else:
 		# Retrieve the name of the contigs in the fasta file and store them in a list
 		fa_match_contents = open(fa_match, 'r')
@@ -182,14 +181,14 @@ if fa_match != None and gff_match != None:
 				fa_contigs.append(fa_fields[0][1:].lower().strip())
 		
 		fa_match_contents.close()
-
+		
 		# Retrieve the name of the contigs (unique) in the gff file and store them in a list
 		gff_match_contents = open(gff_match, 'r')
 		gff_contigs = []
 		
 		for gff_line in gff_match_contents:
 			gff_fields = gff_line.split('\t')
-			contig_name = gff_fields[0].lower()
+			contig_name = gff_fields[0].lower().strip()
 			if contig_name not in gff_contigs:
 				gff_contigs.append(contig_name)
 		
@@ -201,16 +200,19 @@ if fa_match != None and gff_match != None:
 				match_result = 2
 
 		# Check if all the contigs in fasta file are also in gff file
-		for gff_contig in gff_contigs:
-			if gff_contig not in fa_contigs:
-				match_result = 2
-	'''	
+		if match_result != 2:
+			for gff_contig in gff_contigs:
+				if gff_contig not in fa_contigs:
+					match_result = 3
+	
 	print match_result
 	
 	# 0: pass
 	# 1: fa, gff, or both files are empty
-	# 2: FASTA file has contigs not present in GFF3 file
-	#    AND/OR GFF3 file has contigs not present in FASTA file
+	# 2: FASTA file has contigs not present in GFF3 file. Since this is potentially very
+	#    dangerous, if exit_code=2, process-input.sh stops.
+	# 3: GFF3 file has contigs not present in FASTA file. In this case, just warn the user
+	#	  about the presence of extra contigs in the GFF3 file. The analysis will keep going.		 	
 	
 
 # Every 'if block' returns only one variable with a numeric value. This numeric value
