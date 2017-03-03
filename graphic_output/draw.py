@@ -595,7 +595,10 @@ def insertions_overview_and_histograms():
 				if line.startswith('@#'):
 					sp = line.split(',')
 					if int(sp[2].strip()) == int(e):
-							draw.text(((120), (860)), ('Your candidate region is (' + sp[0].strip('@#') + ', ' + sp[1].strip()+')'), font=fnt3, fill=(0,0,0,255))
+							cr = [int(sp[0].strip('@#')), int(sp[1].strip())]
+							cr_min = min(cr)
+							cr_max = max(cr)
+							draw.text(((120), (860)), ('Your candidate region is (' + cr_min + ', ' + cr_max + ')'), font=fnt3, fill=(0,0,0,255))
 							draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
 							draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
 
