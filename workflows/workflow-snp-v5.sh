@@ -44,7 +44,7 @@ my_p_mode=se														#						<----------------------------------------------
 my_rd=$7											 			#reads (single)
 my_rf=$8 														#forward reads
 my_rr=$9												 		#reverse reads 			
-my_p_rd=ler-lab.fq											 			#reads (single) parent	<------------------------------------------------------------------------
+my_p_rd=col-lab.fq											 			#reads (single) parent	<------------------------------------------------------------------------
 my_p_rf=none 														#forward reads parent	<------------------------------------------------------------------------
 my_p_rr=none												 		#reverse reads parent	<------------------------------------------------------------------------
 my_gs=gnm_ref_merged/genome.fa 									#genome sequence
@@ -57,7 +57,7 @@ my_mut=snp  													#my_mut takes the values 'snp' in this workflow and 'li
 
 
 
-my_mutbackgroud=noref 											#ref / noref : genetic background of the mutation									<------------------------------------------------------------------------
+my_mutbackgroud=ref 											#ref / noref : genetic background of the mutation									<------------------------------------------------------------------------
 my_cross=oc														#oc / bc : f2 obtained by outcross or backcross 									<------------------------------------------------------------------------
 my_pseq=mut  													#mut / nomut : sequenced parental provided is the mutagenized one or the other		<------------------------------------------------------------------------
 
@@ -76,8 +76,8 @@ f3=$project_name/3_workflow_output
 export location="$PWD" 
 
 
-
 '''
+
 #Execute bowtie2-build on genome sequence 
 {
 	$location/bowtie2/bowtie2-build $f0/$my_gs $f1/$my_ix 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
@@ -169,7 +169,7 @@ echo Variant calling finished >> $my_log_file
 }
 echo VCF grooming finished >> $my_log_file
 '''
-
+'''
 #Execute vcf filter
 {
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 1
@@ -181,7 +181,7 @@ echo VCF grooming finished >> $my_log_file
 	exit
 }
 echo VCF filter finished >> $my_log_file
-
+'''
 
 '''
 ##################################################################################################################################################################################
@@ -261,7 +261,7 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-'''
+
 
 #Execute vcf filter
 {
@@ -274,10 +274,10 @@ echo VCF grooming finished >> $my_log_file
 	exit
 }
 echo VCF filter finished >> $my_log_file
+'''
 
 
-
-
+'''
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -326,11 +326,11 @@ fi
 echo VCF operations finished >> $my_log_file
 
 
-
+'''
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
 
-#Setting up analysis mode: 																							#<------------------------ COMPROBAR VARIABLE QUE DEFINE EL TIPO DE ANALISIS
+#Setting up analysis mode:
 
 #Mutation in refference backgroud, outcross with non-refference background, sequencing refference parental
 if [ $my_cross == oc ] 
@@ -360,9 +360,9 @@ echo VCF analysis finished >> $my_log_file
 #__________________________________________________________________________________FILTER____________________________________________________________________________________________
 
 
-#Execute vcf filter
+#Execute vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequency > 0.8 and corresponding to EMS mutations
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map_info.txt 	#<--------------------------------     Filtrar con los valores de cromosoma, region candidato, ems/natural...
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS
 
 } || {
 	echo 'error: variants-filter.py' >> $my_log_file

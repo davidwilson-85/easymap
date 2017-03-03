@@ -21,7 +21,7 @@ parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region
 parser.add_argument('-f', action="store", dest = 'output_html')
 parser.add_argument('-m', action="store", dest = 'mode', default = 'pe')
 parser.add_argument('-pname', action="store", dest='project_name')
-parser.add_argument('-mutbackground', action="store", dest='my_mutbackground')
+parser.add_argument('-cross', action="store", dest='my_cross')
 
 
 args = parser.parse_args()
