@@ -330,7 +330,7 @@ echo VCF operations finished >> $my_log_file
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
 
-#Setting up analysis mode: 																							#<------------------------ COMPROBAR VARIABLE QUE DEFINE EL TIPO DE ANALISIS
+#Setting up analysis mode:
 
 #Mutation in refference backgroud, outcross with non-refference background, sequencing refference parental
 if [ $my_cross == oc ] 
