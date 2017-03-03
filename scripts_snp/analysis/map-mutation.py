@@ -54,9 +54,9 @@ def getinfo(chro, inpu):
 #Calculates average of a list of AF in a window. Two modes are present, if mutant is in the reference background or if it is in a different background.	
 def calculation_average(li, modality):
 	if modality == "ref":
-		c = 0.65
+		c = 0.7
 	elif modality == "noref" or "n": #if we are dealing with a backcross, eventhough it is in the ref background we are looking for high AF SNP, that's why modality is n
-		c = 0.35
+		c = 0.3
 	new_list = []
 	for items in li:
 		items = float(items)

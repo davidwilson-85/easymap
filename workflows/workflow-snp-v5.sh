@@ -169,7 +169,7 @@ echo Variant calling finished >> $my_log_file
 }
 echo VCF grooming finished >> $my_log_file
 '''
-
+'''
 #Execute vcf filter
 {
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 1
@@ -181,7 +181,7 @@ echo VCF grooming finished >> $my_log_file
 	exit
 }
 echo VCF filter finished >> $my_log_file
-
+'''
 
 '''
 ##################################################################################################################################################################################
@@ -262,7 +262,7 @@ echo Variant calling finished >> $my_log_file
 }
 echo VCF grooming finished >> $my_log_file
 
-'''
+
 #Execute vcf filter
 {
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/parental_raw.va -b $f1/parental_filtered.va -step 1
@@ -274,10 +274,10 @@ echo VCF grooming finished >> $my_log_file
 	exit
 }
 echo VCF filter finished >> $my_log_file
+'''
 
 
-
-
+'''
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -326,7 +326,7 @@ fi
 echo VCF operations finished >> $my_log_file
 
 
-
+'''
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
 
