@@ -20,19 +20,19 @@ window.onload = function() {
 	function verifyProjectName(){
 		var text = document.getElementById("form1").projectName.value;
 		if( /[^a-zA-Z0-9]/.test( text ) ) {
-			alert('Input is not alphanumeric');
+			//alert('Input is not alphanumeric');
+			projectNameValidationInfoMessage = 'Input is not alphanumeric';
+			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 		} else if (text == '') {
-			alert('Yoy must give a name to the project');
+			//alert('Yoy must give a name to the project');
+			projectNameValidationInfoMessage = 'Yoy must give a name to the project';
+			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 		} else {
 			cmdArgs[0] = document.getElementById("form1").projectName.value;
 			updateCmd()
+			projectNameValidationInfoMessage = '';
+			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 		}
-	}
-	
-	//
-	function projectName() {
-		cmdArgs[0] = document.getElementById("form1").projectName.value;
-		updateCmd()
 	}
 	
 	// Determine option button selected and define the appropriate command argument
@@ -45,12 +45,17 @@ window.onload = function() {
 		}
 		if (checkedOption == 'button1') {
 			cmdArgs[1] = 'ins';
+			document.getElementById("insSeqSelector").style.display = "inline";
 			document.getElementById("expDataIns").style.display = "inline";
 			document.getElementById("expDataSnp").style.display = "none";
+			document.getElementById("simDataIns").style.display = "inline";
+			document.getElementById("simDataSnp").style.display = "none";
 		} else {
 			cmdArgs[1] = 'snp';
 			document.getElementById("expDataIns").style.display = "none";
 			document.getElementById("expDataSnp").style.display = "inline";
+			document.getElementById("simDataIns").style.display = "none";
+			document.getElementById("simDataSnp").style.display = "inline";
 		}
 		updateCmd();
 	}
@@ -89,14 +94,28 @@ window.onload = function() {
 			document.getElementById("expDataPaired").style.display = "none";
 			document.getElementById("expDataSingleTwosamples").style.display = "inline";
 			document.getElementById("expDataPairedTwosamples").style.display = "none";
+			document.getElementById("expDataSnpInfo").style.display = "inline";
+			document.getElementById("simSeqFL").style.display = "none";
 		} else {
 			cmdArgs[3] = 'pe';
 			document.getElementById("expDataSingle").style.display = "none";
 			document.getElementById("expDataPaired").style.display = "inline";
 			document.getElementById("expDataSingleTwosamples").style.display = "none";
 			document.getElementById("expDataPairedTwosamples").style.display = "inline";
+			document.getElementById("expDataSnpInfo").style.display = "inline";
+			document.getElementById("simSeqFL").style.display = "block";
 		}
 		updateCmd();
+	}
+	
+	// Function to check if the three 2-way buttons have been already clicked and display
+	// the reads/simulation interface
+	function buttons_setUpInterface() {
+		alert('click');
+	
+	
+	
+	
 	}
 	
 	// Determine all the file names selected, add them to array, and then to argument
@@ -144,10 +163,18 @@ window.onload = function() {
 						'readsS', 'readsF', 'readsR', 'gffFile', 'annFile', 'simMut', 'simRecsel',
 						'simSeq'];
 	
-	// React to interactions with project name field
+	// React to interactions with text inputs
+	// Reset default content when user clicks on input bux
 	document.getElementById("form1").projectName.onfocus = resetTextField;
+	document.getElementById("form1").simMutNbr.onfocus = resetTextField;
+	document.getElementById("form1").simSeqRD.onfocus = resetTextField;
+	document.getElementById("form1").simSeqRL.onfocus = resetTextField;
+	document.getElementById("form1").simSeqRD.onfocus = resetTextField;
+	document.getElementById("form1").simSeqBER.onfocus = resetTextField;
+	document.getElementById("form1").simSeqGBS.onfocus = resetTextField;
+	
+	// Verify input of text fields
 	document.getElementById("form1").projectName.onblur = verifyProjectName;
-	//document.getElementById("form1").projectName.onblur = projectName;
 	
 	// Create the command string for the first time (for development purposes only)
 	updateCmd();
@@ -171,7 +198,21 @@ window.onload = function() {
 	document.getElementById("form1").readsSingle.onblur = processSingleSelectors;
 	document.getElementById("form1").readsForward.onblur = processSingleSelectors;
 	document.getElementById("form1").readsReverse.onblur = processSingleSelectors;
-
+	
 }
 
+// TO DO:
+// Add verification to check that all the three 2-way buttons have been clicked
+// When user clicks on submit, check that all validations passed. This could be done with
+// a flag variable.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 

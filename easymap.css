@@ -30,9 +30,21 @@
 	padding: 3px;
 }
 
-/* By default do not display the following divs */
+/* By default do not display the following divs. They must only be displayed 
+after the user has selected a mode, the source of the data, and the library type */
+#insSeqSelector,
+#expDataInterface,
 #simDataInterface,
-#expDataInterface {
+#expDataIns,
+#expDataSnp,
+#simDataIns,
+#simDataSnp,
+#expDataSnpInfo,
+#expDataSingle,
+#expDataPaired,
+#expDataSingleTwosamples,
+#expDataPairedTwosamples,
+#simSeqFL {
 	display: none;
 }
 
@@ -40,6 +52,12 @@
 #command > p {
 	font-family: monospace;
 	font-size: 12px;
+}
+
+
+/* validation messages */
+.validationMessage {
+	background-color: red;
 }
 
 
@@ -66,7 +84,7 @@ exclusive button choices.
 }
 
 .mx-button label:hover {
-    background: #ddd;
+    background-color: #ddd;
 }
 
 .mx-button input:checked + label {
@@ -74,7 +92,7 @@ exclusive button choices.
     color: white;
 }
 
-/* Text inputs */
+/* Text and select inputs */
 input[type=text], select {
 	width: 75%;
 	padding: 8px 12px;
@@ -92,6 +110,10 @@ input[type=text]:hover {
 input[type=text]:focus {
 	border: 1px solid #737373;
 	background-color: #f2f2f2;
+}
+
+.simNumericInput {
+	width: 75px;
 }
 
 

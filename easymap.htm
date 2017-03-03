@@ -13,6 +13,7 @@
 		
 			Step 1. Give a name to this project:<br>
 			<input type="text" name="projectName" value="My project" />
+			<div id="projectNameValidationInfo" class="validationMessage"></div>
 			<br><br>
 			Step 2. Choose your analysis setup:
 			<br><br>
@@ -67,16 +68,18 @@
 			</select>
 		
 			<br>
-		
-			<select id="insSeq">
-				<option value="default">Choose insertion sequence file</option>
-				<option value="insertion.fa">insertion.fa</option>
-				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-				<option value="reads_f.fq">reads_f.fq</option>
-				<option value="reads_r.fq">reads_r.fq</option>
-				<option value="reads_se.fq">reads_se.fq</option>
-			</select>
+			
+			<div id="insSeqSelector">
+				<select id="insSeq">
+					<option value="default">Choose insertion sequence file</option>
+					<option value="insertion.fa">insertion.fa</option>
+					<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
+					<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
+					<option value="reads_f.fq">reads_f.fq</option>
+					<option value="reads_r.fq">reads_r.fq</option>
+					<option value="reads_se.fq">reads_se.fq</option>
+				</select>
+			</div>
 		
 			<br>
 		
@@ -109,10 +112,6 @@
 				All the divs inside <div id="formRight"> are hidden until the user
 				interacts with buttons in <div id="formLeft">
 			-->
-			
-			<div id="simDataInterface">
-				Simulated data chosen
-			</div>
 			
 			<div id="expDataInterface">
 				Experimental data chosen
@@ -182,7 +181,7 @@
 							<label for="s-option">The other</label>
 						</div>
 					</div>
-				
+					
 					<div id="expDataSingleTwosamples">
 						<select id="readsSinglePar">
 							<option value="default">Parental - choose reads</option>
@@ -244,7 +243,55 @@
 							<option value="reads_se.fq">reads_se.fq</option>
 						</select>
 					</div>
-					
+				</div>
+			</div>
+			
+			<div id="simDataInterface">
+				Simulated data chosen
+				<div id="simDataIns">				
+					<div id="simMutInterface">
+						Number of mutations:<br>
+						<input type="text" name="simMutNbr" class="simNumericInput" value="" />
+						<br><br>
+						Mode:<br>
+						<input type="radio" name="simMutMode" id="simMutModeD">
+						<label for="simMutModeD">Drift</label>
+						<br>
+						<input type="radio" name="simMutMode" id="simMutModeE">
+						<label for="simMutModeE">EMS (GC > AT)</label>
+						<br>
+						<input type="radio" name="simMutMode" id="simMutModeL">
+						<label for="simMutModeL">Large DNA insertions</label>
+					</div>
+				
+					<div id="simRecselInterface">
+						<br><br>No RecSel here<br><br>
+					</div>
+				
+					<div id="simSeqInterface">
+						Read depth (X):<br>
+						<input type="text" name="simSeqRD" class="simNumericInput" value="40" />
+						<br>
+						Read length [mean, SD] (nt):<br>
+						<input type="text" name="simSeqRL" class="simNumericInput" value="90,0" />
+						<br>
+						<div id="simSeqFL">
+							Fragment length [mean, SD] (nt):<br>
+							<input type="text" name="simSeqFL" class="simNumericInput" value="500,100" />
+						</div>
+						Basecalling error rate (%):<br>
+						<input type="text" name="simSeqBER" class="simNumericInput" value="1" />
+						<br>
+						GC bias strength (%):<br>
+						<input type="text" name="simSeqGBS" class="simNumericInput" value="50" />
+						<br>
+					</div>
+				
+				</div>
+				<div id="simDataSnp">
+				
+					Simulate Mapping by Sequencing data
+				
 				</div>
 				
 			</div>
