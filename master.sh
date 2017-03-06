@@ -140,7 +140,7 @@ my_log_file=$project_name/log.log
 echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
 
-
+'''
 ############################################################
 # Run 'process-input.sh'
 
@@ -161,7 +161,7 @@ else
 	}
 fi
 
-
+'''
 ############################################################
 # Run 'simulator.sh'
 
