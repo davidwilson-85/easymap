@@ -216,9 +216,12 @@ template_genomes = sorted(os.listdir('./' + input_folder))
 #Create list with templates lengths. This list is downstream used for checking format and length of data
 template_lengths = []
 for template_genome in template_genomes:
+	seq_templates= []
 	with open(input_folder + '/' + template_genome) as fp:
-		for name_template, seq_template in read_fasta(fp):
-			template_lengths.append(len(seq_template))
+		for name, seq in read_fasta(fp):
+			seq_templates.append(seq)
+		seq_templates = "".join(seq_templates) 
+		template_lengths.append(len(seq_templates))
 
 #Check if input file is fasta formatted. If file is not in fasta format, function read_fasta()
 #fails to create array with name(s) and sequence(s) of contig(s) in file, and list with template
@@ -260,16 +263,17 @@ if mode == 'se':
 
 	#For each input genome to sequence, get its sequence and store the amount of reads to create in
 	#'number_of_reads_per_genome'
-	for genome_index, template_genome in enumerate(template_genomes):		
+	for genome_index, template_genome in enumerate(template_genomes):
+		seq_template = []		
 		with open(input_folder + '/' + template_genome) as fp:
-			for name_template, seq_template in read_fasta(fp):
-				seq_template = seq_template.upper()
-		
+			for name, seq in read_fasta(fp):
+				seq_template.append(seq.upper())
+		seq_template = "".join(seq_template)
 		#Create reads
 		read_count = 1
 		while read_count <= number_of_reads_per_genome:
-			genome_length = len(seq_template)                                             #Calculate genome length for each genome, in case it is not always the same 
-			
+			genome_length = len(seq_template)  
+	        #Calculate genome length for each genome, in case it is not always the same 
 			#Determine length, start and end positions, and sequence of read
 			read_length = int(round(gauss(read_length_mean, read_length_sd)))
 			#Function "gauss()" might return not real-world values. I compensate for that.	
@@ -316,10 +320,12 @@ if mode == 'pe':
 
 	#For each input genome to sequence, get its sequence and store the amount of reads to create
 	#in 'number_of_reads_per_genome'
-	for genome_index, template_genome in enumerate(template_genomes):		
+	for genome_index, template_genome in enumerate(template_genomes):
+		seq_template = []		
 		with open(input_folder + '/' + template_genome) as fp:
-			for name_template, seq_template in read_fasta(fp):
-				seq_template = seq_template.upper()
+			for name, seq in read_fasta(fp):
+				seq_template.append(seq.upper())
+		seq_template = "".join(seq_template)
 		
 		#Create reads
 		fragment_count = 1

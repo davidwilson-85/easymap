@@ -37,13 +37,13 @@ analysis_type=$3
 lib_type=$4
 ins_seq=$project_name/$f0/$5
 
-# Get the string taht contains the parameters for sim-mut.py and extract them by splitting the string by the '+' character
+# Get the string that contains the parameters for sim-mut.py and extract them by splitting the string by the '+' character
 sim_mut_statement=$6
 IFS='+' read -ra sim_mut_array <<< "$sim_mut_statement"
 nbr_muts=${sim_mut_array[0]}
 mut_mode=${sim_mut_array[1]}
 
-# Get the string taht contains the parameters for sim-recsel.py and extract them by splitting the string by the '+' character
+# Get the string that contains the parameters for sim-recsel.py and extract them by splitting the string by the '+' character
 sim_recsel_statement=$7
 IFS='+' read -ra sim_recsel_array <<< "$sim_recsel_statement"
 rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pass it ty program as a string and analyze it with python
@@ -106,7 +106,7 @@ then
 	{
 		# Run sim-mut.py
 		{
-			python simulator/sim-mut.py -nbr $nbr_muts -mod li -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder
+			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder
 	
 		} || {
 			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
@@ -148,7 +148,7 @@ then
 
 		# Run sim-recsel.py
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -recombination_frequency $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
 			exit_code=1

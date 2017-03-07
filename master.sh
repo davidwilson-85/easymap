@@ -57,6 +57,9 @@
 #
 #
 # ./master.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 10+ins n/p 30+100,0+0,0+1+50
+# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 1+100,0+500,100+1+50
+
+
 
 
 # ./master.sh project ins exp pe genome.fa pbinprok2.fa n/p pe-for_reads_20170105123045.fq pe-rev_reads_20170105123045.fq TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
@@ -140,7 +143,7 @@ my_log_file=$project_name/log.log
 echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
 
-'''
+
 ############################################################
 # Run 'process-input.sh'
 
@@ -161,7 +164,7 @@ else
 	}
 fi
 
-'''
+
 ############################################################
 # Run 'simulator.sh'
 
