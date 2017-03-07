@@ -17,6 +17,11 @@
 # [12] $sim_mut                  .                      nbr+mod
 # [13] $sim_recsel               .                      rfd+pos+mod+nre
 # [14] $sim_seq                  .                      rd+rl+fl+ber+gbs
+# [15] $is_ref_strain            .                      Only for linkage analysis mapping
+# [16] $cross_type               .                      Only for linkage analysis mapping
+# [17] $parental_reads           .                      Only for linkage analysis mapping
+# [18] 
+# [19]
 #
 # sim-mut.py
 # nbr:		${12}[0]
