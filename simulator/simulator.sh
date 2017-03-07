@@ -94,11 +94,65 @@ fragment_length_sd=${fl_array[1]}
 ref_seqs_merged_file=$project_name/$f0/gnm_ref_merged/genome.fa
 
 # Establish location of some folders required for the simulation
-sim_mut_output_folder=$project_name/$f0/sim_data/sim_mut_output
+sim_mut_output_folder_polymorphicstrain=$project_name/$f0/sim_data/sim_mut_output/polymorphic_strain
+sim_mut_output_folder_mutantstrain=$project_name/$f0/sim_data/sim_mut_output/mutant_strain
 # mutated sequence is in: $project_name/$f0/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
 # info is in: $project_name/$f0/sim_data/sim_mut_output/info/info_all_mutations.txt
 sim_recsel_output_folder=$project_name/$f0/sim_data/sim_recsel_output
-sim_seq_output_folder=$project_name/$f0/sim_data/sim_reads
+sim_seq_output_folder_sample=$project_name/$f0/sim_data/sim_seq_output/sample
+sim_seq_output_folder_control=$project_name/$f0/sim_data/sim_seq_output/control
+
+# Determine if user wants backcross or outcross, the background of the mutant (ref/noref), and the parental to sequence and use as control in 'snp' mode
+cross_type=${9}
+is_ref_strain=${10}
+parental_genome_to_sequence=${11}
+
+# Define folders with input files for outcross simulations
+if [ $cross_type == 'oc' ]
+then
+	{
+
+		if [ $is_ref_strain == 'ref' ]
+		then
+			{
+				seq_to_mutate=$project_name/$f0/gnm_ref_merged/genome.fa
+				outcross_polymorphic_parental=$sim_mut_output_folder_polymorphicstrain/mutated_genome/mutated_genome.fa
+
+				if [ $parental_genome_to_sequence == 'mut' ]
+				then
+					{
+						parental_genome_location=$project_name/$f0/gnm_ref_merged
+					}
+				else
+					{
+						parental_genome_location=$sim_mut_output_folder_polymorphicstrain/mutated_genome
+					}
+				fi
+			}
+		else
+			{
+				seq_to_mutate=$sim_mut_output_folder_polymorphicstrain/mutated_genome/mutated_genome.fa
+				outcross_polymorphic_parental=$ref_seqs_merged_file
+
+				if [ $parental_genome_to_sequence == 'mut' ]
+				then
+					{
+						parental_genome_location=$sim_mut_output_folder_polymorphicstrain/mutated_genome
+					}
+				else
+					{
+						parental_genome_location=$project_name/$f0/gnm_ref_merged
+					}
+				fi
+			}
+		fi
+
+	}
+fi
+
+
+
+
 
 
 if [ $analysis_type == 'ins' ]
@@ -106,7 +160,7 @@ then
 	{
 		# Run sim-mut.py
 		{
-			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder
+			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain
 	
 		} || {
 			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
@@ -116,9 +170,9 @@ then
 		}
 		echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
 		
-		# Run sim-seq.py. The input is a folder becasuse the program works with all the fasta files that finds in a folder. Thos is necessary to simulate the sequencing of bulked DNA.
+		# Run sim-seq.py. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 		{
-			python simulator/sim-seq.py -if $sim_mut_output_folder/mutated_genome -out $sim_seq_output_folder -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+			python simulator/sim-seq.py -if $sim_mut_output_folder_mutantstrain/mutated_genome -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 	
 		} || {
 			echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
@@ -133,41 +187,121 @@ fi
 
 if [ $analysis_type == 'snp' ]
 then
-	{	
-		# Run sim-mut.py
-		{
-			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder
+	{
+		# Two different types of workflows depending on the type of cross 
+		if [ $cross_type == 'bc' ]
+		then
+			{
+				# Run sim-mut.py
+				{
+					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain
 
-		} || {
-			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_f
-			exit_code=1
-			echo exit_code
-			exit
-		}
-		echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
+				} || {
+					echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
 
-		# Run sim-recsel.py
-		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
-		} || {
-			echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
-			exit_code=1
-			echo exit_code
-			exit
-		}
-		echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
+				# Run sim-recsel.py
+				{
+					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+				} || {
+					echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
 
-		# Run sim-seq.py. The input is a folder becasuse the program works with all the fasta files that finds in a folder. Thos is necessary to simulate the sequencing of bulked DNA.
-		{
-			python simulator/sim-seq.py -if $sim_recsel_output_folder -out $sim_seq_output_folder -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+				# Run sim-seq.py on parental genome. The input is a folder becasuse the program works with all the fasta files that finds in a folder. Thos is necessary to simulate the sequencing of bulked DNA.
+				{
+					python simulator/sim-seq.py -if $parental_genome_location -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 	
-		} || {
-			echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
-			exit_code=1
-			echo exit_code
-			exit
-		}
-		echo $(date)": Simulation of high-throughput sequencing completed." >> $my_log_file
+				} || {
+					echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of high-throughput sequencing reads on parental genome completed." >> $my_log_file
+
+				# Run sim-seq.py on F2 recombinant population. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
+				{
+					python simulator/sim-seq.py -if $sim_recsel_output_folder -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+	
+				} || {
+					echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of high-throughput sequencing reads on F2 recombinant population completed." >> $my_log_file
+			}	
+		else
+			{
+				# Run sim-mut.py to create polymorphic strain
+				{
+					python simulator/sim-mut.py -nbr 100 -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_polymorphicstrain
+
+				} || {
+					echo $(date)": Simulation of mutagenesis to create polymorphic strain failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of mutagenesis to create polymorphic strain completed." >> $my_log_file
+
+				# Run sim-mut.py to create mutant strain
+				{
+					python simulator/sim-mut.py -nbr $nbr_muts -mod e -con $seq_to_mutate -out $sim_mut_output_folder_mutantstrain
+
+				} || {
+					echo $(date)": Simulation of mutagenesis to create mutant strain failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of mutagenesis to create mutant strain completed." >> $my_log_file		
+	
+				# Run sim-recsel.py
+				{
+					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $outcross_polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+				} || {
+					echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
+
+				# Run sim-seq.py on parental genome. The input is a folder becasuse the program works with all the fasta files that finds in a folder. Thos is necessary to simulate the sequencing of bulked DNA.
+				{
+					python simulator/sim-seq.py -if $parental_genome_location -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+	
+				} || {
+					echo $(date)": Simulation of high-throughput sequencing reads on parental genome failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of high-throughput sequencing reads on parental genome completed." >> $my_log_file
+
+				# Run sim-seq.py on F2 recombinant population. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
+				{
+					python simulator/sim-seq.py -if $sim_recsel_output_folder -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+	
+				} || {
+					echo $(date)": Simulation of high-throughput sequencing reads on F2 recombinant population failed. Quit." >> $my_log_file
+					exit_code=1
+					echo exit_code
+					exit
+				}
+				echo $(date)": Simulation of high-throughput sequencing reads on F2 recombinant population completed." >> $my_log_file
+
+			}
+		fi
 	}
 fi
 

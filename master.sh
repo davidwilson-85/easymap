@@ -17,11 +17,14 @@
 # [12] $sim_mut                  .                      nbr+mod
 # [13] $sim_recsel               .                      rfd+pos+mod+nre
 # [14] $sim_seq                  .                      rd+rl+fl+ber+gbs
-# [15] $is_ref_strain            .                      Only for linkage analysis mapping
-# [16] $cross_type               .                      Only for linkage analysis mapping
-# [17] $parental_reads           .                      Only for linkage analysis mapping
-# [18] 
-# [19]
+# [15] $read_s_par               TO DO
+# [16] $read_f_par               TO DO
+# [17] $read_r_par               TO DO
+# [18] $is_ref_strain            .                      Only for linkage analysis mapping				ref/noref
+# [19] $cross_type               .                      Only for linkage analysis mapping				oc/bc
+# [20] $parental_reads           .                      Only for linkage analysis mapping				mut/nomut
+# [21] 
+# [22]
 #
 # sim-mut.py
 # nbr:		${12}[0]
@@ -62,8 +65,12 @@
 #
 #
 # ./master.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 10+ins n/p 30+100,0+0,0+1+50
-# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 1+100,0+500,100+1+50
 
+# Command to do mapping by sequencing with simulated data
+# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 1+100,0+500,100+1+50 n/p n/p n/p oc ref mut
+
+# Command to do mapping by sequencing with real data
+# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 1+100,0+500,100+1+50 n/p reads_parental_f.fq reads_parental_r.fq ref oc mut
 
 
 
@@ -106,6 +113,12 @@ ann_file=${11}
 sim_mut=${12}
 sim_recsel=${13}
 sim_seq=${14}
+read_s_par=${15}
+read_f_par=${16}
+read_r_par=${17}
+cross_type=${18}
+is_ref_strain=${19}
+parental_used_as_control=${20}
 
 
 # Overwrite read_s, read_f and read_r if use chose to simulate data
@@ -115,12 +128,15 @@ then
 		if [ $lib_type == 'se' ]
 		then
 			{
-				read_s=$project_name/$f0/sim_data/sim_reads/se_reads.fq
+				read_s=$project_name/$f0/sim_data/sim_seq_output/sample/se_reads.fq
+				read_s_par=$project_name/$f0/sim_data/sim_seq_output/control/se_reads.fq
 			}
 		else
 			{
-				read_f=$project_name/$f0/sim_data/sim_reads/pe-for_reads.fq
-				read_r=$project_name/$f0/sim_data/sim_reads/pe-rev_reads.fq
+				read_f=$project_name/$f0/sim_data/sim_seq_output/sample/pe-for_reads.fq
+				read_r=$project_name/$f0/sim_data/sim_seq_output/sample/pe-rev_reads.fq
+				read_f_par=$project_name/$f0/sim_data/sim_seq_output/control/pe-for_reads.fq
+				read_r_par=$project_name/$f0/sim_data/sim_seq_output/control/pe-rev_reads.fq
 			}
 		fi
 	}
@@ -178,7 +194,7 @@ then
 	{
 		echo $(date)": STARTING DATA SIMULATION..." >> $my_log_file
 		
-		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type $ins_seq $sim_mut $sim_recsel $sim_seq`
+		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type $ins_seq $sim_mut $sim_recsel $sim_seq $cross_type $is_ref_strain $parental_used_as_control`
 
 		if [ $simulator == 0 ]
 		then
@@ -221,7 +237,7 @@ fi
 if [  $workflow == 'snp' ]
 then
 	{		
-		workflow_result=`./workflows/workflow-snp-v5.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
+		workflow_result=`./workflows/workflow-snp-v5.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $is_ref_strain $cross_type $parental_used_as_control`
 
 		if [ $workflow_result == 0 ]
 		then

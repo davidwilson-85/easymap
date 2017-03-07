@@ -11,17 +11,23 @@
 # If $ann_file = n/p, this is because user did no have it. This program has the deal with this: if data not provided, simply do not
 # include gene annotated info to the report.
 #
-# $my_log_file		>	$1
-# $project_name		>	$2
-# $workflow			>	$3
-# $data_source		>	$4
-# $lib_type			>	$5
-# $ins_seq			>	$6
-# $read_s			>	$7
-# $read_f			>	$8
-# $read_r			>	$9
-# $gff_file			>	${10}
-# $ann_file			>	${11}
+# my_log_file		>	$1
+# project_name		>	$2
+# workflow			>	$3
+# data_source		>	$4
+# lib_type			>	$5
+# ins_seq			>	$6
+# read_s			>	$7
+# read_f			>	$8
+# read_r			>	$9
+# gff_file			>	${10}
+# ann_file			>	${11}
+# read_s_par			>	${12}
+# read_f_par			>	${13}
+# read_r_par			>	${14}
+# is_ref_strain		>	${15}
+# cross_type			>	${16}
+# parental_reads_provided			>	${17}
 #
 
 
@@ -76,7 +82,7 @@ f3=$project_name/3_workflow_output
 export location="$PWD" 
 
 
-'''
+
 
 #Execute bowtie2-build on genome sequence 
 {
@@ -103,7 +109,7 @@ if [ $my_mode == se ]
 then
 	#Execute bowtie2 unpaired to align raw F2 reads to genome 
 	{
-		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $f0/$my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
 		echo 'bowtie2 returned an error. See log files.' >> $my_log_file
@@ -119,7 +125,7 @@ if [ $my_mode == pe ]
 then
 	#Execute bowtie2 paired to align raw F2 reads to genome 
 	{
-		$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $f0/$my_rf -2 $f0/$my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
 		echo 'bowtie2 returned an error. See log files.' >> $my_log_file
@@ -196,7 +202,7 @@ if [ $my_mode == se ]
 then
 	#Execute bowtie2 unpaired to align raw F2 reads to genome 
 	{
-		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $f0/$my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
 		echo 'bowtie2 returned an error. See log files.' >> $my_log_file
@@ -212,7 +218,7 @@ if [ $my_mode == pe ]
 then
 	#Execute bowtie2 paired to align raw F2 reads to genome 
 	{
-		$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $f0/$my_p_rf -2 $f0/$my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
 		echo 'bowtie2 returned an error. See log files.' >> $my_log_file
@@ -274,10 +280,9 @@ echo VCF grooming finished >> $my_log_file
 	exit
 }
 echo VCF filter finished >> $my_log_file
-'''
 
 
-'''
+
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -326,7 +331,6 @@ fi
 echo VCF operations finished >> $my_log_file
 
 
-'''
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
 
