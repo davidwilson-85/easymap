@@ -192,7 +192,7 @@ then
 		if [ $cross_type == 'bc' ]
 		then
 			{
-				# Run sim-mut.py
+				# Run sim-mut.py before: python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain
 				{
 					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain
 
@@ -204,27 +204,27 @@ then
 				}
 				echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
 
-				# Run sim-recsel.py
+				# Run sim-recsel.py python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 				{
-					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr  -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $ref_seqs_merged_file -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 				} || {
 					echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
 					exit_code=1
 					echo exit_code
-					exit
+					exit 
 				}
 				echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
 
-				# Run sim-seq.py on parental genome. The input is a folder becasuse the program works with all the fasta files that finds in a folder. Thos is necessary to simulate the sequencing of bulked DNA.
+				# Run sim-seq.py on parental genome. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA. $parental_genome_location -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 				{
-					python simulator/sim-seq.py -if $parental_genome_location -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+					python simulator/sim-seq.py -if $project_name/$f0/gnm_ref_merged -out sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 	
 				} || {
 					echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
 					exit_code=1
 					echo exit_code
-					exit
-				}
+					exit 
+				} 
 				echo $(date)": Simulation of high-throughput sequencing reads on parental genome completed." >> $my_log_file
 
 				# Run sim-seq.py on F2 recombinant population. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
@@ -243,7 +243,7 @@ then
 			{
 				# Run sim-mut.py to create polymorphic strain
 				{
-					python simulator/sim-mut.py -nbr 100 -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_polymorphicstrain
+					python simulator/sim-mut.py -nbr 208000 -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_polymorphicstrain
 
 				} || {
 					echo $(date)": Simulation of mutagenesis to create polymorphic strain failed. Quit." >> $my_log_file
@@ -255,7 +255,7 @@ then
 
 				# Run sim-mut.py to create mutant strain
 				{
-					python simulator/sim-mut.py -nbr $nbr_muts -mod e -con $seq_to_mutate -out $sim_mut_output_folder_mutantstrain
+					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $seq_to_mutate -out $sim_mut_output_folder_mutantstrain
 
 				} || {
 					echo $(date)": Simulation of mutagenesis to create mutant strain failed. Quit." >> $my_log_file

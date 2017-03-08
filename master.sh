@@ -237,7 +237,7 @@ fi
 if [  $workflow == 'snp' ]
 then
 	{		
-		workflow_result=`./workflows/workflow-snp-v5.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $is_ref_strain $cross_type $parental_used_as_control`
+		workflow_result=`./workflows/workflow-snp-v5.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $cross_type $is_ref_strain $parental_used_as_control`
 
 		if [ $workflow_result == 0 ]
 		then

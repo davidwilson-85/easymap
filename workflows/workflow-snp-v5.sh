@@ -25,8 +25,8 @@
 # read_s_par			>	${12}
 # read_f_par			>	${13}
 # read_r_par			>	${14}
-# is_ref_strain		>	${15}
-# cross_type			>	${16}
+#cross_type			>	${15} 
+#is_ref_strain		>	${16} 
 # parental_reads_provided			>	${17}
 #
 
@@ -46,13 +46,13 @@ start_time=`date +%s`
 my_log_file=$1
 project_name=$2
 my_mode=$5 														#[pe, se], paired/single  
-my_p_mode=se														#						<------------------------------------------------------------------------
+my_p_mode=$5													#TEMPORAL, in future independent						<------------------------------------------------------------------------
 my_rd=$7											 			#reads (single)
 my_rf=$8 														#forward reads
 my_rr=$9												 		#reverse reads 			
-my_p_rd=col-lab.fq											 			#reads (single) parent	<------------------------------------------------------------------------
-my_p_rf=none 														#forward reads parent	<------------------------------------------------------------------------
-my_p_rr=none												 		#reverse reads parent	<------------------------------------------------------------------------
+my_p_rd=${12}											 	#reads (single) parent	<------------------------------------------------------------------------
+my_p_rf=${13} 													#forward reads parent	<------------------------------------------------------------------------
+my_p_rr=${14}											 		#reverse reads parent	<------------------------------------------------------------------------
 my_gs=gnm_ref_merged/genome.fa 									#genome sequence
 my_ix=genome_index 							
 my_gff=${10}													#Genome feature file
@@ -63,9 +63,9 @@ my_mut=snp  													#my_mut takes the values 'snp' in this workflow and 'li
 
 
 
-my_mutbackgroud=ref 											#ref / noref : genetic background of the mutation									<------------------------------------------------------------------------
-my_cross=oc														#oc / bc : f2 obtained by outcross or backcross 									<------------------------------------------------------------------------
-my_pseq=mut  													#mut / nomut : sequenced parental provided is the mutagenized one or the other		<------------------------------------------------------------------------
+my_cross=${15}													#oc / bc : f2 obtained by outcross or backcross 									<------------------------------------------------------------------------
+my_mutbackgroud=${16}											#ref / noref : genetic background of the mutation									<------------------------------------------------------------------------
+my_pseq=${17}													#mut / nomut : sequenced parental provided is the mutagenized one or the other		<------------------------------------------------------------------------
 
 
 
