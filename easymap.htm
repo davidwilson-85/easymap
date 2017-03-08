@@ -17,7 +17,7 @@
 			<br><br>
 			Step 2. Choose your analysis setup:
 			<br><br>
-			Mapping strategy:<br>
+			Mapping-by-sequencing strategy:<br>
 			<div>
 				<div class="mx-button">
 					<input type="radio" class="analysisType" name="mx12" id="button1" />
@@ -25,7 +25,7 @@
 				</div>
 				<div class="mx-button">
 					<input type="radio" class="analysisType" name="mx12" id="button2" />
-					<label for="button2" unselectable>Recombinant mapping</label>
+					<label for="button2" unselectable>Linkage analysis mapping</label>
 				</div>
 			</div>
 		
@@ -156,29 +156,29 @@
 					<div id="expDataSnpInfo">				
 						<div>
 							Mutant strain<br>
-							<input type="radio" id="f-option" name="selector">
-							<label for="f-option">The same as reference strain</label>
+							<input type="radio" id="refStrainYes" name="isRefStrain">
+							<label for="refStrainYes">The same as reference strain</label>
 							<br>
-							<input type="radio" id="s-option" name="selector">
-							<label for="s-option">Other than the reference strain</label>
+							<input type="radio" id="refStrainNo" name="isRefStrain">
+							<label for="refStrainNo">Other than the reference strain</label>
 						</div>
 						<br>
 						<div>
 							Type of mapping cross performed<br>
-							<input type="radio" id="f-option" name="selector">
-							<label for="f-option">Backcross</label>
+							<input type="radio" id="crossTypeBack" name="crossType">
+							<label for="crossTypeBack">Backcross</label>
 							<br>
-							<input type="radio" id="s-option" name="selector">
-							<label for="s-option">Outcross</label>
+							<input type="radio" id="crossTypeOut" name="crossType">
+							<label for="crossTypeOut">Outcross</label>
 						</div>
 						<br>
 						<div>
-							Coss parental reads provided<br>
-							<input type="radio" id="f-option" name="selector">
-							<label for="f-option">The mutant's</label>
+							Parental reads provided<br>
+							<input type="radio" id="parentalReadsMutant" name="parentalReads">
+							<label for="parentalReadsMutant">The mutant's</label>
 							<br>
-							<input type="radio" id="s-option" name="selector">
-							<label for="s-option">The other</label>
+							<input type="radio" id="parentalReadsNoMutant" name="parentalReads">
+							<label for="parentalReadsNoMutant">The other</label>
 						</div>
 					</div>
 					

@@ -52,6 +52,7 @@ window.onload = function() {
 			document.getElementById("simDataSnp").style.display = "none";
 		} else {
 			cmdArgs[1] = 'snp';
+			document.getElementById("insSeqSelector").style.display = "none";
 			document.getElementById("expDataIns").style.display = "none";
 			document.getElementById("expDataSnp").style.display = "inline";
 			document.getElementById("simDataIns").style.display = "none";
@@ -106,16 +107,6 @@ window.onload = function() {
 			document.getElementById("simSeqFL").style.display = "block";
 		}
 		updateCmd();
-	}
-	
-	// Function to check if the three 2-way buttons have been already clicked and display
-	// the reads/simulation interface
-	function buttons_setUpInterface() {
-		alert('click');
-	
-	
-	
-	
 	}
 	
 	// Determine all the file names selected, add them to array, and then to argument
