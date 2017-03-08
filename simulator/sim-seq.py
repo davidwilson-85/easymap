@@ -47,7 +47,7 @@
 # 		content during library amplification (see above). 
 #
 # 
-# 2016 - David Wilson - dws1985@hotmail.com
+
 
 
 import argparse, os, re, shutil

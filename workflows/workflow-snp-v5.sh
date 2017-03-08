@@ -442,7 +442,7 @@ echo snp-to-varanalyzer.py finished. >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f0/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl   -pname $project_name
+	python $location/varanalyzer/varanalyzer_v1.py -itp snp -con $f0/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
 
 } || {
 	echo 'error: varanalyzer_v1.py' >> $my_log_file
