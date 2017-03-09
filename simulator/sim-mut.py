@@ -38,6 +38,7 @@ choices=set(('d','e','li')), required=True) #Choose between d, e, li (d = geneti
 parser.add_argument('-con', action="store", dest='contig_source', required=True)
 parser.add_argument('-ins', action="store", dest='insertion_source')
 parser.add_argument('-out', action="store", dest='output')
+parser.add_argument("-causal_mut", action = "store", dest="causal_mut")
 
 args = parser.parse_args()
 
@@ -46,6 +47,9 @@ mutator_mode = args.mutator_mode
 contig_source = args.contig_source
 insertion_source = args.insertion_source
 output_folder = args.output
+if args.causal_mut != None:
+	causal_mut_position = int(args.causal_mut.split(",")[1]) -1 
+	causal_mut_chromosome = int(args.causal_mut.split(",")[0])
 
 if mutator_mode == 'li' and insertion_source is None:
 	quit('Quit. Selected mode is "large insertions" but no insertion sequence source was provided. See program description.')		
@@ -171,6 +175,18 @@ for chromosome in contigs:
 				if wt_base == 'G' or wt_base == 'C':
 					iter +=1
 					all_mut_pos.append(mut_pos)
+	if args.causal_mut != None:				
+		if n_chrom+1 == causal_mut_chromosome and causal_mut_position not in all_mut_pos:
+			if mutator_mode == "d" or mutator_mode == "li":
+				all_mut_pos.append(causal_mut_position)
+			if mutator_mode =="e":
+				iter = 0
+				while True:
+					wt_base = seq_contig_uppercase[causal_mut_position+iter:causal_mut_position+iter+1]
+					iter +=1
+					if wt_base == 'G' or wt_base == 'C':
+						all_mut_pos.append(causal_mut_position+iter-1)
+						break
 
 	all_mut_pos.sort()
 
