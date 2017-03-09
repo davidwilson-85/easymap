@@ -47,7 +47,7 @@ mut_mode=${sim_mut_array[1]}
 sim_recsel_statement=$7
 IFS='+' read -ra sim_recsel_array <<< "$sim_recsel_statement"
 rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pass it ty program as a string and analyze it with python
-mut_pos=${sim_recsel_array[1]}
+mut_pos=${sim_recsel_array[1]} #This parameter will be used in sim_mut as well, due to the fact the mutations will be generated previously.
 sel_mode=${sim_recsel_array[2]}
 nbr_rec_chrs=${sim_recsel_array[3]}
 mutant_parental=$project_name/$f0/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
@@ -77,7 +77,7 @@ fragment_length_sd=${fl_array[1]}
 #echo nbr_muts: $nbr_muts >> $my_log_file
 #echo mut_mode: $mut_mode >> $my_log_file
 #echo rec_freq_distr: $rec_freq_distr >> $my_log_file
-#echo mut_pos: $mut_pos >> $my_log_file
+#echo mut_pos: $mut_pos >> $my_log_file This value will be used both for sim-mut in order to create the appropiate mutation and in sim-rec because the recombination should not happen in this position
 #echo sel_mode: $sel_mode >> $my_log_file
 #echo nbr_rec_chrs: $nbr_rec_chrs >> $my_log_file
 #echo mutant_parental: $mutant_parental >> $my_log_file
@@ -160,7 +160,7 @@ then
 	{
 		# Run sim-mut.py
 		{
-			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain
+			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain -causal_mut mut_pos
 	
 		} || {
 			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
@@ -194,7 +194,7 @@ then
 			{
 				# Run sim-mut.py before: python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain
 				{
-					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain
+					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain -causal_mut mut_pos
 
 				} || {
 					echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
@@ -255,7 +255,7 @@ then
 
 				# Run sim-mut.py to create mutant strain
 				{
-					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $seq_to_mutate -out $sim_mut_output_folder_mutantstrain
+					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $seq_to_mutate -out $sim_mut_output_folder_mutantstrain -causal_mut mut_pos
 
 				} || {
 					echo $(date)": Simulation of mutagenesis to create mutant strain failed. Quit." >> $my_log_file
