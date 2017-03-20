@@ -255,7 +255,7 @@ then
 
 				# Run sim-mut.py to create mutant strain
 				{
-					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $seq_to_mutate -out $sim_mut_output_folder_mutantstrain -causal_mut mut_pos
+					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $seq_to_mutate -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos
 
 				} || {
 					echo $(date)": Simulation of mutagenesis to create mutant strain failed. Quit." >> $my_log_file
