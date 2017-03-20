@@ -42,12 +42,12 @@
 # out:		constant
 #
 # sim-seq.py
-# if:			constant
+# if:		constant
 # out:		$f0
 # mod:		$4
-# rd:			${14}[0]
-# rl:			${14}[1]
-# fl:			${14}[2]
+# rd:		${14}[0]
+# rl:		${14}[1]
+# fl:		${14}[2]
 # ber:		${14}[3]
 # gbs:		${14}[4]
 #

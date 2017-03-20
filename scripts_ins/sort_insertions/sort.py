@@ -136,7 +136,7 @@ elif args.mode == 'se':
 					f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 					p2 = p
 					contig2 = contig
-			elif 'LOCAL_' in sp[0].strip('\t'):
+			elif 'LOCAL' in sp[0].strip('\t'):
 				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 
 

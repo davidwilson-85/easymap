@@ -6,7 +6,7 @@
 # the mutation analyzer.
 #
 
-import argparse, os
+import argparse, os, shutil
 
 # Process command arguments
 parser = argparse.ArgumentParser()
@@ -16,6 +16,11 @@ args = parser.parse_args()
 
 input_dir = args.input_dir
 output_dir = args.output_dir
+# Create a subdirectory to place the reads. If it already exists, remove it first
+if os.path.exists(output_dir):
+	shutil.rmtree(output_dir)
+os.makedirs(output_dir)
+
 
 
 # Function to parse fasta file (based on one of the Biopython IOs)
