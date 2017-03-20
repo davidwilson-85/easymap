@@ -129,7 +129,7 @@ if input_type == 'snp':
 		for line_mut in input_mut:
 			if not line_mut.startswith('#'):
 				fields_mut = line_mut.split('\t')
-				useful_mut_info = 'snp', fields_mut[0].lower(), int(fields_mut[1]), fields_mut[2].upper(), fields_mut[3].upper()
+				useful_mut_info = fields_mut[0].lower(), fields_mut[1].lower(), int(fields_mut[2]), fields_mut[3].upper(), fields_mut[4].upper().strip()
 				mut_array.append(useful_mut_info)
 
 if input_type == 'lim':
@@ -150,7 +150,6 @@ with open(gff_source) as input_gff:
 		if fields_gff[2].lower() == 'mrna':
 			useful_gff_info = fields_gff[2].lower(), fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[6], fields_gff[8][3:14].upper()
 			gff_array1.append(useful_gff_info)
-
 
 # Check whether each mutation position lies within a mRNA sequence or a putative regulatory region of the template gff file
 variants_info = []
@@ -206,7 +205,6 @@ with open(gff_source) as input_gff:
 		if fields_gff[2].lower() == 'cds' or fields_gff[2].lower() == 'exon' or fields_gff[2].lower() == 'five_prime_utr' or fields_gff[2].lower() == 'three_prime_utr':
 			useful_gff_info = fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[2].lower(), fields_gff[8][7:18].upper()
 			gff_array2.append(useful_gff_info)
-
 
 # Analyze variants that are marked as interrupting a mRNA or putative regulatory region
 variants_info2 = []
