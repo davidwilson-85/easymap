@@ -29,7 +29,7 @@
 #
 # TO DO: maybe check
 # a few ref letters in the input to see if they match the reference, consider the possibility of analyzing
-# indels as if they were lims (just tell where the brake of the protein is).
+# indels as if they were lims (just tell where the protein is broken).
 #
 # David Wilson - dws1985@hotmail.com
 #
@@ -39,6 +39,8 @@
 ###################################################
 ## TO DO: ADD SPLICING IN EXONS!!!!!!!!!!!!!!!!!!!!
 ###################################################
+
+
 
 import argparse
 from string import maketrans
