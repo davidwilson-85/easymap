@@ -61,42 +61,15 @@
 # ./master.sh $project_name $workflow $data_source $ref_seq $ins_seq $read_s
 # $reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
 #
-# example: ./master.sh project ins sim se genome.fa ins.fa n/p n/p n/p gff.gff n/p 1+ins n/p 10+30,0+0,0+1+50
+# example: ./master.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p chr1.gff n/p 10+li n/p 10+100,0+500,100+1+100 n/p n/p n/p n/p n/p n/p
 #
-#
-# ./master.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 10+ins n/p 30+100,0+0,0+1+50
-
 # Command to do mapping by sequencing with simulated data
-# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 1+100,0+500,100+1+50 n/p n/p n/p oc ref mut
-
-# Command to do mapping by sequencing with real data
-# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 1+100,0+500,100+1+50 n/p reads_parental_f.fq reads_parental_r.fq ref oc mut
-
-
-
-# ./master.sh project ins exp pe genome.fa pbinprok2.fa n/p pe-for_reads_20170105123045.fq pe-rev_reads_20170105123045.fq TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
-
-# ./master.sh project snp exp se genome.fa n/p col-lab-mut_BC.fq n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
-
+# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 25+100,0+500,100+1+50 n/p n/p n/p oc ref mut
 #
-#
-# ./master.sh project snp exp se 34k_genome.fa n/p se_reads.fq n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p
-#
-#
-#
-#
+# Simulated MbS with just chromosome 1
+# ./master.sh project snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut
 
-
-start_time=`date +%s`
-	
-# Store the location of each folder in a variables				<--------------------------Nombres correctos ? para que son ? 
-f0=0_input
-f1=1_intermediate_files				
-f2=2_logs
-f3=3_workflow_output
-
-
-
+############################################################
 # Get command arguments and assign them to variables
 
 project_name=$1
@@ -121,6 +94,52 @@ is_ref_strain=${19}
 parental_used_as_control=${20}
 
 
+############################################################
+# Preparation steps
+
+# Declare a flag variable that will be used as exit code, and set it to 0 (no error)
+exit_code=0
+
+# Store the location of each folder in variables
+f0=0_input
+f1=1_intermediate_files				
+f2=2_logs
+f3=3_workflow_output
+
+# Define log file
+my_log_file=$project_name/log.log
+
+# Delete intermediate and final files from previous executions, For that, check whether dirs have any
+# content (folders or files) and, if so, remove it
+[ "$(ls -A $project_name/$f1)" ] && rm --recursive $project_name/$f1/*
+[ "$(ls -A $project_name/$f2)" ] && rm --recursive $project_name/$f2/*
+[ "$(ls -A $project_name/$f3)" ] && rm --recursive $project_name/$f3/*
+
+# Check that the folders /project/0_input and /project/0_input/gnm_ref exist. If the do not, 
+if ! [ -d project/0_input ]
+then
+	{
+		echo $(date)": Execution could not start because folder /project/0_input could not be found. Please, create the folder and use it to place the files to analyze." > $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit	
+	}
+fi
+if ! [ -d project/0_input/gnm_ref ]
+then
+	{
+		echo $(date)": Execution could not start because folder /project/0_input/gnm_ref could not be found. Please, create the folder and use it to place the your reference genome." > $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+fi
+
+# Start easymap
+echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
+echo $(date)": Project data directories created." >> $my_log_file
+
+############################################################
 # Overwrite read_s, read_f and read_r if use chose to simulate data
 if [ $data_source == 'sim' ]
 then
@@ -128,41 +147,19 @@ then
 		if [ $lib_type == 'se' ]
 		then
 			{
-				read_s=$project_name/$f0/sim_data/sim_seq_output/sample/se_reads.fq
-				read_s_par=$project_name/$f0/sim_data/sim_seq_output/control/se_reads.fq
+				read_s=$project_name/$f1/sim_data/sim_seq_output/sample/se_reads.fq
+				read_s_par=$project_name/$f1/sim_data/sim_seq_output/control/se_reads.fq
 			}
 		else
 			{
-				read_f=$project_name/$f0/sim_data/sim_seq_output/sample/pe-for_reads.fq
-				read_r=$project_name/$f0/sim_data/sim_seq_output/sample/pe-rev_reads.fq
-				read_f_par=$project_name/$f0/sim_data/sim_seq_output/control/pe-for_reads.fq
-				read_r_par=$project_name/$f0/sim_data/sim_seq_output/control/pe-rev_reads.fq
+				read_f=$project_name/$f1/sim_data/sim_seq_output/sample/pe-for_reads.fq
+				read_r=$project_name/$f1/sim_data/sim_seq_output/sample/pe-rev_reads.fq
+				read_f_par=$project_name/$f1/sim_data/sim_seq_output/control/pe-for_reads.fq
+				read_r_par=$project_name/$f1/sim_data/sim_seq_output/control/pe-rev_reads.fq
 			}
 		fi
 	}
 fi
-
-# Define project location, folders, and log file
-#now=$(date +"%T")
-my_log_file=$project_name/log.log
-
-# Remove all projects from server: '(sudo) rm -r project*'
-
-# Create project folder and data folders
-#mkdir $project_name
-#mkdir $project_name/$f0
-#mkdir $project_name/$f0/fa_input
-#mkdir $project_name/$f1
-#mkdir $project_name/$f2
-#mkdir $project_name/$f3
-
-
-# Browser has already uploaded files to generic folder
-
-
-# Create log file
-echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
-echo $(date)": Project data directories created." >> $my_log_file
 
 
 ############################################################
@@ -255,4 +252,4 @@ fi
 
 echo $(date)": Execution of project {" $project_name "} finished." >> $my_log_file
 
-echo run time is $(expr `date +%s` - $start_time) s
+echo $exit_code

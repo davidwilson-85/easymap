@@ -29,6 +29,7 @@ exit_code=0
 
 # Store the location of each folder in a variable
 f0=0_input
+f1=1_intermediate_files
 
 # Get command arguments and assign them to variables
 my_log_file=$1
@@ -50,8 +51,8 @@ rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pa
 mut_pos=${sim_recsel_array[1]} #This parameter will be used in sim_mut as well, due to the fact the mutations will be generated previously.
 sel_mode=${sim_recsel_array[2]}
 nbr_rec_chrs=${sim_recsel_array[3]}
-mutant_parental=$project_name/$f0/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
-polymorphic_parental=$project_name/$f0/gnm_ref_merged/genome.fa
+mutant_parental=$project_name/$f1/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
+polymorphic_parental=$project_name/$f1/gnm_ref_merged/genome.fa
 
 
 # Get the string taht contains the parameters for sim-seq.py and extract them by splitting the string by the '+' character
@@ -91,16 +92,16 @@ fragment_length_sd=${fl_array[1]}
 #echo gc_bias_strength: $gc_bias_strength >> $my_log_file
 
 # Establish the location of the reference sequence
-ref_seqs_merged_file=$project_name/$f0/gnm_ref_merged/genome.fa
+ref_seqs_merged_file=$project_name/$f1/gnm_ref_merged/genome.fa
 
 # Establish location of some folders required for the simulation
-sim_mut_output_folder_polymorphicstrain=$project_name/$f0/sim_data/sim_mut_output/polymorphic_strain
-sim_mut_output_folder_mutantstrain=$project_name/$f0/sim_data/sim_mut_output/mutant_strain
-# mutated sequence is in: $project_name/$f0/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
-# info is in: $project_name/$f0/sim_data/sim_mut_output/info/info_all_mutations.txt
-sim_recsel_output_folder=$project_name/$f0/sim_data/sim_recsel_output
-sim_seq_output_folder_sample=$project_name/$f0/sim_data/sim_seq_output/sample
-sim_seq_output_folder_control=$project_name/$f0/sim_data/sim_seq_output/control
+sim_mut_output_folder_polymorphicstrain=$project_name/$f1/sim_data/sim_mut_output/polymorphic_strain
+sim_mut_output_folder_mutantstrain=$project_name/$f1/sim_data/sim_mut_output/mutant_strain
+# mutated sequence is in: $project_name/$f1/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
+# info is in: $project_name/$f1/sim_data/sim_mut_output/info/info_all_mutations.txt
+sim_recsel_output_folder=$project_name/$f1/sim_data/sim_recsel_output
+sim_seq_output_folder_sample=$project_name/$f1/sim_data/sim_seq_output/sample
+sim_seq_output_folder_control=$project_name/$f1/sim_data/sim_seq_output/control
 
 # Determine if user wants backcross or outcross, the background of the mutant (ref/noref), and the parental to sequence and use as control in 'snp' mode
 cross_type=${9}
@@ -115,13 +116,13 @@ then
 		if [ $is_ref_strain == 'ref' ]
 		then
 			{
-				seq_to_mutate=$project_name/$f0/gnm_ref_merged/genome.fa
+				seq_to_mutate=$project_name/$f1/gnm_ref_merged/genome.fa
 				outcross_polymorphic_parental=$sim_mut_output_folder_polymorphicstrain/mutated_genome/mutated_genome.fa
 
 				if [ $parental_genome_to_sequence == 'mut' ]
 				then
 					{
-						parental_genome_location=$project_name/$f0/gnm_ref_merged
+						parental_genome_location=$project_name/$f1/gnm_ref_merged
 					}
 				else
 					{
@@ -141,7 +142,7 @@ then
 					}
 				else
 					{
-						parental_genome_location=$project_name/$f0/gnm_ref_merged
+						parental_genome_location=$project_name/$f1/gnm_ref_merged
 					}
 				fi
 			}
@@ -160,7 +161,7 @@ then
 	{
 		# Run sim-mut.py
 		{
-			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain -causal_mut mut_pos
+			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain
 	
 		} || {
 			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
@@ -194,7 +195,7 @@ then
 			{
 				# Run sim-mut.py before: python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain
 				{
-					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain -causal_mut mut_pos
+					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos
 
 				} || {
 					echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
@@ -217,7 +218,7 @@ then
 
 				# Run sim-seq.py on parental genome. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA. $parental_genome_location -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 				{
-					python simulator/sim-seq.py -if $project_name/$f0/gnm_ref_merged -out sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+					python simulator/sim-seq.py -if $project_name/$f1/gnm_ref_merged -out sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 	
 				} || {
 					echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
@@ -243,7 +244,7 @@ then
 			{
 				# Run sim-mut.py to create polymorphic strain
 				{
-					python simulator/sim-mut.py -nbr 208000 -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_polymorphicstrain
+					python simulator/sim-mut.py -nbr 100000 -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_polymorphicstrain
 
 				} || {
 					echo $(date)": Simulation of mutagenesis to create polymorphic strain failed. Quit." >> $my_log_file

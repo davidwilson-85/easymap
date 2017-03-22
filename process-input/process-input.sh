@@ -32,6 +32,7 @@ exit_code=0
 
 # Store the location of each folder in a variable
 f0=0_input
+f1=1_intermediate_files
 
 # Get command arguments and assign them to variables
 # The reference to the template genome is not passed from 'master.sh' because it is static
@@ -51,8 +52,8 @@ ann_option=${11}
 
 # Establish locations of reference genome
 ref_seqs_dir=$project_name/$f0/gnm_ref
-ref_seqs_merged_dir=$project_name/$f0/gnm_ref_merged
-ref_seqs_merged_file=$project_name/$f0/gnm_ref_merged/genome.fa
+ref_seqs_merged_dir=$project_name/$f1/gnm_ref_merged
+ref_seqs_merged_file=$project_name/$f1/gnm_ref_merged/genome.fa
 
 
 #######################################################################################################

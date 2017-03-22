@@ -77,7 +77,7 @@ export location="$PWD"
 echo bowtie2-build insertion index finished. >> $my_log_file
 
 {
-	$location/bowtie2/bowtie2-build $f0/$my_gs $f1/$my_ix 1> $f2/bowtie2-build2_std3.txt 2> $f2/bowtie2-build2_std4.txt
+	$location/bowtie2/bowtie2-build $f1/$my_gs $f1/$my_ix 1> $f2/bowtie2-build2_std3.txt 2> $f2/bowtie2-build2_std4.txt
 	
 } || {
 	echo 'bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
@@ -238,7 +238,7 @@ echo bowtie2 finished. >> $my_log_file
 if [ $my_mode == 'pe' ]
 then  
 	{
-		python $location/scripts_ins/analysis/paired-analysis.py -a $f1/alignment2.sam -b $f1/output_analysis.txt -c $f0/$my_gs 
+		python $location/scripts_ins/analysis/paired-analysis.py -a $f1/alignment2.sam -b $f1/output_analysis.txt -c $f1/$my_gs 
 
 	} || {
 		echo 'error: paired-analysis.py' >> $my_log_file
@@ -247,7 +247,7 @@ then
 		exit
 	}
 	{
-		python $location/scripts_ins/analysis/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f0/$my_gs -m $my_mode
+		python $location/scripts_ins/analysis/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode
 
 	} || {
 		echo 'error: local-analysis.py' >> $my_log_file
@@ -261,7 +261,7 @@ fi
 if [ $my_mode == 'se' ]
 then  
 	{
-		python $location/scripts_ins/analysis/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f0/$my_gs -m $my_mode
+		python $location/scripts_ins/analysis/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode
 
 	} || {
 		echo 'error: local-analysis.py' >> $my_log_file
@@ -276,7 +276,7 @@ echo Analysis finished. >> $my_log_file
 
 #Sort insertions
 {
-	python $location/scripts_ins/sort_insertions/sort.py -a $f1/output_analysis.txt -b $f0/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -m $my_mode
+	python $location/scripts_ins/sort_insertions/sort.py -a $f1/output_analysis.txt -b $f1/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -m $my_mode
 	
 } || {
 	echo 'error: sort.py' >> $my_log_file
@@ -302,7 +302,7 @@ echo Done. >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f0/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name
+	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name
 	
 } || {
 	echo 'error: varanalyzer_v1.py' >> $my_log_file
@@ -315,7 +315,7 @@ echo Done. >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f0/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/variants.txt -rrl $my_rrl -pname $project_name
+	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/variants.txt -rrl $my_rrl -pname $project_name
 	
 } || {
 	echo 'error:graphic-output-v3.py' >> $my_log_file

@@ -86,7 +86,7 @@ export location="$PWD"
 
 #Execute bowtie2-build on genome sequence 
 {
-	$location/bowtie2/bowtie2-build $f0/$my_gs $f1/$my_ix 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
+	$location/bowtie2/bowtie2-build $f1/$my_gs $f1/$my_ix 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
 
 } || {
 	echo 'bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
@@ -151,7 +151,7 @@ echo SAM to BAM finished >> $my_log_file
 
 #Variant calling
 {
-	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_variants_temp.vcf  -f $f0/$my_gs $f1/alignment1.bam  2> $f2/mpileup_std.txt
+	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_variants_temp.vcf  -f $f1/$my_gs $f1/alignment1.bam  2> $f2/mpileup_std.txt
 	$location/bcftools-1.3.1/bcftools call -vmO v -vo $f1/raw_variants.vcf $f1/raw_variants_temp.vcf 2> $f2/bcf_std.txt
 	
 } || {
@@ -244,7 +244,7 @@ echo SAM to BAM finished >> $my_log_file
 
 #Variant calling
 {
-	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_p_variants_temp.vcf  -f $f0/$my_gs $f1/alignment1P.bam  2> $f2/mpileup_std.txt
+	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_p_variants_temp.vcf  -f $f1/$my_gs $f1/alignment1P.bam  2> $f2/mpileup_std.txt
 	$location/bcftools-1.3.1/bcftools call -vmO v -vo $f1/raw_p_variants.vcf $f1/raw_p_variants_temp.vcf 2> $f2/bcf_std.txt
 	
 } || {
@@ -350,7 +350,7 @@ fi
 
 #Execute vcf analysis 
 {
-	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f0/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/map_info.txt -parental_modality $my_mutbackgroud -correction_factor 0.6
+	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 500000 -window_space 500000 -output $f1/map_info.txt -parental_modality $my_mutbackgroud -correction_factor 0.6
 
 
 } || {
@@ -442,7 +442,7 @@ echo snp-to-varanalyzer.py finished. >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer_v1.py -itp snp -con $f0/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
+	python $location/varanalyzer/varanalyzer_v1.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
 
 } || {
 	echo 'error: varanalyzer_v1.py' >> $my_log_file
@@ -467,7 +467,7 @@ echo Varanalyzer finished. >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_parental_comparison.va -bsnp $f0/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross
+	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_parental_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross
 	
 } || {
 	echo 'error: graphic-output-v3.py' >> $my_log_file
