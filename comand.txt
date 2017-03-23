@@ -1,1 +1,0 @@
-./master.sh project snp exp se genome.fa n/p col-lab-mut_BC.fq n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p n/p n/p n/p

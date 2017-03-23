@@ -146,6 +146,10 @@ fi
 echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
 
+
+exit
+
+
 ############################################################
 # Overwrite read_s, read_f and read_r if use chose to simulate data
 if [ $data_source == 'sim' ]
@@ -174,7 +178,7 @@ fi
 
 echo $(date)": STARTING INPUT PROCESSING..." >> $my_log_file
 
-process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
+process_input=`./process-input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
 
 
 if [ $process_input == 0 ]
