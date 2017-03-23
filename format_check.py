@@ -57,8 +57,8 @@ error = 0
 # THE CREATION OF THIS SHOULD BE BEFORE RUNING THIS PROGRAM (INPUT FILES SHOULD BE ALREADY IN) Check whether the user has provided a project_name and it has no space:
 #is_there_space = project_name.split(" ")
 #if len(is_there_space) != 1:
-	error = 1
-	problems.append("Please select a project name without any space")
+	#error = 1
+	#problems.append("Please select a project name without any space")
 
 #Check whether there are reference file/s in 0_input/gnm_ref
 try:
@@ -100,7 +100,7 @@ if workflow == "ins":
 
 #################Comprobar mas valores    
 if data_source == "sim":
-	if workflow == "snp" 
+	if workflow == "snp": 
 		if sim_mut == "n/p" or sim_recsel == "n/p" or sim_seq == "n/p":
 			error = 1
 			problems.append("In order to perform the simulation mode (sim) for snp (snp) parameters sim_mut, sim_recsel and sim_seq must be given, please find the information regarding then in the software documentation")
@@ -114,7 +114,7 @@ if data_source == "sim":
 
 
 
-	#Check sim_mut ex: 40+e TENER EN CUENTA QUE EN MODO INSERCION E Y D NO SON REQURIDOS, Y AÑADIR AUTOMATICAMENTE LI
+	#Check sim_mut ex: 40+e 
 	try:
 		values = sim_mut.split("+")
 		if len(values) == 2:
