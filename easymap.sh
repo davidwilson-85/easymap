@@ -2,7 +2,7 @@
 
 # Command structure:
 #                                verify-input.py
-#  [0] ./master.sh               .
+#  [0] ./easymap.sh               .
 #  [1] $project_name             .
 #  [2] $workflow[ins/snp]   .                      Maybe add a 3rd workflow: Analysis of SNPs
 #  [3] $data_source[exp/sim]     .
@@ -58,16 +58,16 @@
 # 3rd: Some of the 2nd level arguments are in turn composed of a string of values separated by
 #      the ',' character.
 #
-# ./master.sh $project_name $workflow $data_source $ref_seq $ins_seq $read_s
+# ./easymap.sh $project_name $workflow $data_source $ref_seq $ins_seq $read_s
 # $reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
 #
-# example: ./master.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p chr1.gff n/p 10+li n/p 10+100,0+500,100+1+100 n/p n/p n/p n/p n/p n/p
+# example: ./easymap.sh project ins sim pe genome.fa pbinprok2.fa n/p n/p n/p chr1.gff n/p 10+li n/p 10+100,0+500,100+1+100 n/p n/p n/p n/p n/p n/p
 #
 # Command to do mapping by sequencing with simulated data
-# ./master.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 25+100,0+500,100+1+50 n/p n/p n/p oc ref mut
+# ./easymap.sh project snp sim pe genome.fa n/p n/p n/p n/p TAIR10_GFF3_genes_transposons-2c.gff n/p 5000+e "0,14;1,31;2,33;3,15;4,5;5,2/0,24;1,42;2,25;3,6;4,1;5,1"+1,10000000+r+50 25+100,0+500,100+1+50 n/p n/p n/p oc ref mut
 #
 # Simulated MbS with just chromosome 1
-# ./master.sh project snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut
+# ./easymap.sh project snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut
 
 ############################################################
 # Get command arguments and assign them to variables
