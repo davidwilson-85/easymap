@@ -88,7 +88,10 @@ if workflow=="snp":
 	if cross_type == "n/p" or is_ref_strain== "n/p" or parental_used_as_control == "n/p":
 		error = 1
 		problems.append("In order to use the mode snp, values for cross_type (oc/bc), is_ref_strain (ref/noref) or parental_used_as_control (mut/nomut) must be given. See more info in the documentation page")
-
+	if cross_type == "oc" and is_ref_strain == "noref" and parental_used_as_control == "nomut":
+		error = 1
+		problems.append("Unfortunatelly this software is not thought to allow the process of an outcross which is not in the reference background and the sequenced parental is not the pre-mutagenized one")
+			
 #If the analysis mode is insertions, a insertions sequence must be given
 if workflow == "ins":
 	if ins_seq not in input_folder: #If ins_seq is not in input_folder it can be due to the fact ins_seq are not provided, in that case its value would be n/p, or due to the fact the name given is not located in such directory.
@@ -98,7 +101,7 @@ if workflow == "ins":
 
 #If the user is not providing its own data, there are a number of extra parameters to fullfil, related to the simulation process: $sim_mut $sim_recsel $sim_seq
 
-#################Comprobar mas valores    
+    
 if data_source == "sim":
 	if workflow == "snp": 
 		if sim_mut == "n/p" or sim_recsel == "n/p" or sim_seq == "n/p":
