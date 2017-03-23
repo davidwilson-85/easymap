@@ -55,35 +55,37 @@ error = 0
 
 
 # THE CREATION OF THIS SHOULD BE BEFORE RUNING THIS PROGRAM (INPUT FILES SHOULD BE ALREADY IN) Check whether the user has provided a project_name and it has no space:
-is_there_space = project_name.split(" ")
-if len(is_there_space) != 1:
+#is_there_space = project_name.split(" ")
+#if len(is_there_space) != 1:
 	error = 1
 	problems.append("Please select a project name without any space")
 
+#Check whether there are reference file/s in 0_input/gnm_ref
 try:
 	path = project_name+"/0_input/gnm_ref" #Looks in the path were the file/s should be found
 	if not os.listdir(path): #This function creates a list of the items in the specified path. Thus, if no items are found, the result of the function will be FALSE
 	    error = 1
-	    problems.append("The reference file/files should be in the directory /project_name/0_input/gnm_ref")
+	    problems.append("The reference file/files should be in the directory /project/0_input/gnm_ref")
 except:
 	error = 1
-	problems.append("No folder gnm_ref has been found in 0_input, please create the folder and include the reference genome")
+	problems.append("No folder project/0_input/gnm_ref has been found, please create the folder and include the reference genome")
+
 #Check the existance of gff file in the appropiate folder
 input_folder = "project/0_input"
 input_files = sorted(os.listdir('./' + input_folder))
 if gff_file not in input_files:
 	error = 1
-	problems.apppend("gff file name provided is not in easymap/project/0_input directory")
+	problems.apppend("gff file name provided is not in project/0_input directory")
 
-#In case the user decides to giva an annotation file, it will be checked to be in the corresponding place.
+#In case the user decides to giv an annotation file, it will be checked to be in the corresponding place.
 if ann_file != "n/p":
 	if ann_file not in input_folder:
 		error =1
-		problem.append("You have specify you want to use an annotation file (ann_file), but the name given has not been succesfully found in easymap/project/0_input directory")
+		problem.append("You have specify you want to use an annotation file (ann_file), but the name given has not been succesfully found in project/0_input directory")
 
 #In the analysis mode of snp, cross_type, is_ref_strain and parental_used_as_control are required parameters
 if workflow=="snp":
-	if cross_type == "n/p" or is_ref_strain== "n/p" or parental_used_as_control == "np":
+	if cross_type == "n/p" or is_ref_strain== "n/p" or parental_used_as_control == "n/p":
 		error = 1
 		problems.append("In order to use the mode snp, values for cross_type (oc/bc), is_ref_strain (ref/noref) or parental_used_as_control (mut/nomut) must be given. See more info in the documentation page")
 
@@ -91,27 +93,42 @@ if workflow=="snp":
 if workflow == "ins":
 	if ins_seq not in input_folder: #If ins_seq is not in input_folder it can be due to the fact ins_seq are not provided, in that case its value would be n/p, or due to the fact the name given is not located in such directory.
 		error = 1
-		problems.append("The mode inserction (ins) requires a inserction file in easymap/project/0_input directory") #CORREGIR ERRORES, ESPECIFICAR COMO DEBE SER DADO EL ARCHIVO
+		problems.append("The mode inserction (ins) requires a inserction file in project/0_input directory") #CORREGIR ERRORES, ESPECIFICAR COMO DEBE SER DADO EL ARCHIVO
 
 
 #If the user is not providing its own data, there are a number of extra parameters to fullfil, related to the simulation process: $sim_mut $sim_recsel $sim_seq
 
-#################Comprobar mas valores   OJO: si estamos haciendo inserciones, que necesitamos comprobar? 
+#################Comprobar mas valores    
 if data_source == "sim":
-	if sim_mut == "n/p" or sim_recsel == "n/p" or sim_seq == "n/p":
-		error = 1
-		problems.append("In order to perform the simulation mode (sim) parameters sim_mut, sim_recsel and sim_seq must be given, please find the information regarding then in the software documentation")
+	if workflow == "snp" 
+		if sim_mut == "n/p" or sim_recsel == "n/p" or sim_seq == "n/p":
+			error = 1
+			problems.append("In order to perform the simulation mode (sim) for snp (snp) parameters sim_mut, sim_recsel and sim_seq must be given, please find the information regarding then in the software documentation")
+	else:
+		if sim_mut == "n/p" or sim_seq == "n/p":
+			error = 1
+			problems.append("In order to perform the simulation mode (sim) for inserctions (ins) parameters sim_mut and sim_seq must be given, please find the information regarding then in the software documentation")
 	
+
+
+
+
+
+	#Check sim_mut ex: 40+e TENER EN CUENTA QUE EN MODO INSERCION E Y D NO SON REQURIDOS, Y AÑADIR AUTOMATICAMENTE LI
 	try:
 		values = sim_mut.split("+")
 		if len(values) == 2:
 			number = int(values[0])
 			options = ["e", "d"]
-			if values[1] not in options:
+			if values[1] not in options and workflow == "snp":
 				error =1
 				problems.append("sim_mut requires a second parameter that has to be <  e  > if the mode is EMS mutations or <  d  > if the mode is drift mutations")
-		else:
-			problems.append("sim_mut requires two arguments number_of_mutations+mode ")
+		elif len(values)== 1 and workflow == "ins":
+			number = int(values[0])
+			sim_mut = sim_mut+"+li"
+
+		else:	
+			problems.append("sim_mut requires two/one argument/s number_of_mutations(+mode)*     *Only required in snp mode, in insertion mode it is not need ")
 	except:
 		error = 1
 		problems.append("Please mind the format of sim_mut: number_of_mutations+mode  where number_of_mutations is any positive number and mode has to be chosen between e (EMS) and d (drift")
