@@ -34,9 +34,8 @@
 # Set 'exit_code' (flag variable) to 0
 exit_code=0
 
-# For tests:
+# Set location of log file
 my_log_file=$1
-echo $0 $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} >> $my_log_file
 
 
 start_time=`date +%s`
@@ -174,8 +173,8 @@ echo Variant calling finished >> $my_log_file
 	exit
 }
 echo VCF grooming finished >> $my_log_file
-'''
-'''
+
+
 #Execute vcf filter
 {
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 1
@@ -187,9 +186,9 @@ echo VCF grooming finished >> $my_log_file
 	exit
 }
 echo VCF filter finished >> $my_log_file
-'''
 
-'''
+
+
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #

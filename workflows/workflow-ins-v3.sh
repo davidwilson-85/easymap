@@ -28,9 +28,9 @@
 # Set 'exit_code' (flag variable) to 0
 exit_code=0
 
-# For tests:
+# Set location of log file
 my_log_file=$1
-echo $0 $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} >> $my_log_file
+
 
 
 start_time=`date +%s`

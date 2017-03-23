@@ -106,23 +106,10 @@ f1=1_intermediate_files
 f2=2_logs
 f3=3_workflow_output
 
-# Define log file
-my_log_file=$project_name/log.log
-
-
-
-
-
-
-
-# TO DO HERE: Check f1, f2, f3
-
-
-
-
-
-
-
+# Check if some folders exist. If no, create them
+[ -d $project_name/$f1 ] || mkdir $project_name/$f1
+[ -d $project_name/$f2 ] || mkdir $project_name/$f2
+[ -d $project_name/$f3 ] || mkdir $project_name/$f3
 
 # Delete intermediate and final files from previous executions, For that, check whether dirs have any
 # content (folders or files) and, if so, remove it
@@ -130,7 +117,11 @@ my_log_file=$project_name/log.log
 [ "$(ls -A $project_name/$f2)" ] && rm --recursive $project_name/$f2/*
 [ "$(ls -A $project_name/$f3)" ] && rm --recursive $project_name/$f3/*
 
-# Check that the folders /project/0_input and /project/0_input/gnm_ref exist. If the do not, 
+# Define path of log file and create it
+my_log_file=$project_name/$f3/log.log
+touch $my_log_file
+
+# Check that the folders /project/0_input and /project/0_input/gnm_ref exist. If they do not, 
 if ! [ -d $project_name/$f0 ]
 then
 	{
@@ -150,10 +141,14 @@ then
 	}
 fi
 
-
+############################################################
 # Start easymap
 echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
+
+
+exit
+
 
 ############################################################
 # Overwrite read_s, read_f and read_r if use chose to simulate data
