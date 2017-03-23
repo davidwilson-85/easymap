@@ -109,6 +109,21 @@ f3=3_workflow_output
 # Define log file
 my_log_file=$project_name/log.log
 
+
+
+
+
+
+
+# TO DO HERE: Check f1, f2, f3
+
+
+
+
+
+
+
+
 # Delete intermediate and final files from previous executions, For that, check whether dirs have any
 # content (folders or files) and, if so, remove it
 [ "$(ls -A $project_name/$f1)" ] && rm --recursive $project_name/$f1/*
@@ -116,7 +131,7 @@ my_log_file=$project_name/log.log
 [ "$(ls -A $project_name/$f3)" ] && rm --recursive $project_name/$f3/*
 
 # Check that the folders /project/0_input and /project/0_input/gnm_ref exist. If the do not, 
-if ! [ -d project/0_input ]
+if ! [ -d $project_name/$f0 ]
 then
 	{
 		echo $(date)": Execution could not start because folder /project/0_input could not be found. Please, create the folder and use it to place the files to analyze." > $my_log_file
@@ -125,7 +140,7 @@ then
 		exit	
 	}
 fi
-if ! [ -d project/0_input/gnm_ref ]
+if ! [ -d $project_name/$f0/gnm_ref ]
 then
 	{
 		echo $(date)": Execution could not start because folder /project/0_input/gnm_ref could not be found. Please, create the folder and use it to place the your reference genome." > $my_log_file
@@ -134,6 +149,7 @@ then
 		exit
 	}
 fi
+
 
 # Start easymap
 echo $(date)": Execution of project {" $project_name "} started." > $my_log_file

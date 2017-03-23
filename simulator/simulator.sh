@@ -193,7 +193,7 @@ then
 		if [ $cross_type == 'bc' ]
 		then
 			{
-				# Run sim-mut.py before: python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain
+				# Run sim-mut.py to create mutant strain
 				{
 					python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos
 
@@ -205,20 +205,20 @@ then
 				}
 				echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
 
-				# Run sim-recsel.py python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $mutant_parental -parpol $polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+				# Run sim-recsel.py to create recombinant chromosomes 
 				{
 					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr  -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $ref_seqs_merged_file -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 				} || {
 					echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
 					exit_code=1
 					echo exit_code
-					exit 
+					exit
 				}
 				echo $(date)": Simulation of recombination and phenotype selection completed." >> $my_log_file
 
-				# Run sim-seq.py on parental genome. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA. $parental_genome_location -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+				# Run sim-seq.py on parental genome. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 				{
-					python simulator/sim-seq.py -if $project_name/$f1/gnm_ref_merged -out sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+					python simulator/sim-seq.py -if $project_name/$f1/gnm_ref_merged -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 	
 				} || {
 					echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
