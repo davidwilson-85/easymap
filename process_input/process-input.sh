@@ -75,7 +75,7 @@ ref_seqs_merged_file=$project_name/$f1/gnm_ref_merged/genome.fa
 
 
 # Check fasta input(s)
-fa=`python process-input/verify-input.py -gnm $ref_seqs_dir`
+fa=`python process_input/verify-input.py -gnm $ref_seqs_dir`
 
 if [ $fa == 0 ]
 then
@@ -96,7 +96,7 @@ fi
 # Concatenate fasta input and store in a single file
 
 {
-	python process-input/fasta-concat.py -in_dir $ref_seqs_dir -out_dir $ref_seqs_merged_dir
+	python process_input/fasta-concat.py -in_dir $ref_seqs_dir -out_dir $ref_seqs_merged_dir
 } || {
 	echo echo $(date)": Processing of genome fasta input failed: fasta-concat.py could not concatenate fasta files into one file." >> $my_log_file
 	exit_code=1
@@ -110,7 +110,7 @@ echo $(date)": Processing of genome fasta input completed." >> $my_log_file
 if [ $analysis_type == 'ins' ]
 then
 	{
-		fa=`python process-input/verify-input.py -ins $ins_seq`
+		fa=`python process_input/verify-input.py -ins $ins_seq`
 		
 		if [ $fa == 0 ]
 		then
@@ -135,7 +135,7 @@ then
 		if [ $lib_type == 'se' ]
 		then  
 			{
-				fq=`python process-input/verify-input.py -fq $read_s`
+				fq=`python process_input/verify-input.py -fq $read_s`
 				
 				if [ $fq == 0 ]
 				then
@@ -154,7 +154,7 @@ then
 		if [ $lib_type == 'pe' ]
 		then  
 			{
-				fq=`python process-input/verify-input.py -fq $read_f`
+				fq=`python process_input/verify-input.py -fq $read_f`
 				
 				if [ $fq == 0 ]
 				then
@@ -168,7 +168,7 @@ then
 					}
 				fi
 
-				fq=`python process-input/verify-input.py -fq $read_r`
+				fq=`python process_input/verify-input.py -fq $read_r`
 				
 				if [ $fq == 0 ]
 				then
@@ -188,7 +188,7 @@ fi
 
 
 # Check gff input
-gff=`python process-input/verify-input.py -gff $gff_file`
+gff=`python process_input/verify-input.py -gff $gff_file`
 
 if [ $gff == 0 ]
 then
@@ -210,7 +210,7 @@ if [ $ann_option != 'n/p' ]
 then
 	{
 
-		ann=`python process-input/verify-input.py -ann $ann_file`
+		ann=`python process_input/verify-input.py -ann $ann_file`
 		echo 'Checking gene functional annotation input...' >> $my_log_file
 		if [ $ann == 0 ]
 		then
@@ -228,7 +228,7 @@ fi
 
 
 # Check contigs match between fasta and gff3 files
-match=`python process-input/verify-input.py -fa_match $ref_seqs_merged_file -gff_match $gff_file`
+match=`python process_input/verify-input.py -fa_match $ref_seqs_merged_file -gff_match $gff_file`
 
 if [ $match == 0 ]
 then
