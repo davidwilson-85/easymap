@@ -204,7 +204,6 @@ def fa_vs_pos():
 		#Axis rulers 
 		#X axis
 		r = red(int(i[1]))
-
 		if 'kb' in r:
 			sp = r.split(' ')
 			max_chr = float(sp[0])
@@ -253,6 +252,12 @@ def fa_vs_pos():
 			w, h = draw.textsize(str(x_title))
 			draw.text(((int(50/100.0*wide) - w/2 - 20), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
 
+		#Y axis
+		draw.line(( int(11/100.0*wide) , int(17/100.0*height) ) + ( int(13/100.0*wide) , int(17/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( int(11/100.0*wide) , int((31.5 + 17)/100.0*height) ) + ( int(13/100.0*wide) , int((31.5 + 17)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+
+		draw.text(((int(8/100.0*wide)), (int(17/100.0*height))), ( '1.0' ), font=fnt1, fill=(0,0,0,255))
+		draw.text(((int(8/100.0*wide)), (int((31.5 + 17)/100.0*height))), ( '0.5' ), font=fnt1, fill=(0,0,0,255))
 
 
 		#save image, specifying the format with the extension
@@ -598,7 +603,7 @@ def insertions_overview_and_histograms():
 							cr = [int(sp[0].strip('@#')), int(sp[1].strip())]
 							cr_min = min(cr)
 							cr_max = max(cr)
-							draw.text(((120), (860)), ('Your candidate region is (' + cr_min + ', ' + cr_max + ')'), font=fnt3, fill=(0,0,0,255))
+							draw.text(((120), (860)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
 							draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
 							draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
 
