@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. The script can take as input three different situations,
 # a backcross, an outcross when the mutated ecotype is not in the reference background and an outcross when the mutated ecotype is in the reference background.
 
@@ -22,7 +23,9 @@ parser.add_argument('-fasta', action="store", dest = 'fasta_input', required = "
 parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-correction_factor', action="store", dest = 'FC') 
 parser.add_argument('-parental_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
+
 args = parser.parse_args()
+
 fasta_input = args.fasta_input
 size = int(args.size)
 space = int(args.space)
@@ -51,20 +54,9 @@ def getinfo(chro, inpu):
 			dicpos[indiv[1]].append(indiv[n].rstrip())
 	return dicpos
 
-#Calculates average of a list of AF in a window. Two modes are present, if mutant is in the reference background or if it is in a different background.	
-def calculation_average(li, modality):
-	if modality == "ref":
-		c = 0.7
-	elif modality == "noref" or "n": #if we are dealing with a backcross, eventhough it is in the ref background we are looking for high AF SNP, that's why modality is n
-		c = 0.3
-	new_list = []
-	for items in li:
-		items = float(items)
-		if c == 0.7 and items < c:
-			new_list.append(items)
-		elif c == 0.3 and items> c:
-			new_list.append(items)
-	average_list = sum(new_list)/len(new_list)
+#Calculates average of a list of AF in a window.	
+def calculation_average(li):
+	average_list = sum(li)/len(li)
 	return average_list
 #Calculation of the standard deviation of a list of AF in a position. This parameter is not being used so far.
 def calcular_sd(lista):
@@ -77,13 +69,17 @@ def calcular_sd(lista):
 	return math.sqrt(result)
 #From the dictionary generated in getinfo, knowing the chromosome and its lenght, the function generates windows according to the parameters size and space between them.
 def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality):
+	if modality == "ref":
+		c = 0.7
+	elif modality == "noref" or "n": #if we are dealing with a backcross, eventhough it is in the ref background we are looking for high AF SNP, that's why modality is n
+		c = 0.3	
 	windowsize = float(size)
 	windowspace = float(space)
 	i = 0 	#is the value in the middle of the windows and the one will be used in order to identify a concrete window																							 
 	chromosomal_size = float(chromosomal_lenght) 										
 	dictionary_windows = {} 													
 	a = 0 																								
-	b = 0 																								
+	b = 0 
 	while i < chromosomal_size:      								
 		a = i - windowsize/2
 		b = i + windowsize/2
@@ -91,10 +87,14 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality)
 		for key in SNP:	
 			s = float(key)											
 		 	if s >= a and s <b:		
-				AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1]))								
-		 		snps_window.append(AF)
+				AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1]))	
+				if c == 0.7 and AF < c:
+					snps_window.append(AF)
+				elif c == 0.3 and AF> c:							
+		 			snps_window.append(AF)
+		
 		if len(snps_window) != 0:										
-			average_FA = calculation_average(snps_window, modality)
+			average_FA = calculation_average(snps_window)
 			dictionary_windows[i] = []
 			dictionary_windows[i].append(average_FA)
 			if mode == "out": #standard deviation is another parameter could be use in the outcross mode, we are not using it so far though.
