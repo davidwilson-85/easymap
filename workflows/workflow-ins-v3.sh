@@ -55,7 +55,7 @@ my_rrl=250 														#Regulatory region length
 
 
 #Define the folders in the easymap directory 
-f0=$project_name/0_input
+f0=user_data
 f1=$project_name/1_intermediate_files
 f2=$project_name/2_logs
 f3=$project_name/3_workflow_output

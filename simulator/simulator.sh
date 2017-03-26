@@ -28,7 +28,7 @@
 exit_code=0
 
 # Store the location of each folder in a variable
-f0=0_input
+f0=user_data
 f1=1_intermediate_files
 
 # Get command arguments and assign them to variables
@@ -36,7 +36,7 @@ my_log_file=$1
 project_name=$2
 analysis_type=$3
 lib_type=$4
-ins_seq=$project_name/$f0/$5
+ins_seq=$f0/$5
 
 # Get the string that contains the parameters for sim-mut.py and extract them by splitting the string by the '+' character
 sim_mut_statement=$6

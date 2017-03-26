@@ -22,6 +22,15 @@
 # 
 #######################################################################################################
 
+#######################################################################################################
+# TO DO:
+# 
+# If mode is SNP and source exp, control fastQ files (parental or F2 control) have to be checked as well.
+# However, wait until SE/PE combinations issue is sorted out.
+# 
+# 
+#######################################################################################################
+
 
 # Set 'exit_code' (flag variable) to it's initial value (0)
 exit_code=0
@@ -31,7 +40,7 @@ exit_code=0
 # example: ./process-input.sh project/log.log project ins sim se ins.fa fq_se.fq fq_1.fq fq_2.fq gff.gff ann.ann
 
 # Store the location of each folder in a variable
-f0=0_input
+f0=user_data
 f1=1_intermediate_files
 
 # Get command arguments and assign them to variables
@@ -41,17 +50,17 @@ project_name=$2
 analysis_type=$3
 data_source=$4
 lib_type=$5
-ins_seq=$project_name/$f0/$6
-read_s=$project_name/$f0/$7
-read_f=$project_name/$f0/$8
-read_r=$project_name/$f0/$9
-gff_file=$project_name/$f0/${10}
-ann_file=$project_name/$f0/${11}
+ins_seq=$f0/$6
+read_s=$f0/$7
+read_f=$f0/$8
+read_r=$f0/$9
+gff_file=$f0/${10}
+ann_file=$f0/${11}
 ann_option=${11}
 
 
 # Establish locations of reference genome
-ref_seqs_dir=$project_name/$f0/gnm_ref
+ref_seqs_dir=$f0/gnm_ref
 ref_seqs_merged_dir=$project_name/$f1/gnm_ref_merged
 ref_seqs_merged_file=$project_name/$f1/gnm_ref_merged/genome.fa
 

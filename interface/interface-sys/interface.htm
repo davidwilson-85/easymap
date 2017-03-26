@@ -1,0 +1,17 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="ajax.js"></script>
+</head>
+<body>
+
+	<p><b>Start typing a name in the input field below:</b></p>
+	
+	<form> 
+		GFF file: <input type="text" onkeyup="showHint(this.value)">
+		<br /><br />
+		<input type="submit" value="Run workflow" onclick="triggerBash()" />
+	</form>
+	
+</body>
+</html>

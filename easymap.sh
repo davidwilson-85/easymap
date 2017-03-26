@@ -2,9 +2,9 @@
 
 # Command structure:
 #                                verify-input.py
-#  [0] ./easymap.sh               .
+#  [0] ./easymap.sh					.
 #  [1] $project_name             .
-#  [2] $workflow[ins/snp]   .                      Maybe add a 3rd workflow: Analysis of SNPs
+#  [2] $workflow[ins/snp]			.                      Maybe add a 3rd workflow: Analysis of SNPs
 #  [3] $data_source[exp/sim]     .
 #  [4] $lib_type[se/pe]          .
 #  [5] $ref_seqs                 *
@@ -69,10 +69,15 @@
 # Simulated MbS with just chromosome 1
 # ./easymap.sh project snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut
 
+
+############################################################
+# Obtain and store date and time in format with no spaces
+timestamp=$(date "+%F-%T")
+
 ############################################################
 # Get command arguments and assign them to variables
 
-project_name=$1
+project_name=user_projects/$1"_"$timestamp
 workflow=$2
 data_source=$3
 lib_type=$4
@@ -97,11 +102,14 @@ parental_used_as_control=${20}
 ############################################################
 # Preparation steps
 
+# Create project folder
+[ -d $project_name ] || mkdir $project_name
+
 # Declare a flag variable that will be used as exit code, and set it to 0 (no error)
 exit_code=0
 
 # Store the location of each folder in variables
-f0=0_input
+f0=user_data
 f1=1_intermediate_files				
 f2=2_logs
 f3=3_workflow_output
@@ -118,23 +126,23 @@ f3=3_workflow_output
 [ "$(ls -A $project_name/$f3)" ] && rm --recursive $project_name/$f3/*
 
 # Define path of log file and create it
-my_log_file=$project_name/$f3/log.log
+my_log_file=$project_name/$f2/log.log
 touch $my_log_file
 
 # Check that the folders /project/0_input and /project/0_input/gnm_ref exist. If they do not, 
-if ! [ -d $project_name/$f0 ]
+if ! [ -d $f0 ]
 then
 	{
-		echo $(date)": Execution could not start because folder /project/0_input could not be found. Please, create the folder and use it to place the files to analyze." > $my_log_file
+		echo $(date)": Execution could not start because folder user_data could not be found. Please, create the folder and use it to place the files you want to analyze." > $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit	
 	}
 fi
-if ! [ -d $project_name/$f0/gnm_ref ]
+if ! [ -d $f0/gnm_ref ]
 then
 	{
-		echo $(date)": Execution could not start because folder /project/0_input/gnm_ref could not be found. Please, create the folder and use it to place the your reference genome." > $my_log_file
+		echo $(date)": Execution could not start because folder user_data/gnm_ref could not be found. Please, create the folder and use it to place the your reference genome." > $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
@@ -143,7 +151,32 @@ fi
 
 ############################################################
 # Start easymap
+
+
 echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
+echo "program:									" $0 >> $my_log_file
+echo "project_name:							" $1 >> $my_log_file
+echo "workflow:								" $2 >> $my_log_file
+echo "data_source:							" $3 >> $my_log_file
+echo "lib_type:								" $4 >> $my_log_file
+echo "ref_seqs:								" $5 >> $my_log_file
+echo "ins_seq:									" $6 >> $my_log_file
+echo "read_s:									" $7 >> $my_log_file
+echo "read_f:									" $8 >> $my_log_file
+echo "read_r:									" $9 >> $my_log_file
+echo "gff_file:								" ${10} >> $my_log_file
+echo "ann_file:								" ${11} >> $my_log_file
+echo "sim_mut:									" ${12} >> $my_log_file
+echo "sim_recsel:								" ${13} >> $my_log_file
+echo "sim_seq:									" ${14} >> $my_log_file
+echo "read_s_par:								" ${15} >> $my_log_file
+echo "read_f_par:								" ${16} >> $my_log_file
+echo "read_r_par:								" ${17} >> $my_log_file
+echo "cross_type:								" ${18} >> $my_log_file
+echo "is_ref_strain:							" ${19} >> $my_log_file
+echo "parental_used_as_control:			" ${20} >> $my_log_file
+
+echo "######################################################" >> $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
 
 
