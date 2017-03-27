@@ -114,9 +114,17 @@ def fa_vs_pos():
 		fnt3 = ImageFont.truetype('fonts/arial.ttf', int(24/1000.0*wide))
 		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(20/1000.0*wide))
 
+		r = red(int(i[1]))
+		if 'Mb' in r:
+			sp = r.split(' ')
+			mb_max = int(sp[0]) + 1
+			max_graph_x = int(mb_max) * 1000000
+
+		elif 'kb' in r: 
+			max_graph_x = i[1]
 
 		#Scaling factors
-		scaling_factor_x = (float(i[1])/(73/100.0*wide))			#nts/pixel
+		scaling_factor_x = (float(max_graph_x)/(73/100.0*wide))			#nts/pixel
 		scaling_factor_y = (1.1/(63/100.0*height))					#fa/pixels
 
 
