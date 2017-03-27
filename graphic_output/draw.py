@@ -211,7 +211,7 @@ def fa_vs_pos():
 			x_ruler =  int(x_increment) + int(12/100.0*wide)
 			x_tag = int(max_chr/10)
 			while x_ruler in range(int(12/100.0*wide), int(85/100.0*wide)):
-				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(79/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
 				
 				if len(str(x_tag)) == 1:
 					draw.text(((x_ruler- int(0.4/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
@@ -995,7 +995,7 @@ def gene_plot():
 			draw.polygon([(snp_pos, int(191/350.0*height)), (snp_pos - int(0.01*wide), int(191/350.0*height) + int(0.01*wide)), (snp_pos + int(0.01*wide), int(191/350.0*height) + int(0.01*wide))], fill = (200, 0, 0, 200))
 
 			#Aa change
-			if p[4][2].strip() != '-' : 
+			if p[4][0].strip() != '-' : 																#		<---------------------------- DELETE THIS ARROW IF NO ERRORS COME FROM THIS LINE 
 				
 				draw.text((int(snp_pos - int(0.092*wide)), int(0.75*height)), (
 					str(p[4][0])+ ' (' + str(p[4][2]) +')' +  '    >    '  +
@@ -1010,10 +1010,10 @@ def gene_plot():
 
 		#save image, specifying the format with the extension
 		if args.my_mut == 'lin':
-			im.save(project + '/3_workflow_output/img_2_ins_' + str(args.my_mut) + '_' + str(p[2]) + '_gene_' + str(p[3])+ '.png')
+			im.save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[2]) + '_gene_' + str(p[3])+ '.png')
 
 		if args.my_mut == 'snp':
-			im.save(project + '/3_workflow_output/img_2_ins_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
+			im.save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
 
 #############################################################################################################
 #																											#
