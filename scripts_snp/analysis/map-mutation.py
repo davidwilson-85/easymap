@@ -7,11 +7,11 @@
 ##Arguments:
 	#"fichero" which is the file that comes as an input.
 	#"output" refers to the name of the output file is going to be generated.
-	#"window_size" it is a number which indicates the size of the windows that will be created in order to generate alele frequencies averages
+	#"window_size" it is a number which indicates the size of the windows that will be created in order to generate allele frequencies averages
 	#"window_space" number which indicates the space between the number which is in the middle of a window
 	#"fasta" corresponds to the fasta file from which the input has been obtained
 	#"mode" can be back meaning backcross or out meaning outcross
-	#"correction factor" is a value will be used in the outcross mode in order to amplify the range of the most-likely to have the mutation window
+	#width_ ....
 	#"Parental_modality" takes as values ref and noref, meaning if the line sequenced is from the reference background or not.
 import argparse
 parser = argparse.ArgumentParser()
@@ -21,7 +21,7 @@ parser.add_argument('-window_size', action="store", dest = 'size', required = "T
 parser.add_argument('-window_space', action="store", dest = 'space', required = "True")
 parser.add_argument('-fasta', action="store", dest = 'fasta_input', required = "True")
 parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
-parser.add_argument('-correction_factor', action="store", dest = 'FC') 
+parser.add_argument('-interval_width', action="store", dest = 'interval_width', required = "True") 
 parser.add_argument('-parental_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
 
 args = parser.parse_args()
@@ -33,9 +33,10 @@ mode = args.mode
 output = args.output
 result= open( output ,"w")
 modality = args.modality
+interval_width = int(args.interval_width)
 if mode == "back":
 	modality = "n"
-result.write("if outcross:"+"\n"+"-@ lines: window, average, boost, chromosome" +"\n" + "-! line: min_max_window, max_max_window, max_boost, chromosome" + "\n" + "-? lines: chromosome, min_big_window, max_big_window"+ "-n" + "-\* lines: chromosome, min_window, max_window, boost_value" + "\n" "if backcross:"+"\n"+ "-@ line: window, average, chromosome" +"\n" + "-! line: min_window. max_window, max_average, chromosome" + "\n"+ "-? line: chromosome, min_big_window, max_big_window" + "\n" + "-* line: chormosome, min_window, max_window, average"+ "\n")
+result.write("if outcross:"+"\n"+"-@ lines: window, average, boost, chromosome" +"\n" + "-! line: min_max_window, max_max_window, max_boost, chromosome" + "\n" + "-? lines: chromosome, min_big_window, max_big_window"+ "\n" + "-* lines: chromosome, min_window, max_window, boost_value" + "\n" "if backcross:"+"\n"+ "-@ line: window, average, chromosome" +"\n" + "-! line: min_window. max_window, max_average, chromosome" + "\n"+ "-? line: chromosome, min_big_window, max_big_window" + "\n" + "-* line: chormosome, min_window, max_window, average"+ "\n")
 result.close()
 
 #Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored]
@@ -130,6 +131,7 @@ def data_backcross(window, position, chromosome, best_parameter, size):
 	result= open(output ,"a") 
 	for items in position:			
 		average = window[items][0]
+		items = int(items)
 		result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n")   
 		if best_parameter == "T" or float(average) > float(best_parameter):
 			maximum_position = []
@@ -200,22 +202,27 @@ if mode == "out":
 		else:
 			result = data_outcross(filtered_windows, x_value, chromosome, best, size)
 		z += 1
+	great_positions = [] #Creation of a list of values with the maximum boost, then calculation of the middle value  and create a bigger window
+	for windows in result[-1]:
+		b_value = result[-1][windows]
+		if b_value == result[1]:
+			great_positions.append(int(windows))
+	peak_value = calculation_average(great_positions)
 	#Corrector factor in order to take windows which boost is not as big as the biggest but can contain the mutation
-	FC = float(args.FC)
-	threshold = float(result[1]) * FC
+	big_window = []
+	big_window.append(int(peak_value) + interval_width/2)
+	big_window.append(int(peak_value) - interval_width/2)
 	possible_windows= []
+
 	for best_position in result[3]:
-		if float(result[3][best_position]) >= threshold:
+		if float(best_position) <= big_window[0] and float(best_position)>= big_window[1]:
 			best_position = float(best_position)
 			best_position = int(best_position)
 			possible_windows.append(best_position)
-	#Creation of a list of all the windows bigger than the threshold, creation of a big and conservative window. Save of the big window, windows contained on it and best window.		
+	#Creation of a list of all the windows in the interval, creation of a big and conservative window. Save of the big window, windows contained on it and best window.		
 	possible_windows = sorted(possible_windows)
-	a = min(possible_windows)
-	c = max(possible_windows)
-	b = size/2
-	min_i = a - b
-	maxi_i = c+b
+	min_i = big_window[1]
+	maxi_i = big_window[0]
 	r= open(output ,"a")
 	r.write("!"+"\t"+ str(result[0][0])+"\t" + str(result[0][1]) + "\t"+ str(result[1])+"\t"+ result[2] + "\n") 
 	escribir ="?"+"\t"+result[2]+ "\t"+str(min_i)+"\t"+str(maxi_i)+"\n"
@@ -239,13 +246,21 @@ elif mode == "back":
 		else:
 			result = data_backcross(windows, x_value, chromosome, best_parameter, size)
 		z +=1
-	#Creation of a conservative bigger window which will contain different windows with an average bigger than a threshold. 	
+	#Creation of a conservative bigger window which will contain different windows with an average bigger than a threshold.
+	great_positions = []
+	for windows in result[-1]:
+		average = result[-1][windows][0]
+		if average == result[1]:
+			great_positions.append(windows)
+	peak_value = calculation_average(great_positions)
+	min_i = int(peak_value - interval_width/2) 
+	maxi_d = int(peak_value + interval_width/2)
 	candidate_list = []
 	for window in result[-1]:
 		if float(result[-1][window][0]) >= 0.9:
-			candidate_list.append(float(window))			
-	min_i = min(candidate_list)- size/2
-	maxi_d = max(candidate_list) + size/2
+			if window >= min_i and window <= maxi_d:
+				candidate_list.append(window)			
+	candidate_list = sorted(candidate_list)
 	r= open(output ,"a")
 	r.write("!"+"\t"+str(result[0][0])+"\t"+str(result[0][1]) + "\t"+ str(result[1])+"\t"+str(result[2]) + "\n") 
 	r.write("?"+"\t"+str(result[2]) +"\t"+ str(min_i)+"\t"+ str(maxi_d) +"\n")

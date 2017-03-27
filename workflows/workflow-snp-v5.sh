@@ -350,7 +350,7 @@ fi
 
 #Execute vcf analysis 
 {
-	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 250000 -output $f1/map_info.txt -parental_modality $my_mutbackgroud -correction_factor 0.6
+	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_parental_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 250000 -output $f1/map_info.txt -parental_modality $my_mutbackgroud -interval_width 4000000
 
 
 } || {
