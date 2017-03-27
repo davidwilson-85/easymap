@@ -148,9 +148,11 @@ echo $(date) ' : SAM to BAM finished' >> $my_log_file
 
 #Variant calling
 {
-	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_variants_temp.vcf  -f $f1/$my_gs $f1/alignment1.bam  2> $f2/mpileup_std.txt
-	$location/bcftools-1.3.1/bcftools call -vmO v -vo $f1/raw_variants.vcf $f1/raw_variants_temp.vcf 2> $f2/bcf_std.txt
-	
+	# $location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_variants_temp.vcf  -f $f1/$my_gs $f1/alignment1.bam  2> $f2/mpileup_std.txt
+	# $location/bcftools-1.3.1/bcftools call -vmO v -vo $f1/raw_variants.vcf $f1/raw_variants_temp.vcf 2> $f2/bcf_std.txt
+
+	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f0/$my_gs $f1/alignment1.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_std.txt
+
 } || {
 	echo $(date) ' : Error during variant-calling' >> $my_log_file
 	exit_code=1
@@ -184,7 +186,6 @@ echo $(date) ' : VCF grooming finished' >> $my_log_file
 	exit
 }
 echo $(date) ' : VCF filter finished' >> $my_log_file
-
 
 
 ##################################################################################################################################################################################
@@ -241,9 +242,11 @@ echo $(date) ' : SAM to BAM finished' >> $my_log_file
 
 #Variant calling
 {
-	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_p_variants_temp.vcf  -f $f1/$my_gs $f1/alignment1P.bam  2> $f2/mpileup_std.txt
-	$location/bcftools-1.3.1/bcftools call -vmO v -vo $f1/raw_p_variants.vcf $f1/raw_p_variants_temp.vcf 2> $f2/bcf_std.txt
+	# $location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_p_variants_temp.vcf  -f $f1/$my_gs $f1/alignment1P.bam  2> $f2/mpileup_std.txt
+	# $location/bcftools-1.3.1/bcftools call -vmO v -vo $f1/raw_p_variants.vcf $f1/raw_p_variants_temp.vcf 2> $f2/bcf_std.txt
 	
+	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f0/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_std.txt
+
 } || {
 	echo $(date) ' : Error during variant-calling' >> $my_log_file
 	exit_code=1
