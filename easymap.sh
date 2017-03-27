@@ -179,7 +179,7 @@ echo "parental_used_as_control:			" ${20} >> $my_log_file
 echo "######################################################" >> $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
 
-
+''
 ############################################################
 # Overwrite read_s, read_f and read_r if use chose to simulate data
 if [ $data_source == 'sim' ]
