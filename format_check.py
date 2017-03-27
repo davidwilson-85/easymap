@@ -55,27 +55,27 @@ error = 0
 
 
 # THE CREATION OF THIS SHOULD BE BEFORE RUNING THIS PROGRAM (INPUT FILES SHOULD BE ALREADY IN) Check whether the user has provided a project_name and it has no space:
-#is_there_space = project_name.split(" ")
-#if len(is_there_space) != 1:
-	#error = 1
-	#problems.append("Please select a project name without any space")
+is_there_space = project_name.split(" ")
+if len(is_there_space) != 1:
+	error = 1
+	problems.append("Please select a project name without any space")
 
 #Check whether there are reference file/s in 0_input/gnm_ref
 try:
-	path = project_name+"/0_input/gnm_ref" #Looks in the path were the file/s should be found
+	path = "/user_data/gnm_ref" #Looks in the path were the file/s should be found
 	if not os.listdir(path): #This function creates a list of the items in the specified path. Thus, if no items are found, the result of the function will be FALSE
 	    error = 1
-	    problems.append("The reference file/files should be in the directory /project/0_input/gnm_ref")
+	    problems.append("The reference file/files should be in the directory " + path)
 except:
 	error = 1
-	problems.append("No folder project/0_input/gnm_ref has been found, please create the folder and include the reference genome")
+	problems.append("No folder " + path + " has been found, please create the folder and include the reference genome")
 
 #Check the existance of gff file in the appropiate folder
-input_folder = "project/0_input"
+input_folder = "user_data"
 input_files = sorted(os.listdir('./' + input_folder))
 if gff_file not in input_files:
 	error = 1
-	problems.apppend("gff file name provided is not in project/0_input directory")
+	problems.apppend("gff file name provided is not in " + input_folder)
 
 #In case the user decides to giv an annotation file, it will be checked to be in the corresponding place.
 if ann_file != "n/p":
@@ -96,7 +96,7 @@ if workflow=="snp":
 if workflow == "ins":
 	if ins_seq not in input_folder: #If ins_seq is not in input_folder it can be due to the fact ins_seq are not provided, in that case its value would be n/p, or due to the fact the name given is not located in such directory.
 		error = 1
-		problems.append("The mode inserction (ins) requires a inserction file in project/0_input directory") #CORREGIR ERRORES, ESPECIFICAR COMO DEBE SER DADO EL ARCHIVO
+		problems.append("The mode inserction (ins) requires a insertion file in " + input_folder) #CORREGIR ERRORES, ESPECIFICAR COMO DEBE SER DADO EL ARCHIVO
 
 
 #If the user is not providing its own data, there are a number of extra parameters to fullfil, related to the simulation process: $sim_mut $sim_recsel $sim_seq
@@ -178,10 +178,10 @@ if data_source == "exp":
 	if lib_type == "pe":
 		if read_f not in input_folder: 
 			error = 1
-			problems.append("Please introduce the files containing the forward reads in easymap/project/0_input directory")
+			problems.append("Please introduce the files containing the forward reads in " + input_folder)
 		if read_r not in input_folder:
 			error = 1
-			problems.append("Please introduce the files containing the reverse reads in easymap/project/0_input directory")
+			problems.append("Please introduce the files containing the reverse reads in " + input_folder)
 		if read_f == read_r:
 			error = 1
 			problems.append("Please notice both read files have the same name")
@@ -196,17 +196,17 @@ if data_source == "exp":
 		if lib_type == "pe":
 			if read_f_par not in input_folder:
 				error = 1
-				problems.append("Please introduce the files containing the forward reads in easymap/project/0_input directory")
+				problems.append("Please introduce the files containing the forward reads in " + input_folder)
 			if read_r_par not in input_folder:
 				error = 1
-				problems.append("Please introduce the files containing the reverse reads in easymap/project/0_input directory")
+				problems.append("Please introduce the files containing the reverse reads in " + input_folder)
 			if read_f_par == read_r_par:
 				error = 1
 			problems.append("Please notice both parental read files have the same name")
 		if lib_type == "se":
 			if read_s not in input_folder:
 				error = 1
-				problems.append("Please introduce the file containing the reads in easymap/project/0_input directory")	
+				problems.append("Please introduce the file containing the reads in " + input_folder)	
 
 
 

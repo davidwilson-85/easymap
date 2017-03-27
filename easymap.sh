@@ -77,7 +77,7 @@ timestamp=$(date "+%F-%T")
 ############################################################
 # Get command arguments and assign them to variables
 
-project_name=user_projects/$1"_"$timestamp
+project_name=user_projects/$timestamp"_"$1
 workflow=$2
 data_source=$3
 lib_type=$4
