@@ -127,13 +127,13 @@ def union_points(windows):
 
 #Data function is different for a backcross or an outcross. This function stores the windows and their attributes boost and average in a file.
 #It also saves different values that will be used later for further processiong of the data, as the chromosome with the higher attribute, its value or the dictionary of positions of that chromosome
-def data_backcross(window, position, chromosome, best_parameter, size):  
+def data_backcross(window, position, chromosome, maximum_position, best_parameter, best_chromosome,best_dictionary, size):  
 	result= open(output ,"a") 
 	for items in position:			
 		average = window[items][0]
 		items = int(items)
 		result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n")   
-		if best_parameter == "T" or float(average) > float(best_parameter):
+		if best_parameter == "n/p" or float(average) > float(best_parameter):
 			maximum_position = []
 			items = float(items)
 			maximum_position.append(items - size/2)
@@ -142,7 +142,7 @@ def data_backcross(window, position, chromosome, best_parameter, size):
 			best_chromosome = chromosome
 			best_dictionary = window
 	return maximum_position, best_parameter, best_chromosome, best_dictionary
-def data_outcross(window, position, chromosome, real_best, size): 
+def data_outcross(window, position, chromosome, best_position, real_best, best_chromosome, dic_paramet, size): 
 	result= open(output ,"a")
 	dic_paramet = {}
 	for items in position:			
@@ -197,10 +197,13 @@ if mode == "out":
 		filtered_windows= threshold_step(windows, mini_average, maxi_average, 0) 
 		x_value= union_points(filtered_windows)
 		if z == 0:
-			result = data_outcross(filtered_windows, x_value, chromosome, 0, size)
+			result = data_outcross(filtered_windows, x_value, chromosome, "n/p", 0, "n/p", "n/p", size)
 			best = result[1]
+			best_position = result[0]
+			best_chromosome = result[2]
+			dic_paramet = result[3]
 		else:
-			result = data_outcross(filtered_windows, x_value, chromosome, best, size)
+			result = data_outcross(filtered_windows, x_value, chromosome,best_position,best, best_chromosome, dic_paramet, size)
 		z += 1
 	great_positions = [] #Creation of a list of values with the maximum boost, then calculation of the middle value  and create a bigger window
 	for windows in result[-1]:
@@ -241,10 +244,13 @@ elif mode == "back":
 		windows = chromosomal_position(size, space, genome,chromosome, ch[chromosome], mode, modality)    
 		x_value= union_points(windows)
 		if z ==0 : 								
-			result = data_backcross(windows, x_value, chromosome, "T", size)
+			result = data_backcross(windows, x_value, chromosome, "n/p","n/p", "n/p", "n/p", size)
 			best_parameter = result[1]
+			maximum_position = result[0]
+			best_chromosome = result[2]
+			best_dictionary = result[3]
 		else:
-			result = data_backcross(windows, x_value, chromosome, best_parameter, size)
+			result = data_backcross(windows, x_value, chromosome, maximum_position, best_parameter, best_chromosome,best_dictionary, size)
 		z +=1
 	#Creation of a conservative bigger window which will contain different windows with an average bigger than a threshold.
 	great_positions = []
