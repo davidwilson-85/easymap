@@ -220,7 +220,7 @@ def fa_vs_pos():
 		#Axes
 		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(12/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#Y axis
 		draw.line((int(12/100.0*wide), int(80/100.0*height)) + (int(85/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#X axis
-		draw.text(((int(5/100.0*wide)), (int(17/100.0*height))), ('AF'), font=fnt1, fill=(0,0,0,255))
+		draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt1, fill=(0,0,0,255))
 		
 
 		#Axis rulers 
@@ -251,11 +251,11 @@ def fa_vs_pos():
 		if 'Mb' in r:
 			sp = r.split(' ')
 			mb_max = int(sp[0]) + 1
-			mbs = list()
+			#mbs = list()
 			mb = 1
-			while mb != (mb_max + 1): 
-				mbs.append(mb)
-				mb = mb + 1
+			#while mb != (mb_max + 1):    #< ----------------------------------- VEstigial ? 
+			#	mbs.append(mb)
+			#	mb = mb + 1
 			
 			x_increment = int(73/100.0*wide)/mb_max
 			x_ruler =  int(x_increment) + int(12/100.0*wide)
@@ -272,14 +272,16 @@ def fa_vs_pos():
 
 			x_title = str(i[0]) + ' (Mb )'
 			w, h = draw.textsize(str(x_title))
-			draw.text(((int(50/100.0*wide) - w/2 - 20), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
+			draw.text(((int(50/100.0*wide) - w/2 - 30), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
+
+
 
 		#Y axis
-		draw.line(( int(11/100.0*wide) , int(17/100.0*height) ) + ( int(13/100.0*wide) , int(17/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( int(11/100.0*wide) , int((31.5 + 17)/100.0*height) ) + ( int(13/100.0*wide) , int((31.5 + 17)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( int(11.5/100.0*wide) , int(22.7/100.0*height) ) + ( int(12/100.0*wide) , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( int(11.5/100.0*wide) , int((28.65 + 22.7)/100.0*height) ) + ( int(12/100.0*wide) , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 
-		draw.text(((int(8/100.0*wide)), (int(17/100.0*height))), ( '1.0' ), font=fnt1, fill=(0,0,0,255))
-		draw.text(((int(8/100.0*wide)), (int((31.5 + 17)/100.0*height))), ( '0.5' ), font=fnt1, fill=(0,0,0,255))
+		draw.text(((int(8/100.0*wide)), (int(20.7/100.0*height))), ( '1.0' ), font=fnt4, fill=(0,0,0,255))
+		draw.text(((int(8/100.0*wide)), (int((28.65 + 20.7)/100.0*height))), ( '0.5' ), font=fnt4, fill=(0,0,0,255))
 
 
 		#save image, specifying the format with the extension
