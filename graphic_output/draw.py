@@ -24,7 +24,7 @@ parser.add_argument('-cross', action="store", dest='my_cross')
 
 args = parser.parse_args()
 
-project = args.project_name
+project = 'user_projects/' + args.project_name
 
 
 def red(p):
@@ -149,7 +149,7 @@ def fa_vs_pos():
 		blines = binput.readlines()
 
 		#Boost line
-		if my_cross == 'oc':
+		if my_cross == 'oc' :
 			for b, bline in enumerate(blines):
 				sp = bline.split()
 				if bline.startswith('!'):
