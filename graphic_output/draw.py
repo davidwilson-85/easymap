@@ -114,10 +114,6 @@ def fa_vs_pos():
 		fnt3 = ImageFont.truetype('fonts/arial.ttf', int(24/1000.0*wide))
 		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(20/1000.0*wide))
 
-
-		print i[1]
-
-
 		r = red(int(i[1]))
 		if 'Mb' in r:
 			sp = r.split(' ')
@@ -182,23 +178,37 @@ def fa_vs_pos():
 			boost_value_img_2 = None
 
 		#MM line
-		for b, bline in enumerate(blines):
-			sp = bline.split()					
-			if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
-				mm_value = float(sp[2].strip())
-				mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+		if my_cross == 'oc' :
+			for b, bline in enumerate(blines):
+				sp = bline.split()					
+				if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+					mm_value = float(sp[2].strip())
+					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+					window_position = int(sp[1])
+					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
+					try:
+						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.3/100.0*wide))	
+						window_position_img_2 = window_position_img
+						mm_value_img_2 = mm_value_img
+					except:
+						window_position_img_2 = window_position_img
+						mm_value_img_2 = mm_value_img
 
-				window_position = int(sp[1])
-				window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
-
-				try:
-					draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.3/100.0*wide))	
-					window_position_img_2 = window_position_img
-					mm_value_img_2 = mm_value_img
-
-				except:
-					window_position_img_2 = window_position_img
-					mm_value_img_2 = mm_value_img
+		if my_cross == 'bc' :
+			for b, bline in enumerate(blines):
+				sp = bline.split()					
+				if bline.startswith('@') and sp[3].lower().strip('>') == i[0].lower():
+					mm_value = float(sp[2].strip())
+					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+					window_position = int(sp[1])
+					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
+					try:
+						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.3/100.0*wide))	
+						window_position_img_2 = window_position_img
+						mm_value_img_2 = mm_value_img
+					except:
+						window_position_img_2 = window_position_img
+						mm_value_img_2 = mm_value_img
 
 		window_position_img = None 
 		mm_value_img = None
@@ -251,7 +261,7 @@ def fa_vs_pos():
 			x_ruler =  int(x_increment) + int(12/100.0*wide)
 			x_tag = 1
 			while x_ruler in range(int(12/100.0*wide), int(85/100.0*wide)):
-				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(79/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
 				if len(str(x_tag)) == 1:
 					draw.text(((x_ruler- int(0.4/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
 				elif len(str(x_tag)) == 2: 

@@ -461,16 +461,39 @@ echo $(date) ' : Varanalyzer finished.' >> $my_log_file
 ##################################################################################################################################################################################
 
 
+# FILTER TO SELECT SNPS TO DRAW: (para el backcross es especialmente relevante quitar la "basura" a la hora de dibujar los SNPs)
+if [ $my_cross == oc ]
+then
+	af_min = 0.1
+fi
+
+if [ $my_cross == bc ]
+then
+	af_min = 0.25
+fi
+
+{
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_parental_comparison.va -b $f1/F2_parental_comparison2.va -step 1 -af_min $af_min
+
+} || {
+	echo $(date) ' : Error: variants-filter.py' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+echo $(date) ' : VCF filter finished' >> $my_log_file
+
+
 #__________________________________________________________________________________GRAPHIC OUTPUT_____________________________________________________________________________________
 
 
 
 #COMANDO PRUEBAS GRAPHIC OUTPUT :
-#	python ./graphic_output/graphic-output-v3.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_parental_comparison.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100 -iva ./user_projects/project/1_intermediate_files/variants.txt -gff ./user_data/chr1+4.gff -pname project  -cross BC
+#	python ./graphic_output/graphic-output-v3.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_parental_comparison.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100 -iva ./user_projects/project/1_intermediate_files/variants.txt -gff ./user_data/chr1+4.gff -pname user_projects/project  -cross bc
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_parental_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross
+	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_parental_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross
 	
 } || {
 	echo $(date) ' : Error: graphic-output-v3.py' >> $my_log_file
