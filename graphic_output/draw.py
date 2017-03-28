@@ -24,7 +24,7 @@ parser.add_argument('-cross', action="store", dest='my_cross')
 
 args = parser.parse_args()
 
-project = 'user_projects/' + args.project_name
+project = args.project_name
 
 
 def red(p):
