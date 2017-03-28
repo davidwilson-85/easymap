@@ -2,28 +2,28 @@
 
 # Command structure:
 #                                verify-input.py
-#  [0] ./easymap.sh					.
-#  [1] $project_name             .
-#  [2] $workflow[ins/snp]			.                      Maybe add a 3rd workflow: Analysis of SNPs
-#  [3] $data_source[exp/sim]     .
-#  [4] $lib_type[se/pe]          .
-#  [5] $ref_seqs                 *
-#  [6] $ins_seq                  *
-#  [7] $read_s                   *
-#  [8] $read_f                   *
-#  [9] $read_r                   *
-# [10] $gff_file                 *
-# [11] $ann_file                 *
-# [12] $sim_mut                  .                      nbr+mod
-# [13] $sim_recsel               .                      rfd+pos+mod+nre
-# [14] $sim_seq                  .                      rd+rl+fl+ber+gbs
-# [15] $read_s_par               TO DO
-# [16] $read_f_par               TO DO
-# [17] $read_r_par               TO DO
-# [18] $is_ref_strain            .                      Only for linkage analysis mapping				ref/noref
-# [19] $cross_type               .                      Only for linkage analysis mapping				oc/bc
-# [20] $parental_reads           .                      Only for linkage analysis mapping				mut/nomut
-# [21] 
+#  [0] ./easymap.sh							.
+#  [1] $project_name             		.
+#  [2] $workflow[ins/snp]					.                      Maybe add a 3rd workflow: Analysis of SNPs
+#  [3] $data_source[exp/sim]   			.
+#  [4] $lib_type[se/pe]						.
+#  [5] $ref_seqs								*
+#  [6] $ins_seq								*
+#  [7] $read_s									*
+#  [8] $read_f									*
+#  [9] $read_r									*
+# [10] $gff_file								*
+# [11] $ann_file								*
+# [12] $sim_mut								.                      nbr+mod
+# [13] $sim_recsel							.                      rfd+pos+mod+nre
+# [14] $sim_seq								.                      rd+rl+fl+ber+gbs
+# [15] $read_s_par							TO DO
+# [16] $read_f_par							TO DO
+# [17] $read_r_par							TO DO
+# [18] $is_ref_strain						.                      Only for linkage analysis mapping				ref/noref
+# [19] $cross_type               		.                      Only for linkage analysis mapping				oc/bc
+# [20] $parental_reads           		.                      Only for linkage analysis mapping				mut/nomut
+# [21] $snp_analysis_type [par/f2wt]	.
 # [22]
 #
 # sim-mut.py
@@ -42,12 +42,12 @@
 # out:		constant
 #
 # sim-seq.py
-# if:		constant
+# if:			constant
 # out:		$f0
 # mod:		$4
-# rd:		${14}[0]
-# rl:		${14}[1]
-# fl:		${14}[2]
+# rd:			${14}[0]
+# rl:			${14}[1]
+# fl:			${14}[2]
 # ber:		${14}[3]
 # gbs:		${14}[4]
 #
@@ -70,6 +70,11 @@
 #
 # Simulated MbS with just chromosome 1
 # ./easymap.sh project snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut
+
+
+# Simulate SNP MbS with F2mt F2wt mode using only chr1
+# ./easymap.sh project-name snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut f2wt
+
 
 
 ############################################################
@@ -99,7 +104,7 @@ read_r_par=${17}
 cross_type=${18}
 is_ref_strain=${19}
 parental_used_as_control=${20}
-
+snp_analysis_type=${21}
 
 ############################################################
 # Preparation steps
@@ -177,13 +182,16 @@ echo "read_r_par:								" ${17} >> $my_log_file
 echo "cross_type:								" ${18} >> $my_log_file
 echo "is_ref_strain:							" ${19} >> $my_log_file
 echo "parental_used_as_control:			" ${20} >> $my_log_file
+echo "snp_analysis_type:					" ${21} >> $my_log_file
 
 echo "######################################################" >> $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
 
 
 ############################################################
-# Overwrite read_s, read_f and read_r if use chose to simulate data
+# Overwrite read_s, read_f and read_r if user chose to simulate data
+# 'sample': F2 recessive phenotype (mutant phenotype in recessive mutations)
+# 'control': if snp_analysis_type=par, reads from one of the parentals used in cross; if snp_analysis_type=f2wt, F2 dominant phenotype (wildtype phenotype in recessive mutations)
 if [ $data_source == 'sim' ]
 then
 	{
@@ -234,7 +242,7 @@ then
 	{
 		echo $(date)": STARTING DATA SIMULATION..." >> $my_log_file
 		
-		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type $ins_seq $sim_mut $sim_recsel $sim_seq $cross_type $is_ref_strain $parental_used_as_control`
+		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type $ins_seq $sim_mut $sim_recsel $sim_seq $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type`
 
 		if [ $simulator == 0 ]
 		then

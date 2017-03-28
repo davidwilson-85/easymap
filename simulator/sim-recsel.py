@@ -56,7 +56,7 @@ parser.add_argument('-parpol', action="store", dest='parental_b_polymorphic', re
 parser.add_argument('-mutapos', action="store", dest='mut_a_pos',type=str ,required=True)
 parser.add_argument('-mutbpos', action="store", dest='mut_b_pos', type=str)
 parser.add_argument('-smod', action="store", dest='selection_mode',
-required=True, choices=set(('r','d','di','dr'))) #Choose between...
+required=True, choices=set(('r','d','di','dr'))) #Choose between... These 4 options are avaiable for the standalone program, but easymap only accepts 'r' and 'd' for now.
 parser.add_argument('-nrec', action="store", dest='nbr_rec_chrs', type=int, required=True)
 args = parser.parse_args()
 
