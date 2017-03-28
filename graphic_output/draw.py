@@ -114,6 +114,10 @@ def fa_vs_pos():
 		fnt3 = ImageFont.truetype('fonts/arial.ttf', int(24/1000.0*wide))
 		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(20/1000.0*wide))
 
+
+		print i[1]
+
+
 		r = red(int(i[1]))
 		if 'Mb' in r:
 			sp = r.split(' ')
