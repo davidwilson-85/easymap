@@ -1,4 +1,4 @@
-import argparse
+import argparse, math
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
@@ -115,16 +115,18 @@ def fa_vs_pos():
 		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(20/1000.0*wide))
 
 		r = red(int(i[1]))
+
 		if 'Mb' in r:
-			sp = r.split(' ')
-			mb_max = int(sp[0]) + 1
-			max_graph_x = int(mb_max) * 1000000
+			max_graph_x = int(math.ceil(int(i[1])/1000000.0))*1000000
+			#sp = r.split(' ')
+			#mb_max = int(sp[0]) +1
+			#max_graph_x = int(mb_max) * 1000000
 
 		elif 'kb' in r: 
 			max_graph_x = i[1]
 
 		#Scaling factors
-		scaling_factor_x = (float(max_graph_x)/(73/100.0*wide))			#nts/pixel
+		scaling_factor_x = int(math.ceil(float(max_graph_x)/(73/100.0*wide)))			#nts/pixel         <-----------------------------------------------------------#######################
 		scaling_factor_y = (1.1/(63/100.0*height))					#fa/pixels
 
 
@@ -250,14 +252,8 @@ def fa_vs_pos():
 
 		if 'Mb' in r:
 			sp = r.split(' ')
-			mb_max = int(sp[0]) + 1
-			#mbs = list()
 			mb = 1
-			#while mb != (mb_max + 1):    #< ----------------------------------- VEstigial ? 
-			#	mbs.append(mb)
-			#	mb = mb + 1
-			
-			x_increment = int(73/100.0*wide)/mb_max
+			x_increment = 1000000*1/scaling_factor_x	#	#<-----------------------------------------------------------#######################
 			x_ruler =  int(x_increment) + int(12/100.0*wide)
 			x_tag = 1
 			while x_ruler in range(int(12/100.0*wide), int(85/100.0*wide)):
@@ -274,15 +270,12 @@ def fa_vs_pos():
 			w, h = draw.textsize(str(x_title))
 			draw.text(((int(50/100.0*wide) - w/2 - 30), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
 
-
-
 		#Y axis
 		draw.line(( int(11.5/100.0*wide) , int(22.7/100.0*height) ) + ( int(12/100.0*wide) , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 		draw.line(( int(11.5/100.0*wide) , int((28.65 + 22.7)/100.0*height) ) + ( int(12/100.0*wide) , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 
 		draw.text(((int(8/100.0*wide)), (int(20.7/100.0*height))), ( '1.0' ), font=fnt4, fill=(0,0,0,255))
 		draw.text(((int(8/100.0*wide)), (int((28.65 + 20.7)/100.0*height))), ( '0.5' ), font=fnt4, fill=(0,0,0,255))
-
 
 		#save image, specifying the format with the extension
 		im.save(project + '/3_workflow_output/img_2_' + str(i[0]) + '.png')
