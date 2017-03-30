@@ -2,7 +2,7 @@
 #Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. The script can take as input three different situations,
 # a backcross, an outcross when the mutated ecotype is not in the reference background and an outcross when the mutated ecotype is in the reference background.
 
-
+#par f2wt
 
 ##Arguments:
 	#"fichero" which is the file that comes as an input.
@@ -12,7 +12,7 @@
 	#"fasta" corresponds to the fasta file from which the input has been obtained
 	#"mode" can be back meaning backcross or out meaning outcross
 	#"width" . . . 
-	#"Parental_modality" takes as values ref and noref, meaning if the line sequenced is from the reference background or not.
+	#"parental_modality" takes as values ref and noref, meaning if the line sequenced is from the reference background or not.
 	#"filtering_mode" . . . 
 import argparse
 parser = argparse.ArgumentParser()
@@ -24,9 +24,7 @@ parser.add_argument('-fasta', action="store", dest = 'fasta_input', required = "
 parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-interval_width', action="store", dest = 'interval_width', required = "True") 
 parser.add_argument('-parental_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
-parser.add_argument("-filtering_mode", action="store", dest = "control") #Depending on which control is being used the data that will arrive to map-mutation will be different and will be analized in a different way
-
-args = parser.parse_args()
+parser.add_argument("-snp_analysis_mode", action="store", dest = "control") #Depending on which control is being used: par, f2wt
 
 fasta_input = args.fasta_input
 size = int(args.size)
@@ -42,7 +40,7 @@ if mode == "back":
 result.write("if outcross:\n-@ lines: window, average, boost, chromosome\n-! line: min_max_window, max_max_window, max_boost, chromosome\n-? lines: chromosome, min_big_window, max_big_window\n-* lines: chromosome, min_window, max_window, boost_value\nif backcross:\n-@ line: window, average, chromosome\n-! line: min_window. max_window, max_average, chromosome\n-? line: chromosome, min_big_window, max_big_window\n-* line: chormosome, min_window, max_window, average\nif control is F2 WT\n-@ lines: window, ratio, chromosome\n-! line: min_max_window, max_max_window, max_ratio, chromosome\n-? lines: chromosome, min_big_window, max_big_window\n-* lines: chromosome, min_window, max_window, ratio\n")
 result.close()
 
-#Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored] ADD CHANGES FOR F2WT
+#Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored] 
 def getinfo(chro, inpu):
 	n = 0 			#counter n will be used in order not to take into account the header
 	dicpos = {} 
@@ -83,27 +81,27 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 			s = float(key)											
 		 	if s >= a and s <b:		
 				AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1])) 
-				if control == "parental":	
+				if control == "par":	
 					if c == 0.7 and AF < c:
 						snps_window.append(AF)
 					elif c == 0.3 and AF> c:							
 			 			snps_window.append(AF)
-				elif control == "wtF2bulk":
+				elif control == "f2wt":
 					AFwt = float(SNP[key][-3])/(float(SNP[key][-3])+ float(SNP[key][-4]))
 					snps_window.append(AF)
 					snps_window.append(AFwt)
 		if len(snps_window) != 0:
-			if control == "parental":										
+			if control == "par":										
 				average_FA = calculation_average(snps_window)
 				dictionary_windows[i] = []
 				dictionary_windows[i].append(average_FA)
-			elif control == "wtF2bulk":
+			elif control == "f2wt":
 				average_FA = calculation_average(snps_window[0])
 				average_FA_WT = calculation_average(snps_window[1]) 
 				dictionary_windows[i] = []
 				dictionary_windows[i].append(average_FA)
 				dictionary_windows[i].append(average_FA_WT)
-		elif len(snps_window) == 0 and modality == "ref" and control == "parental" :  #in the modality outcross of mutant in the reference background, it is possible that a window will not contain any SNP. We will suppose a value near 0.
+		elif len(snps_window) == 0 and modality == "ref" and control == "par" :  #in the modality outcross of mutant in the reference background, it is possible that a window will not contain any SNP. We will suppose a value near 0.
 			average_FA = 0.01	
 			dictionary_windows[i] = []
 			dictionary_windows[i].append(average_FA)                       
@@ -137,15 +135,15 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 	for items in position:			
 		average = window[items][0]
 		items = int(items)
-		if mode =="back" and control == "parental" :
+		if mode =="back" and control == "par" :
 			parameter = average
 			result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n")   
-		elif mode =="out" and control == "parental":
+		elif mode =="out" and control == "par":
 			boost = 1/abs(1-(1/max(average, 1-average)))
 			parameter = boost
 			dictionary[items]= boost
 			result.write("@"+"\t"+str(items)+"\t"+ str(average)+"\t"+ str(boost)+ "\t"+str(chromosome)+ "\n")
-		elif control == "wtF2bulk":
+		elif control == "f2wt":
 			average_mut = window[items][0]
 			average_WT = window[items][1]
 			best_ditionary[items][0]
@@ -161,9 +159,9 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 			best_chromosome = chromosome
 			best_parameter = parameter
 	if chromosome == best_chromosome: 		
-		if mode == "out" or control == "wtF2bulk":
+		if mode == "out" or control == "f2wt":
 			best_dictionary= dictionary
-		if mode == "back" and control == "parental":
+		if mode == "back" and control == "par":
 			best_dictionary = window
 	return maximum_position, best_parameter, best_chromosome, best_dictionary
 
@@ -247,7 +245,7 @@ if mode == "back":
 	final_processing = function_used[0]
 if mode == "out":
 	final_processing = function_used[1]
-if control == "wtF2bulk":
+if control == "f2wt":
 	final_processing = function_used[1]
 
 #Call of the function chromosome by chromosome, the final result comes from the chromosome with the higher parameters
