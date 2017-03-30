@@ -464,12 +464,12 @@ echo $(date) ': Varanalyzer finished.' >> $my_log_file
 # FILTER TO SELECT SNPS TO DRAW: (para el backcross es especialmente relevante quitar la "basura" a la hora de dibujar los SNPs)
 if [ $my_cross == oc ]
 then
-	af_min = 0.1
+	af_min=0.1
 fi
 
 if [ $my_cross == bc ]
 then
-	af_min = 0.25
+	af_min=0.25
 fi
 
 {
