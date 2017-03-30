@@ -22,6 +22,7 @@ parser.add_argument('-f', action="store", dest = 'output_html')
 parser.add_argument('-m', action="store", dest = 'mode', default = 'pe')
 parser.add_argument('-pname', action="store", dest='project_name')
 parser.add_argument('-cross', action="store", dest='my_cross')
+parser.add_argument('-snp_analysis_type', action="store", dest='my_snp_analysis_type')
 
 
 args = parser.parse_args()

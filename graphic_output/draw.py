@@ -21,6 +21,7 @@ parser.add_argument('-f', action="store", dest = 'output_html')
 parser.add_argument('-m', action="store", dest = 'mode', default = 'P')
 parser.add_argument('-pname', action="store", dest='project_name')
 parser.add_argument('-cross', action="store", dest='my_cross')
+parser.add_argument('-snp_analysis_type', action="store", dest='my_snp_analysis_type')
 
 args = parser.parse_args()
 
@@ -139,6 +140,15 @@ def fa_vs_pos():
 				pos_img = int(float(sp[1])/scaling_factor_x) + int(12/100.0*wide)
 
 				draw.ellipse((pos_img, fa_img, pos_img, fa_img), fill=(147, 147, 147))
+
+		if args.my_snp_analysis_type == f2wt:
+			for l, line in enumerate(lines):
+				sp = line.split()
+				if i[0].lower() == sp[0].lower():
+					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
+					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+					pos_img = int(float(sp[1])/scaling_factor_x) + int(12/100.0*wide)
+					draw.ellipse((pos_img, fa_img, pos_img, fa_img), fill=(100, 100, 100))
 
 
 
