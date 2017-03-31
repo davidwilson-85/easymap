@@ -24,7 +24,7 @@ parser.add_argument('-fasta', action="store", dest = 'fasta_input', required = "
 parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-interval_width', action="store", dest = 'interval_width', required = "True") 
 parser.add_argument('-parental_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
-parser.add_argument('-snp_analysis_mode', action='store', dest = 'control', required = "True") #Depending on which control is being used: par, f2wt
+parser.add_argument('-snp_analysis_type', action='store', dest = 'control', required = "True") #Depending on which control is being used: par, f2wt
 
 
 args = parser.parse_args()
