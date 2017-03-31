@@ -2,7 +2,7 @@
 #Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. The script can take as input three different situations,
 # a backcross, an outcross when the mutated ecotype is not in the reference background and an outcross when the mutated ecotype is in the reference background.
 
-#par f2wt
+
 
 ##Arguments:
 	#"fichero" which is the file that comes as an input.
@@ -24,7 +24,12 @@ parser.add_argument('-fasta', action="store", dest = 'fasta_input', required = "
 parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-interval_width', action="store", dest = 'interval_width', required = "True") 
 parser.add_argument('-parental_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
-parser.add_argument("-snp_analysis_mode", action="store", dest = "control") #Depending on which control is being used: par, f2wt
+parser.add_argument('-snp_analysis_mode', action='store', dest = 'control', required = "True") #Depending on which control is being used: par, f2wt
+
+
+args = parser.parse_args()
+
+
 
 fasta_input = args.fasta_input
 size = int(args.size)
