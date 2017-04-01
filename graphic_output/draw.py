@@ -1,4 +1,4 @@
-import argparse
+import argparse, math
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
@@ -21,6 +21,7 @@ parser.add_argument('-f', action="store", dest = 'output_html')
 parser.add_argument('-m', action="store", dest = 'mode', default = 'P')
 parser.add_argument('-pname', action="store", dest='project_name')
 parser.add_argument('-cross', action="store", dest='my_cross')
+parser.add_argument('-snp_analysis_type', action="store", dest='my_snp_analysis_type')
 
 args = parser.parse_args()
 
@@ -115,16 +116,18 @@ def fa_vs_pos():
 		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(20/1000.0*wide))
 
 		r = red(int(i[1]))
+
 		if 'Mb' in r:
-			sp = r.split(' ')
-			mb_max = int(sp[0]) + 1
-			max_graph_x = int(mb_max) * 1000000
+			max_graph_x = int(math.ceil(int(i[1])/1000000.0))*1000000
+			#sp = r.split(' ')
+			#mb_max = int(sp[0]) +1
+			#max_graph_x = int(mb_max) * 1000000
 
 		elif 'kb' in r: 
 			max_graph_x = i[1]
 
 		#Scaling factors
-		scaling_factor_x = (float(max_graph_x)/(73/100.0*wide))			#nts/pixel
+		scaling_factor_x = int(math.ceil(float(max_graph_x)/(73/100.0*wide)))			#nts/pixel         <-----------------------------------------------------------#######################
 		scaling_factor_y = (1.1/(63/100.0*height))					#fa/pixels
 
 
@@ -137,6 +140,15 @@ def fa_vs_pos():
 				pos_img = int(float(sp[1])/scaling_factor_x) + int(12/100.0*wide)
 
 				draw.ellipse((pos_img, fa_img, pos_img, fa_img), fill=(147, 147, 147))
+
+		if args.my_snp_analysis_type == f2wt:
+			for l, line in enumerate(lines):
+				sp = line.split()
+				if i[0].lower() == sp[0].lower():
+					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
+					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+					pos_img = int(float(sp[1])/scaling_factor_x) + int(12/100.0*wide)
+					draw.ellipse((pos_img, fa_img, pos_img, fa_img), fill=(100, 100, 100))
 
 
 
@@ -220,7 +232,7 @@ def fa_vs_pos():
 		#Axes
 		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(12/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#Y axis
 		draw.line((int(12/100.0*wide), int(80/100.0*height)) + (int(85/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#X axis
-		draw.text(((int(5/100.0*wide)), (int(17/100.0*height))), ('AF'), font=fnt1, fill=(0,0,0,255))
+		draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt1, fill=(0,0,0,255))
 		
 
 		#Axis rulers 
@@ -250,14 +262,8 @@ def fa_vs_pos():
 
 		if 'Mb' in r:
 			sp = r.split(' ')
-			mb_max = int(sp[0]) + 1
-			mbs = list()
 			mb = 1
-			while mb != (mb_max + 1): 
-				mbs.append(mb)
-				mb = mb + 1
-			
-			x_increment = int(73/100.0*wide)/mb_max
+			x_increment = 1000000*1/scaling_factor_x	#	#<-----------------------------------------------------------#######################
 			x_ruler =  int(x_increment) + int(12/100.0*wide)
 			x_tag = 1
 			while x_ruler in range(int(12/100.0*wide), int(85/100.0*wide)):
@@ -272,15 +278,14 @@ def fa_vs_pos():
 
 			x_title = str(i[0]) + ' (Mb )'
 			w, h = draw.textsize(str(x_title))
-			draw.text(((int(50/100.0*wide) - w/2 - 20), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
+			draw.text(((int(50/100.0*wide) - w/2 - 30), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
 
 		#Y axis
-		draw.line(( int(11/100.0*wide) , int(17/100.0*height) ) + ( int(13/100.0*wide) , int(17/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( int(11/100.0*wide) , int((31.5 + 17)/100.0*height) ) + ( int(13/100.0*wide) , int((31.5 + 17)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( int(11.5/100.0*wide) , int(22.7/100.0*height) ) + ( int(12/100.0*wide) , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( int(11.5/100.0*wide) , int((28.65 + 22.7)/100.0*height) ) + ( int(12/100.0*wide) , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 
-		draw.text(((int(8/100.0*wide)), (int(17/100.0*height))), ( '1.0' ), font=fnt1, fill=(0,0,0,255))
-		draw.text(((int(8/100.0*wide)), (int((31.5 + 17)/100.0*height))), ( '0.5' ), font=fnt1, fill=(0,0,0,255))
-
+		draw.text(((int(8/100.0*wide)), (int(20.7/100.0*height))), ( '1.0' ), font=fnt4, fill=(0,0,0,255))
+		draw.text(((int(8/100.0*wide)), (int((28.65 + 20.7)/100.0*height))), ( '0.5' ), font=fnt4, fill=(0,0,0,255))
 
 		#save image, specifying the format with the extension
 		im.save(project + '/3_workflow_output/img_2_' + str(i[0]) + '.png')
