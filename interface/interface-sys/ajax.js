@@ -30,7 +30,7 @@ function readLog() {
 		    document.getElementById("logInfo").innerHTML = this.responseText;
 		}
 	};
-	xmlhttp.open("GET", "read_log.php", true);
+	xmlhttp.open("GET", "read-log.php", true);
 	xmlhttp.send();
 }
 

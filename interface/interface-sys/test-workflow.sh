@@ -5,7 +5,7 @@ arg1=$1
 arg2=$2
 arg3=$3
 
-#mkdir files
+mkdir files
 
 echo 'First message' > log.log
 echo $arg1 $arg2 $arg3 >> log.log
