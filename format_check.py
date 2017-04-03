@@ -4,7 +4,6 @@ parser = argparse.ArgumentParser()
 from subprocess import call
 import os
 
-#ADD SHORT version
 parser.add_argument('--project_name', "-P", action="store", dest = 'project_name', required = "True")
 parser.add_argument('--workflow', "-w" ,action="store", dest = 'workflow', choices=set(('snp','ins')), required = "True")
 parser.add_argument('--data_source', "-d", action="store", dest = 'data_source', choices=set(('sim','exp')), required = "True")
@@ -61,7 +60,7 @@ is_there_space = project_name.split(" ")
 if len(is_there_space) != 1:
 	error = 1
 	problems.append("Please select a project name without any space")
-
+#Check whether user_data directory exists
 input_folder = "./user_data"
 if os.path.isdir(input_folder) == False:
 	error = 1
@@ -104,7 +103,9 @@ if workflow=="snp":
 	if snp_analysis_type == "par":
 		if cross_type == "n/p" or is_ref_strain== "n/p" or parental_used_as_control == "n/p": #Por el bien de los tontos: dividir en tres 
 			error = 1
-			problems.append("In order to use the mode snp, values for cross_type (oc/bc), is_ref_strain (ref/noref) or parental_used_as_control (mut/nomut) must be given. See more info in the documentation page")
+			problems.append("Snp mode requires value oc/bc in cross_type") if cross_type == "n/p"
+			problems.append("Snp mode requires value ref/noref in is_ref_strain") if is_ref_strain== "n/p"
+			problems.append("Snp mode requires value mut/nomut in parental_used_as_control") if parental_used_as_control == "n/p"
 		if cross_type == "oc" and is_ref_strain == "noref" and parental_used_as_control == "nomut":
 			error = 1
 			problems.append("Unfortunatelly this software is not thought to allow the process of an outcross which is not in the reference background and the sequenced parental is not the pre-mutagenized one")
@@ -123,15 +124,14 @@ if data_source == "sim":
 	if workflow == "snp": 
 		if sim_mut == "n/p" or sim_recsel == "n/p" or sim_seq == "n/p" or snp_analysis_type == "n/p":
 			error = 1
-			problems.append("In order to perform the simulation mode (sim) for snp (snp) parameters sim_mut, sim_recsel and sim_seq must be given together with the snp_analysis_type (control used), please find the information regarding then in the software documentation")
+			problems.append("Simulated snp data requires sim_mut parameter. Format: 40+e ; were the first number represents the number of mutations and the second character (e/d) if they are due to EMS or spontaniously") if sim_mut == "n/p"
+			problems.append("Simulated snp data requires sim_recsel parameter. Format 0,14;1,31/0,24;1,42+1,10000000+r+50; were the first long value should be between "" and represents the probability of suffering recombinations (first number is the number of times that recombines it is separed from the probability by a ;) and chromosomes are separed by / . The secondo parameter is the chormosome and the position where the causal mutation will be held  . . .") if sim_recsel == "n/p"
+			problems.append("Simulated snp data requires sim_seq parameter. Format 1+100,0+500,100+1+50 ") if snp_analysis_type == "n/p"
 	else:
 		if sim_mut == "n/p" or sim_seq == "n/p":
 			error = 1
 			problems.append("In order to perform the simulation mode (sim) for inserctions (ins) parameters sim_mut and sim_seq must be given, please find the information regarding then in the software documentation")
 	
-
-
-
 
 
 	#Check sim_mut ex: 40+e 
