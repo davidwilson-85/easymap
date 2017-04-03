@@ -318,5 +318,5 @@ then
 fi
 
 echo $(date)": Execution of project {" $project_name "} finished." >> $my_log_file
-
+echo 'status:finished' >> $my_status_file
 echo $exit_code

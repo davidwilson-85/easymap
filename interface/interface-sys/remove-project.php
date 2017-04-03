@@ -1,13 +1,11 @@
 <?php
 
-$project = $_POST['project'];
-
-$project = '';
+$project = $_GET['project'];
 
 
 
-$command = 'rm -rf --recursive '. $project;
+$command = 'rm -rf --recursive user_projects/'. $project;
 
-$output = shell_exec($command);
+shell_exec($command);
 
 ?>
