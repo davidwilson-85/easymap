@@ -8,7 +8,7 @@ Make that process-input.sh, simulator.sh, and the worklflows write their PIDs to
 status in the logs folder. Then with PHP I get the PIDs and use something like:
 
 kill -9 <PID>                  (for easymap.sh)
-pkill -9 -P <PPID> xxx         (for the workflows) 
+pkill -9 -P <PPID> xxx.sh         (for the workflows) 
 pkill -9 -P <PPID> program     (for bowtie, samtools, bcftools, python scripts...)
 
 */
@@ -41,10 +41,17 @@ foreach ($element in $targets) {
 $command = 'pkill -P <PPID> process-input.sh';
 
 
-$output1 = shell_exec('pkill easymap.sh; pkill simulator.sh; pkill sim-seq.py; pkill sim-mut.py; pkill sim-recsel.py');
+$output1 = shell_exec('pkill -9 easymap.sh; pkill -9 simulator.sh; pkill -9 sim-seq.py; pkill sim-mut.py; pkill sim-recsel.py');
 
 
-// here change status to killed
+// here change status to killed by appending a line to the bottom: 'status:killed'
+
+
+
+
+
+
+
 
 
 

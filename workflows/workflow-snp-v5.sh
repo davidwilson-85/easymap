@@ -70,14 +70,15 @@ my_pseq=${17}													#mut / nomut : sequenced parental provided is the muta
 snp_analysis_type=${18}
 
 
-
-
 #Define the folders in the easymap directory 
 f0=user_data
 f1=$project_name/1_intermediate_files
 f2=$project_name/2_logs
 f3=$project_name/3_workflow_output
 
+# Write PID to status file
+my_status_file=$f2/status
+echo 'pid workflow '$BASHPID >> $my_status_file
 
 #Save path to bowtie2-build and bowtie2 in variable BT2
 export location="$PWD" 

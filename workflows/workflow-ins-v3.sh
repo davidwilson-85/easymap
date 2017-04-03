@@ -60,6 +60,9 @@ f1=$project_name/1_intermediate_files
 f2=$project_name/2_logs
 f3=$project_name/3_workflow_output
 
+# Write PID to status file
+my_status_file=$project_name/$f2/status
+echo 'pid workflow '$BASHPID >> $my_status_file
 
 #Save path to bowtie2-build and bowtie2 in variable BT2
 export location="$PWD" 

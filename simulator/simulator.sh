@@ -30,6 +30,7 @@ exit_code=0
 # Store the location of each folder in a variable
 f0=user_data
 f1=1_intermediate_files
+f2=2_logs
 
 # Get command arguments and assign them to variables
 my_log_file=$1
@@ -38,6 +39,10 @@ analysis_type=$3
 lib_type=$4
 ins_seq=$f0/$5
 snp_analysis_type=${12}
+
+# Write PID to status file
+my_status_file=$project_name/$f2/status
+echo 'pid simulator '$BASHPID >> $my_status_file
 
 # Get the string that contains the parameters for sim-mut.py and extract them by splitting the string by the '+' character
 sim_mut_statement=$6
