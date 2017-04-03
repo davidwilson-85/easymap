@@ -107,27 +107,32 @@ parental_used_as_control=${20}
 snp_analysis_type=${21}
 
 ############################################################
-# Preparation steps
-
-# Create project folder
-[ -d $project_name ] || mkdir $project_name
+# Several necessary checking/preparation steps before actually running easymap
 
 # Declare a flag variable that will be used as exit code, and set it to 0 (no error)
 exit_code=0
 
+# Create 'user_projects' folder if the user has deleted it by mistake
+[ -d user_projects ] || mkdir user_projects
+
 # Store the location of each folder in variables
 f0=user_data
-f1=1_intermediate_files				
+f1=1_intermediate_files
 f2=2_logs
 f3=3_workflow_output
 
-# Check if some folders exist. If no, create them
-[ -d $project_name/$f1 ] || mkdir $project_name/$f1
-[ -d $project_name/$f2 ] || mkdir $project_name/$f2
-[ -d $project_name/$f3 ] || mkdir $project_name/$f3
+# Create project folder and subfolders
+mkdir $project_name
+mkdir $project_name/$f1
+mkdir $project_name/$f2
+mkdir $project_name/$f3
 
+# Change permisssion so www-data can read and write in all folders of the project
+chmod -R 777 $project_name
+
+# Deprecated
 # Delete intermediate and final files from previous executions, For that, check whether dirs have any
-# content (folders or files) and, if so, remove it
+# have content (folders or files) and, if so, remove it
 [ "$(ls -A $project_name/$f1)" ] && rm --recursive $project_name/$f1/*
 [ "$(ls -A $project_name/$f2)" ] && rm --recursive $project_name/$f2/*
 [ "$(ls -A $project_name/$f3)" ] && rm --recursive $project_name/$f3/*
@@ -136,7 +141,18 @@ f3=3_workflow_output
 my_log_file=$project_name/$f2/log.log
 touch $my_log_file
 
-# Check that the folders /project/0_input and /project/0_input/gnm_ref exist. If they do not, 
+# Define path of status file and create it
+my_status_file=$project_name/$f2/status
+touch $my_status_file
+chmod 666 $my_status_file
+echo 'pid:'$BASHPID >> $my_status_file
+echo 'status:running' >> $my_status_file
+
+echo 'BASHPID '$BASHPID >> $my_log_file
+
+echo '$$ '$$ >> $my_log_file
+
+# Check that the folders /user_data and /user_data/gnm_ref exist. If they do not, 
 if ! [ -d $f0 ]
 then
 	{
@@ -146,6 +162,7 @@ then
 		exit	
 	}
 fi
+
 if ! [ -d $f0/gnm_ref ]
 then
 	{
@@ -155,6 +172,7 @@ then
 		exit
 	}
 fi
+
 
 ############################################################
 # Start easymap
