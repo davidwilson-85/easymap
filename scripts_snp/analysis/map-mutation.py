@@ -23,7 +23,7 @@ parser.add_argument('-window_space', action="store", dest = 'space', required = 
 parser.add_argument('-fasta', action="store", dest = 'fasta_input', required = "True")
 parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-interval_width', action="store", dest = 'interval_width', required = "True") 
-parser.add_argument('-parental_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
+parser.add_argument('-control_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
 parser.add_argument('-snp_analysis_type', action='store', dest = 'control', required = "True") #Depending on which control is being used: par, f2wt
 
 
@@ -82,27 +82,29 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 		a = i - windowsize/2
 		b = i + windowsize/2
 		snps_window = []
+		snps_window2=[]
 		for key in SNP:	
 			s = float(key)											
-		 	if s >= a and s <b:		
-				AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1])) 
-				if control == "par":	
+		 	if s >= a and s <b:		 
+				if control == "par":
+					AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1]))	
 					if c == 0.7 and AF < c:
 						snps_window.append(AF)
 					elif c == 0.3 and AF> c:							
 			 			snps_window.append(AF)
 				elif control == "f2wt":
-					AFwt = float(SNP[key][-3])/(float(SNP[key][-3])+ float(SNP[key][-4]))
+					AF = float(SNP[key][-3])/(float(SNP[key][-3])+ float(SNP[key][-4]))
+					AFwt = float(SNP[key][-1])/(float(SNP[key][-2])+ float(SNP[key][-1]))
 					snps_window.append(AF)
-					snps_window.append(AFwt)
+					snps_window2.append(AFwt)
 		if len(snps_window) != 0:
 			if control == "par":										
 				average_FA = calculation_average(snps_window)
 				dictionary_windows[i] = []
 				dictionary_windows[i].append(average_FA)
 			elif control == "f2wt":
-				average_FA = calculation_average(snps_window[0])
-				average_FA_WT = calculation_average(snps_window[1]) 
+				average_FA = calculation_average(snps_window)
+				average_FA_WT = calculation_average(snps_window2) 
 				dictionary_windows[i] = []
 				dictionary_windows[i].append(average_FA)
 				dictionary_windows[i].append(average_FA_WT)
@@ -151,10 +153,10 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 		elif control == "f2wt":
 			average_mut = window[items][0]
 			average_WT = window[items][1]
-			best_ditionary[items][0]
-			ratio = int(average_mut) - int(average_WT)
+			ratio = float(average_mut) - float(average_WT)
 			parameter = ratio
-			result.write("@	"+str(items)+ "\t"+ str(ratio) + "\t" + str(chromosme) + "\n")
+			dictionary[items] = ratio
+			result.write("@	"+str(items)+ "\t"+ str(ratio) + "\t" + str(chromosome) + "\n")
 
 		if best_parameter == "n/p" or float(parameter) > float(best_parameter):
 			maximum_position = []
@@ -260,23 +262,23 @@ for chromosome in ch:
 	inpu = open(args.input, "r")	
 	genome = getinfo(chromosome,inpu)		
 	windows = chromosomal_position(size, space, genome,chromosome, ch[chromosome], mode, modality, control) 
-	if mode == "out":
+	if mode == "out" and control == "par" :
 		if modality == "noref":
 			mini_average = 0.4
 			maxi_average = 1
 		elif modality == "ref":
 			mini_average= 0
 			maxi_average= 0.6    
-		filtered_windows= threshold_step(windows, mini_average, maxi_average) 
-	x_value= union_points(filtered_windows)
+		windows= threshold_step(windows, mini_average, maxi_average) 
+	x_value= union_points(windows)
 	if z == 0:
-		result_data = data_analysis(filtered_windows, x_value, chromosome, "n/p", "n/p", "n/p", "n/p", size, mode, control)
+		result_data = data_analysis(windows, x_value, chromosome, "n/p", "n/p", "n/p", "n/p", size, mode, control)
 		best = result_data[1]
 		maximum_position = result_data[0]
 		best_chromosome = result_data[2]
 		best_dictionary = result_data[3]
 	else:
-		result_data = data_analysis(filtered_windows, x_value, chromosome,maximum_position,best, best_chromosome, best_dictionary, size, mode, control)
+		result_data = data_analysis(windows, x_value, chromosome,maximum_position,best, best_chromosome, best_dictionary, size, mode, control)
 	z += 1
 final_processing(result_data, interval_width)
 
