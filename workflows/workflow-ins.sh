@@ -292,7 +292,7 @@ echo Insertions sorted. >> $my_log_file
 
 #ma-input.py
 {
-	python $location/scripts_ins/ins-to-varanalyzer.py -a $f3/sorted_insertions.txt -b $f1/ins-to-varanalyzer.txt
+	python $location/scripts_ins/ins_to_varanalyzer/ins-to-varanalyzer.py -a $f3/sorted_insertions.txt -b $f1/ins-to-varanalyzer.txt
 	
 } || {
 	echo 'error: ins-to-varanalyzer.py' >> $my_log_file
@@ -318,10 +318,10 @@ echo Done. >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/variants.txt -rrl $my_rrl -pname $project_name
+	python $location/graphic_output/graphic-output.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/variants.txt -rrl $my_rrl -pname $project_name
 	
 } || {
-	echo 'error:graphic-output-v3.py' >> $my_log_file
+	echo 'error:graphic-output.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit

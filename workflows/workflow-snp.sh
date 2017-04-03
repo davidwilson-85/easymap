@@ -463,7 +463,7 @@ fi
 
 #snp-to-varanalyzer.py
 {
-	python $location/scripts_snp/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
+	python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
 	
 } || {
 	echo $(date) ': Error: snp-to-varanalyzer.py' >> $my_log_file
@@ -527,14 +527,14 @@ echo $(date) ': VCF filter finished' >> $my_log_file
 
 
 #COMANDO PRUEBAS GRAPHIC OUTPUT :
-#	python ./graphic_output/graphic-output-v3.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100 -iva ./user_projects/project/1_intermediate_files/variants.txt -gff ./user_data/chr1+4.gff -pname user_projects/project  -cross bc
+#	python ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100 -iva ./user_projects/project/1_intermediate_files/variants.txt -gff ./user_data/chr1+4.gff -pname user_projects/project  -cross bc
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output-v3.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 	
 } || {
-	echo $(date) ': Error: graphic-output-v3.py' >> $my_log_file
+	echo $(date) ': Error: graphic-output.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
