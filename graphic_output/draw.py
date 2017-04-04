@@ -504,7 +504,6 @@ def insertions_overview_and_histograms():
 				insertion = str(sp[2]).strip()
 				if insertion not in insertions and insertion != '-':
 					insertions.append(insertion)
-		
 				
 		for e in insertions:
 			try:
@@ -518,7 +517,7 @@ def insertions_overview_and_histograms():
 				if not line.startswith('@'):
 					sp = line.split('\t')
 					#Max and min for genome region in graphic
-					if sp[2] == e: 
+					if sp[2] == e and sp[0] == 'PAIRED' : 
 						if int(sp[3]) > region_max:
 							region_max = int(sp[3])
 						else:
@@ -537,8 +536,6 @@ def insertions_overview_and_histograms():
 						if int(sp[4]) > rd_max_local:
 							rd_max_local = int(sp[4])		
 
-
-
 			rd_max_paired = rd_max_paired + 10
 			rd_max_local = rd_max_local + 5
 			region_max = region_max + 100
@@ -553,12 +550,10 @@ def insertions_overview_and_histograms():
 			draw.line((120, 755) + (900, 755), fill=256, width=3) 								#x axis local
 			draw.line((120, 455) + (120, 755), fill=256, width=3)   							#y axis local
 			
-		
 			draw.text(((450), (795)), ('Nucleotide'), font=fnt1, fill=(0,0,0,255))
 			draw.text(((20), (120)), ('RD'), font=fnt1, fill=(0,0,0,255))
 			draw.text(((140), (155)), ('Paired-reads analysis'), font=fnt3, fill=(0,0,0,255))
 			draw.text(((140), (460)), ('Single-reads analysis'), font=fnt3, fill=(0,0,0,255))
-
 		
 			#Scaling factors 
 			nucleotides = region_max - region_min
@@ -1002,7 +997,7 @@ def gene_plot():
 		scale = 100
 		px_scale = float(scale/gene_scaling_factor)
 		draw.line((int(0.95*wide) - int(px_scale), int(290/350.0*height)) + (int(0.95*wide), int(290/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
-		draw.text((int(0.935*wide) - int(px_scale), int(300.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
+		draw.text((int(0.9*wide), int(300.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
 
 
 		#Insertion triangle and info
