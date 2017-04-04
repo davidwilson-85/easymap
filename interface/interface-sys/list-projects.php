@@ -43,11 +43,11 @@ foreach ($projects as $project) {
 
 	//echo $project .''. $current_status .'<br>';
 	
-	//echo $project .' --- Status --- View log file --- Stop execution --- Remove files<br>';
-	//                   running    +                 +                  + > -                
-	//                   finished   +                 -                  + > -
-	//                   killed     +                 -                  + > -
-	//                   error      +                 -                  + > -
+	//echo $project .' --- Status --- View log file --- View report --- Stop execution --- Remove files<br>';
+	//                     running    +                 -               +                  + > -                
+	//                     finished   +                 +               -                  + > -
+	//                     killed     +                 -               -                  + > -
+	//                     error      +                 -               -                  + > -
 
 
 

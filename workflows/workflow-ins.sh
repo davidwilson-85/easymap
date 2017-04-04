@@ -305,10 +305,10 @@ echo Done. >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer_v1.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name
+	python $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name
 	
 } || {
-	echo 'error: varanalyzer_v1.py' >> $my_log_file
+	echo 'error: varanalyzer.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit

@@ -58,7 +58,25 @@ $workflow_children = array(
 	'bowtie2-build-s',
 	'bowtie2-align-s',
 	'samtools',
-	'bcftools'
+	'bcftools',
+	'draw.py',
+	'draw.pyc',
+	'graphic-output.py',
+	'local-analysis.py',
+	'paired-analysis.py',
+	'filter1.py',
+	'filter2.py',
+	'sam-file-check.py',
+	'sort.py',
+	'ins-to-varanalyzer.py',
+	'af-comparison.py',
+	'map-mutation.py',
+	'variants-filter.py',
+	'vcf-groomer.py',
+	'variants-operations.py',
+	'snp-to-varanalyzer.py',
+	'varanalyzer_v0.py',
+	'varanalyzer_v1.py'
 );
 
 // Kill all processes that are direct children of simulator.sh and of workflow-ins/snp.sh

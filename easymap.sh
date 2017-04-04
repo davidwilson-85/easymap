@@ -155,6 +155,7 @@ if ! [ -d $f0 ]
 then
 	{
 		echo $(date)": Execution could not start because folder user_data could not be found. Please, create the folder and use it to place the files you want to analyze." > $my_log_file
+		echo 'status:error' >> $my_status_file
 		exit_code=1
 		echo $exit_code
 		exit	
@@ -165,6 +166,7 @@ if ! [ -d $f0/gnm_ref ]
 then
 	{
 		echo $(date)": Execution could not start because folder user_data/gnm_ref could not be found. Please, create the folder and use it to place the your reference genome." > $my_log_file
+		echo 'status:error' >> $my_status_file
 		exit_code=1
 		echo $exit_code
 		exit
@@ -245,6 +247,7 @@ then
 else 
 	{
 		echo $(date)": One or more inputs incorrect (see details above in this log). Quit." >> $my_log_file
+		echo 'status:error' >> $my_status_file
 		exit
 	}
 fi
@@ -268,6 +271,7 @@ then
 		else 
 			{
 				echo $(date)": Simulation failed (see details above in this log). Quit." >> $my_log_file
+				echo 'status:error' >> $my_status_file
 				exit
 			}
 		fi
@@ -292,6 +296,7 @@ then
 		else 
 			{
 				echo $(date)": Analysis workflow failed (see details above in this log)." >> $my_log_file
+				echo 'status:error' >> $my_status_file
 				exit
 			}
 		fi
@@ -311,6 +316,7 @@ then
 		else 
 			{
 				echo $(date)": Analysis workflow failed (see details above in this log)." >> $my_log_file
+				echo 'status:error' >> $my_status_file
 				exit
 			}
 		fi
