@@ -15,7 +15,7 @@
 # -outdir: Name of directory relative to current location where to place the recombinant chromosomes
 # 		created.
 # 
-# -rec_freq_distr: List of ';'-separated pairs (Nbr XO events, freq (%)). Example: "0,15; 1,20; 2,18; 3,10; ..."
+# -rec_freq_distr: List of ';'-separated pairs (Nbr XO events, freq (%)). Example: "0,15; 1,20; 2,18; 3,10; ..."  ; --> -   sin comillas
 #			Sum of freq values must be 100%. This distribution is determined experimentally (e.g. in
 #			Arabidopsis: Salome et al 2012, Heredity (2012) 108, 447-455; doi:10.1038/hdy.2011.95.) 
 # 
@@ -88,7 +88,7 @@ def chr_freq_generator(rfd):
 		f = 0
 		former_value = 0
 		chr_xo= []
-		for items in contig_fr.split(";"):
+		for items in contig_fr.split("-"):
 			items = items.split(",")
 			position = []
 			if f != 0:
