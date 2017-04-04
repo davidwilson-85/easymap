@@ -1002,7 +1002,7 @@ def gene_plot():
 		scale = 100
 		px_scale = float(scale/gene_scaling_factor)
 		draw.line((int(0.95*wide) - int(px_scale), int(290/350.0*height)) + (int(0.95*wide), int(290/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
-		draw.text((int(0.935*wide) - int(px_scale), int(300.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
+		draw.text((int(0.9*wide), int(300.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
 
 
 		#Insertion triangle and info

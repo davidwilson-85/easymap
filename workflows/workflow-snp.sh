@@ -89,12 +89,12 @@ export location="$PWD"
 	$location/bowtie2/bowtie2-build $f1/$my_gs $f1/$my_ix 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
 
 } || {
-	echo $(date) ': bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
+	echo $(date) ': Bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': Bowtie2-build finished' >> $my_log_file
+echo $(date) ': Bowtie2-build finished.' >> $my_log_file
 
 
 ##################################################################################################################################################################################
@@ -112,12 +112,12 @@ then
 		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
-		echo $(date) ': bowtie2 returned an error. See log files.' >> $my_log_file
+		echo $(date) ': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': Bowtie2 finished' >> $my_log_file
+	echo $(date) ': Bowtie2 finished the alignment of F2 reads to genome.' >> $my_log_file
 fi
 
 
@@ -128,12 +128,12 @@ then
 		$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
-		echo $(date) ': bowtie2 returned an error. See log files.' >> $my_log_file
+		echo $(date) ': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': Bowtie2 finished' >> $my_log_file
+	echo $(date) ': Bowtie2 finished the alignment of F2 reads to genome.' >> $my_log_file
 fi
 
 #SAM to BAM
@@ -141,12 +141,12 @@ fi
 	$location/samtools1/samtools sort $f1/alignment1.sam > $f1/alignment1.bam
 
 } || {
-	echo 'Error: SAM to BAM' >> $my_log_file
+	echo 'Error transforming SAM to BAM.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': SAM to BAM finished' >> $my_log_file
+echo $(date) ': SAM to BAM finished.' >> $my_log_file
 
 
 #Variant calling
@@ -157,12 +157,12 @@ echo $(date) ': SAM to BAM finished' >> $my_log_file
 	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_std.txt
 
 } || {
-	echo $(date) ': Error during variant-calling' >> $my_log_file
+	echo $(date) ': Error during variant-calling of F2 data.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': Variant calling finished' >> $my_log_file
+echo $(date) ': F2 data variant calling finished.' >> $my_log_file
 
 
 #Groom vcf
@@ -170,12 +170,12 @@ echo $(date) ': Variant calling finished' >> $my_log_file
 	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va 
 
 } || {
-	echo 'error: vcf-groomer.py' >> $my_log_file
+	echo $(date) ': Error during execution of vcf-groomer.py with F2 data.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': VCF grooming finished' >> $my_log_file
+echo $(date) ': VCF grooming of F2 data finished.' >> $my_log_file
 
 
 #Execute vcf filter
@@ -183,12 +183,12 @@ echo $(date) ': VCF grooming finished' >> $my_log_file
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 1
 
 } || {
-	echo 'error: variants-filter.py' >> $my_log_file
+	echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': VCF filter finished' >> $my_log_file
+echo $(date) ': First VCF filtering step of F2 data finished.' >> $my_log_file
 
 
 ##################################################################################################################################################################################
@@ -206,12 +206,12 @@ then
 		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
-		echo $(date) ': bowtie2 returned an error. See log files.' >> $my_log_file
+		echo $(date) ': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': Bowtie2 finished' >> $my_log_file
+	echo $(date) ': Bowtie2 finished the alignment of control reads to genome.' >> $my_log_file
 fi
 
 
@@ -222,12 +222,12 @@ then
 		$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
 
 	} || {
-		echo $(date) ': bowtie2 returned an error. See log files.' >> $my_log_file
+		echo $(date) ': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': Bowtie2 finished' >> $my_log_file
+	echo $(date) ': Bowtie2 finished the alignment of control reads to genome.' >> $my_log_file
 fi
 
 #SAM to BAM
@@ -235,7 +235,7 @@ fi
 	$location/samtools1/samtools sort $f1/alignment1P.sam > $f1/alignment1P.bam
 
 } || {
-	echo $(date) ': Error: SAM to BAM' >> $my_log_file
+	echo $(date) ': Error transforming SAM to BAM' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
@@ -249,12 +249,12 @@ echo $(date) ': SAM to BAM finished' >> $my_log_file
 	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_std.txt
 
 } || {
-	echo $(date) ': Error during variant-calling' >> $my_log_file
+	echo $(date) ': Error during variant-calling of control data' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': Variant calling finished' >> $my_log_file
+echo $(date) ': Control data variant calling finished' >> $my_log_file
 
 
 #Groom vcf
@@ -262,12 +262,12 @@ echo $(date) ': Variant calling finished' >> $my_log_file
 	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/control_raw.va 
 
 } || {
-	echo $(date) ': Error: vcf-groomer.py' >> $my_log_file
+	echo $(date) ': Error during execution of vcf-groomer.py with control data.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': VCF grooming finished' >> $my_log_file
+echo $(date) ': VCF grooming of control data finished.' >> $my_log_file
 
 
 #Execute vcf filter
@@ -275,12 +275,12 @@ echo $(date) ': VCF grooming finished' >> $my_log_file
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 1
 
 } || {
-	echo $(date) ': Error: variants-filter.py' >> $my_log_file
+	echo $(date) ': Error during execution of variants-filter.py with control data.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': VCF filter finished' >> $my_log_file
+echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_file
 
 
 
@@ -327,12 +327,12 @@ then
 		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 
 	} || {
-		echo $(date) ': Error: operations.py' >> $my_log_file
+		echo $(date) ': Error during first execution of variants-operations.py .' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': VCF operations finished' >> $my_log_file
+	echo $(date) ': VCF operations finished.' >> $my_log_file
 fi
 
 if [ $snp_analysis_type == f2wt ]
@@ -342,12 +342,12 @@ then
 		python $location/scripts_snp/af_comparison/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered.va -out $f1/F2_control_comparison.va
 
 	} || {
-		echo $(date) ': Error: af_comparison.py' >> $my_log_file
+		echo $(date) ': Error during execution of af_comparison.py .' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': af_comparison.py finished' >> $my_log_file
+	echo $(date) ': Allelic frequence comparison finished.' >> $my_log_file
 fi
 
 #_________________________________________________________________________________ANALYSIS_____________________________________________________________________________________________
@@ -372,12 +372,12 @@ fi
 
 
 } || {
-	echo $(date) ': Error: map-mutation.py' >> $my_log_file
+	echo $(date) ': Error during execution of map-mutation.py .' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': map-mutation.py finished' >> $my_log_file
+echo $(date) ': Mutation mapping module finished.' >> $my_log_file
 
 #__________________________________________________________________________________FILTER____________________________________________________________________________________________
 
@@ -387,12 +387,12 @@ echo $(date) ': map-mutation.py finished' >> $my_log_file
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS
 
 } || {
-	echo $(date) ': Error: variants-filter.py' >> $my_log_file
+	echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': VCF filter finished' >> $my_log_file
+echo $(date) ': Second VCF filtering step finished.' >> $my_log_file
 
 
 
@@ -432,12 +432,12 @@ then
 		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered2.va -b $f1/control_filtered.va -c $f1/final_variants.txt -mode $my_operation_mode -primary 1  
 
 	} || {
-		echo $(date) ': Error: operations.py' >> $my_log_file
+		echo $(date) ': Error during second execution of operations.py .' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': vcf operations finished.' >> $my_log_file
+	echo $(date) ': VCF operations finished.' >> $my_log_file
 
 fi
 
@@ -450,12 +450,12 @@ then
 		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered2.va -b $f1/control_filtered.va -c $f1/final_variants.txt -mode $my_operation_mode -primary 1  
 
 	} || {
-		echo $(date) ': Error: operations.py' >> $my_log_file
+		echo $(date) ': Error during execution of operations.py .' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': vcf operations finished.' >> $my_log_file
+	echo $(date) ': VCF operations finished.' >> $my_log_file
 fi
 
 #__________________________________________________________________________________VARANALYZER INPUT_________________________________________________________________________________
@@ -466,12 +466,12 @@ fi
 	python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
 	
 } || {
-	echo $(date) ': Error: snp-to-varanalyzer.py' >> $my_log_file
+	echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': snp-to-varanalyzer.py finished.' >> $my_log_file
+echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
 
 
 
@@ -480,10 +480,10 @@ echo $(date) ': snp-to-varanalyzer.py finished.' >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer_v1.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
+	python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
 
 } || {
-	echo $(date) ': Error: varanalyzer_v1.py' >> $my_log_file
+	echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
@@ -514,12 +514,12 @@ fi
 	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min
 
 } || {
-	echo $(date) ': Error: variants-filter.py' >> $my_log_file
+	echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': VCF filter finished' >> $my_log_file
+echo $(date) ': THird VCF filtering step finished.' >> $my_log_file
 
 
 #__________________________________________________________________________________GRAPHIC OUTPUT_____________________________________________________________________________________
@@ -534,7 +534,7 @@ echo $(date) ': VCF filter finished' >> $my_log_file
 	python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 	
 } || {
-	echo $(date) ': Error: graphic-output.py' >> $my_log_file
+	echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
