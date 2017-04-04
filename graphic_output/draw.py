@@ -504,7 +504,6 @@ def insertions_overview_and_histograms():
 				insertion = str(sp[2]).strip()
 				if insertion not in insertions and insertion != '-':
 					insertions.append(insertion)
-		
 				
 		for e in insertions:
 			try:
@@ -537,8 +536,6 @@ def insertions_overview_and_histograms():
 						if int(sp[4]) > rd_max_local:
 							rd_max_local = int(sp[4])		
 
-
-
 			rd_max_paired = rd_max_paired + 10
 			rd_max_local = rd_max_local + 5
 			region_max = region_max + 100
@@ -553,12 +550,10 @@ def insertions_overview_and_histograms():
 			draw.line((120, 755) + (900, 755), fill=256, width=3) 								#x axis local
 			draw.line((120, 455) + (120, 755), fill=256, width=3)   							#y axis local
 			
-		
 			draw.text(((450), (795)), ('Nucleotide'), font=fnt1, fill=(0,0,0,255))
 			draw.text(((20), (120)), ('RD'), font=fnt1, fill=(0,0,0,255))
 			draw.text(((140), (155)), ('Paired-reads analysis'), font=fnt3, fill=(0,0,0,255))
 			draw.text(((140), (460)), ('Single-reads analysis'), font=fnt3, fill=(0,0,0,255))
-
 		
 			#Scaling factors 
 			nucleotides = region_max - region_min
