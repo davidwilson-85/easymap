@@ -6,7 +6,7 @@
 #  [1] $project_name             		.
 #  [2] $workflow[ins/snp]					.                      Maybe add a 3rd workflow: Analysis of SNPs
 #  [3] $data_source[exp/sim]   			.
-#  [4] $lib_type[se/pe]						.
+#  [4] $lib_type_sample[se/pe]						.
 #  [5] $ref_seqs								*
 #  [6] $ins_seq								*
 #  [7] $read_s									*
@@ -24,8 +24,8 @@
 # [19] $cross_type               		.                      Only for linkage analysis mapping				oc/bc
 # [20] $parental_reads           		.                      Only for linkage analysis mapping				mut/nomut
 # [21] $snp_analysis_type [par/f2wt]	.
-# [22]
-#
+# [22] $lib_type_control [se/pe]	
+
 # sim-mut.py
 # nbr:		${12}[0]
 # mod:		${12}[1]
@@ -87,7 +87,7 @@ timestamp=$(date "+%F-%T")
 project_name=user_projects/$timestamp"_"$1
 workflow=$2
 data_source=$3
-lib_type=$4
+lib_type_sample=$4
 ref_seqs=$5
 ins_seq=$6
 read_s=$7
@@ -105,6 +105,7 @@ cross_type=${18}
 is_ref_strain=${19}
 parental_used_as_control=${20}
 snp_analysis_type=${21}
+lib_type_control=${22}
 
 ############################################################
 # Several necessary checking/preparation steps before actually running easymap
@@ -181,7 +182,8 @@ echo "program:									" $0 >> $my_log_file
 echo "project_name:							" $1 >> $my_log_file
 echo "workflow:								" $2 >> $my_log_file
 echo "data_source:							" $3 >> $my_log_file
-echo "lib_type:								" $4 >> $my_log_file
+echo "lib_type_sample:								" $4 >> $my_log_file
+echo "lib_type_control:								" ${22} >> $my_log_file
 echo "ref_seqs:								" $5 >> $my_log_file
 echo "ins_seq:									" $6 >> $my_log_file
 echo "read_s:									" $7 >> $my_log_file
@@ -211,7 +213,7 @@ echo $(date)": Project data directories created." >> $my_log_file
 if [ $data_source == 'sim' ]
 then
 	{
-		if [ $lib_type == 'se' ]
+		if [ $lib_type_sample == 'se' ]
 		then
 			{
 				read_s=$project_name/$f1/sim_data/sim_seq_output/sample/se_reads.fq
@@ -234,7 +236,7 @@ fi
 
 echo $(date)": STARTING INPUT PROCESSING..." >> $my_log_file
 
-process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
+process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
 
 
 if [ $process_input == 0 ]
@@ -258,7 +260,7 @@ then
 	{
 		echo $(date)": STARTING DATA SIMULATION..." >> $my_log_file
 		
-		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type $ins_seq $sim_mut $sim_recsel $sim_seq $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type`
+		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type_sample $ins_seq $sim_mut $sim_recsel $sim_seq $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type`
 
 		if [ $simulator == 0 ]
 		then
@@ -281,7 +283,7 @@ fi
 if [  $workflow == 'ins' ]
 then
 	{		
-		workflow_result=`./workflows/workflow-ins.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
+		workflow_result=`./workflows/workflow-ins.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
 
 
 		if [ $workflow_result == 0 ]
@@ -301,7 +303,7 @@ fi
 if [  $workflow == 'snp' ]
 then
 	{		
-		workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type`
+		workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type $lib_type_control` 
 
 		if [ $workflow_result == 0 ]
 		then

@@ -29,6 +29,7 @@
 #is_ref_strain		>	${16} 
 # parental_reads_provided			>	${17}
 # [21] $snp_analysis_type [par/f2wt]	>  ${18}
+# lib_type_control			>	${19}
 
 
 
@@ -45,8 +46,8 @@ start_time=`date +%s`
 #Create input variables
 my_log_file=$1
 project_name=$2
-my_mode=$5 														#[pe, se], paired/single  
-my_p_mode=$5													#TEMPORAL, in future independent						<------------------------------------------------------------------------
+my_sample_mode=$5 														#[pe, se], paired/single  
+my_control_mode=${19}													#TEMPORAL, in future independent						<------------------------------------------------------------------------
 my_rd=$7											 			#reads (single)
 my_rf=$8 														#forward reads
 my_rr=$9												 		#reverse reads 			
@@ -105,7 +106,7 @@ echo $(date) ': Bowtie2-build finished.' >> $my_log_file
 #																																												 #
 ##################################################################################################################################################################################
 
-if [ $my_mode == se ] 
+if [ $my_sample_mode == se ] 
 then
 	#Execute bowtie2 unpaired to align raw F2 reads to genome 
 	{
@@ -121,7 +122,7 @@ then
 fi
 
 
-if [ $my_mode == pe ] 
+if [ $my_sample_mode == pe ] 
 then
 	#Execute bowtie2 paired to align raw F2 reads to genome 
 	{
@@ -199,7 +200,7 @@ echo $(date) ': First VCF filtering step of F2 data finished.' >> $my_log_file
 #																																												 #
 ##################################################################################################################################################################################
 
-if [ $my_mode == se ] 
+if [ $my_control_mode == se ] 
 then
 	#Execute bowtie2 unpaired to align raw F2 reads to genome 
 	{
@@ -215,7 +216,7 @@ then
 fi
 
 
-if [ $my_mode == pe ] 
+if [ $my_control_mode == pe ] 
 then
 	#Execute bowtie2 paired to align raw F2 reads to genome 
 	{

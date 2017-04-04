@@ -518,7 +518,7 @@ def insertions_overview_and_histograms():
 				if not line.startswith('@'):
 					sp = line.split('\t')
 					#Max and min for genome region in graphic
-					if sp[2] == e: 
+					if sp[2] == e and sp[0] == 'PAIRED' : 
 						if int(sp[3]) > region_max:
 							region_max = int(sp[3])
 						else:
