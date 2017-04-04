@@ -141,7 +141,7 @@ def fa_vs_pos():
 
 				draw.ellipse((pos_img, fa_img, pos_img, fa_img), fill=(147, 147, 147))
 
-		if args.my_snp_analysis_type == f2wt:
+		if args.my_snp_analysis_type == 'f2wt':
 			for l, line in enumerate(lines):
 				sp = line.split()
 				if i[0].lower() == sp[0].lower():
