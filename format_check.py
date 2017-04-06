@@ -297,7 +297,7 @@ if error == 1:
 	quit()	
 
 
-master_program_input = project_name + " " + workflow + " " + data_source + " "+ lib_type_sample + " " + ins_seq + " " + read_s + " " + read_f + " " + read_r + " " + gff_file + " " + ann_file + " " + sim_mut + " " + sim_recsel + " " + sim_seq + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + is_ref_strain+ " "+ cross_type+ " "+ parental_used_as_control+ " "+ snp_analysis_type + " " + lib_type_control 
+master_program_input = project_name + " " + workflow + " " + data_source + " "+ lib_type_sample + " " +"genome.fa" + " " + ins_seq + " " + read_s + " " + read_f + " " + read_r + " " + gff_file + " " + ann_file + " " + sim_mut + " " + sim_recsel + " " + sim_seq + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + is_ref_strain+ " "+ cross_type+ " "+ parental_used_as_control+ " "+ snp_analysis_type + " " + lib_type_control 
 
 print "Succes!"
 print master_program_input
