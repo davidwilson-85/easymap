@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 
-# Para simulados: python format_check.py -P project_name -w snp -d sim -g chr1+4.gff -sm 40+e -sr "0,14;1,31"+1,10000+r+50 -ss 1+100,0+500,100+1+50+(pe/se) -s par -c oc -r ref -p mut
+#python format_check.py -P project_name -w snp -d sim -g chr1+4.gff -sm 40+e -sr 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,1000000+r+50 -ss 25+100,0+500,100+1+50+se -s f2wt -c bc -r ref -p mut
+
+
 
 #Para experimentales: python format_check.py -P project_name -w snp -d exp -S lectura1,lectura2 -g chr1+4.gff   -c oc -r ref -p mut -s par -C lectura3
 
@@ -151,7 +153,8 @@ if data_source == "sim":
 			error = 1
 			if sim_mut == "n/p" : problems.append("Simulated snp data requires sim_mut parameter. Format: 40+e ; were the first number represents the number of mutations and the second character (e/d) if they are due to EMS or spontaniously") 
 			if sim_recsel == "n/p": problems.append("Simulated snp data requires sim_recsel parameter. Format 0,14;1,31/0,24;1,42+1,10000000+r+50; were the first long value should be between "" and represents the probability of suffering recombinations (first number is the number of times that recombines it is separed from the probability by a ;) and chromosomes are separed by / . The secondo parameter is the chormosome and the position where the causal mutation will be held  . . .") 
-			if snp_analysis_type == "n/p": problems.append("Simulated snp data requires sim_seq parameter. Format 1+100,0+500,100+1+50 ") 
+			if sim_seq == "n/p": problems.append("Simulated snp data requires sim_seq parameter. Format 1+100,0+500,100+1+50 ") 
+			if snp_analysis_type == "n/p": problems.append("snp_analysis_type is required, choose between parental or f2wt as a control ")
 	else:
 		if sim_mut == "n/p" or sim_seq == "n/p":
 			error = 1
@@ -185,6 +188,15 @@ if data_source == "sim":
 			values = sim_recsel.split("+")
 			if len(values) == 4:
 				#check of values[0]?
+				chromo = values[0].split("/")
+				for ch in chromo:
+					c = ch.split("-")
+					for v in c:
+						v = v.split(",")
+						print v
+						if len("v") != 1 : error = 1, problems.append("One or more than one of the values you supplied as recombination frequences for sim_recsel input in simulator does not contain the two required values 2,50 being 2 the number of events of recombination and 50 the probability of happening.")
+						int(v[0])
+						int(v[1]) 
 				val1 = values[1].split(",")
 				int(val1[0])  
 				int(val1[1])
@@ -212,9 +224,10 @@ if data_source == "sim":
 		int(values[3])
 		int(values[4])
 		options = ("se","pe")
+		values[5] = values[5].lower()
 		if values[5] not in options:
 			error = 1
-			problems.appned("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ")
+			problems.append("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ")
 		else:
 			lib_type_sample = values[5]
 			lib_type_control = values[5]
@@ -297,9 +310,10 @@ if error == 1:
 	quit()	
 
 
-master_program_input = project_name + " " + workflow + " " + data_source + " "+ lib_type_sample + " " +"genome.fa" + " " + ins_seq + " " + read_s + " " + read_f + " " + read_r + " " + gff_file + " " + ann_file + " " + sim_mut + " " + sim_recsel + " " + sim_seq + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + is_ref_strain+ " "+ cross_type+ " "+ parental_used_as_control+ " "+ snp_analysis_type + " " + lib_type_control 
+master_program_input = project_name + " " + workflow + " " + data_source + " "+ lib_type_sample + " " +"genome.fa" + " " + ins_seq + " " + read_s + " " + read_f + " " + read_r + " " + gff_file + " " + ann_file + " " + sim_mut + " " + sim_recsel + " " + sim_seq + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + cross_type+ " "+ is_ref_strain+ " "+ parental_used_as_control+ " "+ snp_analysis_type + " " + lib_type_control 
 
 print "Succes!"
 print master_program_input
+quit()
 
 call("./easymap.sh " + master_program_input, shell=True)
