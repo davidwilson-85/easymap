@@ -60,7 +60,6 @@ nbr_rec_chrs=${sim_recsel_array[3]}
 mutant_parental=$project_name/$f1/sim_data/sim_mut_output/mutated_genome/mutated_genome.fa
 polymorphic_parental=$project_name/$f1/gnm_ref_merged/genome.fa
 
-
 # Get the string taht contains the parameters for sim-seq.py and extract them by splitting the string by the '+' character
 sim_seq_statement=$8
 IFS='+' read -ra sim_seq_array <<< "$sim_seq_statement"
