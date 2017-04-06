@@ -1,8 +1,8 @@
 <?php
 
 /*
-I am unable to kill all children processes by using the -TERM argument. I use a longer
-alternative instead:
+I am unable to kill all children processes by using the -TERM argument inside a
+shell_exec(). I use a longer alternative instead:
 
 Make that process-input.sh, simulator.sh, and the worklflows write their PIDs to file
 status in the logs folder. Then with PHP I get the PIDs and use something like:
@@ -12,8 +12,6 @@ pkill -9 -P <PPID> xxx.sh      (for the workflows)
 pkill -9 -P <PPID> program     (for bowtie, samtools, bcftools, python scripts...)
 
 Decide whether to use signal '9' or not in the command kill
-
-
 */
 
 // Create variables for the PIDs and fill the with default value 0

@@ -68,16 +68,12 @@
 # Recombination frequency distributions for At chr1 and chr4
 # 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,1
 #
-<<<<<<< HEAD
-=======
 # Simulated MbS with just chromosome 1
 # ./easymap.sh project snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut
-
-
+#
 # Simulate SNP MbS with F2mt F2wt mode using only chr1
 # ./easymap.sh project-name snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut f2wt se
-
->>>>>>> 5686c94a86349049303605b11aa0603a8f49fb0e
+#
 
 
 ############################################################

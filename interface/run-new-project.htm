@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="w3c.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-<script type="text/javascript" src="manage-projects.js"></script>
+<script type="text/javascript" src="run-new-project.js"></script>
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
 body {font-size:16px;}
@@ -44,9 +44,13 @@ body {font-size:16px;}
     <h1 class="w3-xxxlarge w3-text-red"><b>Run new project</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
     <h3>XXX</h3>
-    <div id="runNewProject"></div>
-    <p>This page is updated when it is initially loaded, every 50 sec,
-    by interacting with the table, and also by clicking on "Refresh table".</p>
+    <div id="sizeWarning" style="display:none; margin:5px 0; padding:20px; background-color:red;"></div>
+    <div id="simultWarning" style="display:none; margin:5px 0; padding:20px; background-color:red;"></div>
+    <div id="runNewProject">
+    	<p>HERE GOES INPUT INTERFACE</p>
+    	<p><a href="#" onclick="runProject()">Run workflow</a></p>
+    	<div id="commandResponse"></div>
+    </div>
   </div>
   
   

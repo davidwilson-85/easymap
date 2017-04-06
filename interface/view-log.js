@@ -8,8 +8,6 @@ window.onload = function() {
 
 	var projectName = document.getElementById("projectName").innerHTML;
 
-	alert(projectName);
-
 	// Function to communicate html with php via AJAX to read a log file 
 	function readLog(projectName) {
 		var xmlhttp = new XMLHttpRequest();

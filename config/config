@@ -1,0 +1,10 @@
+# Maximum number of bytes allowed in folder user_projects. Must be >= 0
+# If that maximum is reached, interface does not allow starting new projects
+# Only aplicable for the graphic interface version
+
+user_projects-size-limit:100
+
+# Maximum number of simultaneos jobs that can be run. Must be >= 0
+# Only aplicable for the graphic interface version
+
+max-simultaneous-jobs:1
