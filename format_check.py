@@ -293,5 +293,5 @@ master_program_input = project_name + " " + workflow + " " + data_source + " "+ 
 
 print "Succes!"
 print master_program_input
-quit()
+
 call("./easymap.sh " + master_program_input, shell=True)
