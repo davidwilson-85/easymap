@@ -199,7 +199,7 @@ if data_source == "sim":
 		except:
 			error = 1
 			problems.append("Please, mind the format of sim_recsel: recombination_chromosome1/recombination_chromosome2....+chromosome_with_causal_mutation(number),position_causal_mutation(number)+selection_mode(d/r), ???")
-	#sim_seq 1+100,0+500,100+1+50             DAR UN NUEVO ARGUMENTO APAREADAS O SIMPLES "pe/se"
+	#sim_seq 1+100,0+500,100+1+50+se            DAR UN NUEVO ARGUMENTO APAREADAS O SIMPLES "pe/se"
 	try:
 		values = sim_seq.split("+")
 		val1 = values[1].split(",")
@@ -211,6 +211,14 @@ if data_source == "sim":
 		int(val2[1])
 		int(values[3])
 		int(values[4])
+		options = ("se","pe")
+		if values[5] not in options:
+			error = 1
+			problems.appned("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ")
+		else:
+			lib_type_sample = values[5]
+			lib_type_control = values[5]
+
 	except:
 		error = 1
 		problems.append("Please, mind the format of sim_seq: ")
