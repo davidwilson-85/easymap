@@ -154,6 +154,7 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 			average_mut = window[items][0]
 			average_WT = window[items][1]
 			ratio = float(average_mut) - float(average_WT)
+			if ratio < 0: ratio = 0
 			parameter = ratio
 			dictionary[items] = ratio
 			result.write("@	"+str(items)+ "\t"+ str(ratio) + "\t" + str(chromosome) + "\n")
