@@ -13,21 +13,21 @@ function allowNewProject() {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var response = this.responseText;
-			//alert(response);
 			
 			var responseFields = response.split(",");
 			
 			if (responseFields[0] >= 100) {
+				document.getElementById("runNewProject").style.display = "none";
 				document.getElementById("sizeWarning").style.display = "block";
 				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over the maximum space limit set by the machine administrator (" + responseFields[2] + " bytes). Delete past projects to fere disk space.";
 			} else if (responseFields[0] >= 75 && responseFields[0] < 100) {
 				document.getElementById("sizeWarning").style.display = "block";
-				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over 75% of the maximum space limit set by the machine administrator (" + responseFields[2] + " bytes). Wait until currently running jobs finish.";
+				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over 75% of the maximum space limit set by the machine administrator (" + responseFields[2] + " bytes).";
 			}
 			
 			if (responseFields[1] >= 100) {
 				document.getElementById("simultWarning").style.display = "block";
-				document.getElementById("simultWarning").innerHTML = "You have reached the maximum number of simultaneously running projects set by the machine administrator (" + responseFields[3] + " projects)";
+				document.getElementById("simultWarning").innerHTML = "You have reached the maximum number of simultaneously running projects set by the machine administrator (" + responseFields[3] + " projects). Wait until currently running jobs finish.";
 			}
 			
 			// Make display:none the div that contains the form (not when >= 75% but < 100)

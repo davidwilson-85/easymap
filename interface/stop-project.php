@@ -20,8 +20,13 @@ $pid_simulator = 0;
 $pid_workflow = 0;
 
 // Get the PIDs of the .sh scripts, which are stored in /2_logs/status
-$project = $_GET['project'];
-$status_file = 'user_projects/'. $project .'/2_logs/status';
+//$project = $_GET['p'];
+$project = 'project1';
+
+
+
+
+$status_file = '../user_projects/'. $project .'/2_logs/status';
 //$status_contents = file_get_contents($status_file);
 $status_contents = fopen($status_file, 'r');
 while(!feof($status_contents)) {
@@ -40,9 +45,9 @@ while(!feof($status_contents)) {
 fclose($status_contents);
 
 
-echo $pid_easymap .'<br>';
-echo $pid_simulator .'<br>';
-echo $pid_workflow .'<br>';
+//echo $pid_easymap .'<br>';
+//echo $pid_simulator .'<br>';
+//echo $pid_workflow .'<br>';
 
 // Store in arrays all the programs/scripts that are direct children of simulator.sh and 
 // of workflow-ins/snp.sh
@@ -80,26 +85,26 @@ $workflow_children = array(
 // Kill all processes that are direct children of simulator.sh and of workflow-ins/snp.sh
 // I don't kill children of process-input.sh because runtime and output are negligible
 foreach ($simulator_children as $simulator_element) {
-	echo 'pkill -9 -P '. $pid_simulator .' '. $simulator_element .'<br>';
+	//echo 'pkill -9 -P '. $pid_simulator .' '. $simulator_element .'<br>';
 	shell_exec('pkill -9 -P '. $pid_simulator .' '. $simulator_element);
 }
 
 foreach ($workflow_children as $workflow_element) {
-	echo 'pkill -9 -P '. $pid_workflow .' '. $workflow_element .'<br>';
+	//echo 'pkill -9 -P '. $pid_workflow .' '. $workflow_element .'<br>';
 	shell_exec('pkill -9 -P '. $pid_workflow .' '. $workflow_element);
 }
 
 // Kill .sh scripts using their PPID
 shell_exec('pkill -9 -P '. $pid_easymap .' simulator.sh');
-echo 'pkill -9 -P '. $pid_easymap .' simulator.sh<br>';
+//echo 'pkill -9 -P '. $pid_easymap .' simulator.sh<br>';
 shell_exec('pkill -9 -P '. $pid_easymap .' workflow-ins.sh');
-echo 'pkill -9 -P '. $pid_easymap .' workflow-ins.sh<br>';
+//echo 'pkill -9 -P '. $pid_easymap .' workflow-ins.sh<br>';
 shell_exec('pkill -9 -P '. $pid_easymap .' workflow-snp.sh');
-echo 'pkill -9 -P '. $pid_easymap .' workflow-snp.sh<br>';
+//echo 'pkill -9 -P '. $pid_easymap .' workflow-snp.sh<br>';
 
 // Kill easymap.sh
 shell_exec('pkill -9 '. $pid_easymap);
-echo 'pkill -9 '. $pid_easymap .'<br>';
+//echo 'pkill -9 '. $pid_easymap .'<br>';
 
 // Append 'status:killed' to status file
 $status = fopen($status_file, 'a');
@@ -107,8 +112,7 @@ fwrite($status, 'status:killed');
 fclose($status);
 
 // Write to log
-$log_file = 'user_projects/'. $project .'/2_logs/log.log';
+$log_file = '../user_projects/'. $project .'/2_logs/log.log';
 shell_exec('echo $(date)": Project interrupted by the user." >> '. $log_file);
-
 
 ?>

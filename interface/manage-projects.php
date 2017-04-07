@@ -8,10 +8,11 @@ foreach ($projects as $project) {
 	
 	$status_file = '../user_projects/'. $project .'/2_logs/status';	
 	
+	echo '<div style="background-color: rgb(175,247,124); border: solid green 1px; border-radius: 4px; padding: 10px;">';
+	
 	$status_contents = fopen($status_file, 'r');
 	while(!feof($status_contents)) {
 		$line = fgets($status_contents);
-		//echo $line .'<br>';
 		
 		$line_fields = explode(':', $line);
 		if ($line_fields[0] == 'status') {
@@ -20,43 +21,63 @@ foreach ($projects as $project) {
 		
 	}
 	fclose($status_contents);
-
-	echo 'Project: '. $project .'<br>';
-	echo 'Status: '. $current_status .' --- ';
-	echo '<a href="view-log.php?p='. $project .'">View log file</a><br>';
 	
-	// Get folder size
+	// Project name and status
+	echo '<h4>Project: '. $project .'</h4>';
+	echo 'Project status: '. $current_status .'<br>';
+	
+	// Folder size
 	if ($current_status != 'running') {
 		$folder_size_output = shell_exec('du -sh ../user_projects/'. $project);
 		$folder_size_output_array = explode('	', $folder_size_output);
 		$folder_size = $folder_size_output_array[0];
-		echo 'Size: '. $folder_size .'<br>';
+		echo 'Project size: '. $folder_size .'<br>';
 	}
 	
+	
+	$style_string = 'style="	
+							width: 200px;
+							padding: 12px 0;
+							margin: 0 0;
+							border: 1px solid rgb(0,0,255);
+							border-radius: 4px;
+							/*box-sizing: border-box;*/
+							background-color: #3366ff;
+							color: white;
+							/*float: left;*/
+							text-align: center;
+						  "';
+	
+	
+	
+	
+	// Log link
+	echo '<div '. $style_string.' ><a href="view-log.php?p='. $project .'">View log file</a></div><br>';
+	
 	if ($current_status == 'finished') {
-		echo ' --- View report';
+		echo '<div '. $style_string.' ><a href="#">View report</a></div>';
 	}
 	
 	if ($current_status == 'running') {
-		echo ' --- Stop execution'; // Button to kill project
+		echo '<div '. $style_string.' onclick="stopProject(\''. $project .'\')">Stop execution</div>'; // Button to kill project
 	}
 	
 	if ($current_status != 'running') {
-		echo ' --- Remove from disk'; // Button to remove files
+		echo '<div '. $style_string.' >Remove from disk</div>'; // Button to remove files
 	}
 	
-	echo '<br><br>';
+	echo '</div><br>';
 }
 
 
 
-	//echo $project .''. $current_status .'<br>';
 	
-	//echo $project .' --- Status --- View log file --- View report --- Stop execution --- Remove from disk<br>';
-	//                     running    +                 -               +                  + > -                
-	//                     finished   +                 +               -                  + > -
-	//                     killed     +                 -               -                  + > -
-	//                     error      +                 -               -                  + > -
+	
+//echo $project .' --- Status --- View log file --- View report --- Stop execution --- Remove from disk<br>';
+//                     running    +                 -               +                  + > -                
+//                     finished   +                 +               -                  + > -
+//                     killed     +                 -               -                  + > -
+//                     error      +                 -               -                  + > -
 
 
 

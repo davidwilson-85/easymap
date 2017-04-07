@@ -2,9 +2,9 @@
 # If that maximum is reached, interface does not allow starting new projects
 # Only aplicable for the graphic interface version
 
-user_projects-size-limit:100
+user_projects-size-limit:20000000
 
 # Maximum number of simultaneos jobs that can be run. Must be >= 0
 # Only aplicable for the graphic interface version
 
-max-simultaneous-jobs:1
+max-simultaneous-jobs:5
