@@ -139,7 +139,7 @@ fi
 
 #SAM to BAM
 {
-	$location/samtools1/samtools sort $f1/alignment1.sam > $f1/alignment1.bam
+	$location/samtools1/samtools sort $f1/alignment1.sam > $f1/alignment1.bam 2> $f2/sam-to-bam_std2.txt
 
 } || {
 	echo 'Error transforming SAM to BAM.' >> $my_log_file
@@ -152,8 +152,6 @@ echo $(date) ': SAM to BAM finished.' >> $my_log_file
 
 #Variant calling
 {
-	# $location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -vuo $f1/raw_variants_temp.vcf  -f $f1/$my_gs $f1/alignment1.bam  2> $f2/mpileup_std.txt
-	# $location/bcftools-1.3.1/bcftools call -vmO v -vo $f1/raw_variants.vcf $f1/raw_variants_temp.vcf 2> $f2/bcf_std.txt
 
 	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_std.txt
 
@@ -233,7 +231,7 @@ fi
 
 #SAM to BAM
 {
-	$location/samtools1/samtools sort $f1/alignment1P.sam > $f1/alignment1P.bam
+	$location/samtools1/samtools sort $f1/alignment1P.sam > $f1/alignment1P.bam 2> $f2/sam-to-bam_std2.txt
 
 } || {
 	echo $(date) ': Error transforming SAM to BAM' >> $my_log_file
