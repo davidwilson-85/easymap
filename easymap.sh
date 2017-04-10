@@ -309,6 +309,9 @@ then
 	{		
 		workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type $lib_type_control` 
 
+		echo aqui
+		echo $workflow_result >> $my_log_file
+
 		if [ $workflow_result == 0 ]
 		then
 			{
