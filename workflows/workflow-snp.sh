@@ -338,9 +338,8 @@ fi
 
 if [ $snp_analysis_type == f2wt ]
 then
-	#########################################################################################################
 	{
-		python $location/scripts_snp/af_comparison/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered.va -out $f1/F2_control_comparison.va
+		python $location/scripts_snp/af_comparison/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs
 
 	} || {
 		echo $(date) ': Error during execution of af_comparison.py .' >> $my_log_file
