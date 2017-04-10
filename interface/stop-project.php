@@ -20,11 +20,7 @@ $pid_simulator = 0;
 $pid_workflow = 0;
 
 // Get the PIDs of the .sh scripts, which are stored in /2_logs/status
-//$project = $_GET['p'];
-$project = 'project1';
-
-
-
+$project = $_GET['p'];
 
 $status_file = '../user_projects/'. $project .'/2_logs/status';
 //$status_contents = file_get_contents($status_file);

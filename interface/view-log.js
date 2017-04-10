@@ -1,5 +1,5 @@
 /*
-This .js file simply calls PHP files via AJAX
+This .js file simply calls PHP file via AJAX
 easymap.htm --> ajax.js --> fire-wf.php --> easymap.sh --> log.log --> read_log.php ... 
 
 */

@@ -33,37 +33,20 @@ foreach ($projects as $project) {
 		$folder_size = $folder_size_output_array[0];
 		echo 'Project size: '. $folder_size .'<br>';
 	}
-	
-	
-	$style_string = 'style="	
-							width: 200px;
-							padding: 12px 0;
-							margin: 0 0;
-							border: 1px solid rgb(0,0,255);
-							border-radius: 4px;
-							/*box-sizing: border-box;*/
-							background-color: #3366ff;
-							color: white;
-							/*float: left;*/
-							text-align: center;
-						  "';
-	
-	
-	
-	
+		
 	// Log link
-	echo '<div '. $style_string.' ><a href="view-log.php?p='. $project .'">View log file</a></div><br>';
+	echo '<a href="view-log.php?p='. $project .'" class="button">View log file</a>';
 	
 	if ($current_status == 'finished') {
-		echo '<div '. $style_string.' ><a href="#">View report</a></div>';
+		echo '<a href="#" class="button">View report</a>';
 	}
 	
 	if ($current_status == 'running') {
-		echo '<div '. $style_string.' onclick="stopProject(\''. $project .'\')">Stop execution</div>'; // Button to kill project
+		echo '<form><input type="button" class="button" onclick="stopProject(\''. $project .'\')" value="Stop execution" /></form>';
 	}
 	
 	if ($current_status != 'running') {
-		echo '<div '. $style_string.' >Remove from disk</div>'; // Button to remove files
+		echo '<form><input type="button" class="button" onclick="removeProject(\''. $project .'\')" value="Remove from disk" /></form>';
 	}
 	
 	echo '</div><br>';

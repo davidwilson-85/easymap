@@ -34,20 +34,36 @@ setInterval(projectsInfo, 50000);
 
 // Function to communicate html with php via AJAX to stop a project 
 function stopProject(projectName) {
-	//alert('Button pressed for project ' + projectName);
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			var dummy = 0;
-			// Update projects info on screen
-			projectsInfo()
-		}
-	};
-	
-	xmlhttp.open("GET", "stop-project.php?p="+projectName, true);
-	xmlhttp.send();
+	if (confirm('Are you sure you want to stop running this project?')) {
+		//alert('Button pressed for project ' + projectName);
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var dummy = 0;
+				// Update projects info on screen
+				projectsInfo()
+			}
+		};
+		xmlhttp.open("GET", "stop-project.php?p="+projectName, true);
+		xmlhttp.send();
+	}
 }
 
+// Function to communicate html with php via AJAX to remove a project from disk 
+function removeProject(projectName) {
+	if (confirm('Are you sure you want to permanently remove this project from disk? (Your input data will not be removed)')) {
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var dummy = 0;
+				// Update projects info on screen
+				projectsInfo()
+			}
+		};
+		xmlhttp.open("GET", "remove-project.php?p="+projectName, true);
+		xmlhttp.send();
+	}
+}
 
 
 

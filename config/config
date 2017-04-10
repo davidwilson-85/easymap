@@ -7,4 +7,4 @@ user_projects-size-limit:20000000
 # Maximum number of simultaneos jobs that can be run. Must be >= 0
 # Only aplicable for the graphic interface version
 
-max-simultaneous-jobs:5
+max-simultaneous-jobs:2
