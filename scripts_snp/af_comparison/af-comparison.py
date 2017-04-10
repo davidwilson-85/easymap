@@ -5,6 +5,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-f2_mut', action="store", dest = 'input_mut')
 parser.add_argument('-f2_wt', action="store", dest = 'input_wt')
 parser.add_argument('-out', action="store", dest = 'output')
+parser.add_argument('-f_input', action="store", dest = 'f_input')
 
 args = parser.parse_args()
 
@@ -20,44 +21,61 @@ input2 = args.input_wt
 f2 = open(input2, 'r')
 wt_lines = f2.readlines()	
 
+f_input = args.f_input
+
+
 #Output
 output = args.output
 f3 = open(output, 'w')
 
-f2mut = list()
-f2wt = list()
 
 
-for i, line in enumerate(mut_lines):
-	if not line.startswith('#'):
-		sp = line.split('\t')
-		innerlist = [sp[0], sp[1], sp[2], sp[3], sp[4], sp[5], sp[6].strip('\n')]
-		f2mut.append(innerlist)
 
-for i, line in enumerate(wt_lines):
-	if not line.startswith('#'):
-		sp = line.split('\t')
-		innerlist = [sp[0], sp[1], sp[2], sp[3], sp[4], sp[5], sp[6].strip('\n')]
-		f2wt.append(innerlist)
+#This function enables to obtain data regarding chromosomes and lenght of the,
+def read_fasta(fp):
+	name, seq = None, []
+	for line in fp:
+		line = line.rstrip()
+		if line.startswith('>'):
+			if name: yield (name, ''.join(seq))
+			name, seq = line, []
+		else:
+			seq.append(line)
+	if name: yield (name, ''.join(seq))
 
-counter = 0
-pos = 0
+ch = list()
+#From the data of read_fasta, I create a dictionary with the name of the contigs and its lenght
+with open(f_input) as fp:
+	for name_contig in read_fasta(fp):
+		ch.append(name_contig[0][1:])
 
-for mut in f2mut: 
+for chr in ch:
+	dic_mut = {}
+	dic_wt = {}
+	list_mut = list()
+	list_wt = list()
 
-	pos = pos + 1
+	for i, line in enumerate(mut_lines):
+		if not line.startswith('#'):
+			sp = line.split('\t')
+			if chr == sp[0]:
+				dic_mut[sp[1]] = [sp[2], sp[3], sp[4], sp[5], sp[6].strip('\n')]
+				list_mut.append(sp[1])
 
-	print "line" , pos
-	fa_mut = int(float(float(mut[6])/(float(mut[6])+float(mut[5])))*1000)
-	c = 0
-	for wt in f2wt[counter:] :
-			c = c + 1
-			fa_wt = int(float(float(wt[6])/(float(wt[6])+float(wt[5])))*1000)
-			if (wt[0].strip()+'-'+wt[1].strip()) == (mut[0].strip()+'-'+mut[1].strip()):
-				if not fa_mut in range((fa_wt - 50), (fa_wt + 50)): 
-					f3.write(str(mut[0]) + '\t' + str(mut[1]) + '\t' + str(mut[2]) + '\t' + str(mut[3]) + '\t' + str(mut[4]) + '\t' + str(mut[5]) + '\t' +  str(mut[6]) + '\t' + str(wt[5]) + '\t' + str(wt[6]) + '\n')
-					counter = c + counter + 1
-					continue
+	for i, line in enumerate(wt_lines):
+		if not line.startswith('#'):
+			sp = line.split('\t')
+			if chr == sp[0]:
+				dic_wt[sp[1]] = [sp[2], sp[3], sp[4], sp[5], sp[6].strip('\n')]
+				list_wt.append(sp[1])
 
+	set_2 = frozenset(list_mut)
 
-print("--- %s seconds ---" % (time.time() - start_time))
+	intersection = [x for x in list_wt if x in set_2]
+
+	for i in intersection: 
+		af_mut =  int(float(dic_mut[i][4])/(float(dic_mut[i][3])+float(dic_mut[i][4]))*1000)
+		af_wt =  int(float(dic_wt[i][4])/(float(dic_wt[i][3])+float(dic_wt[i][4]))*1000)
+
+		if not af_mut in range((af_wt - 100), (af_wt + 100)): 
+			f3.write( str(chr) + '\t' + str(i) + '\t' + str(dic_mut[i][0]) +'\t' +  str(dic_mut[i][1]) +'\t' +  str(dic_mut[i][2]) + '\t' + str(dic_mut[i][3]) + '\t' + str(dic_mut[i][4]) + '\t' + str(dic_wt[i][3]) +'\t' +  str(dic_wt[i][4]) + '\n')
