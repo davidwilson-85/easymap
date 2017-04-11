@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="w3c.css">
-<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-<script type="text/javascript" src="run-new-project.js"></script>
+<script type="text/javascript" src="view-report.js"></script>
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
 body {font-size:16px;}
@@ -42,20 +41,26 @@ body {font-size:16px;}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <div class="w3-container" style="margin-top:75px">
-    <h1 class="w3-xxxlarge w3-text-red"><b>Run new project</b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b>Manage projects > View report</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <h3>XXX</h3>
-    <div id="sizeWarning" style="display:none; margin:5px 0; padding:20px; background-color:red;"></div>
-    <div id="simultWarning" style="display:none; margin:5px 0; padding:20px; background-color:red;"></div>
-    <div id="runNewProject">
-    	<p>HERE GOES INPUT INTERFACE</p>
-    	<p><a href="#" onclick="runProject()">Run workflow</a></p>
-    	<a href="manage-projects.htm" class="button" onclick="runProject()">Run workflow</a>
-    </div>
+    
+    <?php
+    	$project_name = $_GET['p'];
+    ?>
+    
+    <h3>Project name: <span id="projectName"><?php echo $project_name ?></span></h3>
+    <div id="reportInfo"></div>
+    <p>This page is updated when it is initially loaded, every 50 sec,
+    and also by clicking on "Refresh log".</p>
+    
+    
+    
+    
+    
+    
+    
   </div>
-  
-  
-  
+
 <!-- End of page content -->
 </div>
 

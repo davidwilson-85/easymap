@@ -57,3 +57,4 @@ function runProject() {
 
 // Trigger function when page loads
 allowNewProject();
+

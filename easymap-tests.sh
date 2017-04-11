@@ -245,7 +245,7 @@ then
 	{
 		echo $(date)": All inputs correct." >> $my_log_file
 	}
-else 
+else
 	{
 		echo $(date)": One or more inputs incorrect (see details above in this log). Quit." >> $my_log_file
 		echo 'status:error' >> $my_status_file
@@ -253,92 +253,19 @@ else
 	}
 fi
 
-
-############################################################
-# Run 'simulator.sh'
-
-if [ $data_source == 'sim' ]
-then
-	{
-		echo $(date)": STARTING DATA SIMULATION..." >> $my_log_file
-		
-		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type_sample $ins_seq $sim_mut $sim_recsel $sim_seq $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type`
-
-		if [ $simulator == 0 ]
-		then
-			{
-				echo $(date)": Simulation completed." >> $my_log_file
-			}
-		else 
-			{
-				echo $(date)": Simulation failed (see details above in this log). Quit." >> $my_log_file
-				echo 'status:error' >> $my_status_file
-				exit
-			}
-		fi
-	}
-fi
-
-
-############################################################
-# Run the chosen analysis workflow
-
-if [  $workflow == 'ins' ]
-then
-	{		
-		workflow_result=`./workflows/workflow-ins.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
-
-
-		if [ $workflow_result == 0 ]
-		then
-			{
-				echo $(date)": Analysis workflow finished correctly." >> $my_log_file
-			}
-		else 
-			{
-				echo $(date)": Analysis workflow failed (see details above in this log)." >> $my_log_file
-				echo 'status:error' >> $my_status_file
-				exit
-			}
-		fi
-	}
-fi
-
-if [  $workflow == 'snp' ]
-then
-	{		
-		workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type $lib_type_control` 
-
-		echo $workflow_result >> $my_log_file
-
-		if [ $workflow_result == 0 ]
-		then
-			{
-				echo $(date)": Analysis workflow finished correctly." >> $my_log_file
-			}
-		else 
-			{
-				echo $(date)": Analysis workflow failed (see details above in this log)." >> $my_log_file
-				echo 'status:error' >> $my_status_file
-				exit
-			}
-		fi
-	}
-fi
-
 # Run sim-mut.py to create mutant strain
-#{
-#	python graphic_output/create-report.py -project_name $project_name 
-#
-#} || {
-#	echo $(date)": Program to create report file failed. Quit." >> $my_log_file
-#	echo 'status:error' >> $my_status_file
-#	exit_code=1
-#	exit
-#}
-#echo $(date)": Program to create report file completed." >> $my_log_file
+{
+	python graphic_output/create-report.py -project_name $project_name 
 
+} || {
+	echo $(date)": Program to create report file failed. Quit." >> $my_log_file
+	echo 'status:error' >> $my_status_file
+	exit_code=1
+	exit
+}
+echo $(date)": Program to create report file completed." >> $my_log_file
 
+sleep 100s
 
 echo $(date)": Execution of project {" $project_name "} finished." >> $my_log_file
 echo 'status:finished' >> $my_status_file

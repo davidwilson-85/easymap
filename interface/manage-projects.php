@@ -38,7 +38,7 @@ foreach ($projects as $project) {
 	echo '<a href="view-log.php?p='. $project .'" class="button">View log file</a>';
 	
 	if ($current_status == 'finished') {
-		echo '<a href="#" class="button">View report</a>';
+		echo '<a href="view-report.php?p='. $project .'" class="button">View report</a>';
 	}
 	
 	if ($current_status == 'running') {
