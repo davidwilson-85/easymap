@@ -39,7 +39,6 @@ function stopProject(projectName) {
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				var dummy = 0;
 				// Update projects info on screen
 				projectsInfo()
 			}
@@ -55,7 +54,6 @@ function removeProject(projectName) {
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				var dummy = 0;
 				// Update projects info on screen
 				projectsInfo()
 			}
