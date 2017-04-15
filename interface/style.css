@@ -9,17 +9,17 @@ was also created by the W3C.
 /* Buttons */
 .button {
 	display: block;
-/*	float: left;*/
-	width: 25%;
+	float: left;
+	width: 200px;
 	padding: 12px 20px;
-	margin: 8px 0;
+	margin: 8px 5px;
 	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
+	border-radius: 5px;
 	background-color: #3366ff;
 	color: white;
 	text-align: center;
 	text-decoration: none;
+	font-size: 15px;
 }
 
 .button:hover {
@@ -30,4 +30,27 @@ was also created by the W3C.
 .button:focus {
 	border-color: #737373;
 	background-color: red;
+}
+
+.managing-buttons:after {          
+	content: "";
+	display: block;
+	clear: both;
+}
+
+/* Styles for the list with user input files */
+
+.files-item {
+	display: block;
+	float:left;
+	width: 33%;
+}
+
+#left { width: 50%; }
+#center { width: 20%; }
+#right { width: 30%; }
+
+#files-separator {
+	clear: both;
+	margin: 7px 0;
 }

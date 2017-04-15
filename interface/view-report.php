@@ -21,7 +21,7 @@ body {font-size:16px;}
     <h3 class="w3-padding-64"><b>Easymap</b></h3>
   </div>
   <div class="w3-bar-block">
-    <a href="manage-data-files.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage data files</a> 
+    <a href="manage-input-files.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage input files</a> 
     <a href="manage-projects.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage projects</a> 
     <a href="run-new-project.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Run new project</a> 
     <a href="documentation.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a>

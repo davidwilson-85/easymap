@@ -33,6 +33,8 @@ foreach ($projects as $project) {
 		$folder_size = $folder_size_output_array[0];
 		echo 'Project size: '. $folder_size .'<br>';
 	}
+	
+	echo '<div class="managing-buttons">';
 		
 	// Log link
 	echo '<a href="view-log.php?p='. $project .'" class="button">View log file</a>';
@@ -49,7 +51,7 @@ foreach ($projects as $project) {
 		echo '<form><input type="button" class="button" onclick="removeProject(\''. $project .'\')" value="Remove from disk" /></form>';
 	}
 	
-	echo '</div><br>';
+	echo '</div></div><br>';
 }
 
 

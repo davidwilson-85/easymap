@@ -25,10 +25,20 @@ function projectsInfo() {
 	xmlhttp.send();
 }
 
-// Call function so info is shown when page is loaded
-projectsInfo()
+// Call projectsInfo() 3 times separated by one second. This is done everytime page is
+// loaded. Before implementing this, I observed that sometimes, when user was redirected
+// from run-new-project.htm just after clicking on 'Run new project', the new project
+// did not appear in the list. With the current setting, this is solved.
+var x = 0;
+var intervalID = setInterval(function() {
+	projectsInfo();
+	if (++x === 3) {
+		window.clearInterval(intervalID);
+	}
+}, 1000);
 
-// Call function projectsInfo() every 50 seconds
+
+// Call function projectsInfo() every 50 seconds to update projects status regularly
 setInterval(projectsInfo, 50000);
 
 
