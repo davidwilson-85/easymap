@@ -113,7 +113,7 @@ if workflow=="snp":
 			problems.append("This program do not support an experimental design in which an outcross is performed and the wild type F2 is used as control. Please see documentation for more details.")
 		else:
 			cross_type = "bc"
-			parental_used_as_control = "n/p"
+			parental_used_as_control = "mut"
 			if data_source == "sim":
 				if is_ref_strain == "n/p":
 					error = 1
