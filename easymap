@@ -134,8 +134,10 @@ if workflow=="snp":
 			error = 1
 			problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.")
 		if cross_type == "bc" and is_ref_strain == "ref":
-			parental_used_as_control = "mut"
-			print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
+			if parental_used_as_control != "mut":
+				print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
+				parental_used_as_control = "mut"
+			
 
 #If the analysis mode is insertions, a insertions sequence must be given
 if workflow == "ins":
