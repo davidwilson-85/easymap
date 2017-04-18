@@ -113,7 +113,7 @@ if workflow=="snp":
 			problems.append("This program do not support an experimental design in which an outcross is performed and the wild type F2 is used as control. Please see documentation for more details.")
 		else:
 			cross_type = "bc"
-			parental_used_as_control = "mut"
+			parental_used_as_control = "n/p"
 			if data_source == "sim":
 				if is_ref_strain == "n/p":
 					error = 1
@@ -134,7 +134,7 @@ if workflow=="snp":
 			error = 1
 			problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.")
 		if cross_type == "bc" and is_ref_strain == "ref":
-			parental_used_as_control = "nomut"
+			parental_used_as_control = "mut"
 			print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
 
 #If the analysis mode is insertions, a insertions sequence must be given
