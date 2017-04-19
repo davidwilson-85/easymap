@@ -135,7 +135,7 @@ def fa_vs_pos():
 				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
 				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 				pos_img = int(int(sp[1])/scaling_factor_x) + int(12/100.0*wide)
-				draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(147, 147, 147))
+				draw.ellipse((pos_img-3, fa_img-3, pos_img+3, fa_img+3), fill=(147, 147, 147))
 
 
 		if args.my_snp_analysis_type == 'f2wt':
@@ -145,7 +145,7 @@ def fa_vs_pos():
 					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 					pos_img = int(int(sp[1])/scaling_factor_x) + int(12/100.0*wide)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(171, 219, 208))
+					draw.ellipse((pos_img-3, fa_img-3, pos_img+3, fa_img+3), fill=(171, 219, 208))
 
 
 ################################################################################################################################################################################################################
