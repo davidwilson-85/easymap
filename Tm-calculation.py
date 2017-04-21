@@ -106,10 +106,13 @@ with open(genome) as fp:
 
 
 if mode == "snp":
+	dic_solutions = {}
 	Tm_min = 60
 	Tm_max = 64
 	oligos = []
+	result = []
 	for snp in data:
+		dic_solutions[snp] = []
 		position = snp[1]
 		o_position1 = int(position) - 300
 		o_position2 = int(position) + 500
@@ -117,27 +120,59 @@ if mode == "snp":
 		actual_position = 0
 
 		while True: 
-			actual_position = actual_position + o_position1+take_look+1 #position in the genome 
-			window = genome[actual_position: int(position)+1] 
+			actual_position = actual_position + o_position1+take_look # python position in the genome, real one +1 
+			window = genome[actual_position: int(position)] #+1 corresponds to the fact we want to take that position. -1 because we want the python position while position has the absolute one
 			g_search =window.find("G")
 			c_search = window.find("C")
 			if g_search== -1 or c_search == -1:
-				if g_search == -1: take_look = c_search
-				if c_search == -1: take_look = g_search
+				if c_search != -1: take_look = c_search
+				elif g_search != -1: take_look = g_search
 				else:
 					oligos.append([position, "no oligo found"])
+					found = "no"
 					break
 			else:  take_look = min([g_search,c_search])
 			
-			oligo = genome[o_position1+ 1+ take_look - 21 : o_position1+ 1+take_look +1] #Python no coge la ultima posicion
+			oligo = genome[o_position1-1+ take_look - 21 : o_position1+take_look] #o_position-1 takes the real python position. We want to take the lst position so +1.
 			Tm = Tm_calculation(oligo)
-			print take_look
 			if Tm >= Tm_min and Tm <= Tm_max:
-				result = [position, oligo, o_position1+ 1+ take_look]
+				result = [position, oligo, "upstream", actual_position+take_look+1] #Mutation identifier, oligo generated, upstream or dowsntream oligo, position inside the genome (non-python one)
 				oligos.append(result)
+				found = "yes"
+				dic_solution[snp].append(oligo)
 				break
-			if  take_look > 99:
+			if  take_look > 99 or o_position - actual_postion+take_look > 99:
 				oligos.append([position, "no oligo found"])
+				found = "no"
+				break
+			else: continue 
+				
+		if found == "yes":
+			while True:
+				actual_position = actual_position + o_position2+take_look # python position in the genome, real one +1 
+			window = genome[actual_position: int(position)] #+1 corresponds to the fact we want to take that position. -1 because we want the python position while position has the absolute one
+			g_search =window.find("G")
+			c_search = window.find("C")
+			if g_search== -1 or c_search == -1:
+				if c_search != -1: take_look = c_search
+				elif g_search != -1: take_look = g_search
+				else:
+					oligos.append([position, "no oligo found"])
+					found = "no"
+					break
+			else:  take_look = min([g_search,c_search])
+			
+			oligo = reverse_complementary(genome[o_position1-1+ take_look - 21 : o_position1+take_look]) #o_position-1 takes the real python position. We want to take the lst position so +1.
+			Tm = Tm_calculation(oligo)
+			if Tm >= Tm_min and Tm <= Tm_max:
+				result = [position, oligo, "upstream", actual_position+take_look+1] #Mutation identifier, oligo generated, upstream or dowsntream oligo, position inside the genome (non-python one)
+				oligos.append(result)
+				dic_solutions[snp].append(oligo)
+				found = "yes"
+				break
+			if  take_look > 99 or o_position - actual_postion+take_look > 99:
+				oligos.append([position, "no oligo found"])
+				found = "no"
 				break
 			else: continue 
 
