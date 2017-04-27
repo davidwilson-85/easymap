@@ -43,7 +43,7 @@ var uploader = new plupload.Uploader({
 	url : 'upload.php',
 	flash_swf_url : '../js/Moxie.swf',
 	silverlight_xap_url : '../js/Moxie.xap',
-	chunk_size: '100mb', // I added this line
+	//chunk_size: '200mb', // I added this line
 	
 	filters : {
 		max_file_size : '20gb',

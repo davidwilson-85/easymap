@@ -1,11 +1,15 @@
 <?php
+echo 'hello......................';
 
 $projects = array_slice(scandir('../user_projects'), 2);
 
-//$what_to_display = array();
+
 
 foreach ($projects as $project) {
 	
+	echo $project .'<br>';
+
+
 	$status_file = '../user_projects/'. $project .'/2_logs/status';	
 	
 	echo '<div style="background-color: rgb(175,247,124); border: solid green 1px; border-radius: 4px; padding: 10px;">';
