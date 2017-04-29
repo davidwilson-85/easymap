@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="w3c.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<script type="text/javascript" src="plupload-2.3.1/js/plupload.full.min.js"></script>
+<!-- <script type="text/javascript" src="upload-files.js"></script> -->
 <script type="text/javascript" src="manage-input-files.js"></script>
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
@@ -44,16 +46,25 @@ body {font-size:16px;}
   <div class="w3-container" style="margin-top:75px">
     <h1 class="w3-xxxlarge w3-text-red"><b>Manage input files</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
+    
     <h3>Upload files:</h3>
-    <div id="">
-    	File uploader here...
+    <div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+    <br />
+    <div id="container">
+      <a id="pickfiles" class="button" href="javascript:;">Select files</a> 
+      <a id="uploadfiles" class="button" href="javascript:;">Upload files</a>
+      <br /><br />
     </div>
+    <br />
+    <pre id="console"></pre>
+    
+    <hr style="width:50px;border:5px solid red" class="w3-round">
     <h3>Current files in disk:</h3>
     <p><a href="" onclick="filesInfo()">Refresh list</a></p>
     <div id="filesInfo">
-    	<!-- Here goes dynamic content with projects info and tools to manipulate projects -->
+    	<!-- Here goes dynamic content with file info and tools to manipulate files -->
     </div>
-    <p>This page is updated when it is initially loaded, every 50 sec,
+    <p>This page is updated when it is initially loaded, every 10 sec,
     by interacting with the table, and also by clicking on "Refresh table".</p>
   </div>
   

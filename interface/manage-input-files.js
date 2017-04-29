@@ -4,9 +4,8 @@ manage-data-files.htm --> manage-data-files.js --> manage-data-files.php --> BAS
 
 This file contains the function to update input file info on screen and to delete files
 
+This files contains plupload js code to upload files
 */
-
-// Enclose all code inside a onload condition?????????????????????????
 
 
 // Function to communicate html with php via AJAX to retrieve files info 
@@ -21,29 +20,6 @@ function filesInfo() {
 	xmlhttp.send();
 }
 
-// Call filesInfo() when page loads
-filesInfo();
-
-
-
-// Call projectsInfo() 3 times separated by one second. This is done everytime page is
-// loaded. Before implementing this, I observed that sometimes, when user was redirected
-// from run-new-project.htm just after clicking on 'Run new project', the new project
-// did not appear in the list. With the current setting, this is solved.
-/*
-var x = 0;
-var intervalID = setInterval(function() {
-	projectsInfo();
-	if (++x === 3) {
-		window.clearInterval(intervalID);
-	}
-}, 1000);
-*/
-
-// Call function filesInfo() every 50 seconds to update projects status regularly
-//setInterval(filesInfo, 50000);
-
-
 // Function to communicate html with php via AJAX to remove a project from disk 
 function removeFile(fileName) {
 	if (confirm('Are you sure you want to permanently remove this file from disk?')) {
@@ -57,4 +33,77 @@ function removeFile(fileName) {
 		xmlhttp.open("GET", "remove-file.php?f="+fileName, true);
 		xmlhttp.send();
 	}
+}
+
+/*
+window.onload = function() {
+	// Call filesInfo() when page loads
+	filesInfo();
+	// Call function filesInfo() every 50 seconds to update files status regularly
+	setInterval(filesInfo, 1000);
+}
+*/
+
+window.onload = function() {
+
+	//////////////////////////////////////////////////
+	// Here starts plupload js code to upload files //
+	//////////////////////////////////////////////////
+	
+	var uploader = new plupload.Uploader({
+		runtimes : 'html5,flash,silverlight,html4',
+		browse_button : 'pickfiles', // you can pass an id...
+		container: document.getElementById('container'), // ... or DOM Element itself
+		url : 'manage-input-files-upload.php',
+		flash_swf_url : 'plupload-2.3.1/js/Moxie.swf',
+		silverlight_xap_url : 'plupload-2.3.1/js/Moxie.xap',
+	
+		filters : {
+			max_file_size : '100gb',
+			mime_types: [
+				{title : "GFF files", extensions : "gff"},
+				{title : "Gene annotation files", extensions : "ann,txt"},
+				{title : "FASTA files", extensions : "fa,fas,fasta"},
+				{title : "FASTQ files", extensions : "fq,fastq"}
+			]
+		},
+
+		init: {
+			PostInit: function() {
+				document.getElementById('filelist').innerHTML = '';
+
+				document.getElementById('uploadfiles').onclick = function() {
+					uploader.start();
+					return false;
+				};
+			},
+
+			FilesAdded: function(up, files) {
+				plupload.each(files, function(file) {
+					document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
+				});
+			},
+
+			UploadProgress: function(up, file) {
+				document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+			},
+
+			Error: function(up, err) {
+				document.getElementById('console').appendChild(document.createTextNode("\nError #" + err.code + ": " + err.message));
+			}
+		}
+	});
+
+	uploader.init();
+	
+	////////////////////////////////////////////////
+	// Here ends plupload js code to upload files //
+	////////////////////////////////////////////////
+	
+	
+	// Call filesInfo() when page loads
+	filesInfo();
+	// Call function filesInfo() every 50 seconds to update files status regularly
+	setInterval(filesInfo, 10000);
+	
 }

@@ -40,12 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 // Settings
 //$targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "plupload";
-<<<<<<< HEAD:interface/plupload-2.3.1/examples/upload.php
-$targetDir = '../../../user_data/plupload_tests';
-=======
-//$targetDir = '../../../user_data/'. $subFolder;
-$targetDir = 'uploads';
->>>>>>> b971fdee8ba00211793e2aa611338e103fd149e1:interface/upload.php
+//$targetDir = 'uploads';
+$targetDir = '../user_data/'. $subFolder;
+
 $cleanupTargetDir = true; // Remove old files
 $maxFileAge = 5 * 3600; // Temp file age in seconds
 
