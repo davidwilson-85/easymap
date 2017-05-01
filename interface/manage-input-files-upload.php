@@ -9,13 +9,6 @@
  * Contributing: http://www.plupload.com/contributing
  */
 
-
-/*
-http://stackoverflow.com/questions/9011138/handling-pluploads-chunked-uploads-on-the-server-side
-https://github.com/moxiecode/plupload/blob/master/examples/upload.php
-*/
-
-
 // Make sure file is not cached (as it happens for example on iOS devices)
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -40,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 // Settings
 //$targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "plupload";
-//$targetDir = 'uploads';
-$targetDir = '../user_data/'. $subFolder;
+$targetDir = 'tmp_upload_files/';
 
 $cleanupTargetDir = true; // Remove old files
 $maxFileAge = 5 * 3600; // Temp file age in seconds
@@ -57,7 +49,7 @@ if (isset($_REQUEST["name"])) {
 } elseif (!empty($_FILES)) {
 	$fileName = $_FILES["file"]["name"];
 } else {
-	$fileName = uniqid("file_");
+	$fileName = uniqid("_1pf_");
 }
 
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
@@ -122,12 +114,42 @@ if (!$chunks || $chunk == $chunks - 1) {
 	rename("{$filePath}.part", $filePath);
 }
 
+
+
+//////////////////////////////////////////////////////////////////////
+// This is my own code to groom file if plupload had to chunk the file 
+//////////////////////////////////////////////////////////////////////
+
+$shortName = substr($fileName, 0, 4);
+$isChunked = ($shortName == "_1pf") ? true : false;
+
+if ($isChunked) {
+	
+	// Read third line (plupload writes there the original name the file)
+	$fileOriginalName = trim(`head -4 $targetDir$fileName | tail -1`);
+	
+	// Create a temporal name for file operations
+	$tmpFileName = $targetDir ."tmp_". $fileName;
+	
+	// Remove first 8 lines and last 2 lines, and store result in a temporary file
+	// Then rename the file to $fileOriginalName
+	// Finally remove file created by plupload
+	$command = 'tail -n +9 '. $targetDir . $fileName .' | head -n -2 > '. $tmpFileName .'; mv '. $tmpFileName .' ../user_data/'. $fileOriginalName .'; rm '. $targetDir . $fileName;
+	//$command = 'tail -n +9 ../user_data/'. $fileName .' | head -n -2 > '. $tmpFileName .'; mv '. $tmpFileName .' ../user_data/'. $fileOriginalName;
+	shell_exec($command);
+	
+} else {
+	$command = 'mv '. $targetDir . $fileName .' ../user_data/'. $fileName;
+	shell_exec($command);
+}
+
+//////////////////////////////////////////////////////////////////////
+// End of my code
+//////////////////////////////////////////////////////////////////////
+
+
+
 // Return Success JSON-RPC response
 die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-
-// Call script that checks if uploaded file was chunked+rejoined,
-// and therefore plupload added a header and a footer, and changed the name of the file
-// If so, the script creates a file with the original name and writes the original content
-
 
 ?>
