@@ -1,5 +1,3 @@
-
-
 #python lin-primers.py -sam_in alignment4.sam -var_in variants.txt -sam_out 5_prime_end_reads
 
 
@@ -42,6 +40,9 @@ for insertion in var_list:
 	ins_chromosome = insertion[0]
 	ins_position = int(insertion[1])
 	for i, line in enumerate(sam_lines):
+		if line.startswith('@'):
+			f3.write(line)
+
 		if not line.startswith('@'):
 			sp = line.split('\t')
 			chromosome = (sp[2].strip()).lower()
@@ -78,12 +79,14 @@ for insertion in var_list:
 								l = int(l) + int(num)
 								break
 
-						# SOBREESCRIBIR SECUENCIA CON NUCLEOTIDOS NO LEIDOS
+						# SOBREESCRIBIR SECUENCIA CON NUCLEOTIDOS NO LEIDOS Y EL CIGAR
 						sequence2 = sequence[len(sequence)-l: ]
-
+						cigar2 = str(l) + 'M'												#Sobreescribimos los cigars con "matches" para que los siguientes programas no den errores
+						
 						# ESCRIBIR EN EL SAM DE SALIDA
 						newline = line.replace(sequence, sequence2)
-						f3.write(newline)
+						newline2 = newline.replace(cigar, cigar2)
+						f3.write(newline2)
 
 					elif x2.endswith('0'):
 						pass
