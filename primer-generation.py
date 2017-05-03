@@ -7,6 +7,7 @@ from string import maketrans
 parser = argparse.ArgumentParser()
 parser.add_argument('-file', action="store", dest = 'File', required = "True")
 parser.add_argument('-fasta', action = "store", dest = "genome", required = "True")
+parser.add_argument('-fq', action = "store", dest = "fq_lim")
 
 args = parser.parse_args()
 
@@ -185,13 +186,110 @@ def snp_calculation(position,genome):
 			oligos.append(result[1])
 			Tms.append(str(result[2]))
 	return oligos,Tms
+def insertion_calculation(position,genome,contig_used):
+	size= 600
+	oligos = []
+	Tms = []
+	selection = "5"
+	try_size = 100
+	pos_n_contig = contig_used+"_"+position
+	#insertion primer
+	#Try if there is 3' position, if not, do it with 5'
+	lenght_consensus = len(consensus_5[pos_n_contig])
+	if lenght_consensus < 10:
+		lenght_consensus = len(consensus_3[pos_n_contig])
+		selection = "3"
+		if lenght_consensus < 10:
+			oligos.extend(["not found","-","-"])
+			Tms.extend(["-","-","-"])
+			return oligos, Tms 
+	if lenght_consensus < 100:
+		try_size = lenght_consensus
 	
-			
+	#Generation of the oligo from the insertion where the primer will be searched
+	if selection == "3":
+		how = "upstream"
+		try_oligo = consensus_3[pos_n_contig][:lenght_consensus]
 
+	if selection == "5":
+		how = "downstream"
+		try_oligo = consensus_5[pos_n_contig][:lenght_consensus]
+	
+	result = rule_1(try_oligo,how)
+	if result[0] == "no":
+		result = rule_2(try_oligo, "upstream")
+		if result[0] == "no":
+			oligos.extend(["not found","-","-"])
+			Tms.extend(["-","-"])
+			return oligos,Tms
+	if result[0] == "yes":
+		oligos.append(result[1]+"-"+selection)
+		Tms.append(str(result[2]))
+
+	#Generation of the forward and reverse oligos
+	up_primer_pos = int(position) - size
+	try_oligo = genome[up_primer_pos-1 : up_primer_pos + 100]
+	result = rule_1(try_oligo, "upstream")
+	if result[0] == "no":
+		result = rule_2(try_oligo, "upstream")
+		if result[0] == "no":
+			oligos.append("not found")
+			oligos.append("-")
+			Tms.append("-")
+			Tms.append("-")
+	if result[0] == "yes":
+		oligos.append(result[1])
+		Tms.append(str(result[2])) 
+		#downstream primer
+		down_primer_pos = int(position) + size
+		try_oligo = genome[down_primer_pos-1 : down_primer_pos + 100]
+		result = rule_1(try_oligo,"downstream")
+		if result[0] == "no":
+			result = rule_2(try_oligo, "downstream")
+			if result[0] == "no":
+				oligos.append("not found")
+				Tms.append("-")
+		if result[0] == "yes":
+			oligos.append(result[1])
+			Tms.append(str(result[2]))
+	return oligos,Tms  
+
+
+
+
+
+def fastaq_to_dic(fq):
+	dic_fas_3= {}
+	dic_fas_5= {}
+	fq = open(fq,"r")
+	for line in fq:
+		split = line.split("_")
+		if line.startswith("@"):
+			i = 1
+		if line.startswith("+"):
+			i = 10
+		
+		if i == 1:
+			h = split[0].split("/")[-1]+"_"+split[1]
+			
+			if split[2].strip()=="3":
+				n = 1
+				dic_fas_3[h]=""
+			if split[2].strip()=="5":
+				n= 2
+				dic_fas_5[h]=""
+		if i <10 and i!= 1:
+			line = line.upper().rstrip()
+			if n == 1:
+				dic_fas_3[h]+= line
+			if n == 2:
+				dic_fas_5[h]+= line
+		i += 1
+	return dic_fas_3,dic_fas_5
 
 positions = open(args.File,"r")
 result = open("variants2.txt","w")
-result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tforward primer\tTm forward\treverse primer\tTm reverse\n")
+
 n = 0
 first_list = []
 for line in positions.readlines():
@@ -199,18 +297,29 @@ for line in positions.readlines():
 	if n != 0:
 		first_list.append(line)	
 	n += 1
-
 former = ""
 list2= []
 contig_used = ""
+mode = first_list[0][0]
+if mode == "snp":
+	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tforward primer\tTm forward\treverse primer\tTm reverse\n")
+if mode == "lim":
+	#try:
+	consensus = fastaq_to_dic(args.fq_lim)
+	consensus_3 = consensus[0]
+	consensus_5 = consensus[1]
+	#except:
+	#	print "Fq file missing"
+	#	exit()
+	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tforward primer\tTm forward\tinsertion primer\tTm insertion primer\treverse primer\tTm reverse\n")
 
 for line in first_list:
-	v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14].rstrip()
+	if mode == "snp": v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14].rstrip()
+	else: v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13].rstrip()
 	if line[5] == "nh":
 		list2.append(v+"\t-\t-\t-\t-\n")
 	else:
 		a = line[1]+"-"+line[2]
-		mode = line[0]
 		if a == former:
 			list2.append(v+"\t-\t-\t-\t-\n")
 		elif a != former:
@@ -220,7 +329,22 @@ for line in first_list:
 					contig_used = line[1]
 				r = snp_calculation(line[2],genom)
 				list2.append(v+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][1]+"\t"+r[1][1]+"\n")
+			if mode == "lim":
+				if line[1] != contig_used:
+					genom = genome_selection(line[1],genome)
+					contig_used = line[1]
+				r = insertion_calculation(line[2],genom,contig_used)
+				list2.append(v+"\t"+r[0][1]+"\t"+r[1][1]+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][2]+"\t"+r[1][2]+"\n") 
+
+
 		former = a
+		
+
+
+
+
+
+
 
 for items in list2:
 	result.write(items)

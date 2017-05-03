@@ -9,6 +9,7 @@ do
     then
     #SAM to BAM
     substring=${i%.*}
+    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
        {
 			./samtools1/samtools sort $i  > $substring.bam 
 
@@ -35,6 +36,7 @@ do
 
     fi
    #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
-	cat cns.fq >> all_insetions_cns.fq
+	cat cns.fq >> all_insertions_cns.fq
 done
-
+sed -i "s/n//g" all_insertions_cns.fq
+./primer-generation.py ./variants.txt ./genome.fa ./all_insertions_cns.fq 
