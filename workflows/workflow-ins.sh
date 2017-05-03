@@ -315,6 +315,46 @@ echo Done. >> $my_log_file
 }
 echo Done. >> $my_log_file
 
+#Primers________________________________________________________________________________________________________________________________________________________________
+#Run SAM-FQ
+{
+	python $location/scripts_ins/ins_primers/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f3/variants.txt -sam_out $f1/primers/5_prime_end_reads
+	
+} || {
+	echo 'error:ins-primers.py' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+
+#Run alignment
+dir=$f1/primers/
+for i in $dir*
+do
+	{
+		./bowtie2/bowtie2 --very-sensitive --mp 3,2 -x insertion_index -U $f1/primers/$i -S ${i%.*}.sam 2> ./bowtie2_std2.txt
+
+	} || {
+		echo 'error: Bowtie2 - primers' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+done
+
+
+
+
+
+
+
+
+#______________________________________________________________________________________________________________________________________________________________________
+
+
+
+
+
 
 #Graphic output
 {
@@ -328,11 +368,7 @@ echo Done. >> $my_log_file
 }
 echo Graphic output created. >> $my_log_file
 
+
 echo run time is $(expr `date +%s` - $start_time) s >> $my_log_file
-
-
-#Report
-#firefox ./project/3_workflow_output/report.html
-
 
 echo $exit_code
