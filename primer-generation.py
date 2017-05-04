@@ -94,9 +94,9 @@ def genome_selection(contig,genome):
 				genome = seq_contig
 		return genome
 
-def rule_1(oligo,location):
+def rule_1(oligo,sense):
 	last_element = len(oligo)
-	if location == "downstream" : oligo = reverse_complementary(oligo)
+	if sense == "reverse" : oligo = reverse_complementary(oligo)
 	while True:
 		end_of_primer = 21
 		begin_of_primer = 0
@@ -130,9 +130,10 @@ def rule_1(oligo,location):
 				begin -= 1
 			elif Tm > 64:
 				begin += 1
-def rule_2(oligo,location):
+def rule_2(oligo,sense):
+	#This rule just looks for primers which 
 	begin_of_primer = 0
-	if location == "dowsntream" : oligo = reverse_complementary(oligo)
+	if sense == "reverse" : oligo = reverse_complementary(oligo)
 	while True:
 		end_of_primer =21 + begin_of_primer
 
@@ -194,44 +195,38 @@ def insertion_calculation(position,genome,contig_used):
 	try_size = 100
 	pos_n_contig = contig_used+"_"+position
 	#insertion primer
-	#Try if there is 3' position, if not, do it with 5'
-	lenght_consensus = len(consensus_5[pos_n_contig])
-	if lenght_consensus < 10:
-		lenght_consensus = len(consensus_3[pos_n_contig])
-		selection = "3"
+	#Generation of the oligo from the insertion where the primer will be searched	
+	for selection in [5,3]:
+		if selection == 3:
+			lenght_consensus = len(consensus_3[pos_n_contig])
+			how = "forward"
+			try_oligo = consensus_3[pos_n_contig][:lenght_consensus]
+		elif selection == 5:
+			lenght_consensus = len(consensus_5[pos_n_contig])
+			how = "reverse"
+			try_oligo = consensus_5[pos_n_contig][:lenght_consensus]			
+
 		if lenght_consensus < 10:
 			oligos.extend(["not found","-","-"])
-			Tms.extend(["-","-","-"])
-			return oligos, Tms 
-	if lenght_consensus < 100:
-		try_size = lenght_consensus
-	
-	#Generation of the oligo from the insertion where the primer will be searched
-	if selection == "3":
-		how = "upstream"
-		try_oligo = consensus_3[pos_n_contig][:lenght_consensus]
+			Tms.extend(["-","-","-"])		
 
-	if selection == "5":
-		how = "downstream"
-		try_oligo = consensus_5[pos_n_contig][:lenght_consensus]
-	
-	result = rule_1(try_oligo,how)
-	if result[0] == "no":
-		result = rule_2(try_oligo, "upstream")
+		result = rule_1(try_oligo,how)
 		if result[0] == "no":
-			oligos.extend(["not found","-","-"])
-			Tms.extend(["-","-"])
-			return oligos,Tms
-	if result[0] == "yes":
-		oligos.append(result[1]+"-"+selection)
-		Tms.append(str(result[2]))
+			result = rule_2(try_oligo, how)
+			if result[0] == "no":
+				oligos.extend(["not found","-","-"])
+				Tms.extend(["-","-"])
+				return oligos,Tms
+		if result[0] == "yes":
+			oligos.append(result[1])
+			Tms.append(str(result[2]))
 
 	#Generation of the forward and reverse oligos
 	up_primer_pos = int(position) - size
 	try_oligo = genome[up_primer_pos-1 : up_primer_pos + 100]
-	result = rule_1(try_oligo, "upstream")
+	result = rule_1(try_oligo, "forward")
 	if result[0] == "no":
-		result = rule_2(try_oligo, "upstream")
+		result = rule_2(try_oligo, "forward")
 		if result[0] == "no":
 			oligos.append("not found")
 			oligos.append("-")
@@ -243,9 +238,9 @@ def insertion_calculation(position,genome,contig_used):
 		#downstream primer
 		down_primer_pos = int(position) + size
 		try_oligo = genome[down_primer_pos-1 : down_primer_pos + 100]
-		result = rule_1(try_oligo,"downstream")
+		result = rule_1(try_oligo,"reverse")
 		if result[0] == "no":
-			result = rule_2(try_oligo, "downstream")
+			result = rule_2(try_oligo, "reverse")
 			if result[0] == "no":
 				oligos.append("not found")
 				Tms.append("-")
@@ -259,26 +254,29 @@ def insertion_calculation(position,genome,contig_used):
 
 
 def fastaq_to_dic(fq):
+	#It gets two dictionaries for 3' and 5' sequences. 
 	dic_fas_3= {}
 	dic_fas_5= {}
 	fq = open(fq,"r")
 	for line in fq:
-		split = line.split("_")
-		if line.startswith("@"):
+		split = line.split("_") #Data format is chr_postion_3/5'
+		if line.startswith("@"): #This line will be the header, the followings until find + have to be together
 			i = 1
+			m= 0
 		if line.startswith("+"):
-			i = 10
+			m = 1
 		
-		if i == 1:
+		if i == 1: #header, we take off the "/" that get in as input in the header 
 			h = split[0].split("/")[-1]+"_"+split[1]
-			
+			#Depending on whether the reads are in the 3' or 5' extreme they will go to one dic or another.
 			if split[2].strip()=="3":
 				n = 1
 				dic_fas_3[h]=""
 			if split[2].strip()=="5":
 				n= 2
 				dic_fas_5[h]=""
-		if i <10 and i!= 1:
+			#Sequences are pasted together in each position
+		if m == 0 and i!= 1:
 			line = line.upper().rstrip()
 			if n == 1:
 				dic_fas_3[h]+= line
@@ -311,17 +309,19 @@ if mode == "lim":
 	#except:
 	#	print "Fq file missing"
 	#	exit()
-	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tforward primer\tTm forward\tinsertion primer\tTm insertion primer\treverse primer\tTm reverse\n")
+	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tforward primer\tTm forward\tinsertion primer 5'\tTm insertion primer 5'\tinsertion primer 3'\tTm insertion primer 3'\treverse primer\tTm reverse\n")
 
 for line in first_list:
 	if mode == "snp": v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14].rstrip()
 	else: v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13].rstrip()
 	if line[5] == "nh":
-		list2.append(v+"\t-\t-\t-\t-\n")
+		if mode == "snp": list2.append(v+"\t-\t-\t-\t-\n")
+		else: list2.append(v+"\t-\t-\t-\t-\t-\t-\n")
 	else:
 		a = line[1]+"-"+line[2]
 		if a == former:
-			list2.append(v+"\t-\t-\t-\t-\n")
+			if mode == "snp": list2.append(v+"\t-\t-\t-\t-\n")
+			else: list2.append(v+"\t-\t-\t-\t-\t-\t-\n")
 		elif a != former:
 			if mode == "snp":
 				if line[1] != contig_used:
@@ -334,7 +334,7 @@ for line in first_list:
 					genom = genome_selection(line[1],genome)
 					contig_used = line[1]
 				r = insertion_calculation(line[2],genom,contig_used)
-				list2.append(v+"\t"+r[0][1]+"\t"+r[1][1]+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][2]+"\t"+r[1][2]+"\n") 
+				list2.append(v+"\t"+r[0][2]+"\t"+r[1][2]+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][1]+"\t"+r[1][1]+"\t"+r[0][3]+"\t"+r[1][3]+"\n") 
 
 
 		former = a
