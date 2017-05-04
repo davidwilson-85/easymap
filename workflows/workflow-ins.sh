@@ -317,8 +317,12 @@ echo Done. >> $my_log_file
 
 #Primers________________________________________________________________________________________________________________________________________________________________
 #Run SAM-FQ
+
+mkdir $f1/primers
+
+
 {
-	python $location/scripts_ins/ins_primers/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f3/variants.txt -sam_out $f1/primers/5_prime_end_reads
+	python $location/scripts_ins/ins_primers/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f3/variants.txt -sam_out $f1/primers/
 	
 } || {
 	echo 'error:ins-primers.py' >> $my_log_file
@@ -328,11 +332,13 @@ echo Done. >> $my_log_file
 }
 
 #Run alignment
-dir=$f1/primers/
-for i in $dir*
+primers_dir=$f1/primers
+for i in $primers_dir/*
 do
+	echo $i >> $my_log_file
+
 	{
-		./bowtie2/bowtie2 --very-sensitive --mp 3,2 -x insertion_index -U $f1/primers/$i -S ${i%.*}.sam 2> ./bowtie2_std2.txt
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2> $location/bowtie2_std5.txt
 
 	} || {
 		echo 'error: Bowtie2 - primers' >> $my_log_file
@@ -343,9 +349,60 @@ do
 done
 
 
+#Consensus sequence generation
+
+#Generation of a variable with the path were the SAM files of each insertion will be held
+
+#Loop through all files in the directory and DO the SAM to BAM conversion and the genereation of consensus sequence from each insertion consensus file. 
+{
+	for i in $primers_dir/* 
+	do
+		if test -f "$i" 
+	    then
+	    echo $i >> my_log_file
+
+
+		#Check sams
 
 
 
+
+	    #SAM to BAM
+	    substring=${i%.*}
+	    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
+		$location/samtools1/samtools sort $i  > $substring.bam 
+#MIRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
+		$location/samtools1/samtools mpileup -uf $my_ins $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq 2> $f2/samtools-consensus.log
+		
+		#sed -i "s/pbinprok2/$substring/g" ./cns.fq
+		tail -n +2 cns.fq > cns.fq.temp && mv cns.fq.temp cns.fq
+		echo @"$substring" | cat - cns.fq > temp && mv temp cns.fq		
+	    fi
+	   #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
+		cat $f1/cns.fq >> $f1/all_insertions_cns.fq
+	done
+}||{
+	echo 'error: Consensus sequence generation - primers' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+
+}
+
+
+
+rm -f $f1/cns.fq
+#rm -f $f1/primers/*.bam
+rm -f $location/temp
+#sed -i "s/n//g" all_insertions_cns.fq
+
+#Primer generation script
+{
+	$location/primers/primer-generation.py -file $f3/variants.txt -fasta $my_gs -fq $f1/all_insertions_cns.fq    
+}|| {
+	echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
+}
+echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 
 
 

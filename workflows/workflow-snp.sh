@@ -488,6 +488,30 @@ echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
 }
 echo $(date) ': Varanalyzer finished.' >> $my_log_file
 
+
+
+#_______________________________________________________________________________PRIMER GENERATION_______________________________________________________________________________
+
+
+#Primer generation script
+{
+	$location/primers/primer-generation.py -file $location/variants.txt -fasta $location/genome.fa    
+}|| {
+	echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
+}
+echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
+
+
+
+
+
+
+
+
+
+
+
+
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
