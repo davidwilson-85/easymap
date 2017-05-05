@@ -8,6 +8,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-file', action="store", dest = 'File', required = "True")
 parser.add_argument('-fasta', action = "store", dest = "genome", required = "True")
 parser.add_argument('-fq', action = "store", dest = "fq_lim")
+parser.add_argument('-out', action = "store", dest = "output", required = "True")
+
 
 args = parser.parse_args()
 
@@ -259,15 +261,16 @@ def fastaq_to_dic(fq):
 	dic_fas_5= {}
 	fq = open(fq,"r")
 	for line in fq:
-		split = line.split("_") #Data format is chr_postion_3/5'
 		if line.startswith("@"): #This line will be the header, the followings until find + have to be together
+			line_new = line.split("/")[-1]
 			i = 1
 			m= 0
+			split = line_new.split("_") #Data format is chr_postion_3/5'	
 		if line.startswith("+"):
 			m = 1
 		
 		if i == 1: #header, we take off the "/" that get in as input in the header 
-			h = split[0].split("/")[-1]+"_"+split[1]
+			h = split[0]+"_"+split[1]
 			#Depending on whether the reads are in the 3' or 5' extreme they will go to one dic or another.
 			if split[2].strip()=="3":
 				n = 1
@@ -286,7 +289,7 @@ def fastaq_to_dic(fq):
 	return dic_fas_3,dic_fas_5
 
 positions = open(args.File,"r")
-result = open("variants2.txt","w")
+result = open(args.output,"w")
 
 n = 0
 first_list = []

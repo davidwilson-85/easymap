@@ -335,10 +335,9 @@ mkdir $f1/primers
 primers_dir=$f1/primers
 for i in $primers_dir/*
 do
-	echo $i >> $my_log_file
 
 	{
-		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2> $location/bowtie2_std5.txt
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2> $f1/bowtie2_std5.txt
 
 	} || {
 		echo 'error: Bowtie2 - primers' >> $my_log_file
@@ -355,16 +354,12 @@ done
 
 #Loop through all files in the directory and DO the SAM to BAM conversion and the genereation of consensus sequence from each insertion consensus file. 
 {
-	for i in $primers_dir/* 
+	for i in $primers_dir/*.sam 
 	do
 		if test -f "$i" 
 	    then
-	    echo $i >> my_log_file
-
 
 		#Check sams
-
-
 
 
 	    #SAM to BAM
@@ -372,12 +367,14 @@ done
 	    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
 		$location/samtools1/samtools sort $i  > $substring.bam 
 #MIRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
-		$location/samtools1/samtools mpileup -uf $my_ins $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq 2> $f2/samtools-consensus.log
+		
+		$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq
 		
 		#sed -i "s/pbinprok2/$substring/g" ./cns.fq
-		tail -n +2 cns.fq > cns.fq.temp && mv cns.fq.temp cns.fq
-		echo @"$substring" | cat - cns.fq > temp && mv temp cns.fq		
+		tail -n +2 $f1/cns.fq > $f1/cns.fq.temp && mv $f1/cns.fq.temp $f1/cns.fq
+		echo @"$substring" | cat - $f1/cns.fq > $f1/temp && mv $f1/temp $f1/cns.fq 	
 	    fi
+	    
 	   #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
 		cat $f1/cns.fq >> $f1/all_insertions_cns.fq
 	done
@@ -391,14 +388,14 @@ done
 
 
 
-rm -f $f1/cns.fq
+#rm -f $f1/cns.fq
 #rm -f $f1/primers/*.bam
-rm -f $location/temp
-#sed -i "s/n//g" all_insertions_cns.fq
+#rm -f $location/temp
+##sed -i "s/n//g" all_insertions_cns.fq
 
 #Primer generation script
 {
-	$location/primers/primer-generation.py -file $f3/variants.txt -fasta $my_gs -fq $f1/all_insertions_cns.fq    
+	$location/primers/primer-generation.py -file $f3/variants.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/variants2.txt  
 }|| {
 	echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
 }

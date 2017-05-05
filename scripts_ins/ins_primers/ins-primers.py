@@ -34,8 +34,8 @@ for insertion in var_list:
 	
 	#Output
 	output = args.output
-	f5 = open(output + '/' + str(insertion[0] + '_' + str(insertion[1])) + '_5' + '.fq', 'w')
-	f3 = open(output + '/' + str(insertion[0] + '_' + str(insertion[1])) + '_3' + '.fq', 'w')
+	f5 = open(output  + str(insertion[0] + '_' + str(insertion[1])) + '_5' + '.fq', 'w')
+	f3 = open(output  + str(insertion[0] + '_' + str(insertion[1])) + '_3' + '.fq', 'w')
 
 	ins_chromosome = insertion[0]
 	ins_position = int(insertion[1])
