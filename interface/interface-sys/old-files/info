@@ -1,0 +1,51 @@
+To trigger a workflow, a javascript file calls a php file, and the php file runs the bash file.
+The bash file outputs running info and links to outputs to a text file (log.log)
+
+A javascript file calls via ajax a php file every X seconds. The php file reads log.log and outputs
+to the page. When a special message is received, the javascript file knows that the workflow has finished,
+displays so to user, and displays report (or link to report) and links to relevant files. All this using
+ajax.
+
+Two states: True/False a workflow is running / no workflow is running. If true, no workflows can
+be started. If false, workflows can be started.
+
+
+
+####################################################################
+
+ajax
+
+https://www.youtube.com/watch?v=woNQ2MA_0XU
+
+https://www.youtube.com/watch?v=rJesac0_Ftw
+
+
+####################################################################
+
+
+
+node.js
+http://www.nodebeginner.org/index-es.html
+https://shapeshed.com/command-line-utilities-with-nodejs/
+http://www.2ality.com/2011/12/nodejs-shell-scripting.html
+
+Streaming with HTML5
+http://www.binarytides.com/monitor-progress-long-running-php-scripts-html5-server-sent-events/
+
+Long polling, server-sent events, websocket
+http://dsheiko.com/weblog/websockets-vs-sse-vs-long-polling/
+
+sse and node.js
+http://cjihrig.com/blog/server-sent-events-in-node-js/
+
+sse, php, node.js
+https://www.html5rocks.com/en/tutorials/eventsource/basics/
+http://www.w3schools.com/html/html5_serversentevents.asp
+
+
+
+
+
+
+search sentence: "show real time output of a shell command"
+
