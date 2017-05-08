@@ -388,9 +388,9 @@ done
 
 
 
-#rm -f $f1/cns.fq
-#rm -f $f1/primers/*.bam
-#rm -f $location/temp
+rm -f $f1/cns.fq
+rm -f $f1/primers_dir/*.bam
+rm -f $location/temp
 ##sed -i "s/n//g" all_insertions_cns.fq
 
 #Primer generation script
