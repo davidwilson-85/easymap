@@ -851,15 +851,16 @@ def gene_plot():
 		positions = list()
 		refalt = list()
 		for g, line in enumerate(lines_gff):
-			sp = line.split('\t')
-			if p[3] in sp[8]:
-				feature = [sp[2], sp[3], sp[4]]
-				positions.append(int(sp[3]))
-				positions.append(int(sp[4]))
-				features.append(feature)
-		p.append(features)
-		p.append(positions)
-
+			if not line.startswith('#'):
+				sp = line.split('\t')
+				if p[3] in sp[8]:
+					feature = [sp[2], sp[3], sp[4]]
+					positions.append(int(sp[3]))
+					positions.append(int(sp[4]))
+						features.append(feature)
+				p.append(features)
+				p.append(positions)
+			
 
 	for p in intermediate_list:
 		p[5].append(['rr', int(args.rrl)])
