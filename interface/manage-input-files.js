@@ -30,9 +30,23 @@ function removeFile(fileName) {
 				filesInfo()
 			}
 		};
-		xmlhttp.open("GET", "remove-file.php?f="+fileName, true);
+		xmlhttp.open("GET", "manage-input-files-removeFile.php?f="+fileName, true);
 		xmlhttp.send();
 	}
+}
+
+// Function to communicate html with php via AJAX to retrieve header of a file 
+function retrieveHeader(fileName) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			// Update files info on screen
+			filesInfo()
+			document.getElementById("preview").innerHTML = this.responseText;
+		}
+	};
+	xmlhttp.open("GET", "manage-input-files-retrieveHeader.php?f="+fileName, true);
+	xmlhttp.send();
 }
 
 /*
@@ -61,7 +75,7 @@ window.onload = function() {
 		filters : {
 			max_file_size : '100gb',
 			mime_types: [
-				{title : "GFF files", extensions : "gff"},
+				{title : "GFF files", extensions : "gff,gff3"},
 				{title : "Gene annotation files", extensions : "ann,txt"},
 				{title : "FASTA files", extensions : "fa,fas,fasta"},
 				{title : "FASTQ files", extensions : "fq,fastq"}

@@ -30,8 +30,11 @@ foreach ($user_input_files as $user_input_file) {
 				<h4>'. $file_size .'</h4>
 			</div>
 			<div class="files-item" id="right">
+				<a href="manage-input-files-retrieveHeader.php?f='. $user_input_file .'" target="_blank" class="button">Preview</a>
+			</div>
+			<div class="files-item" id="right">
 				<form>
-					<input style="margin: 0 0 7px 0" type="button" class="button" onclick="removeFile(\''. $user_input_file .'\')" value="Remove from disk" />
+					<input style="margin: 3 0 7px 0" type="button" class="button" onclick="removeFile(\''. $user_input_file .'\')" value="Remove from disk" />
 				</form>
 			</div>
 			<hr id="files-separator"></hr>
