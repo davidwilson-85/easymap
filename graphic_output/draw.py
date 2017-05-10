@@ -857,9 +857,9 @@ def gene_plot():
 					feature = [sp[2], sp[3], sp[4]]
 					positions.append(int(sp[3]))
 					positions.append(int(sp[4]))
-						features.append(feature)
-				p.append(features)
-				p.append(positions)
+					features.append(feature)
+					p.append(features)
+					p.append(positions)
 			
 
 	for p in intermediate_list:
