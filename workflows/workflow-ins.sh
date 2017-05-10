@@ -366,7 +366,6 @@ done
 	    substring=${i%.*}
 	    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
 		$location/samtools1/samtools sort $i  > $substring.bam 
-#MIRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
 		
 		$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq
 		
@@ -391,6 +390,7 @@ done
 rm -f $f1/cns.fq
 rm -f $f1/primers_dir/*.bam
 rm -f $location/temp
+rm -f ./user_data/*.fai
 ##sed -i "s/n//g" all_insertions_cns.fq
 
 #Primer generation script
@@ -400,7 +400,6 @@ rm -f $location/temp
 	echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
 }
 echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
-
 
 
 #______________________________________________________________________________________________________________________________________________________________________
