@@ -150,10 +150,11 @@ if input_type == 'lim':
 gff_array1 = []
 with open(gff_source) as input_gff:
 	for line_gff in input_gff:
-		fields_gff = line_gff.split('\t')
-		if fields_gff[2].lower() == 'mrna':
-			useful_gff_info = fields_gff[2].lower(), fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[6], fields_gff[8][3:14].upper()
-			gff_array1.append(useful_gff_info)
+		if not line_gff.startswith("#"):
+			fields_gff = line_gff.split('\t')
+			if fields_gff[2].lower() == 'mrna':
+				useful_gff_info = fields_gff[2].lower(), fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[6], fields_gff[8][3:14].upper()
+				gff_array1.append(useful_gff_info)
 
 # Check whether each mutation position lies within a mRNA sequence or a putative regulatory region of the template gff file
 variants_info = []

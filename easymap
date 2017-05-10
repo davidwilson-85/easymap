@@ -3,9 +3,10 @@
 
 #python format_check.py -P project_name -w snp -d sim -g chr1+4.gff -sm 40+e -sr 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,1000000+r+50 -ss 25+100,0+500,100+1+50+se -s f2wt -c bc -r ref -p mut
 
-
-
 #Para experimentales: python format_check.py -P project_name -w snp -d exp -S lectura1,lectura2 -g chr1+4.gff   -c oc -r ref -p mut -s par -C lectura3
+
+# Inserciones simuladas : ./easymap -P working  -w ins -d sim -i pbinprok2.fa -g chr1+4.gff -sm 2 -ss 25+100,0+500,100+1+50+pe
+#Inserciones experimentales: ./easymap -P real_data1 -w ins -d exp -i pbinprok2.fa -S salk_pool1_1.fq,salk_pool1_2.fq -g TAIR10_GFF3_genes.gff
 
 import argparse
 parser = argparse.ArgumentParser()
