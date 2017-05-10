@@ -33,3 +33,31 @@ pip install Pillow
 # Make files executable and give logged user execution permissions (.sh, .py, binaries)
 
 # 
+
+
+
+
+#######################################
+
+# Server version
+
+
+# The following commands installed Apache and PHP in Sergios computer without any issue
+
+# Update apt
+sudo apt-get update
+
+# Install Apache
+sudo apt-get install apache2
+
+# Install PHP including componenet for Apache
+sudo apt-get install php libapache2-mod-php
+
+# Check PHP installation
+php --version
+
+# Restart apache
+sudo service apache2 restart
+
+
+
