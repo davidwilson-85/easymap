@@ -149,40 +149,52 @@ def calculations(dic_pos):
 
 
 def Draw_box_plot(table):
+	fnt1 = ImageFont.truetype('easymap-server/fonts/arial.ttf', 7)
 	#Size of the window
 	a = 20
 	b = 20
 	c = 20
-	x_window = len(table)*10 + a + b 
-	y_window = 200
+	x_window = len(table)*10+ 10+ a + b 
+	y_window = 400
 	#Generation of the file
 	im = Image.new("RGB", (x_window, y_window), (255,255,255))	
 	draw = ImageDraw.Draw(im)
-	#Creation of the axes: exes will start with an indentation of 20 above, below and beside. Each Phred quality score will be in a 1% proportion of the y_window  px
-	size_y_exe = (y_window/100)*45
-	draw.line(((a, c) + (a, size_y_exe )), fill=(0, 0, 0, 0), width=1)
-	size_x_exe = len(table)*10 + 5
-	draw.line(((a, size_y_exe) + (size_x_exe, size_y_exe)), fill=(0, 0, 0, 0), width=1)
-	i = 5 + a
+	#Creation of the axes: exes will start with an indentation of 20 above, below and beside. Each Phred quality score will be in a X% proportion of the y_window  px
+	size_y_exe = y_window-40 #Total size minus above and below indentations
+	position_y_exe= size_y_exe+20
+	draw.line(((a, c) + (a, position_y_exe)), fill=(0, 0, 0, 0), width=1)
+	size_x_exe = len(table)*10 +10 #number of positions*10 pxls which is one will take + 10 for the position 1. 
+	draw.line(((a, position_y_exe) + (a+size_x_exe, position_y_exe)), fill=(0, 0, 0, 0), width=1) 
+	
+	#Vertical values
+	step = float(size_y_exe)/42
+	for values in range(42,-1,-1):
+		#pos = str(values+1)
+		draw.line(((a,20+abs(values-42)*step) + (a-4,20+abs(values-42)*step)), fill=(0, 0, 0, 0), width=1)
+		#draw.text((a-8,20+values*step) + (a-8,20+values*step), pos, font=fnt1, fill=(0,0,0,0))
+		if values%5 == 0:
+			draw.line(((a,20+abs(values-42)*step) + (a-5,20+abs(values-42)*step)), fill=(0, 0, 0, 0), width=1)
+
+	i = 10 + a #indentation + space for the first box (same space as in size_x_exe)
 	for position in table:
 		#write the position in the x axe
-		draw.line(((i, size_y_exe) + (i, size_y_exe+1)), fill=(0, 0, 0, 0), width=1)
+		draw.line(((i, position_y_exe) + (i, position_y_exe+5)), fill=(0, 0, 0, 0), width=1)
 
 		#Create a line from the begining to the end of the parameters
-		beg = float(table[position][1])
-		end = float(table[position][-1])
-		draw.line(((i, size_y_exe-beg) + (i, size_y_exe-end)), fill=(0, 0, 0, 0), width=1)
+		beg = float(table[position][1]) * step
+		end = float(table[position][-1]) * step
+		draw.line(((i, position_y_exe-beg) + (i, position_y_exe-end)), fill=(0, 0, 0, 0), width=1)
 
 		#Create the boxplot using CORREGIR!!!!!!!!!!
-		beg = float(table[position][2])
-		end = float(table[position][-2])
-		draw.rectangle([(i-1.5, size_y_exe-beg), (i+1.5, size_y_exe-end)], fill=(255, 238, 50), outline= None)
+		beg = float(table[position][2]) * step
+		end = float(table[position][-2]) * step
+		draw.rectangle([(i-3, position_y_exe-beg), (i+3, position_y_exe-end)], fill=(24, 56, 214), outline= None)
 
 		#Draw the average and the MEDIANA?
-		av = float(table[position][0])
-		med = float(table[position][3])
-		draw.line(((i-1.5, size_y_exe-av) + (i+1.5, size_y_exe-av)), fill=(191, 17, 54), width=1)
-		draw.line(((i, size_y_exe-med) + (i, size_y_exe-med)), fill=(50, 214, 25), width=1)
+		av = float(table[position][0]) * step
+		med = float(table[position][3]) * step
+		draw.line(((i-3, position_y_exe-med) + (i+3, position_y_exe-med)), fill=(191, 17, 54), width=1)
+		draw.line(((i, position_y_exe-av) + (i, position_y_exe-av)), fill=(50, 214, 25), width=1)
 		i +=10
 
 
