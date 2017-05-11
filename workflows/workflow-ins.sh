@@ -378,14 +378,12 @@ done
 		cat $f1/cns.fq >> $f1/all_insertions_cns.fq
 	done
 }||{
-	echo 'error: Consensus sequence generation - primers' >> $my_log_file
+	echo $(date) ': Error. The consensus sequence of an insertion flank could not be created.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 
 }
-
-
 
 rm -f $f1/cns.fq
 rm -f $f1/primers_dir/*.bam
@@ -397,9 +395,13 @@ rm -f ./user_data/*.fai
 {
 	$location/primers/primer-generation.py -file $f3/variants.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/variants2.txt  
 }|| {
-	echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
+	echo $(date) ': Error. primer-generation.py failed. ' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
 }
 echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
+
 
 
 #______________________________________________________________________________________________________________________________________________________________________
