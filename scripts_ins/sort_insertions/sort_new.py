@@ -25,6 +25,11 @@ output1 = str(args.output1)
 f3 = open(output1, 'w')
 f3.write('@' + 'DATA\t' + 'Contig' + '\tins'+ '\t' + 'NT' + '\t' + '  RD' + '\t' + 'Position' + '\n')
 
+###################################################################################################################################################################
+#																																								  #
+#														Sort input file (output analysis.txt > output ordered.csv)												  #
+#																																								  #
+###################################################################################################################################################################
 #Lists
 contigs = []
 data = []
@@ -56,9 +61,12 @@ f1.close()
 f2.close()
 f3.close()
 
-############################
-#Now we sort the insertions#
-############################
+
+###################################################################################################################################################################
+#																																								  #
+#														Sort data into insertions (output_ordered.csv > sorted_insertions.txt)									  #
+#																																								  #
+###################################################################################################################################################################
 
 insertion_id = 1
 
@@ -76,10 +84,6 @@ insertion_id = 1
 
 
 
-
-
-
-
 #Insertion sorting
 if args.mode == 'pe': 
 	for i, line in enumerate(lines):
@@ -90,7 +94,7 @@ if args.mode == 'pe':
 				contig = sp[1].strip('\t')
 				try:
 					d = abs(int(p2) - int(p))
-					if d > 100 or contig != contig2:
+					if d > 200 or contig != contig2:
 						insertion_id = insertion_id + 1
 						f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4])
 						p2 = p
@@ -150,20 +154,85 @@ f1.close()
 f2.close()
 
 
+###################################################################################################################################################################
+#																																								  #
+#															Filter insertions and rewrite sorted_insertions.txt			(ONLY FOR PAIRED DATA)					  #
+#																																								  #
+###################################################################################################################################################################
 
-#Now we create the candidate regions for each insertion
+#Input file 
+input = str(args.output2)
+f1 = open(input, 'r')
+lines = f1.readlines()	
+
+insertions_final = list()
+insertions_raw = list()
+for e in range(1, (insertion_id + 1)):
+	insertions_raw.append(e)
+
+for insertion in insertions_raw:
+	max_RD = 0
+	directions = list()
+	max_pos = 0
+	min_pos = float('inf')
+
+	for l, line in enumerate(lines):
+		if not line.startswith('@'):
+			sp = line.split()
+			if int(sp[2]) == insertion and sp[0].strip() == "PAIRED":	
+				#1st criterion: insertion must have forward and reverse supporting reads
+				read_direction = sp[5]
+				if read_direction not in directions and read_direction != "TOTAL":
+					directions.append(read_direction)
+
+				#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
+				if int(sp[4]) > max_RD:
+					max_RD = int(sp[4])
+
+				#3rd criterion: insertion data span 
+				if int(sp[3]) > max_pos:
+					max_pos = int(sp[3])
+				if float(sp[3]) < min_pos:
+					min_pos = int(sp[3])
+				span = max_pos - min_pos
+
+	if len(directions) == 2:
+		if max_RD >= 3 or span > 500:
+			insertions_final.append(insertion)
+f1.close()
+f1 = open(input, 'w')
+
+new_id = 1
+for fin_ins in insertions_final:
+	for i, line in enumerate(lines):
+		if not line.startswith('@'):
+			sp = line.split()
+			if int(sp[2]) == int(fin_ins):
+				newline = str( sp[0].strip() + '\t' + sp[1].strip() + '\t' + str(new_id) + '\t' + sp[3].strip() + '\t' + sp[4].strip() + '\t' + sp[5].strip() + '\n' )
+				f1.write(newline)
+	new_id = new_id + 1
+
+f1.close()
+
+
+###################################################################################################################################################################
+#																																								  #
+#															Create candidate region for each insertions 														  #
+#																																								  #
+###################################################################################################################################################################
+
 if args.mode == 'pe': 
 	f2 = open(args.output2, 'r')
 	lines = f2.readlines()
 	candidate_regions = list() #This list will have the format: list(list(d1, d2, e))
 
-	for e in range(1, (insertion_id + 1)):
+	for ins in insertions_final:
 		d1 = float('inf')
 		d2 = 0
 		for i, line in enumerate(lines):
 			if not line.startswith('@'):
 				sp = line.split()
-				if sp[0].strip() == 'PAIRED' and int(sp[2].strip()) == e: 
+				if sp[0].strip() == 'PAIRED' and int(sp[2].strip()) == int(ins): 
 
 					#The following module creates a candidate region for the insertion
 					#Delimiters:
@@ -180,7 +249,7 @@ if args.mode == 'pe':
 		cr = list()
 		cr.append(d1)
 		cr.append(d2)
-		cr.append(e)
+		cr.append(ins)
 		
 		candidate_regions.append(cr)
 
@@ -188,4 +257,3 @@ if args.mode == 'pe':
 	for i in candidate_regions: 
 		f2.write('@#')
 		f2.write(((str(i).strip('[')).strip(']')) + '\n')
-
