@@ -2,7 +2,8 @@
 
 $project_name = $_GET['p'];
 
-$location = '../user_projects/'. $project_name .'/3_workflow_output/report.html';
+//$location = '../user_projects/'. $project_name .'/3_workflow_output/report.html';
+$location = 'test-report.htm';
 
 // Read HTML file with report as a text file and line by line
 // Send each line to HTML via AJAX
