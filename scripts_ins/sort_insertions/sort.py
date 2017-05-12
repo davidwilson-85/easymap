@@ -211,7 +211,6 @@ for fin_ins in insertions_final:
 				newline = str( sp[0].strip() + '\t' + sp[1].strip() + '\t' + str(new_id) + '\t' + sp[3].strip() + '\t' + sp[4].strip() + '\t' + sp[5].strip() + '\n' )
 				f1.write(newline)
 	new_id = new_id + 1
-
 f1.close()
 
 
@@ -226,7 +225,7 @@ if args.mode == 'pe':
 	lines = f2.readlines()
 	candidate_regions = list() #This list will have the format: list(list(d1, d2, e))
 
-	for ins in insertions_final:
+	for ins in range(1, len(insertions_final) + 1):
 		d1 = float('inf')
 		d2 = 0
 		for i, line in enumerate(lines):
