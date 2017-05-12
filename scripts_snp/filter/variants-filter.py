@@ -90,4 +90,10 @@ for i, line in enumerate(lines):
 				f2.write(line)	
 		
 		
-
+'''
+if step == '3':
+	for i, line in enumerate(lines)
+		if not line.startswith('#'):
+			sp = line.split('\t')
+			if sp[] ...
+'''

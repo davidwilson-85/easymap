@@ -360,6 +360,16 @@ done
 	    then
 
 		#Check sams
+		{
+			python $location/scripts_ins/sam_file_check/sam-file-check.py -a $i 
+			
+		} || {
+			echo 'intermediate .sam file incorrect. See log files.' >> $my_log_file
+			exit_code=1
+			echo $exit_code
+			exit
+		}
+		echo Correct .sam file. >> $my_log_file
 
 
 	    #SAM to BAM
