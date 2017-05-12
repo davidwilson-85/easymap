@@ -7,7 +7,7 @@
 
 # Password to have access to the web interface
 
-pswd:easymap
+pswd:easymap333
 
 # Maximum number of bytes allowed in folder user_projects. Must be >= 0
 # If that maximum is reached, interface does not allow starting new projects

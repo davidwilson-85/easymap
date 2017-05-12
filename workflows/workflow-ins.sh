@@ -382,7 +382,6 @@ done
 	exit_code=1
 	echo $exit_code
 	exit
-
 }
 
 rm -f $f1/cns.fq

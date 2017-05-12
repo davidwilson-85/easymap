@@ -10,7 +10,15 @@ if (isset($_POST['password'])) {
 
 <?php if ($password == 'elche') { ?>
 
-<<<<<<<<<< HTML CODE TO DISPLAY IF PASSWORD IS CORRECT >>>>>>>>>>
+<html>
+<head>
+<title></title>
+</head>
+<body>
+Correct password!<br>
+<a href="other-page.php">Other page</a>
+</body>
+</html>
 
 <?php } else { ?>
 
@@ -19,7 +27,7 @@ if (isset($_POST['password'])) {
 <title></title>
 </head>
 <body>
-Wrong password. <a href="index.htm">Try again</a>
+Wrong password. <a href="index.php">Try again</a>
 </body>
 </html>
 

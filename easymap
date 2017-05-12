@@ -13,6 +13,8 @@ parser = argparse.ArgumentParser()
 from subprocess import call
 import os
 
+
+
 parser.add_argument('--project_name', "-P", action="store", dest = 'project_name', required = "True")
 parser.add_argument('--workflow', "-w" ,action="store", dest = 'workflow', choices=set(('snp','ins')), required = "True")
 parser.add_argument('--data_source', "-d", action="store", dest = 'data_source', choices=set(('sim','exp')), required = "True")
