@@ -10,7 +10,7 @@ parser.add_argument('-a', action="store", dest = 'input')
 args = parser.parse_args()
 input = str(args.input)
 
-
+error = 0
 
 #______________________________________FUNCTIONS________________________________________________
 #Nucleotide detection:
@@ -20,7 +20,7 @@ def nts():
 	if 'A' in sp[9] or 'T' in sp[9] or 'G' in sp[9] or 'C' in sp[9]: #The function looks for either one of the nucleotides in sp[9], which corresponds to the sequence of the read
 		pass
 	else:
-		print 'Incorrect input file(1)'
+		error = 1
 		quit()
 	return
 
@@ -32,7 +32,7 @@ def lencheck():
 	if qs == nts:
 		pass
 	else:
-		print 'Incorrect input file(2)'
+		error = 1
 		quit()
 	return
 #_________________________________________________________________________________________________
@@ -46,7 +46,7 @@ lines = f1.readlines()
 
 #We apply the functions to check the sam file for a maximum of 100 lines 
 if linesum == 0:
-	print 'Empty input file'
+	error = 1
 	quit()
 	
 if linesum >= 100:
@@ -62,4 +62,6 @@ if 0<linesum<100:
 			nts()
 			lencheck()
 
+print error
 f1.close()
+

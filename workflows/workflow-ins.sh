@@ -122,19 +122,6 @@ then
 	echo bowtie2 unpaired finished. >> $my_log_file
 fi
 
-#Check output .sam file format
-{
-	python $location/scripts_ins/sam_file_check/sam-file-check.py -a $f1/alignment1.sam 
-	
-} || {
-	echo 'intermediate .sam file incorrect. See log files.' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
-echo Correct .sam file. >> $my_log_file
-
-
 if [ $my_mode == 'pe' ]
 then  
 	#Execute filter1
@@ -162,18 +149,6 @@ then
 	}
 	echo bowtie2 finished. >> $my_log_file
 
-
-	#Check output .sam file format
-	{
-		python $location/scripts_ins/sam_file_check/sam-file-check.py -a $f1/alignment2.sam 
-	
-	} || {
-		echo 'intermediate .sam file incorrect. See log files.' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo Correct .sam file. >> $my_log_file
 fi
 
 
@@ -276,7 +251,6 @@ fi
 echo Analysis finished. >> $my_log_file
 
 
-
 #Sort insertions
 {
 	python $location/scripts_ins/sort_insertions/sort.py -a $f1/output_analysis.txt -b $f1/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -m $my_mode
@@ -320,7 +294,6 @@ echo Done. >> $my_log_file
 
 mkdir $f1/primers
 
-
 {
 	python $location/scripts_ins/ins_primers/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f3/variants.txt -sam_out $f1/primers/
 	
@@ -358,34 +331,43 @@ done
 	do
 		if test -f "$i" 
 	    then
+			#Check sams
+			{
+				sam_stauts=`python $location/scripts_ins/sam_file_check/sam-file-check.py -a $i`
+				
+				if [ $sam_stauts == 0 ]
+				then
+					{
+						echo $(date)": Correct SAM file." >> $my_log_file
+					}
+				else 
+					{
+						echo $(date)": Sam file empty." >> $my_log_file
+						continue                                                                                                  #<<<<----------------------------------------------------
+					}
+				fi
+				
+			} || {
+				echo $(date) ' : sam-file-check.py failed. See log files.' >> $my_log_file
+				exit_code=1
+				echo $exit_code
+				exit
+			}
 
-		#Check sams
-		{
-			python $location/scripts_ins/sam_file_check/sam-file-check.py -a $i 
+		    #SAM to BAM
+		    substring=${i%.*}
+		    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
+			$location/samtools1/samtools sort $i  > $substring.bam 
 			
-		} || {
-			echo 'intermediate .sam file incorrect. See log files.' >> $my_log_file
-			exit_code=1
-			echo $exit_code
-			exit
-		}
-		echo Correct .sam file. >> $my_log_file
-
-
-	    #SAM to BAM
-	    substring=${i%.*}
-	    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
-		$location/samtools1/samtools sort $i  > $substring.bam 
-		
-		$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq
-		
-		#sed -i "s/pbinprok2/$substring/g" ./cns.fq
-		tail -n +2 $f1/cns.fq > $f1/cns.fq.temp && mv $f1/cns.fq.temp $f1/cns.fq
-		echo @"$substring" | cat - $f1/cns.fq > $f1/temp && mv $f1/temp $f1/cns.fq 	
-	    fi
-	    
-	   #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
-		cat $f1/cns.fq >> $f1/all_insertions_cns.fq
+			$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq
+			
+			#sed -i "s/pbinprok2/$substring/g" ./cns.fq
+			tail -n +2 $f1/cns.fq > $f1/cns.fq.temp && mv $f1/cns.fq.temp $f1/cns.fq
+			echo @"$substring" | cat - $f1/cns.fq > $f1/temp && mv $f1/temp $f1/cns.fq 	
+		    fi
+		    
+		   #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
+			cat $f1/cns.fq >> $f1/all_insertions_cns.fq
 	done
 }||{
 	echo $(date) ': Error. The consensus sequence of an insertion flank could not be created.' >> $my_log_file
@@ -414,11 +396,6 @@ echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 
 
 #______________________________________________________________________________________________________________________________________________________________________
-
-
-
-
-
 
 #Graphic output
 {
