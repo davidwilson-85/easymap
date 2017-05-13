@@ -44,17 +44,17 @@ while (!feof($config_contents)) {
 	$fields = explode(':', $line);
 	
 	if ($fields[0] == 'user_projects-size-limit') {
-		$size_limit = $fields[1];
+		$size_limit = trim($fields[1]);
 		$output1 = floor(($user_projects_size / $size_limit) * 100);
 	}
 	
 	if ($fields[0] == 'max-simultaneous-jobs') {
-		$max_jobs = $fields[1];
+		$max_jobs = trim($fields[1]);
 		$output2 = floor(($num_running_projects / $max_jobs) * 100);
 	}
 } 
 
-fclose($log_contents);
+fclose($config_contents);
 
 if (!isset($output1)) {
 	$output1 = 'user_projects-size-limit is not properly configured in config/config file';

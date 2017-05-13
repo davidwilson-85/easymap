@@ -1,13 +1,13 @@
 #######################################################################################
 #
 # This file lets machine administrator to set some configuration parameters
-# to keep web interface safe and control what users do
+# to keep web interface safe and control what users do.
 #
 ####################################################################################### 
 
 # Password to have access to the web interface
 
-pswd:easymap333
+web-interface-password:0000
 
 # Maximum number of bytes allowed in folder user_projects. Must be >= 0
 # If that maximum is reached, interface does not allow starting new projects

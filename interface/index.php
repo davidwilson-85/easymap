@@ -6,7 +6,9 @@
 <link rel="stylesheet" href="w3c.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-<script type="text/javascript" src="run-new-project.js"></script>
+<script type="text/javascript" src="plupload-2.3.1/js/plupload.full.min.js"></script>
+<!-- <script type="text/javascript" src="upload-files.js"></script> -->
+<script type="text/javascript" src="manage-input-files.js"></script>
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
 body {font-size:16px;}
@@ -22,10 +24,10 @@ body {font-size:16px;}
     <h3 class="w3-padding-64"><b>Easymap</b></h3>
   </div>
   <div class="w3-bar-block">
-    <a href="manage-input-files.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage input files</a> 
-    <a href="manage-projects.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage projects</a> 
-    <a href="run-new-project.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Run new project</a> 
-    <a href="documentation.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a>
+    <a href="manage-input-files.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage input files</a> 
+    <a href="manage-projects.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage projects</a> 
+    <a href="run-new-project.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Run new project</a> 
+    <a href="documentation.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a>
   </div>
 </nav>
 
@@ -42,19 +44,39 @@ body {font-size:16px;}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <div class="w3-container" style="margin-top:75px">
-    <h1 class="w3-xxxlarge w3-text-red"><b>Run new project</b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b>Access to easymap</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <h3>XXX</h3>
-    <div id="sizeWarning" style="display:none; margin:5px 0; padding:20px; background-color:red;"></div>
-    <div id="simultWarning" style="display:none; margin:5px 0; padding:20px; background-color:red;"></div>
-    <div id="runNewProject">
-    	<p>HERE GOES INPUT INTERFACE</p>
-    	<p><a href="#" onclick="runProject()">Run workflow</a></p>
-    	<a href="manage-projects.htm" class="button" onclick="runProject()">Run workflow</a>
-    </div>
+    <h3>Password:</h3>
+     
+		<?php
+
+		// Get config/config>web-interface-password
+		// (set by the system administrator)
+
+		$config_contents = fopen('../config/config', 'r');
+
+		while (!feof($config_contents)) {
+			$line = fgets($config_contents);
+			$fields = explode(':', $line);
+
+			if ($fields[0] == 'web-interface-password') {
+				$reference_password = trim($fields[1]);
+			}
+		}
+
+		fclose($config_contents);
+
+		// Start a session and store the reference password in $_SESSION[]
+		session_start();
+		$_SESSION['reference_password'] = $reference_password;
+		?> 
+      
+    <form action="manage-input-files.php" method="post">
+      <input type="password" name="password" style="margin:8px 10px 0 0; padding:8px; display:block; float:left;">
+      <input type="submit" value="Submit" name="submit" class="button">
+    </form>
+
   </div>
-  
-  
   
 <!-- End of page content -->
 </div>

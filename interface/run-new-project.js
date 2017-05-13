@@ -51,7 +51,7 @@ function runProject() {
 	
 	var arguments = "test-arg";
 	
-	xmlhttp.open("GET", "run-new-project.php?args=" + arguments, true);
+	xmlhttp.open("GET", "run-new-project-create-command.php?args=" + arguments, true);
 	xmlhttp.send();
 }
 

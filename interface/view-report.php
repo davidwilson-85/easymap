@@ -1,3 +1,36 @@
+<?php
+// Start of code for dealing with password
+
+session_start();
+$reference_password = $_SESSION['reference_password'];
+
+if (isset($_POST['password'])) {
+	$_SESSION['password'] = $_POST['password'];
+	$password = $_SESSION['password'];
+} else {
+	@$password = $_SESSION['password'];
+}
+
+if ($password != $reference_password) {
+
+	echo '
+		<!DOCTYPE html>
+		<html>
+			<head>
+				<title></title>
+			</head>
+			<body>
+				Wrong password. <a href="index.php">Try again</a>
+			</body>
+		</html>
+	';
+
+}
+
+if ($password == $reference_password) {
+// End of code for dealing with password
+?>
+
 <!DOCTYPE html>
 <html>
 <title>Easymap</title>
@@ -21,10 +54,10 @@ body {font-size:16px;}
     <h3 class="w3-padding-64"><b>Easymap</b></h3>
   </div>
   <div class="w3-bar-block">
-    <a href="manage-input-files.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage input files</a> 
-    <a href="manage-projects.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage projects</a> 
-    <a href="run-new-project.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Run new project</a> 
-    <a href="documentation.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a>
+    <a href="manage-input-files.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage input files</a> 
+    <a href="manage-projects.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage projects</a> 
+    <a href="run-new-project.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Run new project</a> 
+    <a href="documentation.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a>
   </div>
 </nav>
 
@@ -92,3 +125,7 @@ function onClick(element) {
 </body>
 </html>
 
+<?php
+// Code for dealing with password
+}
+?>
