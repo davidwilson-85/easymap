@@ -82,15 +82,24 @@ body {font-size:16px;}
     ?>
     
     <h3>Project name: <span id="projectName"><?php echo $project_name ?></span></h3>
-    <div id="reportInfo"></div>
-    <p>This page is updated when it is initially loaded, every 50 sec,
-    and also by clicking on "Refresh log".</p>
+    <div id="reportInfo">
     
-    
-    
-    
-    
-    
+		<?php
+
+		//$project_name = $_GET['p'];
+		//$location = '../user_projects/'. $project_name .'/3_workflow_output/report.html';
+		$location = '../graphic_output/template_report/template-report.htm';
+
+		// Read HTML file with report as a text file and line by line
+		// Send each line to HTML via AJAX
+
+		$myfile = fopen($location, "r") or die("Unable to open file!");
+		echo fread($myfile,filesize($location));
+		fclose($myfile);
+
+		?>
+  
+    </div>
     
   </div>
 
