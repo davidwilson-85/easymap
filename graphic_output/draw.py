@@ -272,7 +272,7 @@ def fa_vs_pos():
 
 		label = Image.new("RGB", (140, 20), (255,255,255))
 		draw2 = ImageDraw.Draw(label)
-		draw2.text((1, 1), "Allele frequence", font=fnt2, fill=(0,0,0))
+		draw2.text((1, 1), "Allele frequency", font=fnt2, fill=(0,0,0))
 		label.rotate(90)
 		im.paste(label.rotate(90), (2, int(30/100.0*height)))
 
@@ -459,12 +459,11 @@ def insertions_overview_and_histograms():
 	#get fonts from foler 'fonts'
 	fnt1 = ImageFont.truetype('fonts/VeraMono.ttf', 30)
 	fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 16)
-	fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', 24)
+	fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
 	fnt4 = ImageFont.truetype('fonts/VeraMono.ttf', 20)
 	fnt5 = ImageFont.truetype('fonts/VeraMono.ttf', 18)
 
 	tab = 50
-
 
 	number = 1
 
@@ -539,16 +538,29 @@ def insertions_overview_and_histograms():
 			#Images, axes and title 
 			im = Image.new("RGB", (1000, 1000), (255,255,255))
 			draw = ImageDraw.Draw(im)
-			draw.line((120, 450) + (900, 450), fill=256, width=3) 								#x axis paired
-			draw.line((120, 150) + (120, 450), fill=256, width=3)   							#y axis paired
-			draw.line((120, 755) + (900, 755), fill=256, width=3) 								#x axis local
-			draw.line((120, 455) + (120, 755), fill=256, width=3)   							#y axis local
+			draw.line((120, 449) + (900, 449), fill=256, width=1) 								#x axis paired
+			draw.line((120, 150) + (120, 449), fill=256, width=1)   							#y axis paired
+			draw.line((120, 754) + (900, 754), fill=256, width=1) 								#x axis local
+			draw.line((120, 455) + (120, 754), fill=256, width=1)   							#y axis local
 			
-			draw.text(((450), (795)), ('Nucleotide'), font=fnt1, fill=(0,0,0,255))
-			draw.text(((20), (120)), ('RD'), font=fnt1, fill=(0,0,0,255))
+			draw.line((120, 150) + (900, 150), fill=256, width=1) 								#-x axis paired
+			draw.line((900, 150) + (900, 449), fill=256, width=1)   							#-y axis paired
+			draw.line((120, 455) + (900, 455), fill=256, width=1) 								#-x axis local
+			draw.line((900, 455) + (900, 754), fill=256, width=1)   							#-y axis local
+
+
+			draw.text(((450), (795)), ('Nucleotide'), font=fnt3, fill=(0,0,0,255))
 			draw.text(((140), (155)), ('Paired-reads analysis'), font=fnt3, fill=(0,0,0,255))
 			draw.text(((140), (460)), ('Single-reads analysis'), font=fnt3, fill=(0,0,0,255))
-		
+
+			#Y axis label
+			label = Image.new("RGB", (150, 30), (255,255,255))
+			draw2 = ImageDraw.Draw(label)
+			draw2.text((1, 1), "Read depth", font=fnt3, fill=(0,0,0))
+			label.rotate(90)
+			im.paste(label.rotate(90), (35, 350))
+
+
 			#Scaling factors 
 			nucleotides = region_max - region_min
 			scaling_factor_x = nucleotides/780.0
@@ -619,7 +631,7 @@ def insertions_overview_and_histograms():
 							cr = [int(sp[0].strip('@#')), int(sp[1].strip())]
 							cr_min = min(cr)
 							cr_max = max(cr)
-							draw.text(((120), (860)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
+							draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
 							draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
 							draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
 
@@ -633,14 +645,13 @@ def insertions_overview_and_histograms():
 			while x_p in range(120, 900):
 				draw.line((x_p, 755) + (x_p, 762), fill=256, width=1)
 				w, h = draw.textsize(str(ruler))
-				draw.text((x_p - w/2 - 15, 766), (str(ruler)), font=fnt5, fill=(0,0,0,255))  
+				draw.text((x_p - w/2 - 5, 766), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 				ruler = ruler + 200
 				x_p = int(x_p + (200/scaling_factor_x)) #Ruler with 200 nts separations
 			
 			while x_p_2 in range(120, 900):
-				draw.line((x_p_2, 755) + (x_p_2, 760), fill=256, width=1)
+				draw.line((x_p_2, 755) + (x_p_2, 758), fill=256, width=1)
 				x_p_2 = int(x_p_2 + (200/scaling_factor_x)) #Ruler with 100 nts separations
-
 
 
 
@@ -648,8 +659,8 @@ def insertions_overview_and_histograms():
 			y_p = 450 - int(10/scaling_factor_y_paired)
 			counter = 10
 			while y_p in range(150, 451): 
-				draw.line((120, y_p) + (115, y_p), fill=256, width=3)
-				draw.text((80, y_p-10), ( str(counter)), font=fnt4, fill=(0,0,0,255))
+				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
 				counter = counter + 10
 				y_p = int(y_p - (10/scaling_factor_y_paired))
 
@@ -658,14 +669,17 @@ def insertions_overview_and_histograms():
 			y_p = 755 - int(10/scaling_factor_y_paired)
 			counter = 10
 			while y_p in range(455, 751): 
-				draw.line((120, y_p) + (115, y_p), fill=256, width=3)
-				draw.text((80, y_p-10), ( str(counter)), font=fnt4, fill=(0,0,0,255))
+				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
 				counter = counter + 10
 				y_p = int(y_p - (10/scaling_factor_y_paired))
 
 
 			#save image, specifying the format with the extension
-			im.save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
+			w, h = im.size
+			im.crop((0, 100, w, h-100)).save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
+
+
 
 	#_________________________________________________________________________________________________________________________________________________________
 	if args.mode == 'se':
@@ -711,12 +725,21 @@ def insertions_overview_and_histograms():
 			#Images, axes and title 
 			im = Image.new("RGB", (1000, 600), (255,255,255))
 			draw = ImageDraw.Draw(im)
-			draw.line((120, 450) + (900, 450), fill=256, width=3) 								#x axis 
-			draw.line((120, 150) + (120, 450), fill=256, width=3)   							#y axis 
+			draw.line((120, 450) + (900, 450), fill=256, width=1) 								#x axis 
+			draw.line((120, 150) + (120, 450), fill=256, width=1)   							#y axis 
 
 				
-			draw.text(((450), (500)), ('Nucleotide'), font=fnt1, fill=(0,0,0,255))
-			draw.text(((20), (120)), ('RD'), font=fnt1, fill=(0,0,0,255))
+			draw.text(((450), (500)), ('Nucleotide'), font=fnt3, fill=(0,0,0,255))
+			#draw.text(((20), (120)), ('RD'), font=fnt3, fill=(0,0,0,255))
+
+			#Y axis label
+			label = Image.new("RGB", (150, 30), (255,255,255))
+			draw2 = ImageDraw.Draw(label)
+			draw2.text((1, 1), "Read depth", font=fnt3, fill=(0,0,0))
+			label.rotate(90)
+			im.paste(label.rotate(90), (35, 150))
+
+
 
 		
 			#Scaling factors 
@@ -760,8 +783,7 @@ def insertions_overview_and_histograms():
 				draw.line((x_p, 450) + (x_p, 457), fill=256, width=1)
 
 				w, h = draw.textsize(str(ruler))
-				draw.text((x_p - w/2 - 15, 457), (str(ruler)), font=fnt5, fill=(0,0,0,255))  
-
+				draw.text((x_p - w/2 - 5, 457), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 
 				ruler = ruler + 200
 				x_p = int(x_p + (200/scaling_factor_x)) #Ruler with 200 nts separations
@@ -775,8 +797,8 @@ def insertions_overview_and_histograms():
 			y_p = 450 - int(10/scaling_factor_y_local)
 			counter = 10
 			while y_p in range(150, 451): 
-				draw.line((120, y_p) + (115, y_p), fill=256, width=3)
-				draw.text((80, y_p-10), ( str(counter)), font=fnt4, fill=(0,0,0,255))
+				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
 				counter = counter + 10
 				y_p = int(y_p - (10/scaling_factor_y_local))
 
