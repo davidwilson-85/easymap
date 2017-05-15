@@ -208,7 +208,7 @@ echo $(date)": Project data directories created." >> $my_log_file
 
 
 ############################################################
-# Overwrite read_s, read_f and read_r if user chose to simulate data
+# Overwrite read_s, read_f and read_r
 # 'sample': F2 recessive phenotype (mutant phenotype in recessive mutations)
 # 'control': if snp_analysis_type=par, reads from one of the parentals used in cross; if snp_analysis_type=f2wt, F2 dominant phenotype (wildtype phenotype in recessive mutations)
 if [ $data_source == 'sim' ]
@@ -226,6 +226,26 @@ then
 				read_r=$project_name/$f1/sim_data/sim_seq_output/sample/pe-rev_reads.fq
 				read_f_par=$project_name/$f1/sim_data/sim_seq_output/control/pe-for_reads.fq
 				read_r_par=$project_name/$f1/sim_data/sim_seq_output/control/pe-rev_reads.fq
+			}
+		fi
+	}
+fi
+
+if [ $data_source == 'exp' ]
+then
+	{
+		if [ $lib_type_sample == 'se' ]
+		then
+			{
+				read_s=$f0/$7
+				read_s_par=$0/${15}
+			}
+		else
+			{
+				read_f=$f0/$8
+				read_r=$f0/$9
+				read_f_par=$0/${16}
+				read_r_par=$0/${17}
 			}
 		fi
 	}

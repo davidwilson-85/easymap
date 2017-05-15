@@ -31,10 +31,7 @@ exit_code=0
 # Set location of log file
 my_log_file=$1
 
-
-
 start_time=`date +%s`
-
 
 my_mut=lin 			#my_mut takes the values 'lin' in this workflow and 'snp' in the snp workflow, for the execution of the graphic output module
 
@@ -52,7 +49,6 @@ my_ix2=insertion_index
 my_gff=${10}													#Genome feature file
 my_ann=${11}													
 my_rrl=250 														#Regulatory region length
-
 
 #Define the folders in the easymap directory 
 f0=user_data
