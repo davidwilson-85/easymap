@@ -90,8 +90,6 @@ def fa_vs_pos():
 
 
 	# Read contig fasta file
-	contig_lengths = list()
-
 	with open(contig_source) as fp:
 		fastalist = list()
 		for name_contig, seq_contig in read_fasta(fp):
@@ -99,27 +97,23 @@ def fa_vs_pos():
 			innerlist.append(name_contig.strip('>'))
 			innerlist.append(len(seq_contig))
 			fastalist.append(innerlist)
-			contig_lengths.append(len(seq_contig))
 
-	max_contig_len = 0
-	for i in contig_lengths:
-		if int(i) > max_contig_len:
-			max_contig_len = int(i)
+
 
 
 
 	#FA vs POS graphs 
 	for i in fastalist:
-		wide=int(1000*float(i[1])/max_contig_len)								 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
+		wide=2000 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
 		height=(50/100.0)*wide
 		im = Image.new("RGB", (wide, int(height)), (255,255,255))
 		draw = ImageDraw.Draw(im)
 		
 		#get fonts from foler 'fonts'
-		fnt1 = ImageFont.truetype('fonts/VeraMono.ttf', int(28/1000.0*wide))
-		fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', int(14/1000.0*wide))
-		fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', int(22/1000.0*wide))
-		fnt4 = ImageFont.truetype('fonts/VeraMono.ttf', int(18/1000.0*wide))
+		fnt1 = ImageFont.truetype('fonts/arial.ttf', int(30/1000.0*wide))
+		fnt2 = ImageFont.truetype('fonts/arial.ttf', int(16/1000.0*wide))
+		fnt3 = ImageFont.truetype('fonts/arial.ttf', int(24/1000.0*wide))
+		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(20/1000.0*wide))
 
 		r = red(int(i[1]))
 
@@ -131,7 +125,7 @@ def fa_vs_pos():
 
 
 		#Scaling factors
-		scaling_factor_x = ((float(max_graph_x)/(80/100.0*wide)))			#nts/pixel         <-----------------------------------------------------------#######################
+		scaling_factor_x = ((float(max_graph_x)/(73/100.0*wide)))			#nts/pixel         <-----------------------------------------------------------#######################
 		scaling_factor_y = (1.1/(63/100.0*height))					#fa/pixels
 
 		#snps
@@ -140,8 +134,8 @@ def fa_vs_pos():
 			if i[0].lower() == sp[0].lower():
 				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
 				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
-				pos_img = int(int(sp[1])/scaling_factor_x) + int(12.5/100.0*wide)
-				draw.ellipse((pos_img-1, fa_img-1, pos_img+1, fa_img+1), fill=(147, 147, 147))
+				pos_img = int(int(sp[1])/scaling_factor_x) + int(12/100.0*wide)
+				draw.ellipse((pos_img-3, fa_img-3, pos_img+3, fa_img+3), fill=(147, 147, 147))
 
 
 		if args.my_snp_analysis_type == 'f2wt':
@@ -151,10 +145,10 @@ def fa_vs_pos():
 					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 					pos_img = int(int(sp[1])/scaling_factor_x) + int(12/100.0*wide)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(171, 219, 208))
+					draw.ellipse((pos_img-3, fa_img-3, pos_img+3, fa_img+3), fill=(171, 219, 208))
 
 
-		################################################################################################################################################################################################################
+################################################################################################################################################################################################################
 		my_cross = str(args.my_cross)
 		#Boost / mm 																						
 	
@@ -177,7 +171,7 @@ def fa_vs_pos():
 					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
 
 					try:
-						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=1)	
+						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=int(0.2/100.0*wide))	
 						window_position_img_2 = window_position_img
 						boost_value_img_2 = boost_value_img
 
@@ -200,7 +194,7 @@ def fa_vs_pos():
 					window_position = int(sp[1])
 					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
 					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=1)	
+						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.2/100.0*wide))	
 						window_position_img_2 = window_position_img
 						mm_value_img_2 = mm_value_img
 					except:
@@ -216,7 +210,7 @@ def fa_vs_pos():
 					window_position = int(sp[1])
 					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
 					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=1)	
+						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=int(0.2/100.0*wide))	
 						window_position_img_2 = window_position_img
 						mm_value_img_2 = mm_value_img
 					except:
@@ -231,26 +225,22 @@ def fa_vs_pos():
 ################################################################################################################################################################################################################
 
 		#Axes
-		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(12/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
-		draw.line((int(12/100.0*wide), int(80/100.0*height)) + (int(91.5/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#X axis
-
-		draw.line((int(91.5/100.0*wide), int(15/100.0*height)) + (int(91.5/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-Y axis
-		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(91.5/100.0*wide), int(15/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-X axis
-
-		draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt3, fill=(0,0,0,255))
+		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(12/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#Y axis
+		draw.line((int(12/100.0*wide), int(80/100.0*height)) + (int(85/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.2/100.0*wide))	#X axis
+		draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt1, fill=(0,0,0,255))
 		
 
 		#Axis rulers 
-		#X Axis 																		
+		#X axis
 		r = red(int(i[1]))
-		if 'kb' in r:																											####################################################################### FIX
+		if 'kb' in r:
 			sp = r.split(' ')
 			max_chr = float(sp[0])
 			x_increment = int(((max_chr/10.0)/scaling_factor_x)*1000)
 			x_ruler =  int(x_increment) + int(12/100.0*wide)
 			x_tag = int(max_chr/10)
 			while x_ruler in range(int(12/100.0*wide), int(85/100.0*wide)):
-				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.1/100.0*wide))	
 				
 				if len(str(x_tag)) == 1:
 					draw.text(((x_ruler- int(0.4/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
@@ -268,31 +258,32 @@ def fa_vs_pos():
 		if 'Mb' in r:
 			sp = r.split(' ')
 			mb = 1
+			#x_increment = int(1000000*1/scaling_factor_x)	#	#<-----------------------------------------------------------#######################
 			
-			x_increment = ((((81/100.0)*wide) / (max_graph_x/1000000)))
+			x_increment = ((((73/100.0)*wide) / (max_graph_x/1000000)))
 
 			x_ruler =  int(x_increment) + int(12/100.0*wide)
 			x_tag = 1
-			while x_ruler in range(int(12/100.0*wide), int(92/100.0*wide)):
-				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+			while x_ruler in range(int(12/100.0*wide), int(85/100.0*wide)):
+				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=int(0.15/100.0*wide))	
 				if len(str(x_tag)) == 1:
 					draw.text(((x_ruler- int(0.4/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
 				elif len(str(x_tag)) == 2: 
-					draw.text(((x_ruler- int(0.9/100.0*wide) +1), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
+					draw.text(((x_ruler- int(0.9/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
 
 				x_ruler= int((x_ruler + x_increment))
 				x_tag = str(int(int(x_tag) + 1))
 
-			x_title = str(i[0]) + ' (Mb)'
+			x_title = str(i[0]) + ' (Mb )'
 			w, h = draw.textsize(str(x_title))
-			draw.text(((int(50/100.0*wide) - w/2 - 50), (int(87/100.0*height))), (x_title), font=fnt3, fill=(0,0,0,255))
+			draw.text(((int(50/100.0*wide) - w/2 - 30), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
 
 		#Y axis
-		draw.line(( int(11.5/100.0*wide) , int(22.7/100.0*height) ) + ( int(12/100.0*wide) , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( int(11.5/100.0*wide) , int((28.65 + 22.7)/100.0*height) ) + ( int(12/100.0*wide) , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( int(11.5/100.0*wide) , int(22.7/100.0*height) ) + ( int(12/100.0*wide) , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=int(0.15/100.0*wide))	
+		draw.line(( int(11.5/100.0*wide) , int((28.65 + 22.7)/100.0*height) ) + ( int(12/100.0*wide) , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=int(0.15/100.0*wide))	
 
-		draw.text(((int(8.5/100.0*wide)), (int(21/100.0*height))), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
-		draw.text(((int(8.5/100.0*wide)), (int((29 + 20.7)/100.0*height))), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
+		draw.text(((int(8/100.0*wide)), (int(20.7/100.0*height))), ( '1.0' ), font=fnt4, fill=(0,0,0,255))
+		draw.text(((int(8/100.0*wide)), (int((28.65 + 20.7)/100.0*height))), ( '0.5' ), font=fnt4, fill=(0,0,0,255))
 
 		#save image, specifying the format with the extension
 		im.save(project + '/3_workflow_output/img_2_' + str(i[0]) + '.png')
@@ -470,11 +461,11 @@ def insertions_overview_and_histograms():
 	#initialize draw
 	draw = ImageDraw.Draw(im)
 	#get fonts from foler 'fonts'
-	fnt1 = ImageFont.truetype('fonts/VeraMono.ttf', 30)
-	fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 16)
-	fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', 24)
-	fnt4 = ImageFont.truetype('fonts/VeraMono.ttf', 20)
-	fnt5 = ImageFont.truetype('fonts/VeraMono.ttf', 18)
+	fnt1 = ImageFont.truetype('fonts/arial.ttf', 30)
+	fnt2 = ImageFont.truetype('fonts/arial.ttf', 16)
+	fnt3 = ImageFont.truetype('fonts/arial.ttf', 24)
+	fnt4 = ImageFont.truetype('fonts/arial.ttf', 20)
+	fnt5 = ImageFont.truetype('fonts/arial.ttf', 18)
 
 	tab = 50
 
@@ -941,7 +932,7 @@ def gene_plot():
 				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
 				draw.line((inicio, int(180/350.0*height)) + (fin, int(180/350.0*height)), fill=(59, 119, 214), width=int(0.02*wide))
 				draw.line((inicio, int(170/350.0*height)) + (fin, int(170/350.0*height)), fill=(0, 4, 71, 0), width=2)	
-				draw.line((inicio, int(190/350.0*height)) + (fin+1, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
+				draw.line((inicio, int(190/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 				draw.line((inicio, int(170/350.0*height)) + (inicio, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 				draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 				if p[4][5] == '+':
@@ -998,8 +989,6 @@ def gene_plot():
 			draw.polygon([(int(0.16*wide), int(192/350.0*height)), (int(0.149*wide) , int(192/350.0*height)), (int(0.149*wide), int(180/350.0*height))], fill = (255, 255, 255, 0))
 			draw.line((int(0.158*wide), int(170.5/350.0*height)) + (int(0.148*wide), int(180.5/350.0*height)), fill=(0, 4, 71, 0), width=2)
 			draw.line((int(0.159*wide), int(190/350.0*height)) + (int(0.149*wide), int(180/350.0*height)), fill=(0, 4, 71, 0), width=2)
-
-			draw.line((int(0.15*wide), int(169/350.0*height)) + (int(0.16*wide), int(169/350.0*height)), fill=(255, 255, 255, 0), width=1)
 
 
 		#Scale bar
