@@ -107,19 +107,19 @@ def fa_vs_pos():
 			max_contig_len = int(i)
 
 
-
 	#FA vs POS graphs 
 	for i in fastalist:
-		wide=int(1000*float(i[1])/max_contig_len)								 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
-		height=(50/100.0)*wide
+		
+		wide=int(880*float(i[1])/max_contig_len) + 120								 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
+		height=500
 		im = Image.new("RGB", (wide, int(height)), (255,255,255))
 		draw = ImageDraw.Draw(im)
 		
 		#get fonts from foler 'fonts'
-		fnt1 = ImageFont.truetype('fonts/VeraMono.ttf', int(28/1000.0*wide))
-		fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', int(14/1000.0*wide))
-		fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', int(22/1000.0*wide))
-		fnt4 = ImageFont.truetype('fonts/VeraMono.ttf', int(18/1000.0*wide))
+		fnt1 = ImageFont.truetype('fonts/VeraMono.ttf', 28)
+		fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
+		fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', 22)
+		fnt4 = ImageFont.truetype('fonts/VeraMono.ttf', 18)
 
 		r = red(int(i[1]))
 
@@ -129,18 +129,17 @@ def fa_vs_pos():
 		elif 'kb' in r: 
 			max_graph_x = i[1]
 
-
 		#Scaling factors
-		scaling_factor_x = ((float(max_graph_x)/(80/100.0*wide)))			#nts/pixel         <-----------------------------------------------------------#######################
-		scaling_factor_y = (1.1/(63/100.0*height))					#fa/pixels
+		scaling_factor_x = (max_graph_x)/(wide - 120)							#nts/pixel         <-----------------------------------------------------------#######################
+		scaling_factor_y = (1.1/(63/100.0*height))								#fa/pixels
 
 		#snps
 		for l, line in enumerate(lines):
 			sp = line.split()
 			if i[0].lower() == sp[0].lower():
 				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
-				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
-				pos_img = int(int(sp[1])/scaling_factor_x) + int(12.5/100.0*wide)
+				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
+				pos_img = int(int(sp[1])/scaling_factor_x) + 70
 				draw.ellipse((pos_img-1, fa_img-1, pos_img+1, fa_img+1), fill=(147, 147, 147))
 
 
@@ -150,7 +149,7 @@ def fa_vs_pos():
 				if i[0].lower() == sp[0].lower():
 					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
-					pos_img = int(int(sp[1])/scaling_factor_x) + int(12/100.0*wide)
+					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
 					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(171, 219, 208))
 
 
@@ -174,7 +173,7 @@ def fa_vs_pos():
 					boost_value_img = int(80/100.0*height) - int(boost_value/scaling_factor_y )
 
 					window_position = int(sp[1])
-					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
+					window_position_img = int(window_position/scaling_factor_x) + 70
 
 					try:
 						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=1)	
@@ -198,9 +197,9 @@ def fa_vs_pos():
 					mm_value = float(sp[2].strip())
 					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
 					window_position = int(sp[1])
-					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
+					window_position_img = int(window_position/scaling_factor_x) + 70
 					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=1)	
+						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
 						window_position_img_2 = window_position_img
 						mm_value_img_2 = mm_value_img
 					except:
@@ -214,9 +213,9 @@ def fa_vs_pos():
 					mm_value = float(sp[2].strip())
 					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
 					window_position = int(sp[1])
-					window_position_img = int(window_position/scaling_factor_x) + int(12/100.0*wide)
+					window_position_img = int(window_position/scaling_factor_x) + 70
 					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 227, 15, 0), width=1)	
+						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
 						window_position_img_2 = window_position_img
 						mm_value_img_2 = mm_value_img
 					except:
@@ -228,71 +227,59 @@ def fa_vs_pos():
 		window_position_img_2 = None 
 		mm_value_img_2 = None
 
-################################################################################################################################################################################################################
-
 		#Axes
-		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(12/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
-		draw.line((int(12/100.0*wide), int(80/100.0*height)) + (int(91.5/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#X axis
+		draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
+		draw.line((68, int(80/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#X axis
 
-		draw.line((int(91.5/100.0*wide), int(15/100.0*height)) + (int(91.5/100.0*wide), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-Y axis
-		draw.line((int(12/100.0*wide), int(15/100.0*height)) + (int(91.5/100.0*wide), int(15/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-X axis
+		draw.line(((wide - 50), int(15/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-Y axis
+		draw.line((68, int(15/100.0*height)) + ((wide - 50), int(15/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-X axis
 
-		draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt3, fill=(0,0,0,255))
+		#draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt3, fill=(0,0,0,255))
 		
-
-		#Axis rulers 
+		#Axis rulers_____________________
 		#X Axis 																		
 		r = red(int(i[1]))
-		if 'kb' in r:																											####################################################################### FIX
-			sp = r.split(' ')
-			max_chr = float(sp[0])
-			x_increment = int(((max_chr/10.0)/scaling_factor_x)*1000)
-			x_ruler =  int(x_increment) + int(12/100.0*wide)
-			x_tag = int(max_chr/10)
-			while x_ruler in range(int(12/100.0*wide), int(85/100.0*wide)):
-				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
-				
-				if len(str(x_tag)) == 1:
-					draw.text(((x_ruler- int(0.4/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-				elif len(str(x_tag)) == 2: 
-					draw.text(((x_ruler- int(0.9/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-
-				x_ruler= x_ruler + x_increment
-				x_tag = str(int(int(x_tag) + max_chr/10))
-
-			x_title = (str(i[0]) + ' (kb)')
-			w, h = draw.textsize(x_title)
-			draw.text(((int(50/100.0*wide) - w/2 - 16), (int(87/100.0*height))), (x_title), font=fnt1, fill=(0,0,0,255))
-
-
+		mb_max = (max_graph_x/1000000)
+		axis_px = (wide - 120)
 		if 'Mb' in r:
-			sp = r.split(' ')
 			mb = 1
-			
-			x_increment = ((((81/100.0)*wide) / (max_graph_x/1000000)))
+			for mb in range(1, mb_max + 1):	
+				pos_x = int((mb*(float(axis_px)/mb_max)) + 70)
+				draw.line((pos_x, int(81/100.0*height) ) + (pos_x, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+				
+				if len(str(mb)) == 1:
+					draw.text(((pos_x - 4), (int(81.5/100.0*height))), (str(mb).strip()), font=fnt2, fill=(0,0,0,255))
+				elif len(str(mb)) == 2: 
+					draw.text(((pos_x - 8), (int(81.5/100.0*height))), (str(mb).strip()), font=fnt2, fill=(0,0,0,255))
 
-			x_ruler =  int(x_increment) + int(12/100.0*wide)
-			x_tag = 1
-			while x_ruler in range(int(12/100.0*wide), int(92/100.0*wide)):
-				draw.line((x_ruler ,int(81/100.0*height) ) + (x_ruler , int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
-				if len(str(x_tag)) == 1:
-					draw.text(((x_ruler- int(0.4/100.0*wide)), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-				elif len(str(x_tag)) == 2: 
-					draw.text(((x_ruler- int(0.9/100.0*wide) +1), (int(81.5/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-
-				x_ruler= int((x_ruler + x_increment))
-				x_tag = str(int(int(x_tag) + 1))
-
-			x_title = str(i[0]) + ' (Mb)'
-			w, h = draw.textsize(str(x_title))
-			draw.text(((int(50/100.0*wide) - w/2 - 50), (int(87/100.0*height))), (x_title), font=fnt3, fill=(0,0,0,255))
 
 		#Y axis
-		draw.line(( int(11.5/100.0*wide) , int(22.7/100.0*height) ) + ( int(12/100.0*wide) , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( int(11.5/100.0*wide) , int((28.65 + 22.7)/100.0*height) ) + ( int(12/100.0*wide) , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( 68 , int(22.7/100.0*height) ) + ( 63 , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( 68 , int((28.65 + 22.7)/100.0*height) ) + ( 63 , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( 68 , int((28.65 + 22.7 - 28.65/2)/100.0*height) ) + ( 65 , int((28.65 + 22.7 - 28.65/2)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( 68 , int((28.65 + 22.7 + 28.65/2)/100.0*height) ) + ( 65 , int((28.65 + 22.7 + 28.65/2)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 
-		draw.text(((int(8.5/100.0*wide)), (int(21/100.0*height))), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
-		draw.text(((int(8.5/100.0*wide)), (int((29 + 20.7)/100.0*height))), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
+
+		draw.text(((32), (int(21/100.0*height))), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
+		draw.text(((32), (int((29 + 20.7)/100.0*height))), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
+		
+		#draw.text(((32), (int((28.65 + 22.7 - 28.65/2)/100.0*height))), ( '0.75' ), font=fnt2, fill=(0,0,0,255))
+		#draw.text(((32), (int((28.65 + 22.7 + 28.65/2)/100.0*height))), ( '0.25' ), font=fnt2, fill=(0,0,0,255))
+
+		#______________________________________
+
+		#Y axis label
+
+		label = Image.new("RGB", (140, 20), (255,255,255))
+		draw2 = ImageDraw.Draw(label)
+		draw2.text((1, 1), "Allele frequence", font=fnt2, fill=(0,0,0))
+		label.rotate(90)
+		im.paste(label.rotate(90), (2, int(30/100.0*height)))
+
+		#X axis label
+		x_title = str(i[0]) + ' (Mb)'
+		w, h = draw.textsize(str(x_title))
+		draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
 
 		#save image, specifying the format with the extension
 		im.save(project + '/3_workflow_output/img_2_' + str(i[0]) + '.png')
