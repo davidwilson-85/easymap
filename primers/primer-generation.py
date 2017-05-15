@@ -262,6 +262,7 @@ def fastaq_to_dic(fq):
 	fq = open(fq,"r")
 	for line in fq:
 		if line.startswith("@"): #This line will be the header, the followings until find + have to be together
+			print line
 			line_new = line.split("/")[-1]
 			i = 1
 			m= 0
