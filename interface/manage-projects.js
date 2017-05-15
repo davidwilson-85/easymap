@@ -21,7 +21,7 @@ function projectsInfo() {
 		}
 	};
 	
-	xmlhttp.open("GET", "manage-projects.php", true);
+	xmlhttp.open("GET", "manage-projects-list-projects.php", true);
 	xmlhttp.send();
 }
 

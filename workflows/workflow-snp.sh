@@ -179,7 +179,7 @@ echo $(date) ': VCF grooming of F2 data finished.' >> $my_log_file
 
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 1
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3
 
 } || {
 	echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -271,7 +271,7 @@ echo $(date) ': VCF grooming of control data finished.' >> $my_log_file
 
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 1
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3
 
 } || {
 	echo $(date) ': Error during execution of variants-filter.py with control data.' >> $my_log_file

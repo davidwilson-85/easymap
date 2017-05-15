@@ -1,3 +1,36 @@
+<?php
+// Start of code for dealing with password
+
+session_start();
+$reference_password = $_SESSION['reference_password'];
+
+if (isset($_POST['password'])) {
+	$_SESSION['password'] = $_POST['password'];
+	$password = $_SESSION['password'];
+} else {
+	@$password = $_SESSION['password'];
+}
+
+if ($password != $reference_password) {
+
+	echo '
+		<!DOCTYPE html>
+		<html>
+			<head>
+				<title></title>
+			</head>
+			<body>
+				Wrong password. <a href="index.php">Try again</a>
+			</body>
+		</html>
+	';
+
+}
+
+if ($password == $reference_password) {
+// End of code for dealing with password
+?>
+
 <!DOCTYPE html>
 <html>
 <title>Easymap</title>
@@ -21,10 +54,10 @@ body {font-size:16px;}
     <h3 class="w3-padding-64"><b>Easymap</b></h3>
   </div>
   <div class="w3-bar-block">
-    <a href="manage-input-files.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage input files</a> 
-    <a href="manage-projects.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage projects</a> 
-    <a href="run-new-project.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Run new project</a> 
-    <a href="documentation.htm" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a>
+    <a href="manage-input-files.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage input files</a> 
+    <a href="manage-projects.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Manage projects</a> 
+    <a href="run-new-project.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Run new project</a> 
+    <a href="documentation.php" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Documentation</a>
   </div>
 </nav>
 
@@ -49,15 +82,24 @@ body {font-size:16px;}
     ?>
     
     <h3>Project name: <span id="projectName"><?php echo $project_name ?></span></h3>
-    <div id="reportInfo"></div>
-    <p>This page is updated when it is initially loaded, every 50 sec,
-    and also by clicking on "Refresh log".</p>
+    <div id="reportInfo">
     
-    
-    
-    
-    
-    
+		<?php
+
+		//$project_name = $_GET['p'];
+		//$location = '../user_projects/'. $project_name .'/3_workflow_output/report.html';
+		$location = '../graphic_output/template_report/template-report.htm';
+
+		// Read HTML file with report as a text file and line by line
+		// Send each line to HTML via AJAX
+
+		$myfile = fopen($location, "r") or die("Unable to open file!");
+		echo fread($myfile,filesize($location));
+		fclose($myfile);
+
+		?>
+  
+    </div>
     
   </div>
 
@@ -92,3 +134,7 @@ function onClick(element) {
 </body>
 </html>
 
+<?php
+// Code for dealing with password
+}
+?>

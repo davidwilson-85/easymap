@@ -29,8 +29,15 @@ output = args.output
 f2 = open(output, 'w')
 
 
-#_________________________________CANDIDATE REGION FILTER___________________________________________________________________________________
+#El argumento STEP se utiliza para regular la clase de filtrado segun el paso del analisis que se este realizando:
+#	STEP = 1 : Filtrado normal, con ninguno o varios argumentos 
+#	STEP = 2 : Fitrado con los datos de la region candidato
+#	STEP = 3 : Filtro inicial para quitar de la lista de SNPs las inserciones y delecciones
 step = args.step
+
+
+
+#_________________________________CANDIDATE REGION FILTER___________________________________________________________________________________
 if step == '1':
 	pass
 elif step == '2':
@@ -66,28 +73,31 @@ def limits():
 
 #__________________________________________________________________________________________________________________________________________
 
-
-
 chromosome = args.chr
 
-for i, line in enumerate(lines):
-	if not line.startswith('#'):
-		sp = line.split('\t')
-		if args.mut_type.strip() == 'EMS' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')): 
-			limits()
-			ref_b = sp[2]
-			alt_b = sp[3]
-			if (
-					(selector == 1)
-					and ((ref_b.strip() == 'G' and alt_b.strip() == 'A')
-					or (ref_b.strip() == 'C' and alt_b.strip() == 'T'))
-				):
-					f2.write(line)
-					
-		elif args.mut_type.strip() == 'all' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')):
-			limits()
-			if selector == 1: 
-				f2.write(line)	
-		
-		
+if step == '1' or step == '2':
+	for i, line in enumerate(lines):
+		if not line.startswith('#'):
+			sp = line.split('\t')
+			if args.mut_type.strip() == 'EMS' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')): 
+				limits()
+				ref_b = sp[2]
+				alt_b = sp[3]
+				if (
+						(selector == 1)
+						and ((ref_b.strip() == 'G' and alt_b.strip() == 'A')
+						or (ref_b.strip() == 'C' and alt_b.strip() == 'T'))
+					):
+						f2.write(line)
+						
+			elif args.mut_type.strip() == 'all' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')):
+				limits()
+				if selector == 1: 
+					f2.write(line)	
 
+if step == '3':
+	for i, line in enumerate(lines):
+		if not line.startswith('#'):
+			sp = line.split('\t')
+			if len(sp[2].strip()) == 1 and len(sp[3].strip()) == 1:
+				f2.write(line)
