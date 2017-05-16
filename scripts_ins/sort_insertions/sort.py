@@ -124,9 +124,11 @@ elif args.mode == 'se':
 			if str(sp[0]).strip() == 'LOCAL' and  str(sp[4]).strip() == 'TOTAL':
 				p = int(sp[2])
 				contig = sp[1].strip('\t')
+
 				try:
 					d = abs(int(p2) - int(p))
 					if d > 100 or contig != contig2:
+
 						insertion_id = insertion_id + 1
 						f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4])
 						p2 = p
@@ -156,7 +158,7 @@ f2.close()
 
 ###################################################################################################################################################################
 #																																								  #
-#															Filter insertions and rewrite sorted_insertions.txt			(ONLY FOR PAIRED DATA)					  #
+#															Filter insertions and rewrite sorted_insertions.txt			(ONLY FILTERING PAIRED DATA)			  #
 #																																								  #
 ###################################################################################################################################################################
 
@@ -167,41 +169,79 @@ lines = f1.readlines()
 
 insertions_final = list()
 insertions_raw = list()
+
 for e in range(1, (insertion_id + 1)):
 	insertions_raw.append(e)
 
-for insertion in insertions_raw:
-	max_RD = 0
-	directions = list()
-	max_pos = 0
-	min_pos = float('inf')
+print insertions_raw
 
-	for l, line in enumerate(lines):
-		if not line.startswith('@'):
-			sp = line.split()
-			if int(sp[2]) == insertion and sp[0].strip() == "PAIRED":	
-				#1st criterion: insertion must have forward and reverse supporting reads
-				read_direction = sp[5]
-				if read_direction not in directions and read_direction != "TOTAL":
-					directions.append(read_direction)
 
-				#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
-				if int(sp[4]) > max_RD:
-					max_RD = int(sp[4])
+if args.mode == 'pe': 
+	for insertion in insertions_raw:
+		max_RD = 0
+		directions = list()
+		max_pos = 0
+		min_pos = float('inf')
 
-				#3rd criterion: insertion data span 
-				if int(sp[3]) > max_pos:
-					max_pos = int(sp[3])
-				if float(sp[3]) < min_pos:
-					min_pos = int(sp[3])
-				span = max_pos - min_pos
+		for l, line in enumerate(lines):
+			if not line.startswith('@'):
+				sp = line.split()
+				if int(sp[2]) == insertion and sp[0].strip() == "PAIRED":	
+					#1st criterion: insertion must have forward and reverse supporting reads
+					read_direction = sp[5]
+					if read_direction not in directions and read_direction != "TOTAL":
+						directions.append(read_direction)
 
-	if len(directions) == 2:
-		if max_RD >= 3 or span > 500:
-			insertions_final.append(insertion)
+					#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
+					if int(sp[4]) > max_RD:
+						max_RD = int(sp[4])
+
+					#3rd criterion: insertion data span 
+					if int(sp[3]) > max_pos:
+						max_pos = int(sp[3])
+					if float(sp[3]) < min_pos:
+						min_pos = int(sp[3])
+					span = max_pos - min_pos
+
+		if len(directions) == 2:
+			if max_RD >= 3 or span > 500:
+				insertions_final.append(insertion)
+
+elif args.mode == 'se': 
+	print "seh"
+	for insertion in insertions_raw:
+		max_RD = 0
+		directions = list()
+		max_pos = 0
+		min_pos = float('inf')
+
+		for l, line in enumerate(lines):
+			if not line.startswith('@'):
+				sp = line.split()
+				if int(sp[2]) == insertion and sp[0].strip() == "LOCAL_RD":
+					#1st criterion: insertion must have forward and reverse supporting reads
+					read_direction = sp[5]
+					if read_direction not in directions and read_direction != "TOTAL_RD":
+						directions.append(read_direction)
+
+					#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
+					if int(sp[4]) > max_RD:
+						max_RD = int(sp[4])
+
+					#3rd criterion: insertion data span 
+					if int(sp[3]) > max_pos:
+						max_pos = int(sp[3])
+					if float(sp[3]) < min_pos:
+						min_pos = int(sp[3])
+					span = max_pos - min_pos
+
+		if len(directions) == 2:
+			if max_RD >= 3 or span > 300:																						############# CALIBRAR FILTRO
+				insertions_final.append(insertion)
+				print "yasss"
+
 f1.close()
 f1 = open(input, 'w')
-
 new_id = 1
 for fin_ins in insertions_final:
 	for i, line in enumerate(lines):
