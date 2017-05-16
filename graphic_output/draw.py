@@ -556,7 +556,7 @@ def insertions_overview_and_histograms():
 			#Y axis label
 			label = Image.new("RGB", (150, 30), (255,255,255))
 			draw2 = ImageDraw.Draw(label)
-			draw2.text((1, 1), "Read depth", font=fnt3, fill=(0,0,0))
+			draw2.text((1, 1), "Read depth (x)", font=fnt3, fill=(0,0,0))
 			label.rotate(90)
 			im.paste(label.rotate(90), (35, 350))
 
@@ -565,7 +565,7 @@ def insertions_overview_and_histograms():
 			nucleotides = region_max - region_min
 			scaling_factor_x = nucleotides/780.0
 			scaling_factor_y_paired = rd_max_paired/300.0
-			scaling_factor_y_local = rd_max_local/300.0
+			scaling_factor_y_local = rd_max_local/320.0
 
 
 			#LOCAL/PAIRED GRAPHICS
@@ -592,13 +592,12 @@ def insertions_overview_and_histograms():
 							raw_y_position = int(sp[4])
 							img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
 
-				
 						#draw
 						if sp[5].strip() == 'R':
-							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(255, 0, 0, 200), width=1)	
+							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(64, 159, 65, 100), width=1)	
 						
 						elif sp[5].strip() == 'F':
-							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(0, 0, 200, 200), width=1)
+							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(31, 120, 180, 100), width=1)
 
 
 			for i, line in enumerate(lines):
@@ -617,10 +616,10 @@ def insertions_overview_and_histograms():
 
 						#draw
 						if sp[5].strip() == 'RIGHT_RD':
-							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(255, 0, 0, 200), width=1)
+							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=1)
 
 						if sp[5].strip() == 'LEFT_RD':
-							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(0, 0, 200, 100), width=1)
+							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=1)
 
 
 			#Candidate regions
@@ -654,7 +653,6 @@ def insertions_overview_and_histograms():
 				x_p_2 = int(x_p_2 + (200/scaling_factor_x)) #Ruler with 100 nts separations
 
 
-
 			#y Axis - paired
 			y_p = 450 - int(10/scaling_factor_y_paired)
 			counter = 10
@@ -678,6 +676,25 @@ def insertions_overview_and_histograms():
 			#save image, specifying the format with the extension
 			w, h = im.size
 			im.crop((0, 100, w, h-100)).save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -727,6 +744,8 @@ def insertions_overview_and_histograms():
 			draw = ImageDraw.Draw(im)
 			draw.line((120, 450) + (900, 450), fill=256, width=1) 								#x axis 
 			draw.line((120, 150) + (120, 450), fill=256, width=1)   							#y axis 
+			draw.line((120, 150) + (900, 150), fill=256, width=1) 								#-x axis 
+			draw.line((900, 150) + (900, 450), fill=256, width=1)   							#-y axis 
 
 				
 			draw.text(((450), (500)), ('Nucleotide'), font=fnt3, fill=(0,0,0,255))
@@ -739,18 +758,14 @@ def insertions_overview_and_histograms():
 			label.rotate(90)
 			im.paste(label.rotate(90), (35, 150))
 
-
-
 		
 			#Scaling factors 
 			nucleotides = region_max - region_min
 			scaling_factor_x = nucleotides/780.0
-			scaling_factor_y_local = rd_max_local/300.0
+			scaling_factor_y_local = rd_max_local/320.0
 
 
 			#LOCAL GRAPHICS
-
-
 			for i, line in enumerate(lines):
 				if not line.startswith('@'):
 					sp = line.split('\t')
@@ -767,17 +782,17 @@ def insertions_overview_and_histograms():
 
 						#draw
 						if sp[5].strip() == 'RIGHT_RD':
-							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_relative_y_position), fill=(255, 0, 0, 200), width=1)
+							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=3)
 
 						if sp[5].strip() == 'LEFT_RD':
-							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_relative_y_position), fill=(0, 0, 200, 100), width=1)
+							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=3)
 
 
 			#Axis anotations
 			#x Axis
-			x_p = 120 + int(100/scaling_factor_x)
-			x_p_2 = 120 + int(200/scaling_factor_x)
-			ruler = region_min + 100
+			x_p = 120 + int(50/scaling_factor_x)
+			x_p_2 = 120 + int(25/scaling_factor_x)
+			ruler = region_min + 50
 		
 			while x_p in range(120, 900):
 				draw.line((x_p, 450) + (x_p, 457), fill=256, width=1)
@@ -785,28 +800,49 @@ def insertions_overview_and_histograms():
 				w, h = draw.textsize(str(ruler))
 				draw.text((x_p - w/2 - 5, 457), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 
-				ruler = ruler + 200
-				x_p = int(x_p + (200/scaling_factor_x)) #Ruler with 200 nts separations
+				ruler = ruler + 50
+				x_p = int(x_p + (50/scaling_factor_x)) #Ruler with 200 nts separations
 
 			while x_p_2 in range(120, 900):
 				draw.line((x_p_2, 450) + (x_p_2, 455), fill=256, width=1)
-				x_p_2 = int(x_p_2 + (200/scaling_factor_x)) #Ruler with 100 nts separations
+				x_p_2 = int(x_p_2 + (25/scaling_factor_x)) #Ruler with 100 nts separations
 
 
 			#y Axis 
 			y_p = 450 - int(10/scaling_factor_y_local)
-			counter = 10
+			counter = 5
 			while y_p in range(150, 451): 
 				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
 				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
-				counter = counter + 10
-				y_p = int(y_p - (10/scaling_factor_y_local))
-
-
+				counter = counter + 5
+				y_p = int(y_p - (5/scaling_factor_y_local))
 
 
 			#save image, specifying the format with the extension
 			im.save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

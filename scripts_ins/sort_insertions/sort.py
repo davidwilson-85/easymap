@@ -121,7 +121,7 @@ elif args.mode == 'se':
 	for i, line in enumerate(lines):
 		if not line.startswith('@'): 
 			sp = line.split(',')
-			if str(sp[0]).strip() == 'LOCAL' and  str(sp[4]).strip() == 'TOTAL':
+			if str(sp[0]).strip() == 'LOCAL_RD' and  str(sp[4]).strip() == 'TOTAL_RD':
 				p = int(sp[2])
 				contig = sp[1].strip('\t')
 
@@ -142,7 +142,7 @@ elif args.mode == 'se':
 					f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 					p2 = p
 					contig2 = contig
-			elif 'LOCAL' in sp[0].strip('\t'):
+			else:
 				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 
 
@@ -208,7 +208,6 @@ if args.mode == 'pe':
 				insertions_final.append(insertion)
 
 elif args.mode == 'se': 
-	print "seh"
 	for insertion in insertions_raw:
 		max_RD = 0
 		directions = list()
@@ -238,7 +237,6 @@ elif args.mode == 'se':
 		if len(directions) == 2:
 			if max_RD >= 3 or span > 300:																						############# CALIBRAR FILTRO
 				insertions_final.append(insertion)
-				print "yasss"
 
 f1.close()
 f1 = open(input, 'w')
