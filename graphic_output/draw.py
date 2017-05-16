@@ -478,7 +478,7 @@ def insertions_overview_and_histograms():
 			draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
 			draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
 			draw.line((c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-			draw.text(((c[2] + 30), (i/contigs_scaling_factor+contig_yi_coord - 13)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+			draw.text(((c[2] + 35), (i/contigs_scaling_factor+contig_yi_coord - 13)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
 			number = number + 1
 
 			im.save(project + "/3_workflow_output/insertions_overview.png")
