@@ -196,6 +196,10 @@ def insertion_calculation(position,genome,contig_used):
 	selection = "5"
 	try_size = 100
 	pos_n_contig = contig_used+"_"+position
+	if pos_n_contig not in consensus_3:
+		oligos.extend(["not found","-","-","-"])
+		Tms.extend(["-","-","-","-"])
+		return oligos,Tms
 	#insertion primer
 	#Generation of the oligo from the insertion where the primer will be searched	
 	for selection in [5,3]:
@@ -209,15 +213,15 @@ def insertion_calculation(position,genome,contig_used):
 			try_oligo = consensus_5[pos_n_contig][:lenght_consensus]			
 
 		if lenght_consensus < 10:
-			oligos.extend(["not found","-","-"])
-			Tms.extend(["-","-","-"])		
+			oligos.extend(["not found","-","-","-"])
+			Tms.extend(["-","-","-","-"])		
 
 		result = rule_1(try_oligo,how)
 		if result[0] == "no":
 			result = rule_2(try_oligo, how)
 			if result[0] == "no":
-				oligos.extend(["not found","-","-"])
-				Tms.extend(["-","-"])
+				oligos.extend(["not found","-","-","-"])
+				Tms.extend(["-","-","-","-"])
 				return oligos,Tms
 		if result[0] == "yes":
 			oligos.append(result[1])
@@ -251,43 +255,38 @@ def insertion_calculation(position,genome,contig_used):
 			Tms.append(str(result[2]))
 	return oligos,Tms  
 
-
-
-
-
 def fastaq_to_dic(fq):
 	#It gets two dictionaries for 3' and 5' sequences. 
 	dic_fas_3= {}
 	dic_fas_5= {}
-	fq = open(fq,"r")
-	for line in fq:
-		if line.startswith("@"): #This line will be the header, the followings until find + have to be together
-			print line
-			line_new = line.split("/")[-1]
-			i = 1
-			m= 0
-			split = line_new.split("_") #Data format is chr_postion_3/5'	
-		if line.startswith("+"):
-			m = 1
-		
-		if i == 1: #header, we take off the "/" that get in as input in the header 
-			h = split[0]+"_"+split[1]
-			#Depending on whether the reads are in the 3' or 5' extreme they will go to one dic or another.
-			if split[2].strip()=="3":
-				n = 1
-				dic_fas_3[h]=""
-			if split[2].strip()=="5":
-				n= 2
-				dic_fas_5[h]=""
-			#Sequences are pasted together in each position
-		if m == 0 and i!= 1:
-			line = line.upper().rstrip()
-			if n == 1:
-				dic_fas_3[h]+= line
-			if n == 2:
-				dic_fas_5[h]+= line
-		i += 1
-	return dic_fas_3,dic_fas_5
+	#fq = open(fq,"r")
+	i = 0
+	m = 0
+	with open(fq,"r") as fq:
+		for line in fq.readlines():
+			line = line.rstrip()	
+			if line.startswith("@user_projects"):
+				gene = line.split("/")[-1]
+				split = gene.split("_")
+				h = split[0]+"_"+split[1]
+				m = 0
+				#Depending on whether the reads are in the 3' or 5' extreme they will go to one dic or another.
+				if split[2].strip()=="3":
+					n = 1
+					dic_fas_3[h]=""
+				if split[2].strip()=="5":
+					n= 2
+					dic_fas_5[h]=""
+				continue 
+			if m == 0 and not line.startswith("+"):  
+				line = line.upper()
+				if n == 1:
+					dic_fas_3[h]+= line
+				if n == 2:
+					dic_fas_5[h]+= line
+			if line.startswith("+"):
+				m =1
+		return dic_fas_3,dic_fas_5
 
 positions = open(args.File,"r")
 result = open(args.output,"w")
@@ -303,6 +302,7 @@ former = ""
 list2= []
 contig_used = ""
 mode = first_list[0][0]
+
 if mode == "snp":
 	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tforward primer\tTm forward\treverse primer\tTm reverse\n")
 if mode == "lim":
