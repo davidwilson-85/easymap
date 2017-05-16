@@ -6,7 +6,8 @@
 #Para experimentales: python format_check.py -P project_name -w snp -d exp -S lectura1,lectura2 -g chr1+4.gff   -c oc -r ref -p mut -s par -C lectura3
 
 # Inserciones simuladas : ./easymap -P working  -w ins -d sim -i pbinprok2.fa -g chr1+4.gff -sm 2 -ss 25+100,0+500,100+1+50+pe
-#Inserciones experimentales: ./easymap -P real_data1 -w ins -d exp -i pbinprok2.fa -S salk_pool1_1.fq,salk_pool1_2.fq -g TAIR10_GFF3_genes.gff
+# Inserciones experimentales: ./easymap -P real_data1 -w ins -d exp -i pbinprok2.fa -S salk_pool1_1.fq,salk_pool1_2.fq -g TAIR10_GFF3_genes.gff
+
 
 import argparse
 parser = argparse.ArgumentParser()

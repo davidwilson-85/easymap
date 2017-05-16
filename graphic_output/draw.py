@@ -472,13 +472,13 @@ def insertions_overview_and_histograms():
 		draw.line((c[2], c[3]) + (c[2], c[4]), fill=(4, 14, 73), width=18)
 		draw.ellipse((c[2]-8, c[3]-8, c[2]+8, c[3]+7), fill=(4, 14, 73))
 		draw.ellipse((c[2]-8, c[4]-8, c[2]+8, c[4]+7), fill=(4, 14, 73))
-		draw.text(((c[2] - tab), (c[3] - 60)), c[0], font=fnt1, fill=(0,0,0,255))
+		draw.text(((c[2] - tab), (c[3] - 60)), c[0], font=fnt5, fill=(0,0,0,255))
 		for i in c[5]:
 			draw.polygon([(c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
 			draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
 			draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
 			draw.line((c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-			draw.text(((c[2] + 35), (i/contigs_scaling_factor+contig_yi_coord - 13)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+			draw.text(((c[2] + 30), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
 			number = number + 1
 
 			im.save(project + "/3_workflow_output/insertions_overview.png")
@@ -565,7 +565,7 @@ def insertions_overview_and_histograms():
 			nucleotides = region_max - region_min
 			scaling_factor_x = nucleotides/780.0
 			scaling_factor_y_paired = rd_max_paired/300.0
-			scaling_factor_y_local = rd_max_local/320.0
+			scaling_factor_y_local = rd_max_local/300.0
 
 
 			#LOCAL/PAIRED GRAPHICS
@@ -677,27 +677,6 @@ def insertions_overview_and_histograms():
 			w, h = im.size
 			im.crop((0, 100, w, h-100)).save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	#_________________________________________________________________________________________________________________________________________________________
 	if args.mode == 'se':
 		insertions = list()
@@ -754,15 +733,15 @@ def insertions_overview_and_histograms():
 			#Y axis label
 			label = Image.new("RGB", (150, 30), (255,255,255))
 			draw2 = ImageDraw.Draw(label)
-			draw2.text((1, 1), "Read depth", font=fnt3, fill=(0,0,0))
+			draw2.text((1, 1), "Read depth (x)", font=fnt3, fill=(0,0,0))
 			label.rotate(90)
-			im.paste(label.rotate(90), (35, 150))
+			im.paste(label.rotate(90), (35, 195))
 
 		
 			#Scaling factors 
 			nucleotides = region_max - region_min
 			scaling_factor_x = nucleotides/780.0
-			scaling_factor_y_local = rd_max_local/320.0
+			scaling_factor_y_local = rd_max_local/280.0
 
 
 			#LOCAL GRAPHICS
@@ -782,34 +761,35 @@ def insertions_overview_and_histograms():
 
 						#draw
 						if sp[5].strip() == 'RIGHT_RD':
-							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=3)
+							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=3)
 
 						if sp[5].strip() == 'LEFT_RD':
-							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=3)
+							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=3)
 
 
 			#Axis anotations
 			#x Axis
-			x_p = 120 + int(50/scaling_factor_x)
-			x_p_2 = 120 + int(25/scaling_factor_x)
-			ruler = region_min + 50
+			x_p = 120 + int(25/scaling_factor_x)
+			x_p_2 = 120 + int(50/scaling_factor_x)
+			ruler = region_min + 25
 		
 			while x_p in range(120, 900):
+
 				draw.line((x_p, 450) + (x_p, 457), fill=256, width=1)
 
 				w, h = draw.textsize(str(ruler))
 				draw.text((x_p - w/2 - 5, 457), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 
 				ruler = ruler + 50
+
 				x_p = int(x_p + (50/scaling_factor_x)) #Ruler with 200 nts separations
 
 			while x_p_2 in range(120, 900):
 				draw.line((x_p_2, 450) + (x_p_2, 455), fill=256, width=1)
-				x_p_2 = int(x_p_2 + (25/scaling_factor_x)) #Ruler with 100 nts separations
-
+				x_p_2 = int(x_p_2 + (50/scaling_factor_x)) #Ruler with 100 nts separations
 
 			#y Axis 
-			y_p = 450 - int(10/scaling_factor_y_local)
+			y_p = 450 - int(5/scaling_factor_y_local)
 			counter = 5
 			while y_p in range(150, 451): 
 				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
@@ -820,32 +800,6 @@ def insertions_overview_and_histograms():
 
 			#save image, specifying the format with the extension
 			im.save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #############################################################################################################
