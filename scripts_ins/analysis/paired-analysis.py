@@ -12,12 +12,10 @@ args = parser.parse_args()
 #Input file 
 input = str(args.input)
 f1 = open(input, 'r')
-lines = f1.readlines()	
 
 #fasta input
 fasta_input = str(args.finput)
 fasta_f1 = open(fasta_input, 'r')
-fasta_lines = fasta_f1.readlines()
 
 #Output file
 output = str(args.output)
@@ -29,7 +27,7 @@ flags = (2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0)
 
 #We create a list with all the contigs in the refference genome
 contigs = []
-for i, line in enumerate(fasta_lines):
+for line in fasta_f1 :
 	if line.startswith('>'): #fasta sequences start with '>'
 		sp = line.split(' ')  #because some names have whitespaces and extra info that is not written to sam file
 		cont = sp[0].strip()  #strip() is to remove the '\r\n' hidden chars
@@ -42,7 +40,7 @@ for c in contigs:
 	di_f = dict() 										#Dictionary for the forward reads
 	di_r = dict() 										#Dictionary for the reverse reads
 	di_total = dict() 									#Dictionary for all reads
-	for i, line in enumerate(lines): 
+	for line in f1: 
 		if not line.startswith('@'):
 			sp = line.split('\t')
 			contig = sp[2] 								#This variable reads the name of the contig in each line..

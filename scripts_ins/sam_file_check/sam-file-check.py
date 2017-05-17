@@ -41,26 +41,25 @@ def lencheck():
 with open(input) as f1:
 	linesum = sum(1 for _ in f1) #Counts the lines in the sam file
 
-f1 = open(input, 'r')
-lines = f1.readlines()	
 
-#We apply the functions to check the sam file for a maximum of 100 lines 
-if linesum == 0:
-	error = 1
-	quit()
-	
-if linesum >= 100:
-	for i, line in enumerate(lines):
-		for i in range(0,100):
+with open(input) as f1:
+	#We apply the functions to check the sam file for a maximum of 100 lines 
+	if linesum == 0:
+		error = 1
+		quit()
+		
+	if linesum >= 100:
+		for line in f1:
+			for i in range(0,100):
+				if not line.startswith('@'):
+					nts()
+					lencheck()
+			
+	if 0<linesum<100:
+		for line in f1:
 			if not line.startswith('@'):
 				nts()
 				lencheck()
-		
-if 0<linesum<100:
-	for i, line in enumerate(lines):
-		if not line.startswith('@'):
-			nts()
-			lencheck()
 
 print error
 f1.close()
