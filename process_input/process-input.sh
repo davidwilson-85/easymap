@@ -42,6 +42,7 @@ exit_code=0
 # Store the location of each folder in a variable
 f0=user_data
 f1=1_intermediate_files
+f3=3_workflow_output
 
 # Get command arguments and assign them to variables
 # The reference to the template genome is not passed from 'master.sh' because it is static
@@ -157,15 +158,34 @@ then
 						exit_code=1
 					}
 				fi
+
+				{
+					fq_qual=`python process_input/fastq-stats.py -fasq $read_s -out $project_name/$f3/single-end-reads-qual-stats.png`
+					
+					if [ $fq_qual == 0 ]
+					then
+						{
+							echo $(date)": Single-end fastq quality encoding is Phred +33. Passed." >> $my_log_file
+						}
+					else
+						{
+							echo $(date)": Single-end fastq quality encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
+							exit_code=1
+						}
+					fi
+				} || {
+					echo $(date) ': fastq-stats.py failed.' >> $my_log_file
+					exit_code=1
+				}
 			}
 		fi
 
 		if [ $lib_type == 'pe' ]
 		then  
 			{
-				fq=`python process_input/verify-input.py -fq $read_f`
+				fq_for=`python process_input/verify-input.py -fq $read_f`
 				
-				if [ $fq == 0 ]
+				if [ $fq_for == 0 ]
 				then
 					{
 						echo $(date)": Paired-end forward fastq input passed." >> $my_log_file
@@ -177,9 +197,9 @@ then
 					}
 				fi
 
-				fq=`python process_input/verify-input.py -fq $read_r`
+				fq_rev=`python process_input/verify-input.py -fq $read_r`
 				
-				if [ $fq == 0 ]
+				if [ $fq_rev == 0 ]
 				then
 					{
 						echo $(date)": Paired-end reverse fastq input passed." >> $my_log_file
@@ -190,6 +210,46 @@ then
 						exit_code=1
 					}
 				fi
+
+				{
+					fq_qual_for=`python process_input/fastq-stats.py -fasq $read_f -out $project_name/$f3/paired-end-forward-reads-qual-stats.png`
+					
+					echo $fq_qual_for >> $my_log_file
+
+					if [ $fq_qual_for == 0 ]
+					then
+						{
+							echo $(date)": Paired-end forward fastq quality encoding is Phred +33. Passed." >> $my_log_file
+						}
+					else
+						{
+							echo $(date)": Paired-end forward fastq quality encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
+							exit_code=1
+						}
+					fi
+				} || {
+					echo $(date) ': fastq-stats.py failed on forward reads file.' >> $my_log_file
+					exit_code=1
+				}
+
+				{
+					fq_qual_rev=`python process_input/fastq-stats.py -fasq $read_r -out $project_name/$f3/paired-end-reverse-reads-qual-stats.png`
+					
+					if [ $fq_qual_rev == 0 ]
+					then
+						{
+							echo $(date)": Paired-end reverse fastq quality encoding is Phred +33. Passed." >> $my_log_file
+						}
+					else
+						{
+							echo $(date)": Paired-end reverse fastq quality encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
+							exit_code=1
+						}
+					fi
+				} || {
+					echo $(date) ': fastq-stats.py failed on reverse reads file.' >> $my_log_file
+					exit_code=1
+				}
 			}
 		fi
 	}

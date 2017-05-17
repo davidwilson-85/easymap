@@ -144,7 +144,6 @@ then
 		exit
 	}
 	echo bowtie2 finished. >> $my_log_file
-
 fi
 
 

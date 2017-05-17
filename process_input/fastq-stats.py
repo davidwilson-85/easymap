@@ -5,21 +5,36 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-fasq', action="store", dest = 'File', required = "True")
+parser.add_argument('-out', action="store", dest = 'out', required = "True")
 
 args = parser.parse_args()
 reverse = "no"
 files = args.File
+out = args.out
 
 
 #phred_not="J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,[,\,],^,_,`,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,{,|,},~"
 
 def character_to_ASCII(string):
 	st = []
+	phred_result = 0
+
 	for items in string:
-		ascii = ord(items)
-		ascii = ascii-33
+		if len(items)>1:
+			for i in items:
+				ascii = ord(i)
+				if int(ascii) >= 75:
+					phred_result = 1
+				ascii = ascii-33
+				
+		else:
+			ascii = ord(items)
+			ascii = ascii-33
+			if ascii >= 75:
+				phred_result = 1#if ascii not in -33 result = 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 		st.append(int(ascii))
-	return st
+
+	return st,phred_result
 
 def fasq_preprocess(fil):
 	fastaq_list = []
@@ -34,7 +49,8 @@ def fasq_preprocess(fil):
 			p +=1
 			if i > 20000:
 				break
-		return fastaq_list
+		ascii_check = character_to_ASCII(fastaq_list)[1]
+		return fastaq_list, ascii_check
 def fasq_process(fil,x,group):
 	dic = {}
 	dic[str(x)+"_"+str(x+group)] = []
@@ -57,7 +73,8 @@ def fasq_process(fil,x,group):
 			p += 1
 	qual_dic= {}
 	for position in dic:
-		qual_dic[position] = character_to_ASCII(dic[position])
+		qual_dic[position] = character_to_ASCII(dic[position])[0]
+
 	return qual_dic
 def average(lista):
 	n = 0 
@@ -134,8 +151,8 @@ def lenght_reads_cal(pre_dic):
 			biggest = len(reads) 
 	return biggest
 
-def Draw_box_plot(table):
-	fnt1 = ImageFont.truetype('easymap-server/fonts/VeraMono.ttf', 14)
+def Draw_box_plot(table,out):
+	fnt1 = ImageFont.truetype('./fonts/VeraMono.ttf', 14)
 	#Size of the window
 
 	a = 60
@@ -223,10 +240,14 @@ def Draw_box_plot(table):
 
 	#Vertical
 	#save image, specifying the format with the extension
-	im.save("result.png")
+	im.save(out)
 
 
-pre_dic = fasq_preprocess(files)
+pre_dic = fasq_preprocess(files)[0]
+phred_result = fasq_preprocess(files)[1]
+if phred_result == 1:
+	print phred_result
+	exit()
 lenght_reads = int(lenght_reads_cal(pre_dic))
 
 if lenght_reads<80: group = 1
@@ -251,6 +272,8 @@ for repetitions in range((lenght_reads/group)-1):
 	#final_dic[str(x+1)+"-"+str(x+group)]= result
 	x += group
 
-Draw_box_plot(final_list)
+Draw_box_plot(final_list,out)
+
+print phred_result
 
 
