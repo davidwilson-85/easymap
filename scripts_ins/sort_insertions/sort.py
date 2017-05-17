@@ -173,8 +173,6 @@ insertions_raw = list()
 for e in range(1, (insertion_id + 1)):
 	insertions_raw.append(e)
 
-print insertions_raw
-
 
 if args.mode == 'pe': 
 	for insertion in insertions_raw:
