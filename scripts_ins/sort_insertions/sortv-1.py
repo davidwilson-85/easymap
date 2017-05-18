@@ -3,22 +3,21 @@
 ########################################################
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('-a', action="store", dest = 'input')#Input 'output_analysis.txt'
-parser.add_argument('-b', action="store", dest = 'finput')#Input '34k_genome_2c.fa'
-parser.add_argument('-c', action="store", dest = 'output1')#Output1 'output_ordered.csv'
-parser.add_argument('-d', action="store", dest = 'output2')#Output2 'sorted_insertions.txt'
-parser.add_argument('-m', action="store", dest = 'mode', default = 'pe')
+parser.add_argument('-a', action="store", dest = 'input')					#Input 'output_analysis.txt'
+parser.add_argument('-b', action="store", dest = 'finput')					#Input '34k_genome_2c.fa'
+parser.add_argument('-c', action="store", dest = 'output1')					#Output1 'output_ordered.csv'
+parser.add_argument('-d', action="store", dest = 'output2')					#Output2 'sorted_insertions.txt'
+parser.add_argument('-e', action="store", dest = 'intermediate')			#Intermediate non-filtered file 'sorted_insertions.txt'
+parser.add_argument('-m', action="store", dest = 'mode', default = 'pe')	
 args = parser.parse_args()
 
 #Input 'output_analysis.txt
 input = str(args.input)
 f1 = open(input, 'r')
-lines = f1.readlines()	
 
 #Input '34k_genome_2c.fa'
 finput = str(args.finput)
 f2 = open(finput, 'r') 
-fasta_lines = f2.readlines()
 
 #Output 'output_ordered.csv'
 output1 = str(args.output1)
@@ -35,7 +34,7 @@ contigs = []
 data = []
 
 #Create a list with all the genome contigs
-for i, line in enumerate(fasta_lines):
+for line in f2:
 	if line.startswith('>'): #fasta sequences start with '>'
 		sp = line.split(' ')  #because some names have whitespaces and extra info that is not written to sam file
 		cont = sp[0].strip()  #strip() is to remove the '\r\n' hidden chars
@@ -44,7 +43,7 @@ for i, line in enumerate(fasta_lines):
 			contigs.append(cont)
 
 #Create a list from the input file
-for i, line in enumerate(lines):
+for line in f1:
 	if not line.startswith('@'):
 		data.append(line.split())
 		
@@ -73,20 +72,17 @@ insertion_id = 1
 #Input file 
 input = str(args.output1)
 f1 = open(input, 'r')
-lines = f1.readlines()	
 
 #Output file
-output2 = str(args.output2)
+output2 = str(args.intermediate)
 f2 = open(output2, 'w')
 f2.write('@' + 'DATA\t' + 'Contig' + '\tins'+ '\t' + 'NT' + '\t' + '  RD' + '\t' + 'Direction' + '\n')
 
 insertion_id = 1
 
-
-
 #Insertion sorting
 if args.mode == 'pe': 
-	for i, line in enumerate(lines):
+	for line in f1:
 		if not line.startswith('@'): 
 			sp = line.split(',')
 			if str(sp[0]).strip() == 'PAIRED' and  str(sp[4]).strip() == 'TOTAL':
@@ -115,10 +111,8 @@ if args.mode == 'pe':
 			else:
 				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 
-
-
 elif args.mode == 'se':
-	for i, line in enumerate(lines):
+	for line in f1:
 		if not line.startswith('@'): 
 			sp = line.split(',')
 			if str(sp[0]).strip() == 'LOCAL_RD' and  str(sp[4]).strip() == 'TOTAL_RD':
@@ -158,14 +152,9 @@ f2.close()
 
 ###################################################################################################################################################################
 #																																								  #
-#															Filter insertions and rewrite sorted_insertions.txt			(ONLY FILTERING PAIRED DATA)			  #
+#															Filter insertions and rewrite sorted_insertions.txt													  #
 #																																								  #
 ###################################################################################################################################################################
-
-#Input file 
-input = str(args.output2)
-f1 = open(input, 'r')
-lines = f1.readlines()	
 
 insertions_final = list()
 insertions_raw = list()
@@ -173,37 +162,39 @@ insertions_raw = list()
 for e in range(1, (insertion_id + 1)):
 	insertions_raw.append(e)
 
-
 if args.mode == 'pe': 
+
 	for insertion in insertions_raw:
 		max_RD = 0
 		directions = list()
 		max_pos = 0
 		min_pos = float('inf')
 
-		for l, line in enumerate(lines):
-			if not line.startswith('@'):
-				sp = line.split()
-				if int(sp[2]) == insertion and sp[0].strip() == "PAIRED":	
-					#1st criterion: insertion must have forward and reverse supporting reads
-					read_direction = sp[5]
-					if read_direction not in directions and read_direction != "TOTAL":
-						directions.append(read_direction)
+		with open(args.intermediate) as f1:
+			for line in f1:
+				if not line.startswith('@'):
+					sp = line.split()
+					if int(sp[2]) == int(insertion) and sp[0].strip() == "PAIRED":	
 
-					#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
-					if int(sp[4]) > max_RD:
-						max_RD = int(sp[4])
+						#1st criterion: insertion must have forward and reverse supporting reads
+						read_direction = sp[5]
+						if read_direction not in directions and read_direction != "TOTAL":
+							directions.append(read_direction)
 
-					#3rd criterion: insertion data span 
-					if int(sp[3]) > max_pos:
-						max_pos = int(sp[3])
-					if float(sp[3]) < min_pos:
-						min_pos = int(sp[3])
-					span = max_pos - min_pos
+						#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
+						if int(sp[4]) > max_RD:
+							max_RD = int(sp[4])
 
-		if len(directions) == 2:
-			if max_RD >= 3 or span > 500:
-				insertions_final.append(insertion)
+						#3rd criterion: insertion data span 
+						if int(sp[3]) > max_pos:
+							max_pos = int(sp[3])
+						if float(sp[3]) < min_pos:
+							min_pos = int(sp[3])
+						span = max_pos - min_pos
+
+			if len(directions) == 2:
+				if max_RD >= 3 or span > 500:
+					insertions_final.append(insertion)
 
 elif args.mode == 'se': 
 	for insertion in insertions_raw:
@@ -212,42 +203,49 @@ elif args.mode == 'se':
 		max_pos = 0
 		min_pos = float('inf')
 
-		for l, line in enumerate(lines):
-			if not line.startswith('@'):
-				sp = line.split()
-				if int(sp[2]) == insertion and sp[0].strip() == "LOCAL_RD":
-					#1st criterion: insertion must have forward and reverse supporting reads
-					read_direction = sp[5]
-					if read_direction not in directions and read_direction != "TOTAL_RD":
-						directions.append(read_direction)
+		with open(args.intermediate) as f1:
+			for line in f1:
+				if not line.startswith('@'):
+					sp = line.split()
+					if int(sp[2]) == insertion and sp[0].strip() == "LOCAL_RD":
+						#1st criterion: insertion must have forward and reverse supporting reads
+						read_direction = sp[5]
+						if read_direction not in directions and read_direction != "TOTAL_RD":
+							directions.append(read_direction)
 
-					#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
-					if int(sp[4]) > max_RD:
-						max_RD = int(sp[4])
+						#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
+						if int(sp[4]) > max_RD:
+							max_RD = int(sp[4])
 
-					#3rd criterion: insertion data span 
-					if int(sp[3]) > max_pos:
-						max_pos = int(sp[3])
-					if float(sp[3]) < min_pos:
-						min_pos = int(sp[3])
-					span = max_pos - min_pos
+						#3rd criterion: insertion data span 
+						if int(sp[3]) > max_pos:
+							max_pos = int(sp[3])
+						if float(sp[3]) < min_pos:
+							min_pos = int(sp[3])
+						span = max_pos - min_pos
 
-		if len(directions) == 2:
-			if max_RD >= 3 or span > 300:																						############# CALIBRAR FILTRO
-				insertions_final.append(insertion)
+			if len(directions) == 2:
+				if max_RD >= 3 or span > 300:																						############# CALIBRAR FILTRO
+					insertions_final.append(insertion)
 
-f1.close()
-f1 = open(input, 'w')
+intermediate = str(args.intermediate)
+output2 = str(args.output2)
+
+f2 = open(output2, 'w')
+
 new_id = 1
 for fin_ins in insertions_final:
-	for i, line in enumerate(lines):
-		if not line.startswith('@'):
-			sp = line.split()
-			if int(sp[2]) == int(fin_ins):
-				newline = str( sp[0].strip() + '\t' + sp[1].strip() + '\t' + str(new_id) + '\t' + sp[3].strip() + '\t' + sp[4].strip() + '\t' + sp[5].strip() + '\n' )
-				f1.write(newline)
-	new_id = new_id + 1
+	with open(intermediate) as f1:
+		for line in f1:
+			if not line.startswith('@'):
+				sp = line.split()
+				if int(sp[2]) == int(fin_ins):
+					newline = str( sp[0].strip() + '\t' + sp[1].strip() + '\t' + str(new_id) + '\t' + sp[3].strip() + '\t' + sp[4].strip() + '\t' + sp[5].strip() + '\n' )
+					f2.write(newline)
+		new_id = new_id + 1
 f1.close()
+f2.close()
+
 
 
 ###################################################################################################################################################################
@@ -257,30 +255,29 @@ f1.close()
 ###################################################################################################################################################################
 
 if args.mode == 'pe': 
-	f2 = open(args.output2, 'r')
-	lines = f2.readlines()
 	candidate_regions = list() #This list will have the format: list(list(d1, d2, e))
 
 	for ins in range(1, len(insertions_final) + 1):
 		d1 = float('inf')
 		d2 = 0
-		for i, line in enumerate(lines):
-			if not line.startswith('@'):
-				sp = line.split()
-				if sp[0].strip() == 'PAIRED' and int(sp[2].strip()) == int(ins): 
+		with open(args.output2) as f2:
+			for line in f2:
+				if not line.startswith('@'):
+					sp = line.split()
+					if sp[0].strip() == 'PAIRED' and int(sp[2].strip()) == int(ins): 
 
-					#The following module creates a candidate region for the insertion
-					#Delimiters:
-					if sp[5].strip() == 'R': #reverse
-						p = int(sp[3])
-						if p < d1: 
-							d1 = p
+						#The following module creates a candidate region for the insertion
+						#Delimiters:
+						if sp[5].strip() == 'R': #reverse
+							p = int(sp[3])
+							if p < d1: 
+								d1 = p
 
-					if sp[5].strip() == 'F': #forward
-						p2 = int(sp[3])
-						if p2 > d2:
-							d2 = p2
-	
+						if sp[5].strip() == 'F': #forward
+							p2 = int(sp[3])
+							if p2 > d2:
+								d2 = p2
+		
 		cr = list()
 		cr.append(d1)
 		cr.append(d2)
@@ -288,7 +285,8 @@ if args.mode == 'pe':
 		
 		candidate_regions.append(cr)
 
-	f2 = open(args.output2, 'a')
-	for i in candidate_regions: 
-		f2.write('@#')
-		f2.write(((str(i).strip('[')).strip(']')) + '\n')
+	with open(args.output2, 'a') as f2:
+		for i in candidate_regions: 
+			f2.write('@#')
+			f2.write(((str(i).strip('[')).strip(']')) + '\n')
+f2.close()

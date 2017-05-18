@@ -48,17 +48,18 @@ result.close()
 #Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored] 
 def getinfo(chro, inpu):
 	n = 0 			#counter n will be used in order not to take into account the header
-	dicpos = {} 
-	for lines in inpu: #inpu.readlines()
-		if n == 0:
-			n +=1
-			continue
-		indiv = lines.split("\t")
-		if indiv[0] != chro:
-			continue
-		dicpos[indiv[1]] = []
-		for n in range(2,len(indiv)):
-			dicpos[indiv[1]].append(indiv[n].rstrip())
+	dicpos = {}
+	with open(inpu,"r") as inpu: 
+		for lines in inpu: #inpu.readlines()
+			if n == 0:
+				n +=1
+				continue
+			indiv = lines.split("\t")
+			if indiv[0] != chro:
+				continue
+			dicpos[indiv[1]] = []
+			for n in range(2,len(indiv)):
+				dicpos[indiv[1]].append(indiv[n].rstrip())
 	return dicpos
 
 #Calculates average of a list of AF in a window.	
@@ -260,7 +261,7 @@ if control == "f2wt":
 z = 0
 
 for chromosome in ch:  
-	inpu = open(args.input, "r")	
+	inpu = args.input	
 	genome = getinfo(chromosome,inpu)		
 	windows = chromosomal_position(size, space, genome,chromosome, ch[chromosome], mode, modality, control) 
 	if mode == "out" and control == "par" :

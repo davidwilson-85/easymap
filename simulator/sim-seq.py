@@ -353,6 +353,9 @@ if mode == 'pe':
 			#Define lenghts of for and rev reads
 			read_length_for = int(round(gauss(read_length_mean, read_length_sd)))
 			read_length_rev = int(round(gauss(read_length_mean, read_length_sd)))
+
+			if read_length_for<5: read_length_for = 5
+			if read_length_rev<5: read_length_rev = 5
 			
 			#Define read start and end positions and read sequences in a single step			
 			read_for_seq = seq_template[fragment_start-1 : fragment_start+read_length_for-1]    #My values are 1-based, but python is 0-based. I compensate subtracting one position.

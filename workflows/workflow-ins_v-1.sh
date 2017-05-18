@@ -248,7 +248,7 @@ echo Analysis finished. >> $my_log_file
 
 #Sort insertions
 {
-	python $location/scripts_ins/sort_insertions/sort.py -a $f1/output_analysis.txt -b $f1/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -m $my_mode
+	python $location/scripts_ins/sort_insertions/sort.py -a $f1/output_analysis.txt -b $f1/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -e  $f1/non-filtered_data.txt  -m $my_mode
 	
 } || {
 	echo 'error: sort.py' >> $my_log_file
