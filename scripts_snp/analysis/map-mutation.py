@@ -49,7 +49,7 @@ result.close()
 def getinfo(chro, inpu):
 	n = 0 			#counter n will be used in order not to take into account the header
 	dicpos = {} 
-	for lines in inpu.readlines():
+	for lines in inpu: #inpu.readlines()
 		if n == 0:
 			n +=1
 			continue
