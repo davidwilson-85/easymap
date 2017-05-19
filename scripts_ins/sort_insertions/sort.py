@@ -247,7 +247,7 @@ for fin_ins in insertions_final:
 	new_id = new_id + 1
 f1.close()
 
-'''
+
 ###################################################################################################################################################################
 #																																								  #
 #															Create candidate region for each insertions 														  #
@@ -290,4 +290,3 @@ if args.mode == 'pe':
 	for i in candidate_regions: 
 		f2.write('@#')
 		f2.write(((str(i).strip('[')).strip(']')) + '\n')
-'''
