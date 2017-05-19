@@ -293,10 +293,18 @@ def fa_vs_pos():
 
 def insertions_overview_and_histograms():
 
+	#Input 1
+	input = args.input
+	f1 = open(input, 'r')
+	lines = f1.readlines()	
+
 	#__________________________________________Insertions overview image_____________________________________________________________
 	#________________________________________________________________________________________________________________________________
 
-	
+	#Input 2
+	finput = args.input_f
+	f2 = open(finput, 'r')
+	flines = f2.readlines()	
 	#define a superlist with innerlists, each of them containing all the info of each contig 
 	superlist = list()
 
@@ -307,21 +315,17 @@ def insertions_overview_and_histograms():
 	#dict_contigs = dict()
 	lengthlist = list()
 
-	input = args.input
-
 	#read fasta file to determine number of contigs
-
-	with open(args.input_f) as f1:
-		for line in f1:
-			if line.startswith('>'): #fasta sequences start with '>'
-				sp = line.split(' ')  #because some names have whitespaces and extra info that is not written to sam file
-				cont = sp[0].strip()  #strip() is to remove the '\r\n' hidden chars
-				cont = cont[1:]       #to remove the first char of string (>)
-				if cont not in contigs:
-					contigs.append(cont)
-					innerlist = list()
-					innerlist.append(cont)
-					superlist.append(innerlist)
+	for i, line in enumerate(flines):
+		if line.startswith('>'): #fasta sequences start with '>'
+			sp = line.split(' ')  #because some names have whitespaces and extra info that is not written to sam file
+			cont = sp[0].strip()  #strip() is to remove the '\r\n' hidden chars
+			cont = cont[1:]       #to remove the first char of string (>)
+			if cont not in contigs:
+				contigs.append(cont)
+				innerlist = list()
+				innerlist.append(cont)
+				superlist.append(innerlist)
 
 	#Calculate the width of the image acording to the number of contigs
 	num_contigs = 0
@@ -387,70 +391,65 @@ def insertions_overview_and_histograms():
 	#add insertions aproximate position to superlist
 	if args.mode == 'pe':
 		tag_list = list()
-
-		with open(input) as f1:
-			for line in f1:
-				if not line.startswith('@'):	
-					sp = line.split('\t')
-					contig = str(sp[1].strip())
-					insertion = str(sp[2])
-					if '-' not in insertion:
-						tag = contig + '-' + insertion
-						if tag not in tag_list: 
-							tag_list.append(tag)
+		for i, line in enumerate(lines):
+			if not line.startswith('@'):	
+				sp = line.split('\t')
+				contig = str(sp[1].strip())
+				insertion = str(sp[2])
+				if '-' not in insertion:
+					tag = contig + '-' + insertion
+					if tag not in tag_list: 
+						tag_list.append(tag)
 		for c in superlist: 
 			position_list = list()
 			for t in tag_list:
 				n_reads = 1
-				p_reads = 0
-				with open(input) as f1: 		
-					for line in f1:
-						if not line.startswith('@'): 
-							sp = line.split('\t')
-							contig = str(sp[1].strip())
-							insertion = str(sp[2])
-							if '-' not in insertion and sp[5].strip() == 'TOTAL' and contig == c[0].strip():
-								tag2 = contig + '-' + insertion
-								if tag2 == t:
-									n_reads = n_reads + 1
-									p_reads = p_reads + int(sp[3])											
-								else:
-									aprox_position = p_reads/n_reads
-						aprox_position = p_reads/n_reads
+				p_reads = 0 		
+				for i, line in enumerate(lines):
+					if not line.startswith('@'): 
+						sp = line.split('\t')
+						contig = str(sp[1].strip())
+						insertion = str(sp[2])
+						if '-' not in insertion and sp[5].strip() == 'TOTAL' and contig == c[0].strip():
+							tag2 = contig + '-' + insertion
+							if tag2 == t:
+								n_reads = n_reads + 1
+								p_reads = p_reads + int(sp[3])											
+							else:
+								aprox_position = p_reads/n_reads
+					aprox_position = p_reads/n_reads
 				if aprox_position != 0: 
 					position_list.append(aprox_position)	
 			c.append(position_list)
 
 	elif args.mode == 'se':
 		tag_list = list()
-		with open(input) as f1:
-			for line in f1:
-				if not line.startswith('@'):	
-					sp = line.split('\t')
-					contig = str(sp[1].strip())
-					insertion = str(sp[2])
-					if '-' not in insertion:
-						tag = contig + '-' + insertion
-						if tag not in tag_list: 
-							tag_list.append(tag)
+		for i, line in enumerate(lines):
+			if not line.startswith('@'):	
+				sp = line.split('\t')
+				contig = str(sp[1].strip())
+				insertion = str(sp[2])
+				if '-' not in insertion:
+					tag = contig + '-' + insertion
+					if tag not in tag_list: 
+						tag_list.append(tag)
 		for c in superlist: 
 			position_list = list()
 			tag2_list = list()
-			for t in tag_list:
-				with open(input) as f1:		
-					for line in f1:
-						if not line.startswith('@'): 
-							sp = line.split('\t')
-							contig = str(sp[1].strip())
-							insertion = str(sp[2])
-							if '-' not in insertion and sp[5].strip() == 'TOTAL' and contig == c[0].strip():
-								tag2 = contig + '-' + insertion
-								if tag2 not in tag2_list: 
-									if tag2 == t:
-										position_list.append(int(sp[3]))
-										tag2_list.append(tag2)
-								else:
-									pass
+			for t in tag_list:		
+				for i, line in enumerate(lines):
+					if not line.startswith('@'): 
+						sp = line.split('\t')
+						contig = str(sp[1].strip())
+						insertion = str(sp[2])
+						if '-' not in insertion and sp[5].strip() == 'TOTAL' and contig == c[0].strip():
+							tag2 = contig + '-' + insertion
+							if tag2 not in tag2_list: 
+								if tag2 == t:
+									position_list.append(int(sp[3]))
+									tag2_list.append(tag2)
+							else:
+								pass
 							
 			c.append(position_list)
 
@@ -492,14 +491,13 @@ def insertions_overview_and_histograms():
 		#_____________________________________________________________________________________________________________________________________________________
 		insertions = list()
 
-		with open(input) as f1:
-			for line in f1:
-				if not line.startswith('@'):	
-					sp = line.split('\t')
-					insertion = str(sp[2]).strip()
-					if insertion not in insertions and insertion != '-':
-						insertions.append(insertion)
-					
+		for i, line in enumerate(lines):
+			if not line.startswith('@'):	
+				sp = line.split('\t')
+				insertion = str(sp[2]).strip()
+				if insertion not in insertions and insertion != '-':
+					insertions.append(insertion)
+				
 		for e in insertions:
 			try:
 				del region_min
@@ -508,30 +506,28 @@ def insertions_overview_and_histograms():
 			region_max = 0
 			rd_max_paired = 0
 			rd_max_local = 0
-
-			with open(input) as f1:
-				for line in f1:
-					if not line.startswith('@'):
-						sp = line.split('\t')
-						#Max and min for genome region in graphic
-						if sp[2] == e and sp[0] == 'PAIRED' : 
-							if int(sp[3]) > region_max:
-								region_max = int(sp[3])
-							else:
-								try:
-									if sp[3] < region_min: 
-										region_min = int(sp[3])
-								except:
+			for i, line in enumerate(lines):
+				if not line.startswith('@'):
+					sp = line.split('\t')
+					#Max and min for genome region in graphic
+					if sp[2] == e and sp[0] == 'PAIRED' : 
+						if int(sp[3]) > region_max:
+							region_max = int(sp[3])
+						else:
+							try:
+								if sp[3] < region_min: 
 									region_min = int(sp[3])
-				
-						#Max and min read depth 
-						if sp[2] == e and sp[0] == 'PAIRED': 
-							if int(sp[4]) > rd_max_paired:
-								rd_max_paired = int(sp[4])		
+							except:
+								region_min = int(sp[3])
+			
+					#Max and min read depth 
+					if sp[2] == e and sp[0] == 'PAIRED': 
+						if int(sp[4]) > rd_max_paired:
+							rd_max_paired = int(sp[4])		
 
-						if sp[2] == e and sp[0] == 'LOCAL_RD': 
-							if int(sp[4]) > rd_max_local:
-								rd_max_local = int(sp[4])		
+					if sp[2] == e and sp[0] == 'LOCAL_RD': 
+						if int(sp[4]) > rd_max_local:
+							rd_max_local = int(sp[4])		
 
 			rd_max_paired = rd_max_paired + 10
 			rd_max_local = rd_max_local + 5
@@ -573,72 +569,70 @@ def insertions_overview_and_histograms():
 
 
 			#LOCAL/PAIRED GRAPHICS
-			with open(input) as f1:
-				for line in f1:
-					if not line.startswith('@'):
-						sp = line.split('\t')
-						ins_contig = sp[1]
-						if sp[2] == e and sp[0].strip() == 'PAIRED' and sp[5].strip() != 'TOTAL':
-							raw_x_position = int(sp[3])
-							img_x_position = int(raw_x_position/scaling_factor_x)
-							img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
+			for i, line in enumerate(lines):
+				if not line.startswith('@'):
+					sp = line.split('\t')
+					ins_contig = sp[1]
+					if sp[2] == e and sp[0].strip() == 'PAIRED' and sp[5].strip() != 'TOTAL':
+						raw_x_position = int(sp[3])
+						img_x_position = int(raw_x_position/scaling_factor_x)
+						img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
 
-							try:
-								if img_relative_x_position == img_relative_x_position_2:
-									raw_y_position = int(sp[4])
-									img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
-							
-									if img_y_position_p > img_y_position_p_2: 	
-										img_y_position_p_2 = img_y_position_p
-							
-								img_relative_x_position_2 = img_relative_x_position
-							except:
-								img_relative_x_position_2 = img_relative_x_position
+						try:
+							if img_relative_x_position == img_relative_x_position_2:
 								raw_y_position = int(sp[4])
 								img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
-
-							#draw
-							if sp[5].strip() == 'R':
-								draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(64, 159, 65, 100), width=1)	
-							
-							elif sp[5].strip() == 'F':
-								draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(31, 120, 180, 100), width=1)
-
-			with open(input) as f1:
-				for line in f1:
-					if not line.startswith('@'):
-						sp = line.split('\t')
-						ins_contig = sp[1]
-						if sp[2] == e and sp[0].strip() == 'LOCAL_RD' and sp[5].strip() != 'TOTAL_RD':
-							raw_x_position = int(sp[3])
-							img_x_position = int(raw_x_position/scaling_factor_x)
-							img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
-
+						
+								if img_y_position_p > img_y_position_p_2: 	
+									img_y_position_p_2 = img_y_position_p
+						
+							img_relative_x_position_2 = img_relative_x_position
+						except:
+							img_relative_x_position_2 = img_relative_x_position
 							raw_y_position = int(sp[4])
-							img_y_position_l = int(raw_y_position/scaling_factor_y_local)
-							img_relative_y_position = 755 - img_y_position_l 
+							img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
+
+						#draw
+						if sp[5].strip() == 'R':
+							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(64, 159, 65, 100), width=1)	
+						
+						elif sp[5].strip() == 'F':
+							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(31, 120, 180, 100), width=1)
 
 
-							#draw
-							if sp[5].strip() == 'RIGHT_RD':
-								draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=1)
+			for i, line in enumerate(lines):
+				if not line.startswith('@'):
+					sp = line.split('\t')
+					ins_contig = sp[1]
+					if sp[2] == e and sp[0].strip() == 'LOCAL_RD' and sp[5].strip() != 'TOTAL_RD':
+						raw_x_position = int(sp[3])
+						img_x_position = int(raw_x_position/scaling_factor_x)
+						img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
 
-							if sp[5].strip() == 'LEFT_RD':
-								draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=1)
+						raw_y_position = int(sp[4])
+						img_y_position_l = int(raw_y_position/scaling_factor_y_local)
+						img_relative_y_position = 755 - img_y_position_l 
+
+
+						#draw
+						if sp[5].strip() == 'RIGHT_RD':
+							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=1)
+
+						if sp[5].strip() == 'LEFT_RD':
+							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=1)
 
 
 			#Candidate regions
-			with open(input) as f1:
-				for line in f1:
-					if line.startswith('@#'):
-						sp = line.split(',')
-						if int(sp[2].strip()) == int(e):
-								cr = [int(sp[0].strip('@#')), int(sp[1].strip())]
-								cr_min = min(cr)
-								cr_max = max(cr)
-								draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
-								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
-								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
+			for i, line in enumerate(lines):
+				if line.startswith('@#'):
+					sp = line.split(',')
+					if int(sp[2].strip()) == int(e):
+							cr = [int(sp[0].strip('@#')), int(sp[1].strip())]
+							cr_min = min(cr)
+							cr_max = max(cr)
+							draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
+							draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
+							draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
 
 
 			#Axis anotations
@@ -687,14 +681,13 @@ def insertions_overview_and_histograms():
 	if args.mode == 'se':
 		insertions = list()
 
-		with open(input) as f1:
-			for line in f1:
-				if not line.startswith('@'):	
-					sp = line.split('\t')
-					insertion = str(sp[2]).strip()
-					if insertion not in insertions and insertion != '-':
-						insertions.append(insertion)
-							
+		for i, line in enumerate(lines):
+			if not line.startswith('@'):	
+				sp = line.split('\t')
+				insertion = str(sp[2]).strip()
+				if insertion not in insertions and insertion != '-':
+					insertions.append(insertion)
+						
 		for e in insertions:
 			try:
 				del region_min
@@ -702,26 +695,24 @@ def insertions_overview_and_histograms():
 				pass
 			region_max = 0
 			rd_max_local = 0
-
-			with open(input) as f1:
-				for line in f1:
-					if not line.startswith('@'):
-						sp = line.split('\t')
-						#Max and min for genome region in graphic
-						if sp[2] == e: 
-							if int(sp[3]) > region_max:
-								region_max = int(sp[3])
-							else:
-								try:
-									if sp[3] < region_min: 
-										region_min = int(sp[3])
-								except:
+			for i, line in enumerate(lines):
+				if not line.startswith('@'):
+					sp = line.split('\t')
+					#Max and min for genome region in graphic
+					if sp[2] == e: 
+						if int(sp[3]) > region_max:
+							region_max = int(sp[3])
+						else:
+							try:
+								if sp[3] < region_min: 
 									region_min = int(sp[3])
-				
-						#Max and min read depth 
-						if sp[2] == e and sp[0] == 'LOCAL_RD': 
-							if int(sp[4]) > rd_max_local:
-								rd_max_local = int(sp[4])		
+							except:
+								region_min = int(sp[3])
+			
+					#Max and min read depth 
+					if sp[2] == e and sp[0] == 'LOCAL_RD': 
+						if int(sp[4]) > rd_max_local:
+							rd_max_local = int(sp[4])		
 
 			region_max = region_max + 100
 			if region_min > 200:
@@ -754,27 +745,26 @@ def insertions_overview_and_histograms():
 
 
 			#LOCAL GRAPHICS
-			with open(input) as f1:
-				for line in f1:
-					if not line.startswith('@'):
-						sp = line.split('\t')
-						ins_contig = sp[1]
-						if sp[2] == e and sp[0].strip() == 'LOCAL_RD' and sp[5].strip() != 'TOTAL_RD':
-							raw_x_position = int(sp[3])
-							img_x_position = int(raw_x_position/scaling_factor_x)
-							img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
+			for i, line in enumerate(lines):
+				if not line.startswith('@'):
+					sp = line.split('\t')
+					ins_contig = sp[1]
+					if sp[2] == e and sp[0].strip() == 'LOCAL_RD' and sp[5].strip() != 'TOTAL_RD':
+						raw_x_position = int(sp[3])
+						img_x_position = int(raw_x_position/scaling_factor_x)
+						img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
 
-							raw_y_position = int(sp[4])
-							img_y_position_l = int(raw_y_position/scaling_factor_y_local)
-							img_relative_y_position = 450 - img_y_position_l 
+						raw_y_position = int(sp[4])
+						img_y_position_l = int(raw_y_position/scaling_factor_y_local)
+						img_relative_y_position = 450 - img_y_position_l 
 
 
-							#draw
-							if sp[5].strip() == 'RIGHT_RD':
-								draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=3)
+						#draw
+						if sp[5].strip() == 'RIGHT_RD':
+							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=3)
 
-							if sp[5].strip() == 'LEFT_RD':
-								draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=3)
+						if sp[5].strip() == 'LEFT_RD':
+							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=3)
 
 
 			#Axis anotations
