@@ -277,8 +277,7 @@ if mode == 'se':
 			#Determine length, start and end positions, and sequence of read
 			read_length = int(round(gauss(read_length_mean, read_length_sd)))
 			#Function "gauss()" might return not real-world values. I compensate for that.	
-			if read_length < 5:
-				read_length = 5
+			if read_length < 5: read_length = 5
 			#Define read start and end positions and take substring from template genome.
 			read_start = randint(1, genome_length - read_length + 1)
 			read_end = read_start + read_length
@@ -353,9 +352,9 @@ if mode == 'pe':
 			#Define lenghts of for and rev reads
 			read_length_for = int(round(gauss(read_length_mean, read_length_sd)))
 			read_length_rev = int(round(gauss(read_length_mean, read_length_sd)))
-
-			if read_length_for<5: read_length_for = 5
-			if read_length_rev<5: read_length_rev = 5
+			#Function "gauss()" might return not real-world values. I compensate for that.
+			if read_length_for < 5: read_length_for = 5
+			if read_length_rev < 5: read_length_rev = 5
 			
 			#Define read start and end positions and read sequences in a single step			
 			read_for_seq = seq_template[fragment_start-1 : fragment_start+read_length_for-1]    #My values are 1-based, but python is 0-based. I compensate subtracting one position.
@@ -368,8 +367,7 @@ if mode == 'pe':
 
 			#Obtain reverse complemetary of reverse read in pair
 			read_rev_seq = reverse_complementary(read_rev_seq)
-			
-			
+
 			#Determine which read will be first and which second in the pair
 			#If necesssary, swap them
 			pos_in_pair = randint(0,1) #randomly choose between two options
