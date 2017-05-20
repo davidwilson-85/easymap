@@ -209,7 +209,7 @@ def Draw_box_plot(table,out):
 		end = float(position[-1]) * step
 		draw.line(((i, position_y_exe-beg) + (i, position_y_exe-end)), fill=(0, 0, 0, 0), width=1)
 
-		#Create the boxplot using CORREGIR!!!!!!!!!!
+		#Create the boxplot 
 		beg = float(position[2]) * step
 		end = float(position[-2]) * step
 		draw.rectangle([(i-3, position_y_exe-beg), (i+3, position_y_exe-end)], fill=(24, 56, 214), outline= None)

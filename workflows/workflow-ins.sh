@@ -50,6 +50,7 @@ my_gff=${10}													#Genome feature file
 my_ann=${11}													
 my_rrl=250 														#Regulatory region length
 
+
 #Define the folders in the easymap directory 
 f0=user_data
 f1=$project_name/1_intermediate_files
@@ -62,6 +63,7 @@ echo 'pid workflow '$BASHPID >> $my_status_file
 
 #Save path to bowtie2-build and bowtie2 in variable BT2
 export location="$PWD" 
+
 
 #Execute bowtie2-build on insertion and genome sequence 
 {

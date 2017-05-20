@@ -87,7 +87,7 @@ insertion_id = 1
 #Insertion sorting
 if args.mode == 'pe': 
 	for i, line in enumerate(lines):
-		if not line.startswith('@'): 
+		if not line.startswith('@'):
 			sp = line.split(',')
 			if str(sp[0]).strip() == 'PAIRED' and  str(sp[4]).strip() == 'TOTAL':
 				p = int(sp[2])
@@ -108,10 +108,7 @@ if args.mode == 'pe':
 					f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 					p2 = p
 					contig2 = contig
-		
-			elif 'LOCAL' in sp[0].strip('\t'):
-				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
-		
+			
 			else:
 				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 
@@ -144,12 +141,6 @@ elif args.mode == 'se':
 					contig2 = contig
 			else:
 				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
-
-
-
-#			else:
-#				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
-
 
 
 f1.close()
@@ -201,9 +192,8 @@ if args.mode == 'pe':
 						min_pos = int(sp[3])
 					span = max_pos - min_pos
 
-		if len(directions) == 2:
-			if max_RD >= 3 or span > 500:
-				insertions_final.append(insertion)
+		if len(directions) == 2 or max_RD >= 3 or span > 300:
+			insertions_final.append(insertion)
 
 elif args.mode == 'se': 
 	for insertion in insertions_raw:
@@ -232,13 +222,13 @@ elif args.mode == 'se':
 						min_pos = int(sp[3])
 					span = max_pos - min_pos
 
-		if len(directions) == 2:
-			if max_RD >= 3 or span > 300:																						############# CALIBRAR FILTRO
-				insertions_final.append(insertion)
+		if len(directions) == 2 or max_RD >= 3 or span > 300:
+			insertions_final.append(insertion)
 
 f1.close()
 f1 = open(input, 'w')
 new_id = 1
+
 for fin_ins in insertions_final:
 	for i, line in enumerate(lines):
 		if not line.startswith('@'):
@@ -246,6 +236,7 @@ for fin_ins in insertions_final:
 			if int(sp[2]) == int(fin_ins):
 				newline = str( sp[0].strip() + '\t' + sp[1].strip() + '\t' + str(new_id) + '\t' + sp[3].strip() + '\t' + sp[4].strip() + '\t' + sp[5].strip() + '\n' )
 				f1.write(newline)
+
 	new_id = new_id + 1
 f1.close()
 
