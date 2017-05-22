@@ -190,6 +190,31 @@ echo $(date) ': VCF grooming of F2 data finished.' >> $my_log_file
 echo $(date) ': First VCF filtering step of F2 data finished.' >> $my_log_file
 
 
+#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
+
+
+{
+$location/samtools1/samtools depth -a  alignment1.sam > $f1/coverage1.txt
+} || {
+	echo $(date) ': Error during obtation of alignment depth in samtools in samples.' >> $my_log_file
+	#exit_code=1
+	#echo $exit_code
+	#exit
+}
+
+{
+python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage1.txt   -out $f3/frequency_depth_alignment_distribution_sample.png 
+} || {
+	echo $(date) ': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
+	#exit_code=1
+	#echo $exit_code
+	#exit
+}
+
+#############TAKE A LOOK ON HOW MANY READS ARE NEEDED AND HOW TO DO THE SELECTION
+
+
+
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
@@ -280,6 +305,30 @@ echo $(date) ': VCF grooming of control data finished.' >> $my_log_file
 	exit
 }
 echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_file
+
+
+
+#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
+
+
+{
+$location/samtools1/samtools depth -a  alignment1P.sam > $f1/coverage1P.txt
+} || {
+	echo $(date) ': Error during obtation of alignment depth in samtools in control .' >> $my_log_file
+	#exit_code=1
+	#echo $exit_code
+	#exit
+}
+
+{
+python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage1P.txt   -out $f3/frequency_depth_alignment_distribution_control.png 
+} || {
+	echo $(date) ': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
+	#exit_code=1
+	#echo $exit_code
+	#exit
+}
+
 
 
 
