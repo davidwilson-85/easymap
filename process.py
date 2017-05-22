@@ -1,0 +1,112 @@
+#!/usr/bin/python
+import argparse
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+
+#Si no esta en orden: ../samtools1/samtools sort alignment1.sam > alignment1.bam
+#para obtener el archivo de profundidad: ../samtools1/samtools depth -a  alignment1.bam > coverage.txt
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-coverages', action="store", dest = 'cov', required = "True")
+parser.add_argument('-out', action="store", dest = 'out', required = "True")
+
+args = parser.parse_args()
+
+
+def read_file(f):
+	dic = {}
+	with open(f,"r") as coverage_file:
+		for lines in coverage_file:
+			lines = lines.rstrip()
+			column = lines.split("\t")
+			if int(column[2]) in dic:
+				dic[int(column[2])]+=1
+			else:
+				dic[int(column[2])] = 1
+
+
+	list_of_values= dic.values()
+	total_values= float(sum(list_of_values))
+	
+	dic_percentage= {}
+	for values in dic:
+		dic_percentage[values] = (dic[values]/total_values)
+	
+	sort_position = sorted(dic.keys())
+	return dic_percentage, sort_position
+
+
+def draw(dic,sort_positions,out):
+	fnt1 = ImageFont.truetype('../fonts/VeraMono.ttf', 14)
+	group = 2
+	#Size of the window
+	a = 60 #right width space
+	c = 60 # left width space
+	b= 60 #up sapace
+	d = 60 #down space
+
+	size_x_window = 480 
+	size_y_window = 480
+
+	x_window = size_y_window+ a +c
+	y_window = size_y_window+ b+ d
+	
+	#Generation of the file
+	im = Image.new("RGB", (x_window, y_window), (255,255,255))	
+	draw = ImageDraw.Draw(im)
+
+	draw.line(((a, b) + (a, size_y_window+b)), fill=(0, 0, 0, 0), width=1)
+
+	draw.line(((a, size_y_window+b) + (a+size_x_window, a+size_y_window)), fill=(0, 0, 0, 0), width=1) 
+	
+	#Close chart
+	draw.line(((a, c) + (size_x_window+a, c)), fill=(0, 0, 0, 0), width=1)
+	draw.line(((size_x_window+a, c) + (size_x_window+a, size_y_window+b)), fill=(0, 0, 0, 0), width=1)
+
+
+
+	#Vertical values
+	
+	step = float(size_y_window)/100
+	v = max(dic.values())
+	upper = size_y_window -b
+	step2 = upper/v
+
+
+	for values in range(100,-1,-1):
+		draw.line(((a,b+abs(values-100)*step) + (a-4,b+abs(values-100)*step)), fill=(0, 0, 0, 0), width=1)
+		if values%10 == 0:
+			draw.line(((a,b+abs(values-100)*step) + (a-6,b+abs(values-100)*step)), fill=(0, 0, 0, 0), width=1) 
+			write = str(float(values * v))
+			write = write[:3]
+
+			draw.text((a-40,b+abs(values-100)*step-5), str(write), font=fnt1, fill=(0,0,0,0))
+
+
+	#Horizontal values
+	step = size_x_window/120
+	for values in range(121):
+		draw.line(((c+values*step, size_y_window+a) + (c+values*step, size_y_window+4+a)), fill=(0, 0, 0, 0), width=1)
+		if values%10 == 0:
+			draw.line(((c+values*step, size_y_window+a) + (c+values*step, size_y_window+6+a)), fill=(0, 0, 0, 0), width=1)
+			draw.text((c+values*step-3, size_y_window+a+10), str(values), font=fnt1, fill=(0,0,0,0))
+	order = range(len(sort_positions))
+
+	#Graph draw
+	for i in order:
+		x_coverage= sort_positions[i]
+		y_proportion = dic[x_coverage]
+	
+		try:
+			draw.line(((c+x_coverage*step-3, size_y_window-y_proportion*step2),(c+sort_positions[i+1]*step-3,  size_y_window-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
+		except:
+			draw.line(((c+x_coverage*step-3, size_y_window-y_proportion*step2),(c+x_coverage*step-3, size_y_window-y_proportion*step2)))
+
+	im.save(out)
+
+
+
+
+
+cov = args.cov
+file_data = read_file(cov)
+draw(file_data[0],file_data[1],args.out)
