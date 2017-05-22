@@ -39,10 +39,10 @@ def draw(dic,sort_positions,out):
 	fnt1 = ImageFont.truetype('../fonts/VeraMono.ttf', 14)
 	group = 2
 	#Size of the window
-	a = 60 #right width space
-	c = 60 # left width space
-	b= 60 #up sapace
-	d = 60 #down space
+	a = 80 #right width space
+	c = 80 # left width space
+	b= 80 #up sapace
+	d = 80 #down space
 
 	size_x_window = 480 
 	size_y_window = 480
@@ -68,7 +68,8 @@ def draw(dic,sort_positions,out):
 	
 	step = float(size_y_window)/100
 	v = max(dic.values())
-	upper = size_y_window -b
+	v = v+ 0.1*v
+	upper = size_y_window
 	step2 = upper/v
 
 
@@ -85,21 +86,35 @@ def draw(dic,sort_positions,out):
 	#Horizontal values
 	step = size_x_window/120
 	for values in range(121):
-		draw.line(((c+values*step, size_y_window+a) + (c+values*step, size_y_window+4+a)), fill=(0, 0, 0, 0), width=1)
+		draw.line(((c+values*step, size_y_window+b) + (c+values*step, size_y_window+4+b)), fill=(0, 0, 0, 0), width=1)
 		if values%10 == 0:
-			draw.line(((c+values*step, size_y_window+a) + (c+values*step, size_y_window+6+a)), fill=(0, 0, 0, 0), width=1)
-			draw.text((c+values*step-3, size_y_window+a+10), str(values), font=fnt1, fill=(0,0,0,0))
+			draw.line(((c+values*step, size_y_window+b) + (c+values*step, size_y_window+6+b)), fill=(0, 0, 0, 0), width=1)
+			draw.text((c+values*step-3, size_y_window+b+10), str(values), font=fnt1, fill=(0,0,0,0))
 	order = range(len(sort_positions))
 
+	#Vertical Exe name:
+	#Axes draw:
+	x_name = "Read depth(X)"
+	draw.text((size_x_window/2+10, size_y_window+b+35), x_name , font=fnt1, fill=(0,0,0,0)) #Horizontal
+	y_name ="Frequency(%)"
+	label = Image.new("RGB", (140, 20), (255,255,255))
+	draw2 = ImageDraw.Draw(label)
+	draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
+	label = label.rotate(90)
+	im.paste(label, (2,size_y_window/2+c-80))
+
 	#Graph draw
+	draw.line(((a, size_y_window+b),(c+sort_positions[0]*step-3,  size_y_window+b)), fill=(0, 0, 0, 0), width=1)
+	draw.line(((c+sort_positions[0]*step-3,  size_y_window+b),(c+sort_positions[0]*step-3,  size_y_window+b-dic[sort_positions[1]]*step2)), fill=(0, 0, 0, 0), width=1)
 	for i in order:
 		x_coverage= sort_positions[i]
 		y_proportion = dic[x_coverage]
+
 	
 		try:
-			draw.line(((c+x_coverage*step-3, size_y_window-y_proportion*step2),(c+sort_positions[i+1]*step-3,  size_y_window-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
+			draw.line(((c+x_coverage*step-3, size_y_window+b-y_proportion*step2),(c+sort_positions[i+1]*step-3,  size_y_window+b-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
 		except:
-			draw.line(((c+x_coverage*step-3, size_y_window-y_proportion*step2),(c+x_coverage*step-3, size_y_window-y_proportion*step2)))
+			draw.line(((c+x_coverage*step-3, size_y_window+b-y_proportion*step2),(c+x_coverage*step-3, size_y_window+b-y_proportion*step2)))
 
 	im.save(out)
 
