@@ -287,7 +287,7 @@ def fa_vs_pos():
 
 #############################################################################################################
 #																											#
-# 									LIN - INSERTIONS OVERVIEW & HISTOGRAMS									#
+# 									LIN - GENOME OVERVIEW & HISTOGRAMS										#
 #																											#
 #############################################################################################################
 
@@ -467,6 +467,7 @@ def insertions_overview_and_histograms():
 
 	number = 1
 
+
 	#Drawing the chromosomes:
 	for c in superlist:
 		draw.line((c[2], c[3]) + (c[2], c[4]), fill=(4, 14, 73), width=18)
@@ -510,7 +511,7 @@ def insertions_overview_and_histograms():
 				if not line.startswith('@'):
 					sp = line.split('\t')
 					#Max and min for genome region in graphic
-					if sp[2] == e: 												# and sp[0] == 'PAIRED' : 
+					if sp[2] == e and sp[0] == 'PAIRED' : 
 						if int(sp[3]) > region_max:
 							region_max = int(sp[3])
 						else:
@@ -578,6 +579,11 @@ def insertions_overview_and_histograms():
 						img_x_position = int(raw_x_position/scaling_factor_x)
 						img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
 
+						raw_y_position = int(sp[4])
+						img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
+				
+
+						'''
 						try:
 							if img_relative_x_position == img_relative_x_position_2:
 								raw_y_position = int(sp[4])
@@ -591,6 +597,7 @@ def insertions_overview_and_histograms():
 							img_relative_x_position_2 = img_relative_x_position
 							raw_y_position = int(sp[4])
 							img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
+						'''
 
 						#draw
 						if sp[5].strip() == 'R':
@@ -610,7 +617,7 @@ def insertions_overview_and_histograms():
 						img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
 
 						raw_y_position = int(sp[4])
-						img_y_position_l = int(raw_y_position/scaling_factor_y_local)
+						img_y_position_l = int(raw_y_position/scaling_factor_y_paired)
 						img_relative_y_position = 755 - img_y_position_l 
 
 
