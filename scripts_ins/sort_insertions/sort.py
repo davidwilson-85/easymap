@@ -178,7 +178,7 @@ if args.mode == 'pe':
 				if int(sp[2]) == insertion and sp[0].strip() == "PAIRED":	
 					#1st criterion: insertion must have forward and reverse supporting reads
 					read_direction = sp[5]
-					if read_direction not in directions and read_direction != "TOTAL":
+					if read_direction not in directions and "TOTAL" not in read_direction:
 						directions.append(read_direction)
 
 					#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
@@ -192,7 +192,7 @@ if args.mode == 'pe':
 						min_pos = int(sp[3])
 					span = max_pos - min_pos
 
-		if len(directions) == 2 or max_RD >= 3 or span > 300:
+		if len(directions) >= 2 or max_RD >= 3 or span > 300:
 			insertions_final.append(insertion)
 
 elif args.mode == 'se': 
@@ -208,7 +208,7 @@ elif args.mode == 'se':
 				if int(sp[2]) == insertion and sp[0].strip() == "LOCAL_RD":
 					#1st criterion: insertion must have forward and reverse supporting reads
 					read_direction = sp[5]
-					if read_direction not in directions and read_direction != "TOTAL_RD":
+					if read_direction not in directions and "TOTAL" not in read_direction:
 						directions.append(read_direction)
 
 					#2nd criterion: we calculate the maximum read depth in the data corresponding to the insertion
@@ -222,7 +222,7 @@ elif args.mode == 'se':
 						min_pos = int(sp[3])
 					span = max_pos - min_pos
 
-		if len(directions) == 2 or max_RD >= 3 or span > 300:
+		if len(directions) >= 2 or max_RD >= 3 or span > 300:
 			insertions_final.append(insertion)
 
 f1.close()

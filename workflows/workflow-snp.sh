@@ -194,7 +194,7 @@ echo $(date) ': First VCF filtering step of F2 data finished.' >> $my_log_file
 
 
 {
-$location/samtools1/samtools depth -a  alignment1.sam > $f1/coverage1.txt
+$location/samtools1/samtools depth -a  $f1/alignment1.sam > $f1/coverage1.txt
 } || {
 	echo $(date) ': Error during obtation of alignment depth in samtools in samples.' >> $my_log_file
 	#exit_code=1
@@ -312,7 +312,7 @@ echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_f
 
 
 {
-$location/samtools1/samtools depth -a  alignment1P.sam > $f1/coverage1P.txt
+$location/samtools1/samtools depth -a  $f1/alignment1P.sam > $f1/coverage1P.txt
 } || {
 	echo $(date) ': Error during obtation of alignment depth in samtools in control .' >> $my_log_file
 	#exit_code=1
