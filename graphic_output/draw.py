@@ -1,30 +1,30 @@
 import argparse, math
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+from StringIO import StringIO
 
-
+#Common arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-my_mut', action="store", dest = 'my_mut')		#snp or lin
-parser.add_argument('-asnp', action="store", dest = 'input_snp')		
-parser.add_argument('-bsnp', action="store", dest = 'input_f_snp')		#Fasta genome input
-#parser.add_argument('-gff', action="store", dest = 'gff')			#Genome feature file
-#parser.add_argument('-iva', action="store", dest = 'input_va') 	#Output de varanalyzer
-#parser.add_argument('-rrl', action="store", dest = 'rrl') 			#Regulatory region lenght
-#parser.add_argument('-f', action="store", dest = 'output_html')
-
-
-parser.add_argument('-a', action="store", dest = 'input')		
-parser.add_argument('-b', action="store", dest = 'input_f')				#Fasta genome input
-parser.add_argument('-gff', action="store", dest = 'gff')				#Genome feature file
-parser.add_argument('-iva', action="store", dest = 'input_va')	 		#Output de varanalyzer
-parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region lenght
-parser.add_argument('-f', action="store", dest = 'output_html')
 parser.add_argument('-m', action="store", dest = 'mode', default = 'P')
 parser.add_argument('-pname', action="store", dest='project_name')
 parser.add_argument('-cross', action="store", dest='my_cross')
 parser.add_argument('-snp_analysis_type', action="store", dest='my_snp_analysis_type')
+parser.add_argument('-gff', action="store", dest = 'gff')				#Genome feature file
+parser.add_argument('-iva', action="store", dest = 'input_va')	 		#Output de varanalyzer
+parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region lenght
+parser.add_argument('-f', action="store", dest = 'output_html')
+
+
+#Arguments for point mutation mapping graphic output
+parser.add_argument('-asnp', action="store", dest = 'input_snp')		
+parser.add_argument('-bsnp', action="store", dest = 'input_f_snp')		#Fasta genome input
+
+#Arguments for large insertions mapping graphic output
+parser.add_argument('-a', action="store", dest = 'input')		
+parser.add_argument('-b', action="store", dest = 'input_f')				#Fasta genome input
+parser.add_argument('-ins_pos', action="store", dest = 'ins_pos')
 
 args = parser.parse_args()
-
 project = args.project_name
 
 
@@ -308,6 +308,13 @@ def insertions_overview_and_histograms():
 	#define a superlist with innerlists, each of them containing all the info of each contig 
 	superlist = list()
 
+
+	#Input 3
+	input_pos = args.ins_pos
+	f3 = open(input_pos, 'r')
+	lines_pos = f3.readlines()	
+
+
 	#Create a list with all the genome contigs
 	contigs = []
 	length = 0
@@ -389,6 +396,22 @@ def insertions_overview_and_histograms():
 		c.append(contig_yf_coord)
 
 	#add insertions aproximate position to superlist
+	for c in superlist: 
+		positions_list = list()
+		for i, line in enumerate(lines_pos):
+			if not line.startswith('#'): 
+				sp = line.split('\t')
+				contig = str(sp[1].strip()).lower()
+				insertion_pos = int(sp[2])
+				if contig == c[0].strip() and insertion_pos not in positions_list:
+					positions_list.append(insertion_pos)
+
+		c.append(positions_list)
+
+
+##################################33333333333333333##################################33333333333333333
+##################################33333333333333333##################################33333333333333333
+	'''
 	if args.mode == 'pe':
 		tag_list = list()
 		for i, line in enumerate(lines):
@@ -452,7 +475,9 @@ def insertions_overview_and_histograms():
 								pass
 							
 			c.append(position_list)
-
+		'''
+##################################33333333333333333##################################33333333333333333
+##################################33333333333333333##################################33333333333333333
 
 	#initialize draw
 	draw = ImageDraw.Draw(im)
@@ -467,24 +492,43 @@ def insertions_overview_and_histograms():
 
 	number = 1
 
-
 	#Drawing the chromosomes:
 	for c in superlist:
-		draw.line((c[2], c[3]) + (c[2], c[4]), fill=(4, 14, 73), width=18)
-		draw.ellipse((c[2]-8, c[3]-8, c[2]+8, c[3]+7), fill=(4, 14, 73))
-		draw.ellipse((c[2]-8, c[4]-8, c[2]+8, c[4]+7), fill=(4, 14, 73))
-		draw.text(((c[2] - tab), (c[3] - 60)), c[0], font=fnt5, fill=(0,0,0,255))
+		previous_pos_y = 0
+		previous_chr = 'none'
+		draw.line((c[2], c[3]) + (c[2], c[4]), fill=(31, 120, 180), width=13)
+		draw.text(((c[2] - tab), (c[3] - 60)), c[0], font=fnt3, fill=(0,0,0,255))
 		for i in c[5]:
-			draw.polygon([(c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
-			draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-			draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
-			draw.line((c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-			draw.text(((c[2] + 30), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+			d = abs(i/contigs_scaling_factor+contig_yi_coord - previous_pos_y)
+			if d > 21 or previous_chr != c[0]: 
+				draw.polygon([(c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
+				draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
+				draw.line((c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.text(((c[2] + 30), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+
+			else:
+				draw.polygon([(c[2]- 11, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]-21, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]-21, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
+				draw.line((c[2]- 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.line((c[2]- 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-21, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
+				draw.line((c[2]-21, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]-21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.text(((c[2] - 120), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+
+
 			number = number + 1
+			previous_pos_y = i/contigs_scaling_factor+contig_yi_coord
+			previous_chr = c[0]
+		#Chromosome caps
+		image_file = StringIO(open("./fonts/up_cap.png",'rb').read())
+		cap = Image.open(image_file)
+		im.paste(cap, (c[2]-6, c[3]-6))
 
-			im.save(project + "/3_workflow_output/insertions_overview.png")
+		im.paste(cap.rotate(180), (c[2]-6, c[4]))
 
 
+
+
+	im.save(project + "/3_workflow_output/insertions_overview.png")
 
 	#_________________________________________________________Local and paired analysis graphs________________________________________________________________	
 	#_________________________________________________________________________________________________________________________________________________________

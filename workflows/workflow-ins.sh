@@ -396,7 +396,7 @@ echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/variants.txt -rrl $my_rrl -pname $project_name
+	python $location/graphic_output/graphic-output.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -f $f3/report.html -m $my_mode	-gff $f0/$my_gff  -iva $f3/variants.txt -rrl $my_rrl -pname $project_name -ins_pos $f1/ins-to-varanalyzer.txt
 	
 } || {
 	echo 'error:graphic-output.py' >> $my_log_file
@@ -410,3 +410,4 @@ echo Graphic output created. >> $my_log_file
 echo run time is $(expr `date +%s` - $start_time) s >> $my_log_file
 
 echo $exit_code
+
