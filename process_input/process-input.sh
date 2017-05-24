@@ -160,7 +160,7 @@ then
 				fi
 
 				{
-					fq_qual=`python graphic_output/fastq-stats.py -fasq $read_s -out $project_name/$f3/single-end-reads-qual-stats.png`
+					fq_qual=`python ./graphic_output/fastq-stats.py -fasq $read_s -out $project_name/$f3/single-end-reads-qual-stats.png`
 					
 					if [ $fq_qual == 0 ]
 					then
@@ -212,7 +212,7 @@ then
 				fi
 
 				{
-					fq_qual_for=`python graphic_output/fastq-stats.py -fasq $read_f -out $project_name/$f3/paired-end-forward-reads-qual-stats.png`
+					fq_qual_for=`python ./graphic_output/fastq-stats.py -fasq $read_f -out $project_name/$f3/paired-end-forward-reads-qual-stats.png`
 					
 					echo $fq_qual_for >> $my_log_file
 
@@ -233,7 +233,7 @@ then
 				}
 
 				{
-					fq_qual_rev=`python graphic_output/fasq-stats.py -fasq $read_r -out $project_name/$f3/paired-end-reverse-reads-qual-stats.png`
+					fq_qual_rev=`python ./graphic_output/fastq-stats.py -fasq $read_r -out $project_name/$f3/paired-end-reverse-reads-qual-stats.png`
 					
 					if [ $fq_qual_rev == 0 ]
 					then

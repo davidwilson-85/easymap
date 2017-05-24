@@ -111,11 +111,12 @@ def draw(dic,sort_positions,out):
 		x_coverage= sort_positions[i]
 		y_proportion = dic[x_coverage]
 ##OJOOO
-		if c+sort_positions[i+1]*step > c+size_x_window: #When the line is bigger than the right site of the window
-			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+size_x_window, size_y_window+b-dic[sort_positions[i+1]]*step2)))
-			break
 		try:
-			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+sort_positions[i+1]*step,  size_y_window+b-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
+			if c+sort_positions[i+1]*step > c+size_x_window: #When the line is bigger than the right site of the window
+				draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+size_x_window, size_y_window+b-dic[sort_positions[i+1]]*step2)))
+				break
+			else:
+				draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+sort_positions[i+1]*step,  size_y_window+b-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
 		except: #if there is no next i
 			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+x_coverage*step, size_y_window+b-y_proportion*step2)))
 # X en try y except tenia -3 despues de step, asi como draw.line de debajo de draw.line

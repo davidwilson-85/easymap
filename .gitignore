@@ -3,4 +3,4 @@ user_projects
 user_data
 graphic_output/draw.pyc
 interface/tmp_upload_files
-graphic_output/PIL
+graphic_output/PIL/*.pyc
