@@ -259,7 +259,6 @@ def fa_vs_pos():
 		draw.line(( 68 , int((28.65 + 22.7 - 28.65/2)/100.0*height) ) + ( 65 , int((28.65 + 22.7 - 28.65/2)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 		draw.line(( 68 , int((28.65 + 22.7 + 28.65/2)/100.0*height) ) + ( 65 , int((28.65 + 22.7 + 28.65/2)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 
-
 		draw.text(((32), (int(21/100.0*height))), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
 		draw.text(((32), (int((29 + 20.7)/100.0*height))), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
 		
@@ -489,7 +488,6 @@ def insertions_overview_and_histograms():
 	fnt5 = ImageFont.truetype('fonts/VeraMono.ttf', 18)
 
 	tab = 50
-
 	number = 1
 
 	#Drawing the chromosomes:
@@ -501,19 +499,18 @@ def insertions_overview_and_histograms():
 		for i in c[5]:
 			d = abs(i/contigs_scaling_factor+contig_yi_coord - previous_pos_y)
 			if d > 21 or previous_chr != c[0]: 
-				draw.polygon([(c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
-				draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.line((c[2]+ 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
-				draw.line((c[2]+21, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]+21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.text(((c[2] + 30), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+				draw.polygon([(c[2]+ 8, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]+18, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]+18, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
+				draw.line((c[2]+ 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.line((c[2]+ 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+18, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
+				draw.line((c[2]+18, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]+18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.text(((c[2] + 28), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
 
 			else:
-				draw.polygon([(c[2]- 11, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]-21, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]-21, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
-				draw.line((c[2]- 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.line((c[2]- 11, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-21, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
-				draw.line((c[2]-21, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]-21, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.text(((c[2] - 120), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
-
+				draw.polygon([(c[2]- 8, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]-18, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]-18, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
+				draw.line((c[2]- 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.line((c[2]- 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-18, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
+				draw.line((c[2]-18, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]-18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
+				draw.text(((c[2] - 122), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
 
 			number = number + 1
 			previous_pos_y = i/contigs_scaling_factor+contig_yi_coord
