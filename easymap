@@ -16,7 +16,7 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument('--project_name', "-P", action="store", dest = 'project_name', required = "True")
 parser.add_argument('--workflow', "-w" ,action="store", dest = 'workflow', choices=set(('snp','ins')), required = "True")
-parser.add_argument('--data_source', "-d", action="store", dest = 'data_source', choices=set(('sim','exp')), required = "True")
+parser.add_argument('--data_source', "-d", action="store",default = 'exp', dest = 'data_source', choices=set(('sim','exp'))) #Not required anymore
 #parser.add_argument('--lib_type_sample', "-l", action="store", dest = 'lib_type_sample', choices=set(('se','pe')), required = "True")
 #parser.add_argument('--ref_seqs', "-rs", action="store", dest = 'ref_seqs', required = "True") 
 parser.add_argument('--ins_seq', "-i", action="store",default = 'n/p', dest = 'ins_seq') 
