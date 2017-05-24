@@ -94,9 +94,9 @@ def draw(dic,sort_positions,out):
 
 	#Vertical Exe name:
 	#Axes draw:
-	x_name = "Read depth(X)"
+	x_name = "Read depth (X)"
 	draw.text((size_x_window/2+10, size_y_window+b+35), x_name , font=fnt1, fill=(0,0,0,0)) #Horizontal
-	y_name ="Frequency(%)"
+	y_name ="Frequency (%)"
 	label = Image.new("RGB", (140, 20), (255,255,255))
 	draw2 = ImageDraw.Draw(label)
 	draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
