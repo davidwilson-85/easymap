@@ -92,8 +92,8 @@ def draw(dic,sort_positions,out):
 			draw.text((c+values*step-3, size_y_window+b+10), str(values), font=fnt1, fill=(0,0,0,0))
 	order = range(len(sort_positions))
 
-	#Vertical Exe name:
-	#Axes draw:
+	#Vertical axis name:
+	#axis draw:
 	x_name = "Read depth (X)"
 	draw.text((size_x_window/2+10, size_y_window+b+35), x_name , font=fnt1, fill=(0,0,0,0)) #Horizontal
 	y_name ="Frequency (%)"

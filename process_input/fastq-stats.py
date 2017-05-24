@@ -163,18 +163,18 @@ def Draw_box_plot(table,out):
 	#Generation of the file
 	im = Image.new("RGB", (x_window, y_window), (255,255,255))	
 	draw = ImageDraw.Draw(im)
-	#Creation of the axes: exes will start with an indentation of 20 above, below and beside. Each Phred quality score will be in a X% proportion of the y_window  px
-	size_y_exe = y_window-80 #Total size minus above and below indentations
-	position_y_exe= size_y_exe+20
-	draw.line(((a, c) + (a, position_y_exe)), fill=(0, 0, 0, 0), width=1)
-	size_x_exe = len(table)*10 +10 #number of positions*10 pxls which is one will take + 10 for the position 1. 
-	draw.line(((a, position_y_exe) + (a+size_x_exe, position_y_exe)), fill=(0, 0, 0, 0), width=1) 
+	#Creation of the axiss: axiss will start with an indentation of 20 above, below and beside. Each Phred quality score will be in a X% proportion of the y_window  px
+	size_y_axis = y_window-80 #Total size minus above and below indentations
+	position_y_axis= size_y_axis+20
+	draw.line(((a, c) + (a, position_y_axis)), fill=(0, 0, 0, 0), width=1)
+	size_x_axis = len(table)*10 +10 #number of positions*10 pxls which is one will take + 10 for the position 1. 
+	draw.line(((a, position_y_axis) + (a+size_x_axis, position_y_axis)), fill=(0, 0, 0, 0), width=1) 
 	#Close chart
-	draw.line(((a, c) + (size_x_exe+a, c)), fill=(0, 0, 0, 0), width=1)
-	draw.line(((size_x_exe+a, c) + (size_x_exe+a, position_y_exe)), fill=(0, 0, 0, 0), width=1)
+	draw.line(((a, c) + (size_x_axis+a, c)), fill=(0, 0, 0, 0), width=1)
+	draw.line(((size_x_axis+a, c) + (size_x_axis+a, position_y_axis)), fill=(0, 0, 0, 0), width=1)
 	
 	#Vertical values
-	step = float(size_y_exe)/42
+	step = float(size_y_axis)/42
 	j = 0
 	for values in range(42,-1,-1):
 		
@@ -188,46 +188,46 @@ def Draw_box_plot(table,out):
 			draw.text((a-25,20+text*step-h/2-3), str(values), font=fnt1, fill=(0,0,0,0))
 		j +=1	
 			
-	i = 10 + a #indentation + space for the first box (same space as in size_x_exe)
+	i = 10 + a #indentation + space for the first box (same space as in size_x_axis)
 	for position in table:
 		name = position[0]
 		position = position[1:]
 
-		#write the position in the x axe
-		draw.line(((i, position_y_exe) + (i, position_y_exe+4)), fill=(0, 0, 0, 0), width=1)
+		#write the position in the x axis
+		draw.line(((i, position_y_axis) + (i, position_y_axis+4)), fill=(0, 0, 0, 0), width=1)
 
 		if (i-a)%50 == 0 :
-			draw.line(((i, position_y_exe) + (i, position_y_exe+6)), fill=(0, 0, 0, 0), width=1)
+			draw.line(((i, position_y_axis) + (i, position_y_axis+6)), fill=(0, 0, 0, 0), width=1)
 			w, h = draw.textsize(str(name))
-			if len(name)==3:draw.text((i-w/2-4+1 , position_y_exe+10), name, font=fnt1, fill=(0,0,0,0))
-			if len(name) == 4: draw.text((i-w/2-3 +4, position_y_exe+10), name, font=fnt1, fill=(0,0,0,0))				
-			elif len(name) == 5: draw.text((i-w/2-4, position_y_exe+10), name, font=fnt1, fill=(0,0,0,0))
-			elif len(name) == 6: draw.text((i-w/2-9, position_y_exe+10), name, font=fnt1, fill=(0,0,0,0))
-			elif len(name) == 7: draw.text((i-w/2-14, position_y_exe+10), name, font=fnt1, fill=(0,0,0,0))
+			if len(name)==3:draw.text((i-w/2-4+1 , position_y_axis+10), name, font=fnt1, fill=(0,0,0,0))
+			if len(name) == 4: draw.text((i-w/2-3 +4, position_y_axis+10), name, font=fnt1, fill=(0,0,0,0))				
+			elif len(name) == 5: draw.text((i-w/2-4, position_y_axis+10), name, font=fnt1, fill=(0,0,0,0))
+			elif len(name) == 6: draw.text((i-w/2-9, position_y_axis+10), name, font=fnt1, fill=(0,0,0,0))
+			elif len(name) == 7: draw.text((i-w/2-14, position_y_axis+10), name, font=fnt1, fill=(0,0,0,0))
 		#Create a line from the begining to the end of the parameters
 		beg = float(position[1]) * step
 		end = float(position[-1]) * step
-		draw.line(((i, position_y_exe-beg) + (i, position_y_exe-end)), fill=(0, 0, 0, 0), width=1)
+		draw.line(((i, position_y_axis-beg) + (i, position_y_axis-end)), fill=(0, 0, 0, 0), width=1)
 		#Close the whiskers
-		draw.line(((i-1, position_y_exe-beg)+(i+1, position_y_exe-beg)),fill=(0, 0, 0, 0), width=1)
-		draw.line(((i-1, position_y_exe-end)+(i+1, position_y_exe-end)),fill=(0, 0, 0, 0), width=1)
+		draw.line(((i-1, position_y_axis-beg)+(i+1, position_y_axis-beg)),fill=(0, 0, 0, 0), width=1)
+		draw.line(((i-1, position_y_axis-end)+(i+1, position_y_axis-end)),fill=(0, 0, 0, 0), width=1)
 
 
 		#Create the boxplot 
 		beg = float(position[2]) * step
 		end = float(position[-2]) * step
-		draw.rectangle([(i-3, position_y_exe-beg), (i+3, position_y_exe-end)], fill=(24, 56, 214), outline= None)
+		draw.rectangle([(i-3, position_y_axis-beg), (i+3, position_y_axis-end)], fill=(24, 56, 214), outline= None)
 
 		#Draw the average and the MEDIANA?
 		av = float(position[0]) * step
 		med = float(position[3]) * step
-		draw.line(((i-3, position_y_exe-med) + (i+3, position_y_exe-med)), fill=(191, 17, 54), width=1)
-		draw.line(((i, position_y_exe-av) + (i, position_y_exe-av)), fill=(50, 214, 25), width=1)
+		draw.line(((i-3, position_y_axis-med) + (i+3, position_y_axis-med)), fill=(191, 17, 54), width=1)
+		draw.line(((i, position_y_axis-av) + (i, position_y_axis-av)), fill=(50, 214, 25), width=1)
 		i +=10
 
-	#Axes draw:
+	#axiss draw:
 	x_name = "Position (bp)"
-	draw.text((size_x_exe/2, position_y_exe+35), x_name , font=fnt1, fill=(0,0,0,0)) #Horizontal
+	draw.text((size_x_axis/2, position_y_axis+35), x_name , font=fnt1, fill=(0,0,0,0)) #Horizontal
 	y_name ="Quality (phred)"
 
 
@@ -240,7 +240,7 @@ def Draw_box_plot(table,out):
 	draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
 
 	label = label.rotate(90)
-	im.paste(label, (2,size_y_exe/2-50))
+	im.paste(label, (2,size_y_axis/2-50))
 
 	#Vertical
 	#save image, specifying the format with the extension
