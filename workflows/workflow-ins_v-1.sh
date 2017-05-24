@@ -362,7 +362,7 @@ done
 		    fi
 		    
 		   #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
-			cat $f1/cns.fq >> $f1/all_insertions_cns.fq
+			cat $f1/cns.fq >> $f1/all_insertions_cns.fq 2> $f2/samtools-consensus.log
 	done
 }||{
 	echo $(date) ': Error. The consensus sequence of an insertion flank could not be created.' >> $my_log_file
