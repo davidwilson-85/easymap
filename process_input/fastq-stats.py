@@ -177,9 +177,9 @@ def Draw_box_plot(table,out):
 	step = float(size_y_exe)/42
 	j = 0
 	for values in range(42,-1,-1):
-		#pos = str(values+1)
+		
 		draw.line(((a,20+abs(values-42)*step) + (a-4,20+abs(values-42)*step)), fill=(0, 0, 0, 0), width=1)
-		#draw.text((a-8,20+values*step) + (a-8,20+values*step), pos, font=fnt1, fill=(0,0,0,0))
+		
 		if values%5 == 0:
 	
 			draw.line(((a,20+abs(values-42)*step) + (a-6,20+abs(values-42)*step)), fill=(0, 0, 0, 0), width=1)
@@ -208,6 +208,10 @@ def Draw_box_plot(table,out):
 		beg = float(position[1]) * step
 		end = float(position[-1]) * step
 		draw.line(((i, position_y_exe-beg) + (i, position_y_exe-end)), fill=(0, 0, 0, 0), width=1)
+		#Close the whiskers
+		draw.line(((i-1, position_y_exe-beg)+(i+1, position_y_exe-beg)),fill=(0, 0, 0, 0), width=1)
+		draw.line(((i-1, position_y_exe-end)+(i+1, position_y_exe-end)),fill=(0, 0, 0, 0), width=1)
+
 
 		#Create the boxplot 
 		beg = float(position[2]) * step
@@ -222,9 +226,9 @@ def Draw_box_plot(table,out):
 		i +=10
 
 	#Axes draw:
-	x_name = "Position(bp)"
+	x_name = "Position (bp)"
 	draw.text((size_x_exe/2, position_y_exe+35), x_name , font=fnt1, fill=(0,0,0,0)) #Horizontal
-	y_name ="Quality(phred)"
+	y_name ="Quality (phred)"
 
 
 
@@ -233,7 +237,7 @@ def Draw_box_plot(table,out):
 
 	label = Image.new("RGB", (140, 20), (255,255,255))
 	draw2 = ImageDraw.Draw(label)
-	draw2.text((1, 1), "Quality(phred)", font=fnt1, fill=(0,0,0))
+	draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
 
 	label = label.rotate(90)
 	im.paste(label, (2,size_y_exe/2-50))
