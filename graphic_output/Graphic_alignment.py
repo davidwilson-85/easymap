@@ -36,7 +36,7 @@ def read_file(f):
 
 
 def draw(dic,sort_positions,out):
-	fnt1 = ImageFont.truetype('../fonts/VeraMono.ttf', 14)
+	fnt1 = ImageFont.truetype('./fonts/VeraMono.ttf', 14)
 	group = 2
 	#Size of the window
 	a = 80 #right width space
@@ -86,6 +86,7 @@ def draw(dic,sort_positions,out):
 	#Horizontal values
 	step = size_x_window/120
 	for values in range(121):
+		
 		draw.line(((c+values*step, size_y_window+b) + (c+values*step, size_y_window+4+b)), fill=(0, 0, 0, 0), width=1)
 		if values%10 == 0:
 			draw.line(((c+values*step, size_y_window+b) + (c+values*step, size_y_window+6+b)), fill=(0, 0, 0, 0), width=1)
@@ -109,11 +110,13 @@ def draw(dic,sort_positions,out):
 	for i in order:
 		x_coverage= sort_positions[i]
 		y_proportion = dic[x_coverage]
-
-	
+##OJOOO
+		if c+sort_positions[i+1]*step > c+size_x_window: #When the line is bigger than the right site of the window
+			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+size_x_window, size_y_window+b-dic[sort_positions[i+1]]*step2)))
+			break
 		try:
 			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+sort_positions[i+1]*step,  size_y_window+b-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
-		except:
+		except: #if there is no next i
 			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+x_coverage*step, size_y_window+b-y_proportion*step2)))
 # X en try y except tenia -3 despues de step, asi como draw.line de debajo de draw.line
 	im.save(out)

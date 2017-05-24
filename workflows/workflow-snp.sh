@@ -312,7 +312,7 @@ echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_f
 
 
 {
-$location/samtools1/samtools depth -a  $f1/alignment1P.sam > $f1/coverage1P.txt
+$location/samtools1/samtools depth -a  $f1/alignment1P.bam > $f1/coverage1P.txt
 } || {
 	echo $(date) ': Error during obtation of alignment depth in samtools in control .' >> $my_log_file
 	#exit_code=1
