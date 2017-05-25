@@ -105,8 +105,8 @@ def draw(dic,sort_positions,out):
 	im.paste(label, (2,size_y_window/2+c-80))
 
 	#Graph draw
-	draw.line(((a, size_y_window+b),(c+sort_positions[0]*step,  size_y_window+b)), fill=(0, 0, 0, 0), width=1)
-	draw.line(((c+sort_positions[0]*step,  size_y_window+b),(c+sort_positions[0]*step-3,  size_y_window+b-dic[sort_positions[1]]*step2)), fill=(0, 0, 0, 0), width=1)
+	#draw.line(((a, size_y_window+b),(c+sort_positions[0]*step,  size_y_window+b)), fill=(0, 0, 0, 0), width=1)
+	draw.line(((c+sort_positions[0]*step,  size_y_window+b),(c+sort_positions[0]*step,  size_y_window+b-dic[sort_positions[1]]*step2)), fill=(0, 0, 0, 0), width=1)
 	for i in order:
 		x_coverage= sort_positions[i]
 		y_proportion = dic[x_coverage]
