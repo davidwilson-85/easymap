@@ -217,7 +217,7 @@ while iter1 < nbr_haploid_recombinants:
 		
 		# Create a radom number and compare it to the XO frequency table of the user-chosen chr 
 		# The XO frequency table represents the frequency of each number of XOs in a chromosome
-		# By comparing a series of random numbers with this table, it can be created a series of XOs
+		# By comparing a series of random numbers with this table, a series of XOs can be created 
 		# numbers that follow exactly the real frequencies
 		
 		rand_nbr = randint(1, 100) # 100 different options (values 1 and 100 are included)
