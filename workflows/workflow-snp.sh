@@ -194,16 +194,16 @@ echo $(date) ': First VCF filtering step of F2 data finished.' >> $my_log_file
 
 
 {
-$location/samtools1/samtools depth -a  $f1/alignment1.bam > $f1/coverage1.txt
+python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt
 } || {
-	echo $(date) ': Error during obtation of alignment depth in samtools in samples.' >> $my_log_file
+	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
 	#exit_code=1
 	#echo $exit_code
 	#exit
 }
 
 {
-python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage1.txt   -out $f3/frequency_depth_alignment_distribution_sample.png 
+python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequency_depth_alignment_distribution_sample.png 
 } || {
 	echo $(date) ': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
 	#exit_code=1
@@ -312,16 +312,15 @@ echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_f
 
 
 {
-$location/samtools1/samtools depth -a  $f1/alignment1P.bam > $f1/coverage1P.txt
+python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt
 } || {
-	echo $(date) ': Error during obtation of alignment depth in samtools in control .' >> $my_log_file
+	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
 	#exit_code=1
 	#echo $exit_code
 	#exit
 }
-
 {
-python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage1P.txt   -out $f3/frequency_depth_alignment_distribution_control.png 
+python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt -out $f3/frequency_depth_alignment_distribution_control.png 
 } || {
 	echo $(date) ': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
 	#exit_code=1

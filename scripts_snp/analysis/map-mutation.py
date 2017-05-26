@@ -1,19 +1,23 @@
 #!/usr/bin/python
-#Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. The script can take as input three different situations,
-# a backcross, an outcross when the mutated ecotype is not in the reference background and an outcross when the mutated ecotype is in the reference background.
+#Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. 
+#The script can take as input different situations: Parental as a control--> backcross and outcross; in a reference background or not
+#WTF2 as control--> backcross, in reference background or not.
 
-
+#This script is prepared to be useed in Linux
 
 ##Arguments:
 	#"fichero" which is the file that comes as an input.
 	#"output" refers to the name of the output file is going to be generated.
-	#"window_size" it is a number which indicates the size of the windows that will be created in order to generate allele frequencies averages
-	#"window_space" number which indicates the space between the number which is in the middle of a window
+	#"window_size" it is a number which indicates the size of the windows that will be created in order to generate allele frequencies averages (bp)
+	#"window_space" number which indicates the space between the number which is in the middle of a window (bp)
 	#"fasta" corresponds to the fasta file from which the input has been obtained
-	#"mode" can be back meaning backcross or out meaning outcross
-	#"width" . . . 
-	#"parental_modality" takes as values ref and noref, meaning if the line sequenced is from the reference background or not.
-	#"filtering_mode" . . . 
+	#"mode" "back" meaning backcross or "out" meaning outcross
+	#"interval_width" When the most likely position is chosen, width increse the interval. 
+	#"control_modality" takes as values ref and noref, meaning if the line sequenced is from the reference background or not.
+	#"snp_analysis_type" It referes to the control used, can be a parental (par) or a F2WT bulk (f2wt)
+
+#Example of use: python map-mutation.py -fichero name_of_va_file -output name_of_output -window_space 500000 -window_space 250000 -fasta genome_used.fa -mode out -interval_width 1000000 -control_modality noref -snp_analysis_type par
+
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-fichero', action="store", dest = 'input', required = "True")
@@ -25,11 +29,13 @@ parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-interval_width', action="store", dest = 'interval_width', required = "True") 
 parser.add_argument('-control_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
 parser.add_argument('-snp_analysis_type', action='store', dest = 'control', required = "True") #Depending on which control is being used: par, f2wt
+parser.add_argument('-known_mutation', action="store",default = 'n/p', dest = 'mut1' )  #NUEVO
 
 
 args = parser.parse_args()
 
 
+#Different parameters are taken from the shell
 
 fasta_input = args.fasta_input
 size = int(args.size)
@@ -40,10 +46,14 @@ result= open( output ,"w")
 modality = args.modality
 interval_width = int(args.interval_width)
 control = args.control
-if mode == "back":
+if mode == "back": #The analysis modaliity doesn't vary if a backcross is being analyzed
 	modality = "n"
 result.write("if outcross:\n-@ lines: window, average, boost, chromosome\n-! line: min_max_window, max_max_window, max_boost, chromosome\n-? lines: chromosome, min_big_window, max_big_window\n-* lines: chromosome, min_window, max_window, boost_value\nif backcross:\n-@ line: window, average, chromosome\n-! line: min_window. max_window, max_average, chromosome\n-? line: chromosome, min_big_window, max_big_window\n-* line: chormosome, min_window, max_window, average\nif control is F2 WT\n-@ lines: window, ratio, chromosome\n-! line: min_max_window, max_max_window, max_ratio, chromosome\n-? lines: chromosome, min_big_window, max_big_window\n-* lines: chromosome, min_window, max_window, ratio\n")
 result.close()
+
+mut1 = "no"
+if args.mut1 != "n/p":
+	mut1 = args.mut1
 
 #Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored] 
 def getinfo(chro, inpu):
@@ -68,8 +78,9 @@ def calculation_average(li):
 	return average_list
 #From the dictionary generated in getinfo, knowing the chromosome and its lenght, the function generates windows according to the parameters size and space between them.
 def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality, control): 
+	#Depending on whether we are dealing with ref or noref outcross the SNPs are filtered according to an AF.
 	if modality == "ref":
-		c = 0.7
+		c = 0.7 
 	elif modality == "noref" or "n": #if we are dealing with a backcross, eventhough it is in the ref background we are looking for high AF SNP, that's why modality is n
 		c = 0.3	
 	windowsize = float(size)
@@ -87,7 +98,7 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 		for key in SNP:	
 			s = float(key)											
 		 	if s >= a and s <b:		 
-				if control == "par":
+				if control == "par":	#If the control used is parental, only one AF is calculated and no AF filter is used
 					AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1]))	
 					if c == 0.7 and AF < c:
 						snps_window.append(AF)
@@ -95,10 +106,10 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 			 			snps_window.append(AF)
 				elif control == "f2wt":
 					AF = float(SNP[key][-3])/(float(SNP[key][-3])+ float(SNP[key][-4]))
-					AFwt = float(SNP[key][-1])/(float(SNP[key][-2])+ float(SNP[key][-1]))
+					AFwt = float(SNP[key][-1])/(float(SNP[key][-2])+ float(SNP[key][-1])) #Two AF are calculated for both F2WT and F2 non-WT
 					snps_window.append(AF)
 					snps_window2.append(AFwt)
-		if len(snps_window) != 0:
+		if len(snps_window) != 0: #if snps have passed the threshold
 			if control == "par":										
 				average_FA = calculation_average(snps_window)
 				dictionary_windows[i] = []
@@ -110,7 +121,7 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 				dictionary_windows[i].append(average_FA)
 				dictionary_windows[i].append(average_FA_WT)
 		elif len(snps_window) == 0 and modality == "ref" and control == "par" :  #in the modality outcross of mutant in the reference background, it is possible that a window will not contain any SNP. We will suppose a value near 0.
-			average_FA = 0.01	
+			average_FA = 0.01	#Not 0 since later on a division will be made
 			dictionary_windows[i] = []
 			dictionary_windows[i].append(average_FA)                       
 		i += windowspace
@@ -137,7 +148,7 @@ def union_points(windows):
 
 #Data function is different for a backcross or an outcross. This function stores the windows and their attributes boost and average in a file.
 #It also saves different values that will be used later for further processiong of the data, as the chromosome with the higher attribute, its value or the dictionary of positions of that chromosome
-def data_analysis(window, position, chromosome, maximum_position, best_parameter, best_chromosome,best_dictionary, size, mode, control):  
+def data_analysis(window, position, chromosome, maximum_position, best_parameter, best_chromosome,best_dictionary, size, mode, control,mut1):  
 	result= open(output ,"a")
 	dictionary ={} 
 	for items in position:			
@@ -160,13 +171,20 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 			dictionary[items] = ratio
 			result.write("@	"+str(items)+ "\t"+ str(ratio) + "\t" + str(chromosome) + "\n")
 
+		if mut1 == "n/p": #If there is an already known mutation
+			no_ch = mut1.split("-")[0]
+			no_pos = int(mut1.split("-")[1])
+			if chromosome == no_ch and no_pos + 1000 > items and no_pos-1000 < items: #The chromosome we are analyzing is the one were the mutation is and the position of the window is close to the already known mutation
+				pass #Then those values are not considered for the best_parameter calculation
+
 		if best_parameter == "n/p" or float(parameter) > float(best_parameter):
-			maximum_position = []
-			items = float(items)
-			maximum_position.append(items - size/2)
-			maximum_position.append(items + size/2)
-			best_chromosome = chromosome
-			best_parameter = parameter
+				maximum_position = []
+				items = float(items)
+				maximum_position.append(items - size/2)
+				maximum_position.append(items + size/2)
+				best_chromosome = chromosome
+				best_parameter = parameter
+
 	if chromosome == best_chromosome: 		
 		if mode == "out" or control == "f2wt":
 			best_dictionary= dictionary
@@ -274,20 +292,12 @@ for chromosome in ch:
 		windows= threshold_step(windows, mini_average, maxi_average) 
 	x_value= union_points(windows)
 	if z == 0:
-		result_data = data_analysis(windows, x_value, chromosome, "n/p", "n/p", "n/p", "n/p", size, mode, control)
+		result_data = data_analysis(windows, x_value, chromosome, "n/p", "n/p", "n/p", "n/p", size, mode, control,mut1)
 		best = result_data[1]
 		maximum_position = result_data[0]
 		best_chromosome = result_data[2]
 		best_dictionary = result_data[3]
 	else:
-		result_data = data_analysis(windows, x_value, chromosome,maximum_position,best, best_chromosome, best_dictionary, size, mode, control)
+		result_data = data_analysis(windows, x_value, chromosome,maximum_position,best, best_chromosome, best_dictionary, size, mode, control,mut1)
 	z += 1
 final_processing(result_data, interval_width)
-
-
-		
-
-
-
-
-

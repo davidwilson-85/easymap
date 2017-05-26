@@ -14,8 +14,9 @@ from subprocess import call
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--project_name', "-P", action="store", dest = 'project_name', required = "True")
-parser.add_argument('--workflow', "-w" ,action="store", dest = 'workflow', choices=set(('snp','ins')), required = "True")
+parser.add_argument('--usage', "-u",action='store_true',dest = 'usage')
+parser.add_argument('--project_name', "-P", action="store",default= '', dest = 'project_name')
+parser.add_argument('--workflow', "-w" ,action="store", dest = 'workflow', choices=set(('snp','ins')))
 parser.add_argument('--data_source', "-d", action="store",default = 'exp', dest = 'data_source', choices=set(('sim','exp'))) #Not required anymore
 #parser.add_argument('--lib_type_sample', "-l", action="store", dest = 'lib_type_sample', choices=set(('se','pe')), required = "True")
 #parser.add_argument('--ref_seqs', "-rs", action="store", dest = 'ref_seqs', required = "True") 
@@ -39,8 +40,19 @@ parser.add_argument('--parental_used_as_control', "-p", action="store",default =
 
 args = parser.parse_args()
 
-project_name = args.project_name
-workflow = args.workflow
+if args.usage:
+	print "help............"
+	quit()
+if args.project_name == False:
+	project_name = ""
+else: project_name = args.project_name
+
+if args.workflow == False:
+	print "Please specify whether the project carried out is a snp or ins (insertion) analysis"
+	quit()
+else: workflow = args.workflow
+
+
 data_source = args.data_source
 #lib_type_sample = args.lib_type_sample
 ins_seq = args.ins_seq

@@ -81,7 +81,7 @@ for chr in ch:
 		af_mut = int(af_mut * 1000)
 		af_wt = int(af_wt * 1000)
 		
-		if not af_mut in range((af_wt - 200), (af_wt + 200)): 
+		if not af_mut in range((af_wt - 300), (af_wt + 300)): 
 			f3.write( str(chr) + '\t' + str(i) + '\t' + str(dic_mut[i][0]) +'\t' +  str(dic_mut[i][1]) +'\t' +  str(dic_mut[i][2]) + '\t' + str(dic_mut[i][3]) + '\t' + str(dic_mut[i][4]) + '\t' + str(dic_wt[i][3]) +'\t' +  str(dic_wt[i][4]) + '\n')
 			
 			

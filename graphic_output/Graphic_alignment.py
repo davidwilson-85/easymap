@@ -78,7 +78,8 @@ def draw(dic,sort_positions,out):
 		if values%10 == 0:
 			draw.line(((a,b+abs(values-100)*step) + (a-6,b+abs(values-100)*step)), fill=(0, 0, 0, 0), width=1) 
 			write = str(float(values * v))
-			write = write[:3]
+			w = write.split(".")
+			write = str(w[0])+"."+str(w[1][0])
 
 			draw.text((a-40,b+abs(values-100)*step-5), str(write), font=fnt1, fill=(0,0,0,0))
 
@@ -106,17 +107,18 @@ def draw(dic,sort_positions,out):
 
 	#Graph draw
 	#draw.line(((a, size_y_window+b),(c+sort_positions[0]*step,  size_y_window+b)), fill=(0, 0, 0, 0), width=1)
-	draw.line(((c+sort_positions[0]*step,  size_y_window+b),(c+sort_positions[0]*step,  size_y_window+b-dic[sort_positions[1]]*step2)), fill=(0, 0, 0, 0), width=1)
+	draw.line(((c+sort_positions[0]*step,  size_y_window+b),(c+sort_positions[0]*step,  size_y_window+b-dic[sort_positions[0]]*step2)), fill=(0, 0, 0, 0), width=1)
+	draw.line(((c+sort_positions[-1]*step,  size_y_window+b),(c+sort_positions[-1]*step,  size_y_window+b-dic[sort_positions[-1]]*step2)), fill=(0, 0, 0, 0), width=1)
 	for i in order:
 		x_coverage= sort_positions[i]
 		y_proportion = dic[x_coverage]
 ##OJOOO
 		try:
 			if c+sort_positions[i+1]*step > c+size_x_window: #When the line is bigger than the right site of the window
-				draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+size_x_window, size_y_window+b-dic[sort_positions[i+1]]*step2)))
+				draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+size_x_window-1, size_y_window+b-dic[sort_positions[i+1]]*step2)))
 				break
-			else:
-				draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+sort_positions[i+1]*step,  size_y_window+b-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
+			#else:
+			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+sort_positions[i+1]*step,  size_y_window+b-dic[sort_positions[i+1]]*step2)), fill=(0, 0, 0, 0), width=1)
 		except: #if there is no next i
 			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+x_coverage*step, size_y_window+b-y_proportion*step2)))
 # X en try y except tenia -3 despues de step, asi como draw.line de debajo de draw.line
@@ -129,3 +131,5 @@ def draw(dic,sort_positions,out):
 cov = args.cov
 file_data = read_file(cov)
 draw(file_data[0],file_data[1],args.out)
+
+ 
