@@ -102,48 +102,59 @@ is_ref_strain=${10}
 parental_genome_to_sequence=${11}
 
 
-
 # Simulate data for $analisys_type=ins
-if [ $analysis_type == 'ins' ]
-then
+if [ $analysis_type == 'ins' ]; then
+	# Run sim-mut.py
 	{
-		# Run sim-mut.py
-		{
-			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain
-	
-		} || {
-			echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
-			exit_code=1
-			echo exit_code
-			exit
-		}
-		echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
-		
-		# Run sim-seq.py. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
-		{
-			python simulator/sim-seq.py -if $sim_mut_output_folder_mutantstrain/mutated_genome -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
-	
-		} || {
-			echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
-			exit_code=1
-			echo exit_code
-			exit
-		}
-		echo $(date)": Simulation of high-throughput sequencing completed." >> $my_log_file
+		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain
+
+	} || {
+		echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
+		exit_code=1
+		echo exit_code
+		exit
 	}
+	echo $(date)": Simulation of mutagenesis completed." >> $my_log_file
+	
+	# Run sim-seq.py. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
+	{
+		python simulator/sim-seq.py -if $sim_mut_output_folder_mutantstrain/mutated_genome -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+
+	} || {
+		echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
+		exit_code=1
+		echo exit_code
+		exit
+	}
+	echo $(date)": Simulation of high-throughput sequencing completed." >> $my_log_file
 fi
 
 
 # Simulate data for $analisys_type=snp
 if [ $analysis_type == 'snp' ]; then
-	
+
+	# Calculate genome length to know how many natural SNPs to introduce
+	{
+		genome_length=`python simulator/calculate-genome-length.py -gnm $ref_seqs_merged_file`
+
+	} || {
+		echo $(date)": simulator/calculate-genome-length.py failed. Quit." >> $my_log_file
+		exit_code=1; echo exit_code; exit
+	}
+	echo $(date)": simulator/calculate-genome-length.py finished." >> $my_log_file
+
+	# Calculate how many natural SNPs to introduce in the ref-lab and the noref-lab strains.
+	# The amount is based on observed natural mutations between NCBI reference sequence and
+	#	- Columbia-0 (reference strain): 0.001% bases of the genome contain an SNP
+	#	- Landsberg (non-reference strain): 0.42% bases of the genome contain an SNP
+	nbr_natural_mutations_ref=`python -c "print(int(round($genome_length * 0.000010084)))"`
+	nbr_natural_mutations_noref=`python -c "print(int(round($genome_length * 0.0042016807)))"`
+
 	# Using as input the reference sequence provided by user, simulate ref-lab and noref-lab sequences 
 	
-	# Run sim-mut.py to create ref-lab strain. Mutate only 0.001% of bases.
+	# Run sim-mut.py to create ref-lab strain. Mutate 0.001% of bases.
 	{
-		####################################
-		################################ > <
-		python simulator/sim-mut.py -nbr 250 -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_ref_lab
+		python simulator/sim-mut.py -nbr $nbr_natural_mutations_ref -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_ref_lab
 
 	} || {
 		echo $(date)": Simulation of mutagenesis to ref-lab strain failed. Quit." >> $my_log_file
@@ -155,9 +166,7 @@ if [ $analysis_type == 'snp' ]; then
 
 	# Run sim-mut.py to create noref-lab strain. Mutate only 0.4% of bases.
 	{
-		####################################
-		################################ >    <
-		python simulator/sim-mut.py -nbr 100000 -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_noref_lab
+		python simulator/sim-mut.py -nbr $nbr_natural_mutations_noref -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_noref_lab
 
 	} || {
 		echo $(date)": Simulation of mutagenesis to noref-lab strain failed. Quit." >> $my_log_file
@@ -195,13 +204,13 @@ if [ $analysis_type == 'snp' ]; then
 	
 	# Define locations of polymorphic samples
 	if [ $snp_control == 'par' ]; then
-		if [ $is_ref_strain == 'ref' && $cross_type == 'bc' ]; then
+		if [ $is_ref_strain == 'ref' ] && [ $cross_type == 'bc' ]; then
 			parpol_sample=$sim_mut_output_folder_ref_lab/mutated_genome/mutated_genome.fa
-		elif [ $is_ref_strain == 'ref' && $cross_type == 'oc' ]; then
+		elif [ $is_ref_strain == 'ref' ] && [ $cross_type == 'oc' ]; then
 			parpol_sample=$sim_mut_output_folder_noref_lab/mutated_genome/mutated_genome.fa
-		elif [ $is_ref_strain == 'noref' && $cross_type == 'bc' ]; then
+		elif [ $is_ref_strain == 'noref' ] && [ $cross_type == 'bc' ]; then
 			parpol_sample=$sim_mut_output_folder_noref_lab/mutated_genome/mutated_genome.fa
-		elif [ $is_ref_strain == 'noref' && $cross_type == 'oc' ]; then
+		elif [ $is_ref_strain == 'noref' ] && [ $cross_type == 'oc' ]; then
 			parpol_sample=$sim_mut_output_folder_ref_lab/mutated_genome/mutated_genome.fa
 		fi
 		
@@ -246,14 +255,14 @@ if [ $analysis_type == 'snp' ]; then
 	
 	# Simulate reads from the sample and the control templates
 	if [ $snp_control == 'par' ]; then
-		if [ $is_ref_strain ='ref' && $parental_genome_to_sequence == 'mut']; then
-			input_folder_control=$sim_mut_output_folder_ref_lab/mutated_genome/mutated_genome.fa
-		elif [ $is_ref_strain ='ref' && $parental_genome_to_sequence == 'nomut']; then
-			input_folder_control=$sim_mut_output_folder_noref_lab/mutated_genome/mutated_genome.fa
-		elif [ $is_ref_strain ='noref' && $parental_genome_to_sequence == 'mut']; then
-			input_folder_control=$sim_mut_output_folder_noref_lab/mutated_genome/mutated_genome.fa
-		elif [ $is_ref_strain ='noref' && $parental_genome_to_sequence == 'nomut']; then
-			input_folder_control=$sim_mut_output_folder_ref_lab/mutated_genome/mutated_genome.fa
+		if [ $is_ref_strain == 'ref' ] && [ $parental_genome_to_sequence == 'mut' ]; then
+			input_folder_control=$sim_mut_output_folder_ref_lab/mutated_genome
+		elif [ $is_ref_strain == 'ref' ] && [ $parental_genome_to_sequence == 'nomut' ]; then
+			input_folder_control=$sim_mut_output_folder_noref_lab/mutated_genome
+		elif [ $is_ref_strain == 'noref' ] && [ $parental_genome_to_sequence == 'mut' ]; then
+			input_folder_control=$sim_mut_output_folder_noref_lab/mutated_genome
+		elif [ $is_ref_strain == 'noref' ] && [ $parental_genome_to_sequence == 'nomut' ]; then
+			input_folder_control=$sim_mut_output_folder_ref_lab/mutated_genome
 		fi
 	else #f2wt
 		input_folder_control=$sim_recsel_output_folder_dominant
