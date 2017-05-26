@@ -29,7 +29,7 @@ parser.add_argument('--ann_file', "-a", action="store",default = 'n/p', dest = '
 parser.add_argument('--sim_mut', "-sm", action="store",default = 'n/p', dest = 'sim_mut')
 parser.add_argument('--sim_recsel',"-sr", action="store", default = 'n/p', dest = 'sim_recsel')
 parser.add_argument('--sim_seq', "-ss", action="store", default = 'n/p', dest = 'sim_seq')
-parser.add_argument ("--control_type","-t", action="store",dest ="control_type", choices=set(("par_mut,par_nomut","f2wt")))
+parser.add_argument ("--control_type","-t", action="store",dest ="control_type", choices=set(("par_mut","par_nomut","f2wt")))
 parser.add_argument('--reads_control',"-C", action="store",default = 'n/p', dest = 'reads_control')
 #parser.add_argument('--read_f_control', "-E", action="store",default = 'n/p', dest = 'read_f_control')
 #parser.add_argument('--read_r_control', "-F", action="store",default = 'n/p', dest = 'read_r_control')
@@ -64,7 +64,7 @@ sim_mut = args.sim_mut
 sim_recsel = args.sim_recsel
 sim_seq = args.sim_seq
 control_type = args.control_type #Which control is being used: parental one or F2wt?
-
+cross_type = args.cross_type
 reads_control = args.reads_control
 is_ref_strain = args.is_ref_strain
 read_s = "n/p"
@@ -119,7 +119,7 @@ if ann_file != "n/p":
 if workflow=="snp":
 	
 	if control_type == "f2wt": snp_analysis_type = "f2wt"
-	else: is_ref_strain = control_type.split("_")[1]
+	else: parental_used_as_control = control_type.split("_")[1]; snp_analysis_type = control_type.split("_")[0]
 
 	if snp_analysis_type == "f2wt":
 		if cross_type == "oc":
