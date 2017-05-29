@@ -212,7 +212,7 @@ then
 
 				# Run sim-recsel.py to create recombinant chromosomes 
 				{
-					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $ref_seqs_merged_file -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $ref_seqs_merged_file -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 				
 				} || {
 					echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
@@ -274,7 +274,7 @@ then
 	
 				# Run sim-recsel.py
 				{
-					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $outcross_polymorphic_parental -mutapos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+					python simulator/sim-recsel.py -outdir $sim_recsel_output_folder -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $outcross_polymorphic_parental -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 				
 				} || {
 					echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
@@ -384,7 +384,7 @@ then
 		
 		# Run sim-recsel.py to create recombinant chromosomes from the recessive phenotypic class 
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder/recessive_class -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $sim_mut_output_folder_polymorphicstrain/mutated_genome/mutated_genome.fa -mutapos $mut_pos -smod r -nrec $nbr_rec_chrs
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder/recessive_class -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $sim_mut_output_folder_polymorphicstrain/mutated_genome/mutated_genome.fa -mutpos $mut_pos -smod r -nrec $nbr_rec_chrs
 			
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection of the recessive phenotypic class failed. Quit." >> $my_log_file
@@ -396,7 +396,7 @@ then
 		
 		# Run sim-recsel.py to create recombinant chromosomes from the dominant phenotypic class 
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder/dominant_class -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $sim_mut_output_folder_polymorphicstrain/mutated_genome/mutated_genome.fa -mutapos $mut_pos -smod wt -nrec $nbr_rec_chrs
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder/dominant_class -rec_freq_distr $rec_freq_distr -parmut $sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa -parpol $sim_mut_output_folder_polymorphicstrain/mutated_genome/mutated_genome.fa -mutpos $mut_pos -smod wt -nrec $nbr_rec_chrs
 			
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection of the dominant phenotypic class failed. Quit." >> $my_log_file

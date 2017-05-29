@@ -54,8 +54,8 @@ parser.add_argument('-outdir', action="store", dest='out_dir', required=True)
 parser.add_argument('-rec_freq_distr', action ="store", dest = "rec_freq_distr", required = True)
 parser.add_argument('-parmut', action="store", dest='parental_a_mutant', required=True) #mutated genome
 parser.add_argument('-parpol', action="store", dest='parental_b_polymorphic', required=True) #polymorphic genome
-parser.add_argument('-mutapos', action="store", dest='mut_a_pos',type=str ,required=True)
-parser.add_argument('-mutbpos', action="store", dest='mut_b_pos', type=str)
+parser.add_argument('-mutpos', action="store", dest='mut_pos',type=str ,required=True)
+#parser.add_argument('-mutbpos', action="store", dest='mut_b_pos', type=str)
 parser.add_argument('-smod', action="store", dest='selection_mode',
 required=True, choices=set(('r','d','di','dr','wt'))) #Choose between... These 4 options are avaiable for the standalone program, but easymap only accepts 'r' and 'd' for now.
 parser.add_argument('-nrec', action="store", dest='nbr_rec_chrs', type=int, required=True)
@@ -65,12 +65,13 @@ out_dir = args.out_dir
 rfd = args.rec_freq_distr
 parental_a_mutant = args.parental_a_mutant
 parental_b_polymorphic = args.parental_b_polymorphic
-mut_a = args.mut_a_pos.split(",")
+mut_a = args.mut_pos.split("-")[0].split(",")
 mut_a_chrom = int(mut_a[0])
 mut_a_pos = int(mut_a[1])
 selection_mode = args.selection_mode # "r" = recessive, "d" = dominant mt-phe, "di" = dominant wt-phe, "dr" = double recessive
 if selection_mode == "dr":
-	mut_b = args.mut_b_pos.split(",")
+	mut_b =  args.mut_pos.split("-")[1].split(",")
+	#mut_b = args.mut_b_pos.split(",")
 	mut_chrom = int(mut_b[0])
 	mut_b_pos = int(mut_b[1])
 nbr_haploid_recombinants = args.nbr_rec_chrs

@@ -48,8 +48,24 @@ contig_source = args.contig_source
 insertion_source = args.insertion_source
 output_folder = args.output
 if args.causal_mut != None:
-	causal_mut_position = int(args.causal_mut.split(",")[1]) -1 
-	causal_mut_chromosome = int(args.causal_mut.split(",")[0])
+	causal_mut_splitted = args.causal_mut.split(",")
+
+	if len(causal_mut_splitted) == 2:
+		causal_mut_position = int(causal_mut_splitted[1]) -1 
+		causal_mut_chromosome = int(causal_mut_splitted[0])
+	else: 
+		causal_mut_s = args.causal_mut.split("-") 
+		n = 0
+		for mutation in causal_mut_s:
+			causal_mut_splitted = mutation.split(",")
+			if n == 0:
+				causal_mut_position = int(causal_mut_splitted[1]) -1 
+				causal_mut_chromosome = int(causal_mut_splitted[0])
+			else:
+				causal_mut2_position = int(causal_mut_splitted[1]) -1 
+				causal_mut2_chromosome = int(causal_mut_splitted[0])
+			n +=1
+
 
 if mutator_mode == 'li' and insertion_source is None:
 	quit('Quit. Selected mode is "large insertions" but no insertion sequence source was provided. See program description.')		
@@ -187,6 +203,19 @@ for chromosome in contigs:
 					if wt_base == 'G' or wt_base == 'C':
 						all_mut_pos.append(causal_mut_position+iter-1)
 						break
+		if len(args.causal_mut.split(",")) > 2:
+			if n_chrom+1 == causal_mut2_chromosome and causal_mut2_position not in all_mut_pos:
+				if mutator_mode == "d" or mutator_mode == "li":
+					all_mut_pos.append(causal_mut2_position)
+				if mutator_mode =="e":
+					iter = 0
+					while True:
+						wt_base = seq_contig_uppercase[causal_mut2_position+iter:causal_mut2_position+iter+1]
+						iter +=1
+						if wt_base == 'G' or wt_base == 'C':
+							all_mut_pos.append(causal_mut2_position+iter-1)
+							break
+
 
 	all_mut_pos.sort()
 

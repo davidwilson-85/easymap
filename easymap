@@ -211,11 +211,11 @@ if data_source == "sim":
 						v = v.split(",")
 						if len(v) != 2 or not v[0] or not v[1] : error = 1, problems.append("One or more than one of the values you supplied as recombination frequences for sim_recsel input in simulator does not contain the two required values 2,50 being 2 the number of events of recombination and 50 the probability of happening.") 
 						if not v[1]: error =1
-						if not v[0]: error =1 
-				val1 = values[1].split(",")
-				int(val1[0])  
-				int(val1[1])
-				options = ["r", "d"] #MIRAR QUE VALORES PUEDEN SER
+						if not v[0]: error =1 			
+				val = values[1].split("-")
+				for mutations in val: val1= mutations.split(",");int(val1[0]);int(val1[1])
+				
+				options = ["r", "d","dr"] #MIRAR QUE VALORES PUEDEN SER
 				if values[2] not in options:
 					error = 1
 					problems.append("Please, choose a valid selection mode in sim_recsel: < r > for recesive mutations or < d > dominant mutations.  Ex: recombination_frequences+mutant_chromosome,position_mutation+r/d")	
