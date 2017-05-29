@@ -1,7 +1,8 @@
 #######################################################################################
 #
-# This file lets machine administrator to set some configuration parameters
-# to keep web interface safe and control what users do.
+# This file lets machine administrator set some configuration parameters:
+# -Password to have access through http to easymap
+# -Users maximum memory usage
 #
 ####################################################################################### 
 
@@ -9,13 +10,14 @@
 
 web-interface-password:0000
 
-# Maximum number of bytes allowed in folder user_projects. Must be >= 0
-# If that maximum is reached, interface does not allow starting new projects
-# Only aplicable for the graphic interface version
+# Maximum number of bytes allowed in folder user_projects.
+# To make it unlimited, set it to 0. 
+# If the maximum is reached, easymap does not allow starting new projects
 
 user_projects-size-limit:20000000
 
-# Maximum number of simultaneos jobs that can be run. Must be >= 0
-# Only aplicable for the graphic interface version
+# Maximum number of simultaneos jobs that can be run.
+# To make it unlimited, set it to 0.
+# If the maximum is reached, easymap does not allow starting new projects
 
-max-simultaneous-jobs:5
+max-simultaneous-jobs:3

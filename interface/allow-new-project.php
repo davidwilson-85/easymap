@@ -45,12 +45,22 @@ while (!feof($config_contents)) {
 	
 	if ($fields[0] == 'user_projects-size-limit') {
 		$size_limit = trim($fields[1]);
-		$output1 = floor(($user_projects_size / $size_limit) * 100);
+		// If config files has "user_projects-size-limit:0", interpret it as unlimited
+		if ($size_limit == 0) {
+			$output1 = 1; // This simply tells javascript that user is using 1% (<100%) of the max allowed space
+		} else {
+			$output1 = floor(($user_projects_size / $size_limit) * 100);
+		}
 	}
 	
 	if ($fields[0] == 'max-simultaneous-jobs') {
 		$max_jobs = trim($fields[1]);
-		$output2 = floor(($num_running_projects / $max_jobs) * 100);
+		// If config files has "max-simultaneous-jobs:0", interpret it as unlimited
+		if ($max_jobs == 0) {
+			$output2 = 1; // This simply tell javascript that user is running 1% (<100%) of the max allowed simultaneous jobs
+		} else {
+			$output2 = floor(($num_running_projects / $max_jobs) * 100);
+		}
 	}
 } 
 
@@ -60,7 +70,7 @@ if (!isset($output1)) {
 	$output1 = 'user_projects-size-limit is not properly configured in config/config file';
 }
 if (!isset($output2)) {
-	$output1 = 'max-simultaneous-jobs is not properly configured in config/config file';
+	$output2 = 'max-simultaneous-jobs is not properly configured in config/config file';
 }
 
 echo $output1 .','. $output2 .','. $size_limit .','. $max_jobs;
