@@ -48,7 +48,7 @@ contig_source = args.contig_source
 insertion_source = args.insertion_source
 output_folder = args.output
 
-
+# Function to parse fasta file (based on one of the Biopython IOs)
 def read_fasta(fp):
 	name, seq = None, []
 	for line in fp:
@@ -68,34 +68,37 @@ with open(contig_source) as fp:
 		contig_length = len(seq)
 		genome_length.append(contig_length)
 
-enter = "positive"
-enter2 = "positive"
 if args.causal_mut != None:
+	causal_mut_split = args.causal_mut.split("-")
 
-	causal_mut_splitted = args.causal_mut.split(",")
-	if len(causal_mut_splitted) != len(genome_length):
-		enter = "negative"
+	if len(causal_mut_split) == 1:
+		causal_mut_split = args.causal_mut.split(",")
+		causal_mut_position = int(causal_mut_split[1]) -1 
+		causal_mut_chromosome = int(causal_mut_split[0])
+		try:
+		 	if genome_length[causal_mut_chromosome-1]<int(causal_mut_split[1]) -1: quit('Quit. Selected mutation is outside the size of the chosen contig.')
+		except: quit('Quit. Selected mutation is in a contig not found in fasta.')
+	elif len(causal_mut_split) == 2: 
+		causal_mut_s = args.causal_mut.split("-") 
+		n = 0
+		for mutation in causal_mut_s:
+			causal_mut_split = mutation.split(",")
+			if n == 0:
+				causal_mut_position = int(causal_mut_split[1]) -1 
+				causal_mut_chromosome = int(causal_mut_split[0])
+				try: 
+					if genome_length[causal_mut_chromosome]<int(causal_mut_split[1]) -1: quit('Quit. Selected mutation one is outside the size of the chosen contig.')
+				except: quit('Quit. Selected mutation one is in a contig not found in fasta.')		
+			else:
+				causal_mut2_position = int(causal_mut_split[1]) -1 
+				causal_mut2_chromosome = int(causal_mut_split[0])
+				try: 
+					if genome_length[causal_mut2_chromosome]<int(causal_mut_split[1]) -1: quit('Quit. Selected mutation two is outside the size of the chosen contig.')
+				except: quit('Quit. Selected mutation two is in a contig not found in fasta.')
+
+			n +=1
 	else:
-
-		if len(causal_mut_splitted) == 2:
-			causal_mut_position = int(causal_mut_splitted[1]) -1 
-			causal_mut_chromosome = int(causal_mut_splitted[0])
-			if genome_length[causal_mut_chromosome-1]<int(causal_mut_splitted[1]) -1:
-				enter = "negative" 
-		else: 
-			causal_mut_s = args.causal_mut.split("-") 
-			n = 0
-			for mutation in causal_mut_s:
-				causal_mut_splitted = mutation.split(",")
-				if n == 0:
-					causal_mut_position = int(causal_mut_splitted[1]) -1 
-					causal_mut_chromosome = int(causal_mut_splitted[0])
-					if genome_length[causal_mut_chromosome]<int(causal_mut_splitted[1]) -1: enter = "negative"
-				else:
-					causal_mut2_position = int(causal_mut_splitted[1]) -1 
-					causal_mut2_chromosome = int(causal_mut_splitted[0])
-					if genome_length[causal_mut_chromosome]<int(causal_mut_splitted[1]) -1: enter2 = "negative"
-				n +=1
+		quit("Quit. More than two causal motations were given.")
 
 
 if mutator_mode == 'li' and insertion_source is None:
@@ -126,17 +129,7 @@ os.makedirs(output_folder_seq)
 os.makedirs(output_folder_info)
 
 
-# Function to parse fasta file (based on one of the Biopython IOs)
-def read_fasta(fp):
-	name, seq = None, []
-	for line in fp:
-		line = line.rstrip()
-		if line.startswith('>'):
-			if name: yield (name, ''.join(seq))
-			name, seq = line, []
-		else:
-			seq.append(line)
-	if name: yield (name, ''.join(seq))
+
 
 
 # Function to divide a long string ('data') into chunks of defined length ('batch_size')
@@ -222,7 +215,7 @@ for chromosome in contigs:
 				if wt_base == 'G' or wt_base == 'C':
 					iter +=1
 					all_mut_pos.append(mut_pos)
-	if args.causal_mut != None and enter != "negative":				
+	if args.causal_mut != None:				
 		if n_chrom+1 == causal_mut_chromosome and causal_mut_position not in all_mut_pos:
 			if mutator_mode == "d" or mutator_mode == "li":
 				all_mut_pos.append(causal_mut_position)
@@ -234,7 +227,7 @@ for chromosome in contigs:
 					if wt_base == 'G' or wt_base == 'C':
 						all_mut_pos.append(causal_mut_position+iter-1)
 						break
-		if len(args.causal_mut.split(",")) > 2 and enter2 != "negative":
+		if len(args.causal_mut.split(",")) > 2:
 			if n_chrom+1 == causal_mut2_chromosome and causal_mut2_position not in all_mut_pos:
 				if mutator_mode == "d" or mutator_mode == "li":
 					all_mut_pos.append(causal_mut2_position)
