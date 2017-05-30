@@ -414,7 +414,7 @@ fi
 
 #Execute vcf analysis 
 {
-	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 250000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 
 } || {

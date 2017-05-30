@@ -47,24 +47,55 @@ mutator_mode = args.mutator_mode
 contig_source = args.contig_source
 insertion_source = args.insertion_source
 output_folder = args.output
-if args.causal_mut != None:
-	causal_mut_splitted = args.causal_mut.split(",")
 
-	if len(causal_mut_splitted) == 2:
-		causal_mut_position = int(causal_mut_splitted[1]) -1 
-		causal_mut_chromosome = int(causal_mut_splitted[0])
-	else: 
-		causal_mut_s = args.causal_mut.split("-") 
-		n = 0
-		for mutation in causal_mut_s:
-			causal_mut_splitted = mutation.split(",")
-			if n == 0:
-				causal_mut_position = int(causal_mut_splitted[1]) -1 
-				causal_mut_chromosome = int(causal_mut_splitted[0])
-			else:
-				causal_mut2_position = int(causal_mut_splitted[1]) -1 
-				causal_mut2_chromosome = int(causal_mut_splitted[0])
-			n +=1
+
+def read_fasta(fp):
+	name, seq = None, []
+	for line in fp:
+		line = line.rstrip()
+		if line.startswith('>'):
+			if name: yield (name, ''.join(seq))
+			name, seq = line, []
+		else:
+			seq.append(line)
+	if name: yield (name, ''.join(seq))
+
+
+# Read insertion fasta file
+with open(contig_source) as fp:
+	genome_length = []
+	for name, seq in read_fasta(fp):
+		contig_length = len(seq)
+		genome_length.append(contig_length)
+
+enter = "positive"
+enter2 = "positive"
+if args.causal_mut != None:
+
+	causal_mut_splitted = args.causal_mut.split(",")
+	if len(causal_mut_splitted) != len(genome_length):
+		enter = "negative"
+	else:
+
+		if len(causal_mut_splitted) == 2:
+			causal_mut_position = int(causal_mut_splitted[1]) -1 
+			causal_mut_chromosome = int(causal_mut_splitted[0])
+			if genome_length[causal_mut_chromosome-1]<int(causal_mut_splitted[1]) -1:
+				enter = "negative" 
+		else: 
+			causal_mut_s = args.causal_mut.split("-") 
+			n = 0
+			for mutation in causal_mut_s:
+				causal_mut_splitted = mutation.split(",")
+				if n == 0:
+					causal_mut_position = int(causal_mut_splitted[1]) -1 
+					causal_mut_chromosome = int(causal_mut_splitted[0])
+					if genome_length[causal_mut_chromosome]<int(causal_mut_splitted[1]) -1: enter = "negative"
+				else:
+					causal_mut2_position = int(causal_mut_splitted[1]) -1 
+					causal_mut2_chromosome = int(causal_mut_splitted[0])
+					if genome_length[causal_mut_chromosome]<int(causal_mut_splitted[1]) -1: enter2 = "negative"
+				n +=1
 
 
 if mutator_mode == 'li' and insertion_source is None:
@@ -191,7 +222,7 @@ for chromosome in contigs:
 				if wt_base == 'G' or wt_base == 'C':
 					iter +=1
 					all_mut_pos.append(mut_pos)
-	if args.causal_mut != None:				
+	if args.causal_mut != None and enter != "negative":				
 		if n_chrom+1 == causal_mut_chromosome and causal_mut_position not in all_mut_pos:
 			if mutator_mode == "d" or mutator_mode == "li":
 				all_mut_pos.append(causal_mut_position)
@@ -203,7 +234,7 @@ for chromosome in contigs:
 					if wt_base == 'G' or wt_base == 'C':
 						all_mut_pos.append(causal_mut_position+iter-1)
 						break
-		if len(args.causal_mut.split(",")) > 2:
+		if len(args.causal_mut.split(",")) > 2 and enter2 != "negative":
 			if n_chrom+1 == causal_mut2_chromosome and causal_mut2_position not in all_mut_pos:
 				if mutator_mode == "d" or mutator_mode == "li":
 					all_mut_pos.append(causal_mut2_position)

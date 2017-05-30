@@ -199,10 +199,10 @@ nbr_contigs = len(contig_parental_a)
 while iter1 < nbr_haploid_recombinants:
 	iter2 = 0
 	X_Os = []
-	start_parental = []
 	list_seq_parental_a = []
 	list_seq_parental_b = []
 	while iter2 < nbr_contigs:
+		#start_parental = []
 		list_seq_parental_a.append(contig_parental_a[iter2][1])
 		list_seq_parental_b.append(contig_parental_b[iter2][1])
 		chr_len = len(list_seq_parental_a[iter2])
@@ -227,7 +227,7 @@ while iter1 < nbr_haploid_recombinants:
 				nbr_crossovers = i[2] # This is the number of XOs the current rec chr will have 
 		# Randomly create the genomic position of each XO event
 		iter3 = 0
-		crossover_positions = list()
+		crossover_positions = []
 		while iter3 < nbr_crossovers:
 			crossover_positions.append(randint(1, chr_len))
 			iter3 +=1
@@ -237,11 +237,9 @@ while iter1 < nbr_haploid_recombinants:
 		crossover_positions.append(chr_len)
 		crossover_positions.sort()
 		X_Os.append(crossover_positions)
-		start_parental.append(starting_parental)
 		iter2 += 1
 	crossover_positions_t = X_Os	
 	crossover_positions = X_Os[mut_a_chrom-1]
-	starting_parental = start_parental[mut_a_chrom -1]
 	
 
 	# Determine if the resulting recombinant chr carries the primary (a) causal mutation

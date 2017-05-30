@@ -51,9 +51,9 @@ if mode == "back": #The analysis modaliity doesn't vary if a backcross is being 
 result.write("if outcross:\n-@ lines: window, average, boost, chromosome\n-! line: min_max_window, max_max_window, max_boost, chromosome\n-? lines: chromosome, min_big_window, max_big_window\n-* lines: chromosome, min_window, max_window, boost_value\nif backcross:\n-@ line: window, average, chromosome\n-! line: min_window. max_window, max_average, chromosome\n-? line: chromosome, min_big_window, max_big_window\n-* line: chormosome, min_window, max_window, average\nif control is F2 WT\n-@ lines: window, ratio, chromosome\n-! line: min_max_window, max_max_window, max_ratio, chromosome\n-? lines: chromosome, min_big_window, max_big_window\n-* lines: chromosome, min_window, max_window, ratio\n")
 result.close()
 
-mut1 = "no"
-if args.mut1 != "n/p":
-	mut1 = args.mut1
+
+if args.mut1 != "n/p": mut1 = args.mut1
+else: mut1 = "no"
 
 #Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored] 
 def getinfo(chro, inpu):
@@ -171,7 +171,7 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 			dictionary[items] = ratio
 			result.write("@	"+str(items)+ "\t"+ str(ratio) + "\t" + str(chromosome) + "\n")
 
-		if mut1 == "n/p": #If there is an already known mutation
+		if mut1 != "no": #If there is an already known mutation
 			no_ch = mut1.split("-")[0]
 			no_pos = int(mut1.split("-")[1])
 			if chromosome == no_ch and no_pos + 1000 > items and no_pos-1000 < items: #The chromosome we are analyzing is the one were the mutation is and the position of the window is close to the already known mutation
