@@ -261,28 +261,30 @@ while iter1 < nbr_haploid_recombinants:
 		
 		# Determine if the resulting recombinant chr carries the secondary (b) causal mutation
 		
-		if selection_mode == "dr" and mut_b_chrom == iter2+1:
-			for key,val in enumerate(crossover_positions):
-				
-				if starting_parental == 0 and key % 2 == 0:
-					if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
-						chr_carries_mutation_b = True
+		if selection_mode == "dr":
+		 	if mut_b_chrom == iter2+1:
+				for key,val in enumerate(crossover_positions):
+					
+					if starting_parental == 0 and key % 2 == 0:
+						if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
+							chr_carries_mutation_b = True
 
-				if starting_parental == 1 and key % 2 != 0:
-					if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
-						chr_carries_mutation_b = True
+					if starting_parental == 1 and key % 2 != 0:
+						if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
+							chr_carries_mutation_b = True
 
 
-		if selection_mode == "cm" and mut_b_chrom == iter2+1:
-			for key,val in enumerate(crossover_positions):
-				
-				if starting_parental == 0 and key % 2 != 0:
-					if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
-						chr_carries_mutation_b = True
+		if selection_mode == "cm" 
+			if mut_b_chrom == iter2+1:
+				for key,val in enumerate(crossover_positions):
+					
+					if starting_parental == 0 and key % 2 != 0:
+						if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
+							chr_carries_mutation_b = True
 
-				if starting_parental == 1 and key % 2 == 0:
-					if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
-						chr_carries_mutation_b = True
+					if starting_parental == 1 and key % 2 == 0:
+						if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
+							chr_carries_mutation_b = True
 
 		# Chromosome selection
 		# If recombinant chr contains the desired mutation(s), execute 'create_rec_seq()'
@@ -369,7 +371,7 @@ while iter1 < nbr_haploid_recombinants:
 					iter2 += 1
 
 		# Select all chromosomes that carry mutations A and B (all phenotipically double recessive mutants)
-		if selection_mode == 'dr' or selection_mode != "cm":
+		if selection_mode == 'dr' or selection_mode == "cm":
 
 			if mut_a_chrom == mut_b_chrom and mut_a_chrom == iter2+1:
 				if chr_carries_mutation_a == True and chr_carries_mutation_b == True:
