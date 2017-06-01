@@ -71,13 +71,14 @@ mut_a_pos = int(mut_a[1])
 selection_mode = args.selection_mode # "r" = recessive, "d" = dominant mt-phe, "di" = dominant wt-phe, "dr" = double recessive
 if selection_mode == "dr":
 	mut_b =  args.mut_pos.split("-")[1].split(",")
-	#mut_b = args.mut_b_pos.split(",")
-	mut_chrom = int(mut_b[0])
+	mut_b_chrom = int(mut_b[0])
 	mut_b_pos = int(mut_b[1])
 nbr_haploid_recombinants = args.nbr_rec_chrs
 
 if selection_mode == 'dr' and mut_b_pos is None:
 	quit('Quit. Selected mode is "double recessive" but no position for mutation b was provided. See program description.')
+
+
 
 # Functions
 
@@ -104,7 +105,6 @@ def chr_freq_generator(rfd):
 	return chr_xo_freq
 
 # Function to parse fasta files
-### change: create a list of lists: [[chromosome,sequence],[chromosme,sequence]]
 
 def read_fasta(fp):
 	name, seq = None, []
@@ -148,16 +148,18 @@ def batch_gen(data, batch_size):
 		yield data[i:i+batch_size]
 
 # Function to create Fasta file and write the sequence of a recombinant chromosome to it.
-###change in order not to re-create documents but use the same one
 def create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1):
-	output_file = open(out_dir + '/rec_chr_' + str(iter1 + 1) + '.fa', 'a')
-	if n_contig == 0:
-		output_file.write('>'+ contig_parental_a[n_contig][0][1:])
-	else:
-		output_file.write("\n"+'>'+ contig_parental_a[n_contig][0][1:])
-	for chunk in batch_gen(rec_chr, 80): # Write to file a small chunk of the contig sequence in each line
-		output_file.write('\n' + chunk)
-	output_file.close()
+	with open(out_dir + '/rec_chr_' + str(iter1 + 1) + '.fa', 'a') as output_file:
+		if n_contig == 0:
+			output_file.write('>'+ contig_parental_a[n_contig][0][1:])
+
+
+		else:
+
+			output_file.write("\n"+'>'+ contig_parental_a[n_contig][0][1:])
+
+		for chunk in batch_gen(rec_chr, 80): # Write to file a small chunk of the contig sequence in each line
+			output_file.write('\n' + chunk)
 
 
 # Create a subdirectory to place the recombinant chromosomes. If it already exists, remove it first
@@ -166,7 +168,6 @@ if os.path.exists(out_dir): # In easymap, out_dir points to './project/0_input/s
 os.makedirs(out_dir)
 
 # Read fasta files of parentals
-### for these two functions, change the pass thing
 contig_parental_a = []
 total_a= 0
 with open(parental_a_mutant) as fp:
@@ -186,7 +187,6 @@ with open(parental_b_polymorphic) as fp:
 
 
 # Check that both parentals have identical length. If not, quit.
-###do this for each pair , DOUBTS, this is not too restrictive? are they in nature exactly identical?
 if total_a != total_b:
 	quit('Quit. The lengths of the two parental sequences provided are not identical')
 
@@ -194,18 +194,18 @@ if total_a != total_b:
 chr_xo_freq_total = chr_freq_generator(rfd)
 # Create a defined number of recombinant chromosomes 
 iter1 = 0
+
 nbr_contigs = len(contig_parental_a)
 
 while iter1 < nbr_haploid_recombinants:
 	iter2 = 0
-	X_Os = []
-	list_seq_parental_a = []
-	list_seq_parental_b = []
+	is_in = []
 	while iter2 < nbr_contigs:
-		#start_parental = []
-		list_seq_parental_a.append(contig_parental_a[iter2][1])
-		list_seq_parental_b.append(contig_parental_b[iter2][1])
-		chr_len = len(list_seq_parental_a[iter2])
+		crossover_positions = []
+		list_seq_parental_a=contig_parental_a[iter2][1]
+		list_seq_parental_b=contig_parental_b[iter2][1]
+
+		chr_len = len(list_seq_parental_a)
 		chr_xo_freq = chr_xo_freq_total[iter2]
 		
 		# Reset variables to 0 ('does not contain the mutation') at the beggining of each loop
@@ -215,7 +215,6 @@ while iter1 < nbr_haploid_recombinants:
 		# Randomly choose which of the two parentals the program will choose as "seed".
 		# The probabilities are 0.5/0.5. Use later.
 		starting_parental = randint(0, 1) # 0: start with mutated (parmut) genome, 1: start with polymorphic (parpol) genome
-		
 		# Create a radom number and compare it to the XO frequency table of the user-chosen chr 
 		# The XO frequency table represents the frequency of each number of XOs in a chromosome
 		# By comparing a series of random numbers with this table, a series of XOs can be created 
@@ -236,128 +235,177 @@ while iter1 < nbr_haploid_recombinants:
 		crossover_positions.append(0)
 		crossover_positions.append(chr_len)
 		crossover_positions.sort()
-		X_Os.append(crossover_positions)
-		iter2 += 1
-	crossover_positions_t = X_Os	
-	crossover_positions = X_Os[mut_a_chrom-1]
-	
+		#X_Os.append(crossover_positions)
 
-	# Determine if the resulting recombinant chr carries the primary (a) causal mutation
-
-	for key,val in enumerate(crossover_positions):
+		#crossover_positions_t = X_Os	
+		#crossover_positions = X_Os[mut_a_chrom-1]
 		
-		if starting_parental == 0 and key % 2 == 0:
-			if mut_a_pos > crossover_positions[key] and mut_a_pos <= crossover_positions[key+1]:
-				chr_carries_mutation_a = True
-		
-		if starting_parental == 1 and key % 2 != 0:
-			if mut_a_pos > crossover_positions[key] and mut_a_pos <= crossover_positions[key+1]:
-				chr_carries_mutation_a = True
-	
-	# Determine if the resulting recombinant chr carries the secondary (b) causal mutation
-	if selection_mode == "dr":
-		for key,val in enumerate(crossover_positions):
-			
-			if starting_parental == 0 and key % 2 != 0:
-				if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
-					chr_carries_mutation_b = True
+		# Determine if the resulting recombinant chr carries the primary (a) causal mutation
 
-			if starting_parental == 1 and key % 2 == 0:
-				if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
-					chr_carries_mutation_b = True
-	
-	output_file = open(out_dir + '/rec_chr_' + str(iter1 + 1) + '.fa', 'w')
-	output_file.close()
-	
-	# Chromosome selection
-	# If recombinant chr contains the desired mutation(s), execute 'create_rec_seq()'
-	# and 'create_rec_chr_file()' functions.
-	# The first function creates a Fasta file using the info in 'crossover_positions', and
-	# the second writes the output to a file.
-	
-	# Select all chromosomes that carry mutation A (all phenotypically mutant plants)
-	###iterate over it in order to achieve it to be make for each chromosme
-	if selection_mode == 'r':
-		if chr_carries_mutation_a == True:
-			n_contig = 0
-			for c in crossover_positions_t:
-				seq_parental_a =  list_seq_parental_a[n_contig]
-				seq_parental_b =  list_seq_parental_b[n_contig]
-				rec_chr = create_rec_seq(c, starting_parental)
-				create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
-				n_contig += 1
-			iter1 +=1
-	
-	# Select all chromosomes that carry mutation A and also some that do not, so the final
-	# proportion of chrs that carry the mutation is 0.67 (all phenotypically mutant plants).
-	# This happens when selecting mutants with dominant mutation based on phenotype.
-	if selection_mode == 'd':
-		if chr_carries_mutation_a == True:
-			n_contig = 0
-			for c in crossover_positions_t: 
-				seq_parental_a =  list_seq_parental_a[n_contig]
-				seq_parental_b =  list_seq_parental_b[n_contig]
-				rec_chr = create_rec_seq(c,starting_parental)
-				create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
-				n_contig+=1
-			iter1 +=1
-		else:
-			chr_filtering_threshold = randint(1,100)
-			if chr_filtering_threshold > 50:
-				n_contig = 0
-				for c in crossover_positions_t:
-					seq_parental_a =  list_seq_parental_a[n_contig]
-					seq_parental_b =  list_seq_parental_b[n_contig]
-					rec_chr = create_rec_seq(c,starting_parental)
-					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
-					n_contig += 1
-				iter1 +=1
-	
-	# Select all chromosomes that do not carry mutation A (all phenotypically wild type plants)
-	if selection_mode == 'di':
-		if chr_carries_mutation_a == False:
-			n_contig = 0
-			for c in crossover_positions_t:
-				seq_parental_a =  list_seq_parental_a[n_contig]
-				seq_parental_b =  list_seq_parental_b[n_contig]
-				rec_chr = create_rec_seq(c,starting_parental)
-				create_rec_chr_file(n_contig, rec_chr, contig_parental_a,iter1)
-				n_contig+= 1
-			iter1 +=1
-	
-	# Select all chromosomes that do not carry mutation A and also some that do, so the final
-	# proportion of chrs that carry the mutation is 0.33 (all phenotypically wt plants).
-	# This happens when selecting wild type plants in from a recessive cross.	
-	if selection_mode == 'wt':
-		if chr_carries_mutation_a == False:
-			n_contig = 0
-			for c in crossover_positions_t:
-				seq_parental_a =  list_seq_parental_a[n_contig]
-				seq_parental_b =  list_seq_parental_b[n_contig]
-				rec_chr = create_rec_seq(c,starting_parental)
-				create_rec_chr_file(n_contig, rec_chr, contig_parental_a,iter1)
-				n_contig+= 1
-			iter1 +=1
-		else:
-			chr_filtering_threshold = randint(1,100)
-			if chr_filtering_threshold > 50:
-				n_contig = 0
-				for c in crossover_positions_t:
-					seq_parental_a =  list_seq_parental_a[n_contig]
-					seq_parental_b =  list_seq_parental_b[n_contig]
-					rec_chr = create_rec_seq(c,starting_parental)
-					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
-					n_contig += 1
-				iter1 +=1
+		if mut_a_chrom == iter2 +1:
+			for key,val in enumerate(crossover_positions):
+				#print key, val
+				if starting_parental == 0 and key % 2 == 0:
+					if mut_a_pos > crossover_positions[key] and mut_a_pos <= crossover_positions[key+1]:
+						chr_carries_mutation_a = True
 				
-	# Select all chromosomes that carry mutations A and B (all phenotipically double recessive mutants)
-	if selection_mode == 'dr':
-		if chr_carries_mutation_a == True and chr_carries_mutation_b == True:
-			n_contig = 0
-			for c in crossover_positions_t:
-				seq_parental_a =  list_seq_parental_a[n_contig]
-				seq_parental_b =  list_seq_parental_b[n_contig]
-				rec_chr = create_rec_seq(c,starting_parental)
+				if starting_parental == 1 and key % 2 != 0:
+					if mut_a_pos > crossover_positions[key] and mut_a_pos <= crossover_positions[key+1]:
+						chr_carries_mutation_a = True
+		
+		
+		# Determine if the resulting recombinant chr carries the secondary (b) causal mutation
+		
+		if selection_mode == "dr" and mut_b_chrom == iter2+1:
+			for key,val in enumerate(crossover_positions):
+				
+				if starting_parental == 0 and key % 2 == 0:
+					if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
+						chr_carries_mutation_b = True
+
+				if starting_parental == 1 and key % 2 != 0:
+					if mut_b_pos > crossover_positions[key] and mut_b_pos <= crossover_positions[key+1]:
+						chr_carries_mutation_b = True
+
+		
+		
+		# Chromosome selection
+		# If recombinant chr contains the desired mutation(s), execute 'create_rec_seq()'
+		# and 'create_rec_chr_file()' functions.
+		# The first function creates a Fasta file using the info in 'crossover_positions', and
+		# the second writes the output to a file.
+		
+		# Select all chromosomes that carry mutation A (all phenotypically mutant plants)
+		n_contig = iter2
+		if selection_mode == 'r':
+			if chr_carries_mutation_a == True:
+				seq_parental_a =  list_seq_parental_a
+				seq_parental_b =  list_seq_parental_b
+				rec_chr = create_rec_seq(crossover_positions, starting_parental)
 				create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
-				n_contig+=1
-			iter1 +=1
+				is_in.append(n_contig)
+				iter2 += 1
+
+			elif mut_a_chrom != iter2+1:
+				seq_parental_a =  list_seq_parental_a
+				seq_parental_b =  list_seq_parental_b
+				rec_chr = create_rec_seq(crossover_positions, starting_parental)
+				create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+				is_in.append(n_contig)
+				iter2 +=1
+				 	
+
+				#print rec_chr, n_contig	
+
+		
+		# Select all chromosomes that carry mutation A and also some that do not, so the final
+		# proportion of chrs that carry the mutation is 0.67 (all phenotypically mutant plants).
+		# This happens when selecting mutants with dominant mutation based on phenotype.
+		if selection_mode == 'd':
+			if chr_carries_mutation_a == True:
+				n_contig = 0
+				for c in crossover_positions_t: 
+					seq_parental_a =  list_seq_parental_a
+					seq_parental_b =  list_seq_parental_b
+					rec_chr = create_rec_seq(c,starting_parental)
+					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+					n_contig+=1
+				iter1 +=1
+			else:
+				chr_filtering_threshold = randint(1,100)
+				if chr_filtering_threshold > 50:
+					n_contig = 0
+					for c in crossover_positions_t:
+						seq_parental_a =  list_seq_parental_a
+						seq_parental_b =  list_seq_parental_b
+						rec_chr = create_rec_seq(c,starting_parental)
+						create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+						n_contig += 1
+					iter1 +=1
+		
+
+		# Select all chromosomes that do not carry mutation A (all phenotypically wild type plants)
+		if selection_mode == 'di':
+			if chr_carries_mutation_a == False:
+				n_contig = 0
+				for c in crossover_positions_t:
+					seq_parental_a =  list_seq_parental_a[n_contig]
+					seq_parental_b =  list_seq_parental_b[n_contig]
+					rec_chr = create_rec_seq(c,starting_parental)
+					create_rec_chr_file(n_contig, rec_chr, contig_parental_a,iter1)
+					n_contig+= 1
+				iter1 +=1
+		
+		# Select all chromosomes that do not carry mutation A and also some that do, so the final
+		# proportion of chrs that carry the mutation is 0.33 (all phenotypically wt plants).
+		# This happens when selecting wild type plants in from a recessive cross.	
+		if selection_mode == 'wt':
+			if chr_carries_mutation_a == False:
+				n_contig = 0
+				for c in crossover_positions_t:
+					seq_parental_a =  list_seq_parental_a[n_contig]
+					seq_parental_b =  list_seq_parental_b[n_contig]
+					rec_chr = create_rec_seq(c,starting_parental)
+					create_rec_chr_file(n_contig, rec_chr, contig_parental_a,iter1)
+					n_contig+= 1
+				iter1 +=1
+			else:
+				chr_filtering_threshold = randint(1,100)
+				if chr_filtering_threshold > 50:
+					n_contig = 0
+					for c in crossover_positions_t:
+						seq_parental_a =  list_seq_parental_a[n_contig]
+						seq_parental_b =  list_seq_parental_b[n_contig]
+						rec_chr = create_rec_seq(c,starting_parental)
+						create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+						n_contig += 1
+					iter1 +=1
+		
+
+		# Select all chromosomes that carry mutations A and B (all phenotipically double recessive mutants)
+		if selection_mode == 'dr':
+
+			if mut_a_chrom == mut_b_chrom and mut_a_chrom == iter2+1:
+				if chr_carries_mutation_a == True and chr_carries_mutation_b == True:
+
+					seq_parental_a =  list_seq_parental_a
+					seq_parental_b =  list_seq_parental_b
+					rec_chr = create_rec_seq(crossover_positions, starting_parental)
+					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+					is_in.append(n_contig)
+					iter2 += 1
+					
+
+			elif mut_a_chrom == iter2+1 and mut_b_chrom != iter2+1:
+
+				if chr_carries_mutation_a == True:
+					seq_parental_a =  list_seq_parental_a
+					seq_parental_b =  list_seq_parental_b
+					rec_chr = create_rec_seq(crossover_positions, starting_parental)
+					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+					is_in.append(n_contig)
+					iter2 += 1
+
+
+			elif mut_a_chrom != iter2+1 and mut_b_chrom == iter2+1:
+				if chr_carries_mutation_b == True:
+					seq_parental_a =  list_seq_parental_a
+					seq_parental_b =  list_seq_parental_b
+					rec_chr = create_rec_seq(crossover_positions, starting_parental)
+					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+					is_in.append(n_contig)
+					iter2 += 1
+					
+			else:
+					seq_parental_a =  list_seq_parental_a
+					seq_parental_b =  list_seq_parental_b
+					rec_chr = create_rec_seq(crossover_positions, starting_parental)
+					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
+					is_in.append(n_contig)
+					iter2 += 1
+
+
+
+
+		if len(is_in) == nbr_contigs:
+			iter1+=1
