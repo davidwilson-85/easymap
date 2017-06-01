@@ -87,13 +87,13 @@ if args.causal_mut != None:
 				causal_mut_position = int(causal_mut_split[1]) -1 
 				causal_mut_chromosome = int(causal_mut_split[0])
 				try: 
-					if genome_length[causal_mut_chromosome]<int(causal_mut_split[1]) -1: quit('Quit. Selected mutation one is outside the size of the chosen contig.')
+					if genome_length[causal_mut_chromosome-1]<int(causal_mut_split[1]) -1: quit('Quit. Selected mutation one is outside the size of the chosen contig.')
 				except: quit('Quit. Selected mutation one is in a contig not found in fasta.')		
 			else:
 				causal_mut2_position = int(causal_mut_split[1]) -1 
 				causal_mut2_chromosome = int(causal_mut_split[0])
 				try: 
-					if genome_length[causal_mut2_chromosome]<int(causal_mut_split[1]) -1: quit('Quit. Selected mutation two is outside the size of the chosen contig.')
+					if genome_length[causal_mut2_chromosome-1]<int(causal_mut_split[1]) -1: quit('Quit. Selected mutation two is outside the size of the chosen contig.')
 				except: quit('Quit. Selected mutation two is in a contig not found in fasta.')
 
 			n +=1
