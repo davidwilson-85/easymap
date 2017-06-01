@@ -7,7 +7,7 @@
 #  [2] $workflow[ins/snp]					.                      Maybe add a 3rd workflow: Analysis of SNPs
 #  [3] $data_source[exp/sim]   			.
 #  [4] $lib_type_sample[se/pe]						.
-#  [5] $ref_seqs								*
+#  [5] $ref_seq								*
 #  [6] $ins_seq								*
 #  [7] $read_s									*
 #  [8] $read_f									*
@@ -87,7 +87,7 @@ project_name=user_projects/$timestamp"_"$1
 workflow=$2
 data_source=$3
 lib_type_sample=$4
-ref_seqs=$5
+ref_seq=$5
 ins_seq=$6
 read_s=$7
 read_f=$8
@@ -151,26 +151,20 @@ echo 'pid easymap '$BASHPID >> $my_status_file
 
 
 # Check that the folders /user_data and /user_data/gnm_ref exist. If they do not, 
-if ! [ -d $f0 ]
-then
-	{
-		echo $(date)": Execution could not start because folder user_data could not be found. Please, create the folder and use it to place the files you want to analyze." > $my_log_file
-		echo 'status:error' >> $my_status_file
-		exit_code=1
-		#echo $exit_code
-		exit	
-	}
+if ! [ -d $f0 ]; then
+	echo $(date)": Execution could not start because folder user_data could not be found. Please, create the folder and use it to place the files you want to analyze." > $my_log_file
+	echo 'status:error' >> $my_status_file
+	exit_code=1
+	#echo $exit_code
+	exit
 fi
 
-if ! [ -d $f0/gnm_ref ]
-then
-	{
-		echo $(date)": Execution could not start because folder user_data/gnm_ref could not be found. Please, create the folder and use it to place the your reference genome." > $my_log_file
-		echo 'status:error' >> $my_status_file
-		exit_code=1
-		#echo $exit_code
-		exit
-	}
+if ! [ -d $f0/gnm_ref ]; then
+	echo $(date)": Execution could not start because folder user_data/gnm_ref could not be found. Please, create the folder and use it to place the your reference genome." > $my_log_file
+	echo 'status:error' >> $my_status_file
+	exit_code=1
+	#echo $exit_code
+	exit
 fi
 
 
@@ -185,7 +179,7 @@ echo "workflow:								" $2 >> $my_log_file
 echo "data_source:							" $3 >> $my_log_file
 echo "lib_type_sample:								" $4 >> $my_log_file
 echo "lib_type_control:								" ${22} >> $my_log_file
-echo "ref_seqs:								" $5 >> $my_log_file
+echo "ref_seq:								" $5 >> $my_log_file
 echo "ins_seq:									" $6 >> $my_log_file
 echo "read_s:									" $7 >> $my_log_file
 echo "read_f:									" $8 >> $my_log_file
@@ -257,7 +251,7 @@ fi
 
 echo $(date)": STARTING INPUT PROCESSING..." >> $my_log_file
 
-process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
+process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $ref_seq`
 
 
 if [ $process_input == 0 ]

@@ -7,10 +7,10 @@
 #
 
 
-import argparse, os
+import argparse, os, fnmatch
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-gnm', action="store", dest='gnm_dir')
+parser.add_argument('-gnm', action="store", dest='gnm')
 parser.add_argument('-ins', action="store", dest='ins_source')
 parser.add_argument('-fq', action="store", dest='fq_source')
 parser.add_argument('-gff', action="store", dest='gff_source')
@@ -19,7 +19,7 @@ parser.add_argument('-fa_match', action="store", dest='fa_match')
 parser.add_argument('-gff_match', action="store", dest='gff_match')
 args = parser.parse_args()
 
-gnm_dir = args.gnm_dir
+gnm_basename = args.gnm
 ins_source = args.ins_source
 fq_source = args.fq_source
 gff_source = args.gff_source
@@ -29,18 +29,26 @@ gff_match = args.gff_match
 
 
 # If gnm argument provided, check fasta file
-if gnm_dir != None:
+if gnm_basename != None:
 
 	gnm_result = 0 # 0:pass ; 1:error
-	
-	# Create list with all fasta files
-	gnm_files = sorted(os.listdir('./' + gnm_dir))
-	
+
+	# Create list with all the files in user_data folder
+	input_files = sorted(os.listdir('./user_data'))
+
+	# Create a list with only the files that match the basename provided by the user and end in '.fa'
+	gnm_files = fnmatch.filter(input_files, '*' + gnm_basename + '.fa') # fnmatch filters a list using a string that accepts wildcards 
+
+	output = open('file', 'w')
+	for i in input_files: output.write(i + '\n')
+	for j in gnm_files: output.write(j + '\n')
+	output.close()
+
 	for gnm_file in gnm_files:
-		if os.stat(gnm_dir + '/' + gnm_file).st_size == 0: # Checks whether the file is empty
+		if os.stat('user_data/' + gnm_file).st_size == 0: # Checks whether the file is empty
 			gnm_result = 1
 		else:
-			gnm_contents = open(gnm_dir + '/' + gnm_file, 'r')
+			gnm_contents = open('user_data/' + gnm_file, 'r')
 			for index, line in enumerate(gnm_contents):
 				if index == 0:
 					if not line.startswith('>'):
@@ -50,7 +58,7 @@ if gnm_dir != None:
 			gnm_contents.close()
 	
 	print gnm_result
-
+	
 
 # If ins argument provided, check fasta file
 if ins_source != None:

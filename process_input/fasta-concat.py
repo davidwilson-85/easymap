@@ -1,27 +1,25 @@
 #!/usr/bin/python
 
 #
-# This script scans a folder that only contains fasta files, reads the content of each one
-# and writes it to a single fasta-formatted file. I use this script as helper script for
-# the mutation analyzer.
+# This script receives a list of fasta files, reads the content of each one
+# and writes it to a single fasta-formatted file.
 #
 
-import argparse, os, shutil
+import argparse, os, shutil, fnmatch
 
 # Process command arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('-in_dir', action="store", dest='input_dir')
+parser.add_argument('-gnm', action="store", dest='basename')
 parser.add_argument('-out_dir', action="store", dest='output_dir')
 args = parser.parse_args()
 
-input_dir = args.input_dir
+basename = args.basename
 output_dir = args.output_dir
+
 # Create a subdirectory to place the reads. If it already exists, remove it first
 if os.path.exists(output_dir):
 	shutil.rmtree(output_dir)
 os.makedirs(output_dir)
-
-
 
 # Function to parse fasta file (based on one of the Biopython IOs)
 def read_fasta(fp):
@@ -41,15 +39,18 @@ def batch_gen(data, batch_size):
 		yield data[i:i+batch_size]
 		
 	
-# Create list of files in input dir
-input_files = sorted(os.listdir('./' + input_dir))
+# Create list with all the files in user_data folder
+input_files = sorted(os.listdir('./user_data'))
+
+# Create a list with only the files that match the basename provided by the user and end in '.fa'
+ref_files = fnmatch.filter(input_files, '*' + basename + '.fa') # fnmatch filters a list using a string that accepts wildcards 
 
 # Create and open output file
 output = open(output_dir + '/genome.fa', 'w')
 
 # Get the content of each file and append it to output fasta file
-for input_file in input_files:
-	with open(input_dir + '/' + input_file) as fp:
+for ref_file in ref_files:
+	with open('user_data/' + ref_file) as fp:
 		for name_contig, seq_contig in read_fasta(fp):
 			split_name_contig = name_contig.split(' ')
 			output.write(split_name_contig[0] + '\n')

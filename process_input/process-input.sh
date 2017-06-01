@@ -58,7 +58,10 @@ read_r=$9
 gff_file=$f0/${10}
 ann_file=$f0/${11}
 ann_option=${11}
-
+read_s_par=${12}
+read_f_par=${13}
+read_r_par=${14}
+ref_seq=${15}
 
 # Establish locations of reference genome
 ref_seqs_dir=$f0/gnm_ref
@@ -85,7 +88,7 @@ ref_seqs_merged_file=$project_name/$f1/gnm_ref_merged/genome.fa
 
 
 # Check fasta input(s)
-fa=`python process_input/verify-input.py -gnm $ref_seqs_dir`
+fa=`python process_input/verify-input.py -gnm $ref_seq`
 
 if [ $fa == 0 ]
 then
@@ -99,20 +102,19 @@ else
 		echo $exit_code
 		exit # Exit because fasta files are required for fasta-concat.py and for fasta-gff comparison
 		     # In any other check I do not exit prematurely of process-input.sh so the program checks
-		     # all the files and therefore several incorrect files can be revealed in a single run.
+		     # all the files and therefore several incorrect files can be revealed to user in a single run.
 	}
 fi
 
-# Concatenate fasta input and store in a single file
 
+# Concatenate fasta input and store in a single file
 {
-	python process_input/fasta-concat.py -in_dir $ref_seqs_dir -out_dir $ref_seqs_merged_dir
+	python process_input/fasta-concat.py -gnm $ref_seq -out_dir $ref_seqs_merged_dir
 } || {
-	echo echo $(date)": Processing of genome fasta input failed: fasta-concat.py could not concatenate fasta files into one file." >> $my_log_file
+	echo echo $(date)": Processing of fasta genome input failed: fasta-concat.py could not concatenate fasta files into one file." >> $my_log_file
 	exit_code=1
 }
-echo $(date)": Processing of genome fasta input completed." >> $my_log_file
-
+echo $(date)": Processing of fasta genome input completed." >> $my_log_file
 
 # Check fasta input with insertion sequence
 # Do this only if analyzing insertions
@@ -178,6 +180,11 @@ then
 					exit_code=1
 				}
 			}
+			###############
+			###############
+			# IF WORKFLOW IS SNP, CHECK CONTROL SE READS WITH verify-input.py and with fastq-stats.py
+			###############
+			###############
 		fi
 
 		if [ $lib_type == 'pe' ]
@@ -251,6 +258,11 @@ then
 					exit_code=1
 				}
 			}
+			###############
+			###############
+			# IF WORKFLOW IS SNP, CHECK CONTROL F AND R READS WITH verify-input.py and with fastq-stats.py
+			###############
+			###############
 		fi
 	}
 fi

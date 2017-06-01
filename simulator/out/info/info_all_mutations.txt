@@ -1,2 +1,0 @@
-chr2	54	G	C
-chr2	91	C	T
