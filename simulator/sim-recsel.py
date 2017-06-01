@@ -310,11 +310,6 @@ while iter1 < nbr_haploid_recombinants:
 				create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
 				is_in.append(n_contig)
 				iter2 +=1
-				print rec_chr
-			
-
-
-					
 
 		
 		# Select all chromosomes that carry mutation A and also some that do not, so the final
