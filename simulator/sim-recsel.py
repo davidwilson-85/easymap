@@ -274,7 +274,7 @@ while iter1 < nbr_haploid_recombinants:
 							chr_carries_mutation_b = True
 
 
-		if selection_mode == "cm" 
+		if selection_mode == "cm": 
 			if mut_b_chrom == iter2+1:
 				for key,val in enumerate(crossover_positions):
 					
