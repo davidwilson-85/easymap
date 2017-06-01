@@ -232,14 +232,14 @@ then
 		then
 			{
 				read_s=$f0/$7
-				read_s_ctrl=$0/${15}
+				read_s_ctrl=$f0/${15}
 			}
 		else
 			{
 				read_f=$f0/$8
 				read_r=$f0/$9
-				read_f_ctrl=$0/${16}
-				read_r_ctrl=$0/${17}
+				read_f_ctrl=$f0/${16}
+				read_r_ctrl=$f0/${17}
 			}
 		fi
 	}
@@ -267,7 +267,6 @@ else
 	}
 fi
 
-exit
 
 ############################################################
 # Run 'simulator.sh'

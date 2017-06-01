@@ -30,7 +30,6 @@ gff_match = args.gff_match
 
 # If gnm argument provided, check fasta file
 if gnm_basename != None:
-
 	gnm_result = 0 # 0:pass ; 1:error
 
 	# Create list with all the files in user_data folder
@@ -62,7 +61,6 @@ if gnm_basename != None:
 
 # If ins argument provided, check fasta file
 if ins_source != None:
-
 	ins_result = 0 # 0:pass ; 1:error
 
 	if os.stat(ins_source).st_size == 0: # Checks whether the file is empty
@@ -80,10 +78,8 @@ if ins_source != None:
 	print ins_result
 
 
-	
 # If fq argument provided, check fastq file(s)
 if fq_source != None:
-	
 	fq_result = 0
 	
 	if os.stat(fq_source).st_size == 0:

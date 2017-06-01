@@ -222,9 +222,9 @@ if [ $data_source == 'exp' ]; then
 				fq_qual=`python ./graphic_output/fastq-stats.py -fasq $read_s_ctrl -out $project_name/$f3/single-end-control-reads-qual-stats.png`
 				
 				if [ $fq_qual == 0 ]; then
-					echo $(date)": Single-end fastq (control reads) quality encoding is Phred +33. Passed." >> $my_log_file
+					echo $(date)": Single-end fastq quality (control reads) encoding is Phred +33. Passed." >> $my_log_file
 				else
-					echo $(date)": Single-end fastq (control reads) quality encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
+					echo $(date)": Single-end fastq quality (control reads) encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
 					exit_code=1
 				fi
 			} || {
@@ -256,9 +256,9 @@ if [ $data_source == 'exp' ]; then
 				fq_qual_for=`python ./graphic_output/fastq-stats.py -fasq $read_f_ctrl -out $project_name/$f3/paired-end-control-forward-reads-qual-stats.png`
 
 				if [ $fq_qual_for == 0 ]; then
-					echo $(date)": Paired-end forward fastq (control reads) quality encoding is Phred +33. Passed." >> $my_log_file
+					echo $(date)": Paired-end forward fastq quality (control reads) encoding is Phred +33. Passed." >> $my_log_file
 				else
-					echo $(date)": Paired-end forward fastq (control reads) quality encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
+					echo $(date)": Paired-end forward fastq quality (control reads) encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
 					exit_code=1
 				fi
 			} || {
@@ -270,9 +270,9 @@ if [ $data_source == 'exp' ]; then
 				fq_qual_rev=`python ./graphic_output/fastq-stats.py -fasq $read_r_ctrl -out $project_name/$f3/paired-end-control-reverse-reads-qual-stats.png`
 				
 				if [ $fq_qual_rev == 0 ]; then
-					echo $(date)": Paired-end reverse fastq (control reads) quality encoding is Phred +33. Passed." >> $my_log_file
+					echo $(date)": Paired-end reverse fastq quality (control reads) encoding is Phred +33. Passed." >> $my_log_file
 				else
-					echo $(date)": Paired-end reverse fastq (control reads) quality encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
+					echo $(date)": Paired-end reverse fastq quality (control reads) encoding is not Phred +33. See documentatation to learn how to fix this issue." >> $my_log_file
 					exit_code=1
 				fi
 			} || {
