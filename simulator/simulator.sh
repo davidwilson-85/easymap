@@ -48,7 +48,7 @@ sim_recsel_statement=$7
 IFS='+' read -ra sim_recsel_array <<< "$sim_recsel_statement"
 rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pass it to program as a string and analyze it with python
 mut_pos=${sim_recsel_array[1]} #This parameter will be used in sim_mut as well, due to the fact the mutations will be generated previously.
-#sel_mode=${sim_recsel_array[2]} I don't need this information. I assume that mutation is always recessive and I select the HM individuals.
+sel_mode=${sim_recsel_array[2]} #I don't need this information. I assume that mutation is always recessive and I select the HM individuals.
 # In f2wt mode, for the sample I select the HM individuals and for the control the HZ+WT individuals
 nbr_rec_chrs=${sim_recsel_array[3]}
 
@@ -206,7 +206,7 @@ if [ $analysis_type == 'snp' ]; then
 	
 		# Run sim-recsel.py to create recombinant chromosomes selected to carry the mutation
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod r -nrec $nbr_rec_chrs 
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
@@ -220,7 +220,7 @@ if [ $analysis_type == 'snp' ]; then
 		
 		# Run sim-recsel.py to create the F2 recessive population
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod r -nrec $nbr_rec_chrs 
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
 		
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection to create the F2 recessive population failed. Quit." >> $my_log_file
@@ -243,6 +243,8 @@ if [ $analysis_type == 'snp' ]; then
 		echo $(date)": Simulation of recombination and phenotype selection to create the F2 dominant population completed." >> $my_log_file
 	fi
 	
+	exit
+
 	# Simulate reads from the sample and the control templates
 	if [ $snp_control == 'par' ]; then
 		if [ $is_ref_strain == 'ref' ] && [ $parental_genome_to_sequence == 'mut' ]; then

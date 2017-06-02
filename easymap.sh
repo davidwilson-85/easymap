@@ -293,7 +293,7 @@ then
 	}
 fi
 
-
+exit
 ############################################################
 # Run the chosen analysis workflow
 

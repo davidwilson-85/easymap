@@ -154,6 +154,8 @@ def batch_gen(data, batch_size):
 
 # Function to create Fasta file and write the sequence of a recombinant chromosome to it.
 def create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1):
+	
+
 	with open(out_dir + '/rec_gnm_' + str(iter1 + 1) + '.fa', 'a') as output_file:
 		if n_contig == 0:
 			output_file.write('>'+ contig_parental_a[n_contig][0][1:])
@@ -240,10 +242,7 @@ while iter1 < nbr_haploid_recombinants:
 		crossover_positions.append(0)
 		crossover_positions.append(chr_len)
 		crossover_positions.sort()
-		#X_Os.append(crossover_positions)
 
-		#crossover_positions_t = X_Os	
-		#crossover_positions = X_Os[mut_a_chrom-1]
 		
 		# Determine if the resulting recombinant chr carries the primary (a) causal mutation
 
@@ -379,7 +378,7 @@ while iter1 < nbr_haploid_recombinants:
 					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
 					is_in.append(n_contig)
 					iter2 += 1
-					
+					print rec_chr, n_contig
 
 			elif mut_a_chrom == iter2+1 and mut_b_chrom != iter2+1:
 

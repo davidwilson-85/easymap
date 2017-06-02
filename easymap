@@ -119,7 +119,8 @@ if len(ref_seq.split(" ")) != 1:
 	problems.append("ref_seq requires a string without spaces in it")
 
 # Check if there are .fa files in the folder user_data that have the string provided by the user as basename
-refs_in_input_files = fnmatch.filter(input_files, '*'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards 
+refs_in_input_files = fnmatch.filter(input_files, '*.'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
+
 if not refs_in_input_files:
 	error = 1
 	problems.append("The reference sequence string provided to -rs doesn't match any .fa file in the folder user_data")
@@ -219,12 +220,23 @@ if data_source == "sim":
 		problems.append("Please mind the format of sim_mut: number_of_mutations+mode  where number_of_mutations is any positive number and mode has to be chosen between e (EMS) and d (drift")
 	
 	if workflow == "snp":
+		number_of_contigs = 0
+		for items in refs_in_input_files:
+			with open(input_folder+"/"+items,"r") as contig_file:
+				for l in contig_file:
+					i = l.count(">")
+					number_of_contigs += i
+		
 		#0,14-1,31-2,33-3,15-4,5-5,2/0,24;1,42;2,25;3,6;4,1;5,1+1,10000000+r+50
 		try: 
 			values = sim_recsel.split("+")
 			if len(values) == 4:
-				#check of values[0]?
+				
 				chromo = values[0].split("/")
+
+				if len(chromo) != number_of_contigs:
+					error = 1
+					problems.append("The recombination frequences given do not match the number of fasta files")
 				for ch in chromo:
 					c = ch.split("-")
 					for v in c:
