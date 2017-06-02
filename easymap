@@ -15,7 +15,7 @@ parser.add_argument('--data_source', "-d", action="store",default = 'exp', dest 
 #parser.add_argument('--lib_type_sample', "-l", action="store", dest = 'lib_type_sample', choices=set(('se','pe')), required = "True")
 parser.add_argument('--reference-sequence', "-rs", action="store",default ="n/p",dest = 'ref_seq') 
 parser.add_argument('--ins_seq', "-i", action="store",default = 'n/p', dest = 'ins_seq') 
-parser.add_argument('--reads_sample', "-S", action="store",default = 'n/p', dest = 'reads_sample')
+parser.add_argument('--reads-sample', "-S", action="store",default = 'n/p', dest = 'reads_sample')
 #parser.add_argument('--read_f', "-B", action="store",default = 'n/p', dest = 'read_f')
 #parser.add_argument('--read_r', "-C",action="store",default = 'n/p', dest = 'read_r')
 parser.add_argument('--gff_file',"-g",action="store",default = "n/p", dest = 'gff_file')

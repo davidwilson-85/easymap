@@ -17,14 +17,14 @@
 # [12] $sim_mut								.                      nbr+mod
 # [13] $sim_recsel							.                      rfd+pos+mod+nre
 # [14] $sim_seq								.                      rd+rl+fl+ber+gbs
-# [15] $read_s_par							TO DO
-# [16] $read_f_par							TO DO
-# [17] $read_r_par							TO DO
+# [15] $read_s_ctrl							TO DO
+# [16] $read_f_ctrl							TO DO
+# [17] $read_r_ctrl							TO DO
 # [18] $is_ref_strain						.                      Only for linkage analysis mapping				ref/noref
 # [19] $cross_type               		.                      Only for linkage analysis mapping				oc/bc
 # [20] $parental_reads           		.                      Only for linkage analysis mapping				mut/nomut
 # [21] $snp_analysis_type [par/f2wt]	.
-# [22] $lib_type_control [se/pe]	
+# [22] $lib_type_ctrl [se/pe]	
 
 # sim-mut.py
 # nbr:		${12}[0]
@@ -97,14 +97,14 @@ ann_file=${11}
 sim_mut=${12}
 sim_recsel=${13}
 sim_seq=${14}
-read_s_par=${15}
-read_f_par=${16}
-read_r_par=${17}
+read_s_ctrl=${15}
+read_f_ctrl=${16}
+read_r_ctrl=${17}
 cross_type=${18}
 is_ref_strain=${19}
 parental_used_as_control=${20}
 snp_analysis_type=${21}
-lib_type_control=${22}
+lib_type_ctrl=${22}
 
 ############################################################
 # Several necessary checking/preparation steps before actually running easymap
@@ -178,7 +178,7 @@ echo "project_name:							" $1 >> $my_log_file
 echo "workflow:								" $2 >> $my_log_file
 echo "data_source:							" $3 >> $my_log_file
 echo "lib_type_sample:								" $4 >> $my_log_file
-echo "lib_type_control:								" ${22} >> $my_log_file
+echo "lib_type_ctrl:								" ${22} >> $my_log_file
 echo "ref_seq:								" $5 >> $my_log_file
 echo "ins_seq:									" $6 >> $my_log_file
 echo "read_s:									" $7 >> $my_log_file
@@ -189,9 +189,9 @@ echo "ann_file:								" ${11} >> $my_log_file
 echo "sim_mut:									" ${12} >> $my_log_file
 echo "sim_recsel:								" ${13} >> $my_log_file
 echo "sim_seq:									" ${14} >> $my_log_file
-echo "read_s_par:								" ${15} >> $my_log_file
-echo "read_f_par:								" ${16} >> $my_log_file
-echo "read_r_par:								" ${17} >> $my_log_file
+echo "read_s_ctrl:								" ${15} >> $my_log_file
+echo "read_f_ctrl:								" ${16} >> $my_log_file
+echo "read_r_ctrl:								" ${17} >> $my_log_file
 echo "cross_type:								" ${18} >> $my_log_file
 echo "is_ref_strain:							" ${19} >> $my_log_file
 echo "parental_used_as_control:			" ${20} >> $my_log_file
@@ -212,14 +212,14 @@ then
 		then
 			{
 				read_s=$project_name/$f1/sim_data/sim_seq_output/sample/se_reads.fq
-				read_s_par=$project_name/$f1/sim_data/sim_seq_output/control/se_reads.fq
+				read_s_ctrl=$project_name/$f1/sim_data/sim_seq_output/control/se_reads.fq
 			}
 		else
 			{
 				read_f=$project_name/$f1/sim_data/sim_seq_output/sample/pe-for_reads.fq
 				read_r=$project_name/$f1/sim_data/sim_seq_output/sample/pe-rev_reads.fq
-				read_f_par=$project_name/$f1/sim_data/sim_seq_output/control/pe-for_reads.fq
-				read_r_par=$project_name/$f1/sim_data/sim_seq_output/control/pe-rev_reads.fq
+				read_f_ctrl=$project_name/$f1/sim_data/sim_seq_output/control/pe-for_reads.fq
+				read_r_ctrl=$project_name/$f1/sim_data/sim_seq_output/control/pe-rev_reads.fq
 			}
 		fi
 	}
@@ -232,14 +232,14 @@ then
 		then
 			{
 				read_s=$f0/$7
-				read_s_par=$0/${15}
+				read_s_ctrl=$f0/${15}
 			}
 		else
 			{
 				read_f=$f0/$8
 				read_r=$f0/$9
-				read_f_par=$0/${16}
-				read_r_par=$0/${17}
+				read_f_ctrl=$f0/${16}
+				read_r_ctrl=$f0/${17}
 			}
 		fi
 	}
@@ -251,7 +251,7 @@ fi
 
 echo $(date)": STARTING INPUT PROCESSING..." >> $my_log_file
 
-process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $ref_seq`
+process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_ctrl $read_f_ctrl $read_r_ctrl $ref_seq $lib_type_ctrl`
 
 
 if [ $process_input == 0 ]
@@ -322,7 +322,7 @@ fi
 if [  $workflow == 'snp' ]
 then
 	{		
-		workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_par $read_f_par $read_r_par $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type $lib_type_control` 
+		workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_ctrl $read_f_ctrl $read_r_ctrl $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type $lib_type_ctrl` 
 
 		echo $workflow_result >> $my_log_file
 
