@@ -179,7 +179,6 @@ contig_parental_a = []
 total_a= 0
 with open(parental_a_mutant) as fp:
 	for name_parental_a, seq_parental_a in read_fasta(fp):
-		#print(name_parental_a, seq_parental_a)
 		lists= [name_parental_a, seq_parental_a]
 		contig_parental_a.append(lists)
 		total_a += len(seq_parental_a)
@@ -187,7 +186,6 @@ contig_parental_b = []
 total_b= 0
 with open(parental_b_polymorphic) as fp:
 	for name_parental_b, seq_parental_b in read_fasta(fp):
-		#print(name_parental_b, seq_parental_b)
 		lists = [name_parental_b, seq_parental_b]
 		total_b += len(seq_parental_b)
 		contig_parental_b.append(lists)
@@ -248,7 +246,6 @@ while iter1 < nbr_haploid_recombinants:
 
 		if mut_a_chrom == iter2 +1:
 			for key,val in enumerate(crossover_positions):
-				#print key, val
 				if starting_parental == 0 and key % 2 == 0:
 					if mut_a_pos > crossover_positions[key] and mut_a_pos <= crossover_positions[key+1]:
 						chr_carries_mutation_a = True
@@ -378,7 +375,7 @@ while iter1 < nbr_haploid_recombinants:
 					create_rec_chr_file(n_contig,rec_chr, contig_parental_a,iter1)
 					is_in.append(n_contig)
 					iter2 += 1
-					print rec_chr, n_contig
+					
 
 			elif mut_a_chrom == iter2+1 and mut_b_chrom != iter2+1:
 

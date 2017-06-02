@@ -243,7 +243,7 @@ if [ $analysis_type == 'snp' ]; then
 		echo $(date)": Simulation of recombination and phenotype selection to create the F2 dominant population completed." >> $my_log_file
 	fi
 	
-	exit
+	
 
 	# Simulate reads from the sample and the control templates
 	if [ $snp_control == 'par' ]; then
@@ -256,28 +256,31 @@ if [ $analysis_type == 'snp' ]; then
 		elif [ $is_ref_strain == 'noref' ] && [ $parental_genome_to_sequence == 'nomut' ]; then
 			input_folder_control=$sim_mut_output_folder_ref_lab/mutated_genome
 		fi
+
+		echo $sim_mut_output_folder_ref_lab/mutated_genome >> $my_log_file
+		
 	else #f2wt
 		input_folder_control=$sim_recsel_output_folder_dominant
 	fi
 	
-	# Run sim-seq.py on parental genome. The input is a folder because the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
+	# Run sim-seq.py on control genome. The input is a folder because the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 	{
 		python simulator/sim-seq.py -if $input_folder_control -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 
 	} || {
-		echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
+		echo $(date)": Simulation of high-throughput sequencing reads on control genome failed. Quit." >> $my_log_file
 		exit_code=1
 		echo exit_code
 		exit 
 	} 
-	echo $(date)": Simulation of high-throughput sequencing reads on parental genome completed." >> $my_log_file
+	echo $(date)": Simulation of high-throughput sequencing reads on control genome completed." >> $my_log_file
 
 	# Run sim-seq.py on F2 recombinant population. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 	{
 		python simulator/sim-seq.py -if $sim_recsel_output_folder_recessive -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
 
 	} || {
-		echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
+		echo $(date)": Simulation of high-throughput sequencing on F2 recombinant population failed. Quit." >> $my_log_file
 		exit_code=1
 		echo exit_code
 		exit

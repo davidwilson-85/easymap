@@ -277,7 +277,6 @@ then
 		echo $(date)": STARTING DATA SIMULATION..." >> $my_log_file
 		
 		simulator=`./simulator/simulator.sh $my_log_file $project_name $workflow $lib_type_sample $ins_seq $sim_mut $sim_recsel $sim_seq $cross_type $is_ref_strain $parental_used_as_control $snp_analysis_type`
-
 		if [ $simulator == 0 ]
 		then
 			{
@@ -293,7 +292,6 @@ then
 	}
 fi
 
-exit
 ############################################################
 # Run the chosen analysis workflow
 

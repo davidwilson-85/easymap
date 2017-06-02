@@ -56,7 +56,7 @@ from string import maketrans
 
 # Parse command arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('-if', action="store", dest='input_folder', required=True)
+parser.add_argument('-input_folder', action="store", dest='input_folder', required=True)
 parser.add_argument('-mod', action="store", dest='mode',
 choices=set(('se','pe')), required=True) # Choose between se (= single end) and pe (= paired end)
 parser.add_argument('-rd', action="store", dest='read_depth', type=int, required=True)
