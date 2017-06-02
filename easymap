@@ -23,12 +23,12 @@ parser.add_argument('--ann_file', "-a", action="store",default = 'n/p', dest = '
 parser.add_argument('--sim_mut', "-sm", action="store",default = 'n/p', dest = 'sim_mut')
 parser.add_argument('--sim_recsel',"-sr", action="store", default = 'n/p', dest = 'sim_recsel')
 parser.add_argument('--sim_seq', "-ss", action="store", default = 'n/p', dest = 'sim_seq')
-parser.add_argument ("--control_type","-t", action="store",dest ="control_type", choices=set(("par_mut","par_nomut","f2wt")))
-parser.add_argument('--reads_control',"-C", action="store",default = 'n/p', dest = 'reads_control')
+parser.add_argument ("--control_type","-t", action="store", default = 'n/p', dest ="control_type", choices=set(("par_mut","par_nomut","f2wt")))
+parser.add_argument('--reads_control',"-C", action="store", default = 'n/p', dest = 'reads_control')
 #parser.add_argument('--read_f_control', "-E", action="store",default = 'n/p', dest = 'read_f_control')
 #parser.add_argument('--read_r_control', "-F", action="store",default = 'n/p', dest = 'read_r_control')
 parser.add_argument('--cross_type', "-c", action="store",default = 'n/p', dest = 'cross_type', choices=set(('oc','bc')))
-parser.add_argument('--is_ref_strain',"-r", action="store",default = 'n/p', dest = 'is_ref_strain', choices=set(('ref','noref'))) 
+parser.add_argument('--is_ref_strain',"-r", action="store", default = 'n/p', dest = 'is_ref_strain', choices=set(('ref','noref'))) 
 #parser.add_argument('--parental_used_as_control', "-p", action="store",default = 'n/p', dest = 'parental_used_as_control', choices=set(('mut','nomut')))
 
 
@@ -76,6 +76,7 @@ read_f_control = "n/p"
 read_r_control = "n/p"
 lib_type_control = "n/p"
 lib_type_sample = "n/p"
+snp_analysis_type = "n/p"
 
 
 problems = []
@@ -170,7 +171,7 @@ if workflow=="snp":
 			if parental_used_as_control != "mut":
 				print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
 				parental_used_as_control = "mut"
-			
+
 
 #If the analysis mode is insertions, a insertions sequence must be given
 if workflow == "ins":
@@ -342,7 +343,7 @@ if error == 1:
 	quit()	
 
 
-master_program_input = project_name + " " + workflow + " " + data_source + " " + lib_type_sample + " " + ref_seq + " " + ins_seq + " " + read_s + " " + read_f + " " + read_r + " " + gff_file + " " + ann_file + " " + sim_mut + " " + sim_recsel + " " + sim_seq + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + cross_type+ " "+ is_ref_strain+ " "+ parental_used_as_control+ " "+ snp_analysis_type + " " + lib_type_control 
+master_program_input = project_name + " " + workflow + " " + data_source + " " + lib_type_sample + " " + ref_seq + " " + ins_seq + " " + read_s + " " + read_f + " " + read_r + " " + gff_file + " " + ann_file + " " + sim_mut + " " + sim_recsel + " " + sim_seq + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + cross_type+ " "+ is_ref_strain + " "+ control_type + " "+ snp_analysis_type + " " + lib_type_control 
 
 print "Succes!"
 print master_program_input
