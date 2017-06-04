@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-#./easymap -P project_name -w snp -rs at -d sim -g chr1+4.gff -sm 600+e -sr 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,5860210+r+100 -ss 25+100,0+500,100+1+50+se -r ref -c bc -t par_mut
+#./easymap -n project_name -w snp -d sim -r at -g chr1+4.gff -rs ref -cr bc -co par_mut -sm 600+e -sr 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,5860210+r+100 -ss 25+100,0+500,100+1+50+se
 
 
 import argparse, os, fnmatch
@@ -9,34 +9,28 @@ from subprocess import call
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--usage', "-u",action='store_true',dest = 'usage')
-parser.add_argument('--project_name', "-P", action="store",default= '', dest = 'project_name')
+parser.add_argument('--project-name', "-n", action="store",default= '', dest = 'project_name')
 parser.add_argument('--workflow', "-w" ,action="store", default = "n/p", dest = 'workflow', choices=set(('snp','ins')))
 parser.add_argument('--data_source', "-d", action="store",default = 'exp', dest = 'data_source', choices=set(('sim','exp'))) #Not required anymore
-#parser.add_argument('--lib_type_sample', "-l", action="store", dest = 'lib_type_sample', choices=set(('se','pe')), required = "True")
-parser.add_argument('--reference-sequence', "-rs", action="store",default ="n/p",dest = 'ref_seq') 
+parser.add_argument('--reference-sequence', "-r", action="store",default ="n/p",dest = 'ref_seq') 
 parser.add_argument('--ins_seq', "-i", action="store",default = 'n/p', dest = 'ins_seq') 
-parser.add_argument('--reads-sample', "-S", action="store",default = 'n/p', dest = 'reads_sample')
-#parser.add_argument('--read_f', "-B", action="store",default = 'n/p', dest = 'read_f')
-#parser.add_argument('--read_r', "-C",action="store",default = 'n/p', dest = 'read_r')
 parser.add_argument('--gff_file',"-g",action="store",default = "n/p", dest = 'gff_file')
 parser.add_argument('--ann_file', "-a", action="store",default = 'n/p', dest = 'ann_file')
+parser.add_argument('--reads-problem', "-P", action="store",default = 'n/p', dest = 'reads_sample')
+parser.add_argument('--reads-control',"-C", action="store", default = 'n/p', dest = 'reads_control')
+parser.add_argument('--is-ref-strain',"-rs", action="store", default = 'n/p', dest = 'is_ref_strain', choices=set(('ref','noref')))
+parser.add_argument('--cross-type', "-cr", action="store",default = 'n/p', dest = 'cross_type', choices=set(('oc','bc')))
+parser.add_argument('--control-type',"-co", action="store", default = 'n/p', dest ="control_type", choices=set(("par_mut","par_nomut","f2wt")))
 parser.add_argument('--sim_mut', "-sm", action="store",default = 'n/p', dest = 'sim_mut')
-parser.add_argument('--sim_recsel',"-sr", action="store", default = 'n/p', dest = 'sim_recsel')
-parser.add_argument('--sim_seq', "-ss", action="store", default = 'n/p', dest = 'sim_seq')
-parser.add_argument ("--control_type","-t", action="store", default = 'n/p', dest ="control_type", choices=set(("par_mut","par_nomut","f2wt")))
-parser.add_argument('--reads_control',"-C", action="store", default = 'n/p', dest = 'reads_control')
-#parser.add_argument('--read_f_control', "-E", action="store",default = 'n/p', dest = 'read_f_control')
-#parser.add_argument('--read_r_control', "-F", action="store",default = 'n/p', dest = 'read_r_control')
-parser.add_argument('--cross_type', "-c", action="store",default = 'n/p', dest = 'cross_type', choices=set(('oc','bc')))
-parser.add_argument('--is_ref_strain',"-r", action="store", default = 'n/p', dest = 'is_ref_strain', choices=set(('ref','noref'))) 
-#parser.add_argument('--parental_used_as_control', "-p", action="store",default = 'n/p', dest = 'parental_used_as_control', choices=set(('mut','nomut')))
-
+parser.add_argument('--sim-recsel',"-sr", action="store", default = 'n/p', dest = 'sim_recsel')
+parser.add_argument('--sim-seq', "-ss", action="store", default = 'n/p', dest = 'sim_seq')
 
 args = parser.parse_args()
 
 if args.usage:
 	print "help............"
 	quit()
+
 if args.project_name == "n/p":
 	project_name = ""
 else: project_name = args.project_name
@@ -45,12 +39,13 @@ if args.workflow == "n/p":
 	print "Please specify whether the project carried out is a snp or ins (insertion) analysis"
 	quit()
 else: workflow = args.workflow
+
 if args.gff_file == "n/p":
 	print "Please specify a gff name"
 	quit()
 
 if args.ref_seq == "n/p":
-	print "Please specify the name of the reference sequence file(s): -rs <name>"
+	print "Please specify the name of the reference sequence file(s): -r <name>"
 	quit()
 
 
@@ -64,7 +59,7 @@ ann_file = args.ann_file
 sim_mut = args.sim_mut
 sim_recsel = args.sim_recsel
 sim_seq = args.sim_seq
-control_type = args.control_type #Which control is being used: parental one or F2wt?
+control_type = args.control_type
 cross_type = args.cross_type
 reads_control = args.reads_control
 is_ref_strain = args.is_ref_strain
@@ -136,11 +131,11 @@ if ann_file != "n/p":
 		error =1
 		problems.append("You have specify you want to use an annotation file (ann_file), but the name given has not been succesfully found in project/0_input directory")
 
-#In the analysis mode of snp, cross_type, is_ref_strain and parental_used_as_control are required parameters
+#In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
 if workflow=="snp":
 	
 	if control_type == "f2wt": snp_analysis_type = "f2wt"
-	else: parental_used_as_control = control_type.split("_")[1]; snp_analysis_type = control_type.split("_")[0]
+	else: snp_analysis_type = control_type.split("_")[0]; control_parental = control_type.split("_")[1]
 
 	if snp_analysis_type == "f2wt":
 		if cross_type == "oc":
@@ -148,7 +143,7 @@ if workflow=="snp":
 			problems.append("This program do not support an experimental design in which an outcross is performed and the wild type F2 is used as control. Please see documentation for more details.")
 		else:
 			cross_type = "bc"
-			parental_used_as_control = "n/p"
+			control_parental = "n/p"
 			if data_source == "sim":
 				if is_ref_strain == "n/p":
 					error = 1
@@ -157,21 +152,21 @@ if workflow=="snp":
 				is_ref_strain = "n/p"
 
 	if snp_analysis_type == "par":
-		if cross_type == "n/p" or is_ref_strain== "n/p" or parental_used_as_control == "n/p": #Por el bien de los tontos: dividir en tres 
+		if cross_type == "n/p" or is_ref_strain== "n/p" or control_parental == "n/p": #Por el bien de los tontos: dividir en tres 
 			error = 1
 			if cross_type == "n/p": problems.append("Snp mode requires value oc/bc in cross_type")
 			if is_ref_strain == "n/p": problems.append("Snp mode requires value ref/noref in is_ref_strain") 
-			if parental_used_as_control == "n/p": problems.append("Snp mode requires value mut/nomut in parental_used_as_control") 
-		if cross_type == "oc" and is_ref_strain == "noref" and parental_used_as_control == "nomut":
+			if control_parental == "n/p": problems.append("Snp mode requires value mut/nomut in control_parental") 
+		if cross_type == "oc" and is_ref_strain == "noref" and control_parental == "nomut":
 			error = 1
 			problems.append("Unfortunatelly this software is not thought to allow the process of an outcross which is not in the reference background and the sequenced parental is not the pre-mutagenized one")
 		if cross_type == "bc" and is_ref_strain =="noref":
 			error = 1
 			problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.")
 		if cross_type == "bc" and is_ref_strain == "ref":
-			if parental_used_as_control != "mut":
+			if control_parental != "mut":
 				print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
-				parental_used_as_control = "mut"
+				control_parental = "mut"
 
 
 #If the analysis mode is insertions, a insertions sequence must be given
@@ -354,10 +349,9 @@ if error == 1:
 		print "-" + items
 	quit()	
 
+#                      1                    2                3                   4               5               6                7                8              9              10             11                      12                     13                     14                     15                       16                    17                 18                        19                       20              21                 22      
+master_program_input = project_name + " " + workflow + " " + data_source + " " + ref_seq + " " + ins_seq + " " + gff_file + " " + ann_file + " " + read_s + " " + read_f + " " + read_r + " " + lib_type_sample + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + lib_type_control + " " + is_ref_strain + " " + cross_type + " " + snp_analysis_type + " " + control_parental + " " + sim_mut + " " + sim_recsel + " " + sim_seq
 
-master_program_input = project_name + " " + workflow + " " + data_source + " " + lib_type_sample + " " + ref_seq + " " + ins_seq + " " + read_s + " " + read_f + " " + read_r + " " + gff_file + " " + ann_file + " " + sim_mut + " " + sim_recsel + " " + sim_seq + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + cross_type+ " "+ is_ref_strain + " "+ control_type + " "+ snp_analysis_type + " " + lib_type_control 
-
-print "Succes!"
 print master_program_input
 
 call("./easymap.sh " + master_program_input, shell=True)

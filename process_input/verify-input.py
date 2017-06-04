@@ -38,11 +38,6 @@ if gnm_basename != None:
 	# Create a list with only the files that match the basename provided by the user and end in '.fa'
 	gnm_files = fnmatch.filter(input_files, '*' + gnm_basename + '.fa') # fnmatch filters a list using a string that accepts wildcards 
 
-	output = open('file', 'w')
-	for i in input_files: output.write(i + '\n')
-	for j in gnm_files: output.write(j + '\n')
-	output.close()
-
 	for gnm_file in gnm_files:
 		if os.stat('user_data/' + gnm_file).st_size == 0: # Checks whether the file is empty
 			gnm_result = 1
