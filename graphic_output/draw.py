@@ -402,7 +402,7 @@ def insertions_overview_and_histograms():
 				sp = line.split('\t')
 				contig = str(sp[1].strip()).lower()
 				insertion_pos = int(sp[2])
-				if contig == c[0].strip() and insertion_pos not in positions_list:
+				if contig == c[0].strip().lower() and insertion_pos not in positions_list:
 					positions_list.append(insertion_pos)
 
 		c.append(positions_list)
