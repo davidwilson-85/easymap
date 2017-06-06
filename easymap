@@ -32,7 +32,7 @@ if args.usage:
 	quit()
 
 if args.project_name == "n/p":
-	project_name = ""
+	project_name = "project"
 else: project_name = args.project_name
 
 if args.workflow == "n/p":
@@ -202,10 +202,13 @@ if data_source == "sim":
 		values = sim_mut.split("+")
 		if len(values) == 2:
 			number = int(values[0])
-			options = ["e", "d"]
+			options = ["e", "d","li"]
 			if values[1] not in options and workflow == "snp":
 				error =1
 				problems.append("sim_mut requires a second parameter that has to be <  e  > if the mode is EMS mutations or <  d  > if the mode is drift mutations")
+				if values[1] == "li":
+					error =1
+					problems.append("sim_mut takes a second parameter that has to be <  li  > in insertion mode. A non-defined parameter is also accepted")	
 		elif len(values)== 1 and workflow == "ins":
 			number = int(values[0])
 			sim_mut = sim_mut+"+li"

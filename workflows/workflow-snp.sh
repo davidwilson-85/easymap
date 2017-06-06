@@ -166,7 +166,7 @@ echo $(date) ': F2 data variant calling finished.' >> $my_log_file
 
 #Groom vcf
 {
-	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va 
+	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va 2>> $my_log_file
 
 } || {
 	echo $(date) ': Error during execution of vcf-groomer.py with F2 data.' >> $my_log_file
@@ -179,7 +179,7 @@ echo $(date) ': VCF grooming of F2 data finished.' >> $my_log_file
 
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 2>> $my_log_file
 
 } || {
 	echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -194,7 +194,7 @@ echo $(date) ': First VCF filtering step of F2 data finished.' >> $my_log_file
 
 
 {
-python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt
+python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt 2>> $my_log_file
 } || {
 	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
 	#exit_code=1
@@ -203,7 +203,7 @@ python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -ba
 }
 
 {
-python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequency_depth_alignment_distribution_sample.png 
+python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequency_depth_alignment_distribution_sample.png 2>> $my_log_file
 } || {
 	echo $(date) ': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
 	#exit_code=1
@@ -283,7 +283,7 @@ echo $(date) ': Control data variant calling finished' >> $my_log_file
 
 #Groom vcf
 {
-	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/control_raw.va 
+	python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/control_raw.va 2>> $my_log_file
 
 } || {
 	echo $(date) ': Error during execution of vcf-groomer.py with control data.' >> $my_log_file
@@ -296,7 +296,7 @@ echo $(date) ': VCF grooming of control data finished.' >> $my_log_file
 
 #Execute vcf filter
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 2>> $my_log_file
 
 } || {
 	echo $(date) ': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -312,7 +312,7 @@ echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_f
 
 
 {
-python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt
+python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt 2>> $my_log_file
 } || {
 	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
 	#exit_code=1
@@ -320,7 +320,7 @@ python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -ba
 	#exit
 }
 {
-python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt -out $f3/frequency_depth_alignment_distribution_control.png 
+python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt -out $f3/frequency_depth_alignment_distribution_control.png 2>> $my_log_file
 } || {
 	echo $(date) ': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
 	#exit_code=1
@@ -371,7 +371,7 @@ then
 
 	#Execute vcf operations
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
 
 	} || {
 		echo $(date) ': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -385,7 +385,7 @@ fi
 if [ $snp_analysis_type == f2wt ]
 then
 	{
-		python $location/scripts_snp/af_comparison/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs
+		python $location/scripts_snp/af_comparison/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs 2>> $my_log_file
 
 	} || {
 		echo $(date) ': Error during execution of af_comparison.py .' >> $my_log_file
@@ -414,7 +414,7 @@ fi
 
 #Execute vcf analysis 
 {
-	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+	python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type 2>> $my_log_file  
 
 
 } || {
@@ -430,7 +430,7 @@ echo $(date) ': Mutation mapping module finished.' >> $my_log_file
 
 #Execute vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequency > 0.8 and corresponding to EMS mutations
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_filtered.va -b $f1/F2_filtered2.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 2>> $my_log_file
 
 } || {
 	echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
@@ -475,7 +475,7 @@ then
 
 	#Execute vcf operations
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered2.va -b $f1/control_filtered.va -c $f1/final_variants.txt -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered2.va -b $f1/control_filtered.va -c $f1/final_variants.txt -mode $my_operation_mode -primary 1 2>> $my_log_file 
 
 	} || {
 		echo $(date) ': Error during second execution of operations.py .' >> $my_log_file
@@ -493,7 +493,7 @@ then
 
 	#Execute vcf operations
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered2.va -b $f1/control_filtered.va -c $f1/final_variants.txt -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered2.va -b $f1/control_filtered.va -c $f1/final_variants.txt -mode $my_operation_mode -primary 1  2>> $my_log_file
 
 	} || {
 		echo $(date) ': Error during execution of operations.py .' >> $my_log_file
@@ -509,7 +509,7 @@ fi
 
 #snp-to-varanalyzer.py
 {
-	python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
+	python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	2>> $my_log_file
 	
 } || {
 	echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
@@ -526,7 +526,7 @@ echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
+	python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name 2>> $my_log_file
 
 } || {
 	echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
@@ -578,7 +578,7 @@ then
 fi
 
 {
-	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min
+	python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min 2>> $my_log_file
 
 } || {
 	echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
@@ -598,7 +598,7 @@ echo $(date) ': THird VCF filtering step finished.' >> $my_log_file
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 	
 } || {
 	echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file

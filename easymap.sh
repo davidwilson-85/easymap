@@ -158,7 +158,7 @@ echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
 echo "" >> $my_log_file
 
 echo "Program:												" $0 >> $my_log_file
-echo "project name:										" $1 >> $my_log_file
+echo "Project name:										" $1 >> $my_log_file
 echo "Workflow:											" $2 >> $my_log_file
 echo "Data source:										" $3 >> $my_log_file
 echo "Reference sequence:								" $4 >> $my_log_file
@@ -204,13 +204,13 @@ fi
 
 if [ $data_source == 'exp' ]; then
 	if [ $lib_type_sample == 'se' ]; then
-		read_s=$f0/$7
-		read_s_ctrl=$f0/${15}
+		read_s=$f0/$8
+		read_s_ctrl=$f0/${12}
 	else
-		read_f=$f0/$8
-		read_r=$f0/$9
-		read_f_ctrl=$f0/${16}
-		read_r_ctrl=$f0/${17}
+		read_f=$f0/$9
+		read_r=$f0/${10}
+		read_f_ctrl=$f0/${13}
+		read_r_ctrl=$f0/${14}
 	fi
 fi
 
@@ -222,12 +222,12 @@ echo $(date)": STARTING INPUT PROCESSING..." >> $my_log_file
 
 process_input=`./process_input/process-input.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_ctrl $read_f_ctrl $read_r_ctrl $ref_seq $lib_type_ctrl`
 
-
 if [ $process_input == 0 ]; then
 	echo $(date)": All inputs correct." >> $my_log_file
 else 
 	echo $(date)": One or more inputs incorrect (see details above in this log). Quit." >> $my_log_file
 	echo 'status:error' >> $my_status_file
+	echo "Easymap analysis failed. See log file for more info"
 	exit
 fi
 
@@ -244,6 +244,7 @@ if [ $data_source == 'sim' ]; then
 	else 
 		echo $(date)": Simulation failed (see details above in this log). Quit." >> $my_log_file
 		echo 'status:error' >> $my_status_file
+		echo "Easymap analysis failed. See log file for more info"
 		exit
 	fi
 fi
@@ -260,6 +261,7 @@ if [  $workflow == 'ins' ]; then
 		echo $(date)": Analysis workflow finished correctly." >> $my_log_file
 	else 
 		echo $(date)": Analysis workflow failed (see details above in this log)." >> $my_log_file
+		echo "Easymap analysis failed. See log file for more info"
 		echo 'status:error' >> $my_status_file
 		exit
 	fi
@@ -273,6 +275,7 @@ if [  $workflow == 'snp' ]; then
 		echo $(date)": Analysis workflow finished correctly." >> $my_log_file
 	else 
 		echo $(date)": Analysis workflow failed (see details above in this log)." >> $my_log_file
+		echo "Easymap analysis failed. See log file for more info"
 		echo 'status:error' >> $my_status_file
 		exit
 	fi
@@ -293,4 +296,5 @@ fi
 
 echo $(date)": Execution of project {" $project_name "} finished." >> $my_log_file
 echo 'status:finished' >> $my_status_file
+echo "Easymap analysis properly completed."
 
