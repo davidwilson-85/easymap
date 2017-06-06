@@ -140,6 +140,9 @@ fi
 #SAM to BAM
 {
 	$location/samtools1/samtools sort $f1/alignment1.sam > $f1/alignment1.bam 2> $f2/sam-to-bam_std2.txt
+	
+	rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.sam
+
 
 } || {
 	echo 'Error transforming SAM to BAM.' >> $my_log_file
@@ -154,6 +157,7 @@ echo $(date) ': SAM to BAM finished.' >> $my_log_file
 {
 
 	$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_std.txt
+
 
 } || {
 	echo $(date) ': Error during variant-calling of F2 data.' >> $my_log_file
@@ -195,6 +199,11 @@ echo $(date) ': First VCF filtering step of F2 data finished.' >> $my_log_file
 
 {
 python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt
+
+
+################################QUITAR LUEGO
+rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.bam
+
 } || {
 	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
 	#exit_code=1
@@ -258,6 +267,8 @@ fi
 {
 	$location/samtools1/samtools sort $f1/alignment1P.sam > $f1/alignment1P.bam 2> $f2/sam-to-bam_std2.txt
 
+	rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.sam
+
 } || {
 	echo $(date) ': Error transforming SAM to BAM' >> $my_log_file
 	exit_code=1
@@ -313,6 +324,9 @@ echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_f
 
 {
 python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt
+################################QUITAR LUEGO
+rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.bam
+
 } || {
 	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
 	#exit_code=1
