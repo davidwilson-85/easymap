@@ -282,7 +282,7 @@ if [  $workflow == 'snp' ]; then
 fi
 
 # Create HTML report
-#{
+# {
 #	python graphic_output/create-report.py -project_name $project_name 
 #
 #} || {
