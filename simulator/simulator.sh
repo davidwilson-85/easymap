@@ -95,7 +95,7 @@ parental_genome_to_sequence=${11}
 if [ $analysis_type == 'ins' ]; then
 	# Run sim-mut.py
 	{
-		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain
+		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $ref_seqs_merged_file -ins $ins_seq -out $sim_mut_output_folder_mutantstrain 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of mutagenesis failed. Quit." >> $my_log_file
@@ -107,7 +107,7 @@ if [ $analysis_type == 'ins' ]; then
 	
 	# Run sim-seq.py. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 	{
-		python simulator/sim-seq.py -input_folder $sim_mut_output_folder_mutantstrain/mutated_genome -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+		python simulator/sim-seq.py -input_folder $sim_mut_output_folder_mutantstrain/mutated_genome -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of high-throughput sequencing failed. Quit." >> $my_log_file
@@ -124,7 +124,7 @@ if [ $analysis_type == 'snp' ]; then
 
 	# Calculate genome length to know how many natural SNPs to introduce
 	{
-		genome_length=`python simulator/calculate-genome-length.py -gnm $ref_seqs_merged_file`
+		genome_length=`python simulator/calculate-genome-length.py -gnm $ref_seqs_merged_file 2>> $my_log_file`
 
 	} || {
 		echo $(date)": simulator/calculate-genome-length.py failed. Quit." >> $my_log_file
@@ -136,14 +136,14 @@ if [ $analysis_type == 'snp' ]; then
 	# The amount is based on observed natural mutations between NCBI reference sequence and
 	#	- Columbia-0 (reference strain): 0.001% bases of the genome contain an SNP
 	#	- Landsberg (non-reference strain): 0.42% bases of the genome contain an SNP
-	nbr_natural_mutations_ref=`python -c "print(int(round($genome_length * 0.000010084)))"`
-	nbr_natural_mutations_noref=`python -c "print(int(round($genome_length * 0.0042016807)))"`
+	nbr_natural_mutations_ref=`python -c "print(int(round($genome_length * 0.000010084)))" 2>> $my_log_file`
+	nbr_natural_mutations_noref=`python -c "print(int(round($genome_length * 0.0042016807)))" 2>> $my_log_file`
 
 	# Using as input the reference sequence provided by user, simulate ref-lab and noref-lab sequences 
 	
 	# Run sim-mut.py to create ref-lab strain. Mutate 0.001% of bases.
 	{
-		python simulator/sim-mut.py -nbr $nbr_natural_mutations_ref -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_ref_lab
+		python simulator/sim-mut.py -nbr $nbr_natural_mutations_ref -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_ref_lab 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of mutagenesis to ref-lab strain failed. Quit." >> $my_log_file
@@ -155,7 +155,7 @@ if [ $analysis_type == 'snp' ]; then
 
 	# Run sim-mut.py to create noref-lab strain. Mutate only 0.4% of bases.
 	{
-		python simulator/sim-mut.py -nbr $nbr_natural_mutations_noref -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_noref_lab
+		python simulator/sim-mut.py -nbr $nbr_natural_mutations_noref -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_noref_lab 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of mutagenesis to noref-lab strain failed. Quit." >> $my_log_file
@@ -174,7 +174,7 @@ if [ $analysis_type == 'snp' ]; then
 	
 	# Run sim-mut.py to create mutant strain
 	{
-		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $template -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos
+		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $template -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of mutagenesis to create the mutant strain failed. Quit." >> $my_log_file
@@ -206,7 +206,7 @@ if [ $analysis_type == 'snp' ]; then
 	
 		# Run sim-recsel.py to create recombinant chromosomes selected to carry the mutation
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 2>> $my_log_file 
 
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection failed. Quit." >> $my_log_file
@@ -220,7 +220,7 @@ if [ $analysis_type == 'snp' ]; then
 		
 		# Run sim-recsel.py to create the F2 recessive population
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 2>> $my_log_file
 		
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection to create the F2 recessive population failed. Quit." >> $my_log_file
@@ -232,7 +232,7 @@ if [ $analysis_type == 'snp' ]; then
 		
 		# Run sim-recsel.py to create the F2 dominant population
 		{
-			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_dominant -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod wt -nrec $nbr_rec_chrs 
+			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_dominant -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod wt -nrec $nbr_rec_chrs 2>> $my_log_file
 		
 		} || {
 			echo $(date)": Simulation of recombination and phenotype selection to create the F2 dominant population failed. Quit." >> $my_log_file
@@ -264,7 +264,7 @@ if [ $analysis_type == 'snp' ]; then
 	
 	# Run sim-seq.py on control genome. The input is a folder because the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 	{
-		python simulator/sim-seq.py -input_folder $input_folder_control -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+		python simulator/sim-seq.py -input_folder $input_folder_control -out $sim_seq_output_folder_control -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of high-throughput sequencing reads on control genome failed. Quit." >> $my_log_file
@@ -276,7 +276,7 @@ if [ $analysis_type == 'snp' ]; then
 
 	# Run sim-seq.py on F2 recombinant population. The input is a folder becasuse the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 	{
-		python simulator/sim-seq.py -input_folder $sim_recsel_output_folder_recessive -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength
+		python simulator/sim-seq.py -input_folder $sim_recsel_output_folder_recessive -out $sim_seq_output_folder_sample -mod $lib_type -rd $read_depth -rlm $read_length_mean -rls $read_length_sd -flm $fragment_length_mean -fls $fragment_length_sd -ber $basecalling_error_rate -gbs $gc_bias_strength 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of high-throughput sequencing on F2 recombinant population failed. Quit." >> $my_log_file
