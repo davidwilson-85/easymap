@@ -60,6 +60,9 @@ sim_mut = args.sim_mut
 sim_recsel = args.sim_recsel
 sim_seq = args.sim_seq
 control_type = args.control_type
+if control_type == "n/p":
+	control_parental = "n/p"
+	snp_analysis_type = "n/p"
 cross_type = args.cross_type
 reads_control = args.reads_control
 is_ref_strain = args.is_ref_strain
@@ -114,7 +117,7 @@ if len(ref_seq.split(" ")) != 1:
 	problems.append("ref_seq requires a string without spaces in it")
 
 # Check if there are .fa files in the folder user_data that have the string provided by the user as basename
-refs_in_input_files = fnmatch.filter(input_files, '*.'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
+refs_in_input_files = fnmatch.filter(input_files, '*'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
 
 if not refs_in_input_files:
 	error = 1

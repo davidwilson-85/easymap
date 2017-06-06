@@ -260,7 +260,7 @@ if [ $analysis_type == 'snp' ]; then
 		input_folder_control=$sim_recsel_output_folder_dominant
 	fi
 	
-	echo $input_folder_control >> $my_log_file
+	
 	
 	# Run sim-seq.py on control genome. The input is a folder because the program works with all the fasta files that finds in a folder. This is necessary to simulate the sequencing of bulked DNA.
 	{

@@ -1,0 +1,1 @@
+./easymap -P project_name -w snp -rs at -d exp -g complete.gff  -r ref -c oc -t par_nomut -C OC.bg.reads1.fq,OC.bg.reads2.fq -S OC.fg.reads1.fq,OC.fg.reads2.fq
