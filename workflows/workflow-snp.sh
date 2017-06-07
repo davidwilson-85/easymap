@@ -624,4 +624,4 @@ echo $(date) ': Graphic output created.' >> $my_log_file
 
 
 
-#HTML file
+#HTML file creation
