@@ -8,22 +8,23 @@ import argparse, os, fnmatch
 from subprocess import call
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--usage', "-u",action='store_true',dest = 'usage')
-parser.add_argument('--project-name', "-n", action="store",default= '', dest = 'project_name')
-parser.add_argument('--workflow', "-w" ,action="store", default = "n/p", dest = 'workflow', choices=set(('snp','ins')))
-parser.add_argument('--data_source', "-d", action="store",default = 'exp', dest = 'data_source', choices=set(('sim','exp'))) #Not required anymore
-parser.add_argument('--reference-sequence', "-r", action="store",default ="n/p",dest = 'ref_seq') 
-parser.add_argument('--ins_seq', "-i", action="store",default = 'n/p', dest = 'ins_seq') 
-parser.add_argument('--gff_file',"-g",action="store",default = "n/p", dest = 'gff_file')
-parser.add_argument('--ann_file', "-a", action="store",default = 'n/p', dest = 'ann_file')
-parser.add_argument('--reads-problem', "-P", action="store",default = 'n/p', dest = 'reads_sample')
-parser.add_argument('--reads-control',"-C", action="store", default = 'n/p', dest = 'reads_control')
-parser.add_argument('--is-ref-strain',"-rs", action="store", default = 'n/p', dest = 'is_ref_strain', choices=set(('ref','noref')))
-parser.add_argument('--cross-type', "-cr", action="store",default = 'n/p', dest = 'cross_type', choices=set(('oc','bc')))
-parser.add_argument('--control-type',"-co", action="store", default = 'n/p', dest ="control_type", choices=set(("par_mut","par_nomut","f2wt")))
-parser.add_argument('--sim_mut', "-sm", action="store",default = 'n/p', dest = 'sim_mut')
-parser.add_argument('--sim-recsel',"-sr", action="store", default = 'n/p', dest = 'sim_recsel')
-parser.add_argument('--sim-seq', "-ss", action="store", default = 'n/p', dest = 'sim_seq')
+parser.add_argument('--usage', '-u', action = 'store_true', dest = 'usage')
+parser.add_argument('--project-name', '-n', action = 'store', default = '', dest = 'project_name')
+parser.add_argument('--workflow', '-w', action = 'store', default = 'n/p', dest = 'workflow', choices = set(('snp','ins')))
+#parser.add_argument('--data_source', '-d', action = 'store', default = 'exp', dest = 'data_source', choices = set(('sim','exp'))) #Not required anymore
+parser.add_argument('--simulate-data', '-sim', action = 'store_true', dest = 'simulate')
+parser.add_argument('--reference-sequence', '-r', action = 'store', default = 'n/p', dest = 'ref_seq') 
+parser.add_argument('--ins_seq', '-i', action = 'store', default = 'n/p', dest = 'ins_seq')
+parser.add_argument('--gff_file','-g', action = 'store', default = 'n/p', dest = 'gff_file')
+parser.add_argument('--ann_file', '-a', action = 'store', default = 'n/p', dest = 'ann_file')
+parser.add_argument('--reads-problem', '-P', action = 'store', default = 'n/p', dest = 'reads_sample')
+parser.add_argument('--reads-control','-C', action = 'store', default = 'n/p', dest = 'reads_control')
+parser.add_argument('--is-ref-strain','-rs', action = 'store', default = 'n/p', dest = 'is_ref_strain', choices = set(('ref','noref')))
+parser.add_argument('--cross-type', '-cr', action = 'store', default = 'n/p', dest = 'cross_type', choices = set(('oc','bc')))
+parser.add_argument('--control-type','-co', action = 'store', default = 'n/p', dest ='control_type', choices = set(('par_mut','par_nomut','f2wt')))
+parser.add_argument('--sim_mut', '-sm', action = 'store',default = 'n/p', dest = 'sim_mut')
+parser.add_argument('--sim-recsel','-sr', action = 'store', default = 'n/p', dest = 'sim_recsel')
+parser.add_argument('--sim-seq', '-ss', action = 'store', default = 'n/p', dest = 'sim_seq')
 
 args = parser.parse_args()
 
@@ -48,10 +49,15 @@ if args.ref_seq == "n/p":
 	print "Please specify the name of the reference sequence file(s): -r <name>"
 	quit()
 
-
 workflow = args.workflow
 gff_file = args.gff_file
-data_source = args.data_source
+
+# Fill the vaiable data_source with 'sim' or 'exp' depending on whether the user used or not the --simulate/-sim flag
+if args.simulate:
+	data_source = 'sim'
+else:
+	data_source = 'exp'
+
 ref_seq = args.ref_seq
 ins_seq = args.ins_seq
 reads_sample = args.reads_sample
@@ -359,5 +365,5 @@ if error == 1:
 master_program_input = project_name + " " + workflow + " " + data_source + " " + ref_seq + " " + ins_seq + " " + gff_file + " " + ann_file + " " + read_s + " " + read_f + " " + read_r + " " + lib_type_sample + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + lib_type_control + " " + is_ref_strain + " " + cross_type + " " + snp_analysis_type + " " + control_parental + " " + sim_mut + " " + sim_recsel + " " + sim_seq
 
 print master_program_input
-
+quit()
 call("./easymap.sh " + master_program_input, shell=True)

@@ -50,13 +50,13 @@ from string import maketrans
 
 # Parse command arguments
 parser = argparse.ArgumentParser()
+parser.add_argument('-pname', action="store", dest='project_name')
 parser.add_argument('-itp', action="store", dest='input_type', choices=set(('snp','lim')), required=True)
 parser.add_argument('-con', action="store", dest='contigs_source', required=True)
 parser.add_argument('-gff', action="store", dest='gff_source', required=True)
 parser.add_argument('-var', action="store", dest='variants_source', required=True)
 parser.add_argument('-rrl', action="store", dest='regulatory_region_length', required=True) # To turn off, set to 0
 parser.add_argument('-ann', action="store", dest='gene_ann_source')
-parser.add_argument('-pname', action="store", dest='project_name')
 
 args = parser.parse_args()
 

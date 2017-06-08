@@ -543,7 +543,7 @@ echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
 	python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
 
 } || {
-	echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
+	echo $(date) ': Error during execution of varanalyzer.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
