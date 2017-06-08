@@ -622,6 +622,6 @@ echo $(date) ': THird VCF filtering step finished.' >> $my_log_file
 }
 echo $(date) ': Graphic output created.' >> $my_log_file
 
-
+echo $exit_code
 
 #HTML file creation
