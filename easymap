@@ -365,5 +365,5 @@ if error == 1:
 master_program_input = project_name + " " + workflow + " " + data_source + " " + ref_seq + " " + ins_seq + " " + gff_file + " " + ann_file + " " + read_s + " " + read_f + " " + read_r + " " + lib_type_sample + " " + read_s_control + " " + read_f_control + " " + read_r_control + " " + lib_type_control + " " + is_ref_strain + " " + cross_type + " " + snp_analysis_type + " " + control_parental + " " + sim_mut + " " + sim_recsel + " " + sim_seq
 
 print master_program_input
-quit()
+
 call("./easymap.sh " + master_program_input, shell=True)
