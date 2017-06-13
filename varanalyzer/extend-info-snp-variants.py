@@ -1,46 +1,11 @@
 #!/usr/bin/python
-#
-# This program accepts a list of variants (two modes available: SNPs [snp] / large insertions [lim])
-# and returns their putative effect on genes and proteins. For that it needs a gff file and a fasta file
-# of the genome.
-# 
-# It is optimized for samples where a significant part of the mutation positions do not
-# lie within transcribed regions. It does a first screening to detect all mutation positions that
-# do not lie within transcribed regions (here only 'mrna' features from file gff are loaded, saving work)
-# and then does a second (much more computationally demanding) analysis only focused on mutations 
-# that do lie within transcribed regions. First, mutation positions are tested for untranscribed exonic
-# regions and for introns (here all cds and UTR features from gff are loaded into memory). Finally, only
-# if mutation positions are in coding sequences, it is analyzed their effect on a protein (computationally
-# intensive and requires use of fasta chromosomes). This way of conditional operation avoids doing unnecessary
-# work. The goal is to reduce the long execution time of previous version of this program, so it can be used
-# with hundreds of thousands of mutations.
-#
-# The input variants must be in the following format (... = other fields can be present here):
-# snp mode: CHR\tPOS\tREF\tALT\t...
-# lim mode: CHR\tPOS\t-\t-\t...
-#
-# In its current state, the program needs all contigs to be in a single fasta file. The helper script
-# 'fasta_parser_v1.py' converts from multiple single-contig files to a single multi-contig one.
-#
-# All arguments are required except '-ann'.
-#
-# Adding functional info to the gene hits is optional and requires a 2-column file with the
-# following format: gene\tdescription. To turn it on use argument '-ann <source of functional descriptions>'.
-#
-# TO DO: maybe check
-# a few ref letters in the input to see if they match the reference, consider the possibility of analyzing
-# indels as if they were lims (just tell where the protein is broken).
-#
-# David Wilson - dws1985@hotmail.com
-#
-#
+
+"""
 
 
-###################################################
-## TO DO:
-## -ADD SPLICING IN EXONS!!!!!!!!!!!!!!!!!!!!
-## -Calculate distance to predicted position of the causal mutation
-###################################################
+
+
+"""
 
 
 
@@ -409,14 +374,14 @@ if input_type == 'snp':
 # Retrieve gene functional annotation and create final output
 
 # Create output file
-output = open(project + '/3_workflow_output/variants.txt', 'w')
+output = open(project + '/3_workflow_output/final-variants3.txt', 'w')
 
 # If no gene annotation file provided, simply print 'variants_info2' to output file.
 if gene_ann_source == None:
 	if input_type == 'lim':
-		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\n')
+		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')
 	if input_type == 'snp':
-		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\n')
+		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tgene_annotation_info\n')
 		
 	for variant in variants_info2:	
 		for index, field in enumerate(variant):
@@ -425,7 +390,8 @@ if gene_ann_source == None:
 			else:
 				output.write('\t' + str(field))
 		
-		output.write('\n')
+		output.write('\t-\n')
+
 	output.close()	
 
 # If genome annotation file provided, merge that info with variants_info2 i a new list called 'variants_info3'
@@ -443,7 +409,7 @@ else:
 	for variant_info2 in variants_info2:
 		
 		# First, determine if the variant has interrupted a gene
-		hit_gene = 0
+		hit_gene = ''
 		try:
 			hit_gene = variant_info2[9][:-2]
 		except IndexError:
@@ -451,17 +417,19 @@ else:
 		
 		# If the variant interrupts a gene, search for the gene in 'ann_array', and, if found,
 		# get any functional info available. Then combine info in 'variants_info3'
-		if hit_gene != 0:
-			ann_result = None
+		
+		if hit_gene != '':
+			# Default value
+			ann_result = 'Gene not in file provided'
 			
 			for ann_gene in ann_array:
 				ann_fields = ann_gene.split('\t')
-				if hit_gene == ann_fields[0]:
-					ann_result = ann_fields[1] + '. ' + ann_fields[2]
-				
-				if ann_result == None:
-					ann_result = 'Gene not found in gene annotation file provided'
-			
+				if hit_gene == ann_fields[0].strip('\n'):
+					ann_info_fields = ann_fields[1:]
+					ann_info_string = '; '.join(ann_info_fields)
+					if ann_info_string == '': ann_info_string = 'No info in file provided'
+					ann_result = ann_info_string.strip('\n')
+
 			# Combine info and append it to 'variants_info3'
 			if input_type == 'lim':
 				condensed_info2 = variant_info2[0], variant_info2[1], variant_info2[2], variant_info2[3], variant_info2[4], variant_info2[5], variant_info2[6], variant_info2[7], variant_info2[8], variant_info2[9], variant_info2[10], variant_info2[11], variant_info2[12], variant_info2[13], ann_result
@@ -472,6 +440,7 @@ else:
 		
 		# If the variant does not interrupt any gene, just copy its info from variants_info2
 		else:
+			tmp_variant_info2_list = list(variant_info2); tmp_variant_info2_list.append('-'); variant_info2 = tuple(tmp_variant_info2_list)
 			variants_info3.append(variant_info2)
 	
 	if input_type == 'lim':
@@ -488,5 +457,4 @@ else:
 		
 		output.write('\n')
 	output.close()
-
 

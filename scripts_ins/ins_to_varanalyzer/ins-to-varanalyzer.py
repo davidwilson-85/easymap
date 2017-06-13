@@ -31,7 +31,7 @@ for i, line in enumerate(lines):
 #Then I loop through the insertion list, and take the highest RD value:
 for ins in insertion_list:
 	max_rd = 0
-	for i, line in enumerate(lines): 
+	for line in lines: 
 		if not line.startswith('@'):
 			sp = line.split()
 			if sp[0] == 'LOCAL' and sp[2].strip() == ins and max_rd < int(sp[4]):
