@@ -268,7 +268,7 @@ if [  $workflow == 'ins' ]; then
 fi
 
 if [  $workflow == 'snp' ]; then
-	workflow_result=`./workflows/workflow-snp-v2.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_ctrl $read_f_ctrl $read_r_ctrl $cross_type $is_ref_strain $control_parental $snp_analysis_type $lib_type_ctrl` 
+	workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_ctrl $read_f_ctrl $read_r_ctrl $cross_type $is_ref_strain $control_parental $snp_analysis_type $lib_type_ctrl` 
 	
 
 	if [ $workflow_result == 0 ]; then
