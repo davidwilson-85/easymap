@@ -28,6 +28,9 @@ f_input = args.f_input
 output = args.output
 f3 = open(output, 'w')
 
+
+
+
 #This function enables to obtain data regarding chromosomes and lenght of the,
 def read_fasta(fp):
 	name, seq = None, []
@@ -71,4 +74,41 @@ for chr in ch:
 	intersection = [x for x in list_wt if x in set_2]
 
 	for i in intersection:
-		f3.write( str(chr) + '\t' + str(i) + '\t' + str(dic_mut[i][0]) +'\t' +  str(dic_mut[i][1]) +'\t' +  str(dic_mut[i][2]) + '\t' + str(dic_mut[i][3]) + '\t' + str(dic_mut[i][4]) + '\t' + str(dic_wt[i][3]) +'\t' +  str(dic_wt[i][4]) + '\n')
+	
+		af_mut = float(dic_mut[i][4])/(float(dic_mut[i][3])+float(dic_mut[i][4]))
+		af_wt = float(dic_wt[i][4])/(float(dic_wt[i][3])+float(dic_wt[i][4]))
+		
+		af_mut = int(af_mut * 1000)
+		af_wt = int(af_wt * 1000)
+		
+		if not af_mut in range((af_wt - 300), (af_wt + 300)): 
+			f3.write( str(chr) + '\t' + str(i) + '\t' + str(dic_mut[i][0]) +'\t' +  str(dic_mut[i][1]) +'\t' +  str(dic_mut[i][2]) + '\t' + str(dic_mut[i][3]) + '\t' + str(dic_mut[i][4]) + '\t' + str(dic_wt[i][3]) +'\t' +  str(dic_wt[i][4]) + '\n')
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

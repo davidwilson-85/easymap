@@ -140,92 +140,94 @@ def fa_vs_pos():
 				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
 				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
 				pos_img = int(int(sp[1])/scaling_factor_x) + 70
-				draw.ellipse((pos_img-1, fa_img-1, pos_img+1, fa_img+1), fill=(147, 147, 147))
+				draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(31, 120, 180))
 
 
-		if args.my_snp_analysis_type == 'f2wt':
+		if args.my_snp_analysis_type == 'f2wt' and args.my_mut == 'snp':
 			for l, line in enumerate(lines):
 				sp = line.split()
 				if i[0].lower() == sp[0].lower():
 					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(171, 219, 208))
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(64, 159, 65))
 
 
 		################################################################################################################################################################################################################
 		my_cross = str(args.my_cross)
 		#Boost / mm 																						
-	
-		binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
-		blines = binput.readlines()
+		
+		if args.my_mut == 'snp':
 
-		#Boost line
-		if my_cross == 'oc' :
-			for b, bline in enumerate(blines):
-				sp = bline.split()
-				if bline.startswith('!'):
-					boost_max = float(sp[3])
-			for b, bline in enumerate(blines):
-				sp = bline.split()					
-				if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
-					boost_value = float(sp[3].strip())/boost_max
-					boost_value_img = int(80/100.0*height) - int(boost_value/scaling_factor_y )
+			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
+			blines = binput.readlines()
 
-					window_position = int(sp[1])
-					window_position_img = int(window_position/scaling_factor_x) + 70
+			#Boost line
+			if my_cross == 'oc' :
+				for b, bline in enumerate(blines):
+					sp = bline.split()
+					if bline.startswith('!'):
+						boost_max = float(sp[3])
+				for b, bline in enumerate(blines):
+					sp = bline.split()					
+					if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+						boost_value = float(sp[3].strip())/boost_max
+						boost_value_img = int(80/100.0*height) - int(boost_value/scaling_factor_y )
 
-					try:
-						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=1)	
-						window_position_img_2 = window_position_img
-						boost_value_img_2 = boost_value_img
+						window_position = int(sp[1])
+						window_position_img = int(window_position/scaling_factor_x) + 70
 
-					except:
-						window_position_img_2 = window_position_img
-						boost_value_img_2 = boost_value_img
+						try:
+							draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=1)	
+							window_position_img_2 = window_position_img
+							boost_value_img_2 = boost_value_img
+
+						except:
+							window_position_img_2 = window_position_img
+							boost_value_img_2 = boost_value_img
+
+				window_position_img = None 
+				boost_value_img = None
+				window_position_img_2 = None 
+				boost_value_img_2 = None
+
+			#MM line
+			if my_cross == 'oc' :
+				for b, bline in enumerate(blines):
+					sp = bline.split()					
+					if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+						mm_value = float(sp[2].strip())
+						mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+						window_position = int(sp[1])
+						window_position_img = int(window_position/scaling_factor_x) + 70
+						try:
+							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
+							window_position_img_2 = window_position_img
+							mm_value_img_2 = mm_value_img
+						except:
+							window_position_img_2 = window_position_img
+							mm_value_img_2 = mm_value_img
+
+			if my_cross == 'bc' :
+				for b, bline in enumerate(blines):
+					sp = bline.split()					
+					if bline.startswith('@') and sp[3].lower().strip('>') == i[0].lower():
+						mm_value = float(sp[2].strip())
+						mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+						window_position = int(sp[1])
+						window_position_img = int(window_position/scaling_factor_x) + 70
+						try:
+							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
+							window_position_img_2 = window_position_img
+							mm_value_img_2 = mm_value_img
+						except:
+							window_position_img_2 = window_position_img
+							mm_value_img_2 = mm_value_img
 
 			window_position_img = None 
-			boost_value_img = None
+			mm_value_img = None
 			window_position_img_2 = None 
-			boost_value_img_2 = None
-
-		#MM line
-		if my_cross == 'oc' :
-			for b, bline in enumerate(blines):
-				sp = bline.split()					
-				if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
-					mm_value = float(sp[2].strip())
-					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
-					window_position = int(sp[1])
-					window_position_img = int(window_position/scaling_factor_x) + 70
-					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-					except:
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-
-		if my_cross == 'bc' :
-			for b, bline in enumerate(blines):
-				sp = bline.split()					
-				if bline.startswith('@') and sp[3].lower().strip('>') == i[0].lower():
-					mm_value = float(sp[2].strip())
-					mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
-					window_position = int(sp[1])
-					window_position_img = int(window_position/scaling_factor_x) + 70
-					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-					except:
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-
-		window_position_img = None 
-		mm_value_img = None
-		window_position_img_2 = None 
-		mm_value_img_2 = None
+			mm_value_img_2 = None
 
 		#Axes
 		draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
@@ -281,7 +283,17 @@ def fa_vs_pos():
 		draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
 
 		#save image, specifying the format with the extension
-		im.save(project + '/3_workflow_output/img_2_' + str(i[0]) + '.png')
+		if args.my_mut == 'snp':
+			im.save(project + '/3_workflow_output/img_2_mapping_' + str(i[0]) + '.png')
+
+		if args.my_mut == 'af_control':
+			im.save(project + '/3_workflow_output/img_2_control_' + str(i[0]) + '.png')
+
+		if args.my_mut == 'af_sample':
+			im.save(project + '/3_workflow_output/img_2_problem_' + str(i[0]) + '.png')
+
+		if args.my_mut == 'af_candidates':
+			im.save(project + '/3_workflow_output/img_2_candidates_' + str(i[0]) + '.png')
 
 
 #############################################################################################################
@@ -407,76 +419,6 @@ def insertions_overview_and_histograms():
 
 		c.append(positions_list)
 
-
-##################################33333333333333333##################################33333333333333333
-##################################33333333333333333##################################33333333333333333
-	'''
-	if args.mode == 'pe':
-		tag_list = list()
-		for i, line in enumerate(lines):
-			if not line.startswith('@'):	
-				sp = line.split('\t')
-				contig = str(sp[1].strip())
-				insertion = str(sp[2])
-				if '-' not in insertion:
-					tag = contig + '-' + insertion
-					if tag not in tag_list: 
-						tag_list.append(tag)
-		for c in superlist: 
-			position_list = list()
-			for t in tag_list:
-				n_reads = 1
-				p_reads = 0 		
-				for i, line in enumerate(lines):
-					if not line.startswith('@'): 
-						sp = line.split('\t')
-						contig = str(sp[1].strip())
-						insertion = str(sp[2])
-						if '-' not in insertion and sp[5].strip() == 'TOTAL' and contig == c[0].strip():
-							tag2 = contig + '-' + insertion
-							if tag2 == t:
-								n_reads = n_reads + 1
-								p_reads = p_reads + int(sp[3])											
-							else:
-								aprox_position = p_reads/n_reads
-					aprox_position = p_reads/n_reads
-				if aprox_position != 0: 
-					position_list.append(aprox_position)	
-			c.append(position_list)
-
-	elif args.mode == 'se':
-		tag_list = list()
-		for i, line in enumerate(lines):
-			if not line.startswith('@'):	
-				sp = line.split('\t')
-				contig = str(sp[1].strip())
-				insertion = str(sp[2])
-				if '-' not in insertion:
-					tag = contig + '-' + insertion
-					if tag not in tag_list: 
-						tag_list.append(tag)
-		for c in superlist: 
-			position_list = list()
-			tag2_list = list()
-			for t in tag_list:		
-				for i, line in enumerate(lines):
-					if not line.startswith('@'): 
-						sp = line.split('\t')
-						contig = str(sp[1].strip())
-						insertion = str(sp[2])
-						if '-' not in insertion and sp[5].strip() == 'TOTAL' and contig == c[0].strip():
-							tag2 = contig + '-' + insertion
-							if tag2 not in tag2_list: 
-								if tag2 == t:
-									position_list.append(int(sp[3]))
-									tag2_list.append(tag2)
-							else:
-								pass
-							
-			c.append(position_list)
-		'''
-##################################33333333333333333##################################33333333333333333
-##################################33333333333333333##################################33333333333333333
 
 	#initialize draw
 	draw = ImageDraw.Draw(im)
