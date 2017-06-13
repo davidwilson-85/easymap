@@ -38,4 +38,10 @@ for ins in insertion_list:
 				max_rd = int(sp[4])
 				chrom = sp[1].strip()
 				pos = sp[3].strip()
-	f2.write('lim' + '\t' + chrom + '\t' + pos + '\t' + '-' + '\t' + '-' + '\n')
+				direction = str(sp[5]).strip()
+	
+	if direction == 'LEFT'
+		f2.write('lim' + '\t' + chrom + '\t' + pos + '\t' + '-' + '\t' + '-' + '\n')
+	if direction == 'RIGHT'
+		pos = str(int(pos)-1)
+		f2.write('lim' + '\t' + chrom + '\t' + pos + '\t' + '-' + '\t' + '-' + '\n')

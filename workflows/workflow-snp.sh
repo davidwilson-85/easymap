@@ -947,11 +947,6 @@ fi
 
 
 
-#Depth alignment analysis
-
-#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
-
-
 #_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
 {
 python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt
@@ -961,18 +956,18 @@ rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.bam
 
 } || {
 	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
-	#exit_code=1
-	#echo $exit_code
-	#exit
+	exit_code=1
+	echo $exit_code
+	exit
 }
 
 {
 python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 
 } || {
 	echo $(date) ': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
-	#exit_code=1
-	#echo $exit_code
-	#exit
+	exit_code=1
+	echo $exit_code
+	exit
 }
 
 
@@ -984,19 +979,18 @@ rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.bam
 
 } || {
 	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
-	#exit_code=1
-	#echo $exit_code
-	#exit
+	exit_code=1
+	echo $exit_code
+	exit
 }
 {
 python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt -out $f3/frequence_depth_alignment_distribution_control.png 
 } || {
 	echo $(date) ': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
-	#exit_code=1
-	#echo $exit_code
-	#exit
+	exit_code=1
+	echo $exit_code
+	exit
 }
-
 
 
 #############TAKE A LOOK ON HOW MANY READS ARE NEEDED AND HOW TO DO THE SELECTION

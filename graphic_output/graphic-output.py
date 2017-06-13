@@ -42,12 +42,10 @@ if args.my_mut == 'af_candidates':
 
 
 if args.my_mut == 'snp':
-
 	#FA vs POS image
 	fa_vs_pos()
 	#Gene gene_plot
 	gene_plot()
-
 
 
 

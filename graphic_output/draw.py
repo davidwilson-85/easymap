@@ -49,9 +49,7 @@ def red(p):
 
 	elif len(str(p)) == 9:
 		r = str(p)[:3] + ' Mb'
-
 	return r; 
-
 
 
 
@@ -349,9 +347,10 @@ def insertions_overview_and_histograms():
 	num_contigs = 0
 	for c in superlist: 
 		num_contigs+=1
-	contigs_image_width = 200 * num_contigs
+	contigs_image_length = 65 * num_contigs + 60
 
-	im = Image.new("RGB", (contigs_image_width + 80, 600), (255,255,255))
+	im = Image.new("RGB", (1000, contigs_image_length+100), (255,255,255))
+
 
 	contig_source = args.input_f
 	# Function to parse fasta file (based on one of the Biopython IOs)
@@ -384,27 +383,28 @@ def insertions_overview_and_histograms():
 	except:
 		max_length = fastalist[0][1]
 
+	mb_max =  int(math.ceil(float(max_length)/1000000))
 
 	for c in superlist:
 		for l in fastalist:
 			if c[0] == l[0]:
 				c.append(l[1])
 
-
-	contigs_scaling_factor = max_length / 400.0
-
+	contigs_scaling_factor = mb_max*1000000 / 850.0
 
 	#translate real chromosome lengths into image i and f coordinates
 	contig_counter = 1
-	contig_yi_coord = 100
+	contig_xi_coord = 100
 
 	for c in superlist:
-		contig_x_coord = ((contigs_image_width / num_contigs) * contig_counter) - 100
-		contig_yf_coord = int(contig_yi_coord + c[1]/contigs_scaling_factor)
+
+		contig_xf_coord = int(contig_xi_coord + c[1]/contigs_scaling_factor)
+		contig_y_coord = ((contigs_image_length / num_contigs) * contig_counter) 
+
 		contig_counter +=1
-		c.append(contig_x_coord)
-		c.append(contig_yi_coord)
-		c.append(contig_yf_coord)
+		c.append(contig_y_coord)
+		c.append(contig_xi_coord)
+		c.append(contig_xf_coord)
 
 	#add insertions aproximate position to superlist
 	for c in superlist: 
@@ -418,7 +418,6 @@ def insertions_overview_and_histograms():
 					positions_list.append(insertion_pos)
 
 		c.append(positions_list)
-
 
 	#initialize draw
 	draw = ImageDraw.Draw(im)
@@ -434,38 +433,52 @@ def insertions_overview_and_histograms():
 
 	#Drawing the chromosomes:
 	for c in superlist:
-		previous_pos_y = 0
+		previous_pos_x = 0
 		previous_chr = 'none'
-		draw.line((c[2], c[3]) + (c[2], c[4]), fill=(31, 120, 180), width=13)
-		draw.text(((c[2] - tab), (c[3] - 60)), c[0], font=fnt3, fill=(0,0,0,255))
-		for i in c[5]:
-			d = abs(i/contigs_scaling_factor+contig_yi_coord - previous_pos_y)
-			if d > 21 or previous_chr != c[0]: 
-				draw.polygon([(c[2]+ 8, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]+18, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]+18, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
-				draw.line((c[2]+ 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.line((c[2]+ 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]+18, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
-				draw.line((c[2]+18, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]+18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.text(((c[2] + 28), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+		draw.line((c[3], c[2]) + (c[4], c[2]), fill=(31, 120, 180), width=13)
+		draw.text(((c[3]), (c[2] -55)), c[0], font=fnt3, fill=(0,0,0,255))
 
+		for i in c[5]:
+			d = abs(i/contigs_scaling_factor+contig_xi_coord - previous_pos_x)
+			if d > 21 or previous_chr != c[0]: 
+				draw.polygon([((i/contigs_scaling_factor+contig_xi_coord), (c[2]-8)), (((i/contigs_scaling_factor+contig_xi_coord)+10), (c[2]-18)), ((i/contigs_scaling_factor + contig_xi_coord)-10, c[2]-18)], fill = (200, 0, 0, 200))
+				draw.line((((i/contigs_scaling_factor+contig_xi_coord), (c[2]-8)), ((i/contigs_scaling_factor+contig_xi_coord)+10), (c[2]-18)), fill=256, width=1)
+				draw.line((((i/contigs_scaling_factor+contig_xi_coord)+10), (c[2]-18)) + ((i/contigs_scaling_factor + contig_xi_coord)-10, (c[2]-18)), fill=256, width=1) 
+				draw.line(((i/contigs_scaling_factor+contig_xi_coord), (c[2]-8)) + ((i/contigs_scaling_factor + contig_xi_coord)-10, (c[2]-18)), fill=256, width=1) 
+				draw.text(((i/contigs_scaling_factor+contig_xi_coord -4), (c[2]-35)), ( str(number)), font=fnt3, fill=(0,0,0,255))
 			else:
-				draw.polygon([(c[2]- 8, (i/contigs_scaling_factor+contig_yi_coord)), (c[2]-18, (i/contigs_scaling_factor+contig_yi_coord)+10), (c[2]-18, (i/contigs_scaling_factor + contig_yi_coord)-10)], fill = (200, 0, 0, 200))
-				draw.line((c[2]- 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.line((c[2]- 8, (i/contigs_scaling_factor+contig_yi_coord)) + (c[2]-18, (i/contigs_scaling_factor + contig_yi_coord)-10), fill=256, width=1) 
-				draw.line((c[2]-18, (i/contigs_scaling_factor + contig_yi_coord)-10) + (c[2]-18, (i/contigs_scaling_factor+contig_yi_coord)+10), fill=256, width=1) 
-				draw.text(((c[2] - 122), (i/contigs_scaling_factor+contig_yi_coord - 8)), ('Insertion ' + str(number)), font=fnt3, fill=(0,0,0,255))
+				draw.polygon([((i/contigs_scaling_factor+contig_xi_coord), (c[2]+8)), (((i/contigs_scaling_factor+contig_xi_coord)-10), (c[2]+18)), ((i/contigs_scaling_factor + contig_xi_coord)+10, c[2]+18)], fill = (200, 0, 0, 200))
+				draw.line((((i/contigs_scaling_factor+contig_xi_coord), (c[2]+8)), ((i/contigs_scaling_factor+contig_xi_coord)-10), (c[2]+18)), fill=256, width=1)
+				draw.line((((i/contigs_scaling_factor+contig_xi_coord)-10), (c[2]+18)) + ((i/contigs_scaling_factor + contig_xi_coord)+10, (c[2]+18)), fill=256, width=1) 
+				draw.line(((i/contigs_scaling_factor+contig_xi_coord), (c[2]+8)) + ((i/contigs_scaling_factor + contig_xi_coord)+10, (c[2]+18)), fill=256, width=1) 
+				draw.text(((i/contigs_scaling_factor+contig_xi_coord -4), (c[2]+20)), ( str(number)), font=fnt3, fill=(0,0,0,255))
 
 			number = number + 1
-			previous_pos_y = i/contigs_scaling_factor+contig_yi_coord
+			previous_pos_x = i/contigs_scaling_factor+contig_xi_coord
 			previous_chr = c[0]
+
 		#Chromosome caps
 		image_file = StringIO(open("./fonts/up_cap.png",'rb').read())
 		cap = Image.open(image_file)
-		im.paste(cap, (c[2]-6, c[3]-6))
+		im.paste(cap.rotate(90), (c[3], c[2]-6))
+		im.paste(cap.rotate(270), (c[4], c[2]-6))
 
-		im.paste(cap.rotate(180), (c[2]-6, c[4]))
+	#Axis
+	draw.line((100, contigs_image_length + 30) + (950, contigs_image_length + 30), fill=256, width=1)
 
+	mb = 850.0/mb_max
+	m = 100.0
+	tag = 'Position (Mb)'
+	num = 0
+	draw.text((480, contigs_image_length + 68), str(tag), font=fnt3, fill=256)
+	while int(m) in range(100, 951):
+		draw.line(( int(m), contigs_image_length + 28) + (int(m), contigs_image_length + 32), fill=256, width=1)
 
+		w, h = draw.textsize(str(num))
 
+		draw.text((int(m) - w/2 -2, contigs_image_length + 37), str(num), font=fnt3, fill=256)
+		num = num + 1
+		m = m + mb
 
 	im.save(project + "/3_workflow_output/insertions_overview.png")
 
@@ -534,8 +547,8 @@ def insertions_overview_and_histograms():
 
 
 			draw.text(((450), (795)), ('Nucleotide'), font=fnt3, fill=(0,0,0,255))
-			draw.text(((140), (155)), ('Paired-reads analysis'), font=fnt3, fill=(0,0,0,255))
-			draw.text(((140), (460)), ('Single-reads analysis'), font=fnt3, fill=(0,0,0,255))
+			draw.text(((140), (155)), ('Flanking unpaired alignments'), font=fnt3, fill=(0,0,0,255))
+			draw.text(((140), (460)), ('Flanking local alignments'), font=fnt3, fill=(0,0,0,255))
 
 			#Y axis label
 			label = Image.new("RGB", (150, 30), (255,255,255))
@@ -622,8 +635,8 @@ def insertions_overview_and_histograms():
 								cr_min = min(cr)
 								cr_max = max(cr)
 								draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
-								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
-								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 190)), fill=(150, 0, 150, 0), width=1)
+								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 119)), fill=(150, 0, 150, 0), width=1)
+								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 119)), fill=(150, 0, 150, 0), width=1)
 
 
 			#Axis anotations
@@ -662,6 +675,27 @@ def insertions_overview_and_histograms():
 				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
 				counter = counter + 10
 				y_p = int(y_p - (10/scaling_factor_y_paired))
+
+
+			#Legend________________________________________________________________________________________				<---------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 			#save image, specifying the format with the extension
@@ -996,8 +1030,8 @@ def gene_plot():
 
 		scale = 100
 		px_scale = float(scale/gene_scaling_factor)
-		draw.line((int(0.95*wide) - int(px_scale), int(290/350.0*height)) + (int(0.95*wide), int(290/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
-		draw.text((int(0.9*wide), int(300.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
+		draw.line((int(0.92*wide) - int(px_scale), int(250/350.0*height)) + (int(0.92*wide), int(250/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
+		draw.text((int(0.88*wide), int(257.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
 
 
 		#Insertion triangle and info
@@ -1017,7 +1051,7 @@ def gene_plot():
 			draw.polygon([(snp_pos, int(191/350.0*height)), (snp_pos - int(0.01*wide), int(191/350.0*height) + int(0.01*wide)), (snp_pos + int(0.01*wide), int(191/350.0*height) + int(0.01*wide))], fill = (200, 0, 0, 200))
 
 			#Aa change
-			if p[4][0].strip() != '-' : 																#		<---------------------------- DELETE THIS ARROW IF NO ERRORS COME FROM THIS LINE 
+			if p[4][0].strip() != '-' : 												
 				
 				draw.text((int(snp_pos - int(0.092*wide)), int(0.75*height)), (
 					str(p[4][0])+ ' (' + str(p[4][2]) +')' +  '    >    '  +
@@ -1028,14 +1062,13 @@ def gene_plot():
 				str(p[4][3]) +   '    >    '  +
 				str(p[4][4])), font=fnt4, fill=(0,0,0,255))   
 
-
-
 		#save image, specifying the format with the extension
+		w, h = im.size
 		if args.my_mut == 'lin':
-			im.save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[2]) + '_gene_' + str(p[3])+ '.png')
+			im.crop((90, 100, w-70, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[2]) + '_gene_' + str(p[3])+ '.png')
 
 		if args.my_mut == 'snp':
-			im.save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
+			im.crop((90, 100, w-70, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
 
 #############################################################################################################
 #																											#
