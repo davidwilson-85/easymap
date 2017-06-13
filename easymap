@@ -97,12 +97,12 @@ error = 0
 is_there_space = project_name.split(" ")
 if len(is_there_space) != 1:
 	error = 1
-	problems.append("Please select a project name without any space")
+	problems.append("Please select a project name (--project_name)(-n) whithout any empty space. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
 #Check whether user_data directory exists
 input_folder = "./user_data"
 if os.path.isdir(input_folder) == False:
 	error = 1
-	problems.append("Easymap could not find "+ input_folder + ". Please create the folder and place your input files inside. Please mind reference genome must be provided inside the path ./user_data/genome_ref")
+	problems.append("Easymap could not find "+ input_folder + ". Please create the folder and place your input files inside.")
 #THE FOLLOWING LINES ARE DEPRECATED
 #else:
 #	#Check whether there are reference file/s in 0_input/gnm_ref
@@ -123,28 +123,28 @@ input_files = os.listdir(input_folder)
 # First, check that the user string does not have any spaces or dots in it. We need the basename of the file (basename.fa) or files (1.basename.fa, 2.basename.fa, ...)
 if len(ref_seq.split(".")) != 1:
 	error = 1
-	problems.append("-rs requires a string without dots in it. Please refer to the the documentation")
+	problems.append("The reference sequence name (--reference-sequence)(-r) requires a string without any dots. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
 if len(ref_seq.split(" ")) != 1:
 	error = 1
-	problems.append("ref_seq requires a string without spaces in it")
+	problems.append("The reference sequence name (--reference-sequence)(-r) requires a string without any space. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
 
 # Check if there are .fa files in the folder user_data that have the string provided by the user as basename
 refs_in_input_files = fnmatch.filter(input_files, '*'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
 
 if not refs_in_input_files:
 	error = 1
-	problems.append("The reference sequence string provided to -rs doesn't match any .fa file in the folder user_data")
+	problems.append("The reference sequence string provided (--reference-sequence)(-r) does not match any <.fa> file in folder user_data.")
 
 #Check the existance of gff file in the appropiate folder
 if gff_file not in input_files:
 		error = 1
-		problems.append("gff file name provided is not in " + input_folder)
+		problems.append("The gff file name (--gff_file)(-g) provided is not in " + input_folder)
 
 #In case the user decides to give an annotation file, it will be checked whether it is in the corresponding place.
 if ann_file != "n/p":
 	if ann_file not in input_files:
 		error =1
-		problems.append("You have specify you want to use an annotation file (ann_file), but the name given has not been succesfully found in project/0_input directory")
+		problems.append("Annotation file has been specified to be used (--ann_file)(-a), but the name given has not been succesfully found in user_data")
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
 if workflow=="snp":
@@ -155,29 +155,29 @@ if workflow=="snp":
 	if snp_analysis_type == "f2wt":
 		if cross_type == "oc":
 			error = 1
-			problems.append("This program do not support an experimental design in which an outcross is performed and the wild type F2 is used as control. Please see documentation for more details.")
+			problems.append("This program does not support an experimental design in which an outcross is performed and a wild type F2-bulk is used as control. Please see web-based documentation regarding experimental designs for more details.")
 		else:
 			cross_type = "bc"
 			control_parental = "n/p"
 			if data_source == "sim":
 				if is_ref_strain == "n/p":
 					error = 1
-					problems.append("In order to use simulation data of snp with f2wt control line, you must provide is_ref_strain argument (ref/noref)")
+					problems.append("In order to use simulation data of snp with f2wt control line, it is necessary to provide --is-ref-strain / -rs argument as ref/noref. Please see web-based documentation regarding experimental designs for more details.")
 			else:
 				is_ref_strain = "n/p"
 
 	if snp_analysis_type == "par":
-		if cross_type == "n/p" or is_ref_strain== "n/p" or control_parental == "n/p": #Por el bien de los tontos: dividir en tres 
+		if cross_type == "n/p" or is_ref_strain== "n/p" or control_parental == "n/p": 
 			error = 1
-			if cross_type == "n/p": problems.append("Snp mode requires value oc/bc in cross_type")
-			if is_ref_strain == "n/p": problems.append("Snp mode requires value ref/noref in is_ref_strain") 
-			if control_parental == "n/p": problems.append("Snp mode requires value mut/nomut in control_parental") 
+			if cross_type == "n/p": problems.append("Snp mode requires value oc/bc in --cross-type / -cr")
+			if is_ref_strain == "n/p": problems.append("Snp mode requires value ref/noref in --is-ref-strain / -rs") 
+			if control_parental == "n/p": problems.append("Snp mode requires value par_mut/par_nomut in --control-type / -co") 
 		if cross_type == "oc" and is_ref_strain == "noref" and control_parental == "nomut":
 			error = 1
-			problems.append("Unfortunatelly this software is not thought to allow the process of an outcross which is not in the reference background and the sequenced parental is not the pre-mutagenized one")
+			problems.append("Unfortunatelly this software does not allow the process of an outcross which is not in the reference background using as a control a parental in a polymorfic background. Please see web-based documentation regarding experimental designs for more details.")
 		if cross_type == "bc" and is_ref_strain =="noref":
 			error = 1
-			problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.")
+			problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.Please see web-based documentation regarding experimental designs for more details.")
 		if cross_type == "bc" and is_ref_strain == "ref":
 			if control_parental != "mut":
 				print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
@@ -188,7 +188,7 @@ if workflow=="snp":
 if workflow == "ins":
 	if ins_seq not in input_files: #If ins_seq is not in input_folder it can be due to the fact ins_seq are not provided, in that case its value would be n/p, or due to the fact the name given is not located in such directory.
 		error = 1
-		problems.append("The mode insertion (ins) requires a insertion file in " + input_folder) #CORREGIR ERRORES, ESPECIFICAR COMO DEBE SER DADO EL ARCHIVO
+		problems.append("The mode insertion (ins) requires a insertion file in " + input_folder) 
 
 
 #If the user is not providing its own data, there are a number of extra parameters to fullfil, related to the simulation process: $sim_mut $sim_recsel $sim_seq
@@ -198,14 +198,14 @@ if data_source == "sim":
 	if workflow == "snp": 
 		if sim_mut == "n/p" or sim_recsel == "n/p" or sim_seq == "n/p" or snp_analysis_type == "n/p":
 			error = 1
-			if sim_mut == "n/p" : problems.append("Simulated snp data requires sim_mut parameter. Format: 40+e ; were the first number represents the number of mutations and the second character (e/d) if they are due to EMS or spontaniously") 
-			if sim_recsel == "n/p": problems.append("Simulated snp data requires sim_recsel parameter. Format 0,14;1,31/0,24;1,42+1,10000000+r+50; were the first long value should be between "" and represents the probability of suffering recombinations (first number is the number of times that recombines it is separed from the probability by a ;) and chromosomes are separed by / . The secondo parameter is the chormosome and the position where the causal mutation will be held  . . .") 
-			if sim_seq == "n/p": problems.append("Simulated snp data requires sim_seq parameter. Format 1+100,0+500,100+1+50 ") 
-			if snp_analysis_type == "n/p": problems.append("snp_analysis_type is required, choose between parental or f2wt as a control ")
+			if sim_mut == "n/p" : problems.append("Simulated snp data requires --sim_mut / -sm parameter. Check documentation (--usage)(-u) for more information regarding the format.") 
+			if sim_recsel == "n/p": problems.append("Simulated snp data requires --sim-recsel / -sr parameter. Check documentation (--usage)(-u) for more information regarding the format.") 
+			if sim_seq == "n/p": problems.append("Simulated snp data requires --sim-seq / -ss parameter. Check documentation (--usage)(-u) for more information regarding the format.") 
+			#if snp_analysis_type == "n/p": problems.append("The parameter --snp_analysis_type / - is required, choose between parental or f2wt as a control ") It is no longer required for the user
 	else:
 		if sim_mut == "n/p" or sim_seq == "n/p":
 			error = 1
-			problems.append("In order to perform the simulation mode (sim) for inserctions (ins) parameters sim_mut and sim_seq must be given, please find the information regarding then in the software documentation")
+			problems.append("In order to perform the simulation mode (--simulate_data)(-sim) for inserctions (workflow = ins) parameters sim_mut and sim_seq must be given.See the documentation (--usage)(-u) in order to obtain more information regarding this format. ")
 	
 
 
@@ -217,20 +217,20 @@ if data_source == "sim":
 			options = ["e", "d","li"]
 			if values[1] not in options and workflow == "snp":
 				error =1
-				problems.append("sim_mut requires a second parameter that has to be <  e  > if the mode is EMS mutations or <  d  > if the mode is drift mutations")
+				problems.append("The parameter --sim_mut / -sm requires a second parameter that has to be <  e  > if the mode is EMS mutations or <  d  > if the mode is drift mutations")
 				if values[1] == "li":
 					error =1
-					problems.append("sim_mut takes a second parameter that has to be <  li  > in insertion mode. A non-defined parameter is also accepted")	
+					problems.append("The parameter --sim_mut / -sm requires a second parameter that has to be <  li  > in insertion mode. A non-defined parameter is also accepted")	
 		elif len(values)== 1 and workflow == "ins":
 			number = int(values[0])
 			sim_mut = sim_mut+"+li"
 
 		else:
 			error = 1	
-			problems.append("sim_mut requires two/one argument/s number_of_mutations(+mode)*     *Only required in snp mode, in insertion mode it is not needed ")
+			problems.append("The parameter --sim_mut / -sm requires more arguments. Number_of_mutations(+mode)*     *Only required in snp mode, in insertion mode it is not needed. ee the documentation (--usage)(-u) in order to obtain more information regarding this format. ")
 	except:
 		error = 1
-		problems.append("Please mind the format of sim_mut: number_of_mutations+mode  where number_of_mutations is any positive number and mode has to be chosen between e (EMS) and d (drift")
+		problems.append("Please mind the format of --sim_mut / -sm: number_of_mutations+mode  where number_of_mutations is any positive number and mode has to be chosen between e (EMS) and d (drift). See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
 	
 	if workflow == "snp":
 		number_of_contigs = 0
@@ -249,29 +249,29 @@ if data_source == "sim":
 
 				if len(chromo) != number_of_contigs:
 					error = 1
-					problems.append("The recombination frequences given do not match the number of fasta files")
+					problems.append("The recombination frequences given at  the first parameter of --sim-rec-sel /-sr do not match the number of fasta files found in user_data.")
 				for ch in chromo:
 					c = ch.split("-")
 					for v in c:
 						v = v.split(",")
-						if len(v) != 2 or not v[0] or not v[1] : error = 1, problems.append("One or more than one of the values you supplied as recombination frequences for sim_recsel input in simulator does not contain the two required values 2,50 being 2 the number of events of recombination and 50 the probability of happening.") 
+						if len(v) != 2 or not v[0] or not v[1] : error = 1, problems.append("One or more than one of the values you supplied as recombination frequences for --sim-rec-sel /-sr input in simulator does not contain the two required values 2,50 being 2 the number of events of recombination and 50 the probability of happening. See the documentation (--usage)(-u) in order to obtain more information regarding this format.") 
 						if not v[1]: error =1
 						if not v[0]: error =1 			
 				val = values[1].split("-")
 				for mutations in val: val1= mutations.split(",");int(val1[0]);int(val1[1])
 				
-				options = ["r", "d","dr"] #MIRAR QUE VALORES PUEDEN SER
+				options = ["r", "d","dr"] 
 				if values[2] not in options:
 					error = 1
-					problems.append("Please, choose a valid selection mode in sim_recsel: < r > for recesive mutations or < d > dominant mutations.  Ex: recombination_frequences+mutant_chromosome,position_mutation+r/d")	
+					problems.append("Please, choose a valid selection mode in --sim-rec-sel /-sr: < r > for recesive mutations or < d > dominant mutations or <dr> for double recessive mutations. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")	
 				int(values[3])
 			else:
 				error =1
-				problems.append("Please, mind the format of sim_recsel: recombination_chromosome1/recombination_chromosome2....+chromosome_with_causal_mutation(number),position_causal_mutation(number)+selection_mode(d/r), ???") 
+				problems.append("Please, mind the format of --sim-rec-sel /-sr. The number of arguments given are do not match the required ones. See the documentation (--usage)(-u) in order to obtain more information regarding this format." ) 
 		except:
 			error = 1
-			problems.append("Please, mind the format of sim_recsel: recombination_chromosome1/recombination_chromosome2....+chromosome_with_causal_mutation(number),position_causal_mutation(number)+selection_mode(d/r), ???")
-	#sim_seq 1+100,0+500,100+1+50+se            DAR UN NUEVO ARGUMENTO APAREADAS O SIMPLES "pe/se"
+			problems.append("Please, mind the format of --sim-rec-sel /-sr. Unexpected inputs were given. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
+	#sim_seq 1+100,0+500,100+1+50+se           
 	try:
 		values = sim_seq.split("+")
 		val1 = values[1].split(",")
@@ -283,18 +283,18 @@ if data_source == "sim":
 		int(val2[1])
 		int(values[3])
 		int(values[4])
-		options = ("se","pe")
+		#options = ("se","pe")
 		values[5] = values[5].lower()
-		if values[5] not in options:
-			error = 1
-			problems.append("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ")
+		#if values[5] not in options:
+		#	error = 1
+		#	problems.append("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ") It is no longer required for the user. It depends on the number of arguments are given in the read argument.
 		else:
 			lib_type_sample = values[5]
 			lib_type_control = values[5]
 
 	except:
 		error = 1
-		problems.append("Please, mind the format of sim_seq: ")
+		problems.append("Unexpected arguments were given in --sim-seq / -ss. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
 		#append error
 
 
@@ -302,7 +302,7 @@ if data_source == "sim":
 if data_source == "exp":
 	if reads_sample == "n/p":
 		error = 1
-		problems.append("Experimental data requires reads of your samples. Please give them in the parameter --reads_sample FILE  or --reads_sample FILE,FILE2 if it is pared-end")
+		problems.append("Experimental data requires reads of your samples. Please provide their name in the parameter --reads-problem / -P FILE,(FILE2 if they are paired-end). See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
 	else:
 		RS= reads_sample.split(",")
 		if len(RS) == 1:
@@ -323,18 +323,18 @@ if data_source == "exp":
 		else: 
 			if read_f == read_r:
 				error = 1
-				problems.append("Please notice both  forward and reverse reads files have the same name")
+				problems.append("Please notice both forward and reverse reads files have the same name")
 	if lib_type_sample == "se":
 		if reads_sample not in input_files:
 			error = 1
-			problems.append("Please introduce the file containing the reads in easymap/project/0_input directory")	
+			problems.append("Please introduce the file containing the reads in+"+ input_folder)	
 
 
 	#For snp mode, control reads should be provided for the further procesing. 
 	if workflow == "snp":
 		if reads_control == "n/p":
 			error = 1
-			problems.append("Experimental data requires reads of your controls. Please give them in the parameter --reads_sample FILE  or --reads_sample FILE,FILE2 if it is pared-end")
+			problems.append("Experimental data requires reads of your controls. Please give them in the parameter --reads_control / -C FILE, (FILE2,if they are paired-end)")
 		else:
 			RC = reads_control.split(",") 
 			if len(RC) == 1:
