@@ -276,7 +276,7 @@ echo Done. >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name 2>> $my_log_file
+	python $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann 2>> $my_log_file
 	
 } || {
 	echo 'error: varanalyzer.py' >> $my_log_file
