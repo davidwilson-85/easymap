@@ -46,13 +46,13 @@ start_time=`date +%s`
 my_log_file=$1
 project_name=$2
 my_sample_mode=$5 												#[pe, se], paired/single  
-my_control_mode=${19}											#TEMPORAL, in future independent						<------------------------------------------------------------------------
+my_control_mode=${19}											#TEMPORAL, in future independent						
 my_rd=$7											 			#reads (single)
 my_rf=$8 														#forward reads
 my_rr=$9												 		#reverse reads 			
-my_p_rd=${12}											 		#reads (single) parent	<------------------------------------------------------------------------
-my_p_rf=${13} 													#forward reads parent	<------------------------------------------------------------------------
-my_p_rr=${14}											 		#reverse reads parent	<------------------------------------------------------------------------
+my_p_rd=${12}											 		#reads (single) parent	
+my_p_rf=${13} 													#forward reads parent	
+my_p_rr=${14}											 		#reverse reads parent	
 my_gs=gnm_ref_merged/genome.fa 									#genome sequence
 my_ix=genome_index 							
 my_gff=${10}													#Genome feature file
@@ -61,11 +61,9 @@ my_rrl=250 														#Regulatory region length
 my_log_file=$1
 my_mut=snp  													#my_mut takes the values 'snp' in this workflow and 'lin' in the large insertions workflow, for the execution of the graphic output module
 
-
-
-my_cross=${15}													#oc / bc : f2 obtained by outcross or backcross 									<------------------------------------------------------------------------
-my_mutbackgroud=${16}											#ref / noref : genetic background of the mutation									<------------------------------------------------------------------------
-my_pseq=${17}													#mut / nomut : sequenced parental provided is the mutagenized one or the other		<------------------------------------------------------------------------
+my_cross=${15}													#oc / bc : f2 obtained by outcross or backcross 									
+my_mutbackgroud=${16}											#ref / noref : genetic background of the mutation									
+my_pseq=${17}													#mut / nomut : sequenced parental provided is the mutagenized one or the other		
 
 snp_analysis_type=${18}
 
@@ -291,7 +289,146 @@ function get_control_va {
 	}
 	echo $(date) ': First VCF filtering step of control data finished.' >> $my_log_file
 
+}
 
+
+##################################################################################################################################################################################
+#																																												 #
+#																																												 #
+#																	CANDIDATE REGION ANALYSIS FUNCTION																			 #
+#																																												 #
+#																																												 #
+##################################################################################################################################################################################
+
+function cr_analysis {
+
+	# (1) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
+	{
+		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
+
+	} || {
+		echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	echo $(date) ': Second VCF filtering step finished.' >> $my_log_file
+
+	# (2) Create input for varanalyzer and run varanalyzer.py
+	#	- snp-to-varanalyzer.py
+	{
+		python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.va -b $f1/snp-to-varanalyzer.txt	
+		
+	} || {
+		echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
+	#	- varanalyzer
+	{
+		python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl -pname $project_name
+
+	} || {
+		echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	echo $(date) ': Varanalyzer finished.' >> $my_log_file
+
+	# (3) Run primer generation script
+	{
+		$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -out $f1/primer_generation_output.txt  
+	}|| {
+		echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
+	}
+	echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
+
+	# (4) Filter SNPs to draw
+	af_min=0.25
+	{
+		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $af_min 
+
+	} || {
+		echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	echo $(date) ': Third VCF filtering step finished.' >> $my_log_file
+
+	# (5) Create graphic output
+	{
+		python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison_drawn.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $project_name/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+		
+	} || {
+		echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	echo $(date) ': Graphic output created.' >> $my_log_file
+
+}
+
+##################################################################################################################################################################################
+#																																												 #
+#																																												 #
+#																			DEPTH ALIGMENT ANALYSIS FUNCTION																	 #
+#																																												 #
+#																																												 #
+##################################################################################################################################################################################
+
+
+function depth_aligment {  
+
+	#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
+	{
+	python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt
+
+	################################QUITAR LUEGO
+	rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.bam
+
+	} || {
+		echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+
+	{
+	python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 
+	} || {
+		echo $(date) ': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+
+
+	{
+	python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt
+	################################QUITAR LUEGO
+	rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.bam
+
+	} || {
+		echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	{
+	python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt -out $f3/frequence_depth_alignment_distribution_control.png 
+	} || {
+		echo $(date) ': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+
+	#############TAKE A LOOK ON HOW MANY READS ARE NEEDED AND HOW TO DO THE SELECTION
 }
 
 
@@ -308,8 +445,6 @@ function get_control_va {
 #_________________________________Case 1: Mutant in ref background, backcross, mutant parental control (ref bc mut)_______________________________________________________________
 #_________________________________________________________________________________________________________________________________________________________________________________
 
-
-
 if [ $my_mutbackgroud == ref ] && [ $my_pseq == mut ] && [ $my_cross == bc ]  && [ $snp_analysis_type == par ]
 then
 
@@ -317,15 +452,15 @@ then
 	get_problem_va
 	get_control_va
 	#draw snps
-	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	# (2) Run VA operations: Remove control SNPs from problem file
 	my_operation_mode=A
 	{
 		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 		#draw snps
-		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 
 	} || {
@@ -349,75 +484,11 @@ then
 	}
 	echo $(date) ': Mutation mapping module finished.' >> $my_log_file
 
-	# (4) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.txt -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
+	# (4) Candidate region analysis function
+	cr_analysis
 
-	} || {
-		echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Second VCF filtering step finished.' >> $my_log_file
-
-	# (5) Create input for varanalyzer and run varanalyzer.py
-	#	- snp-to-varanalyzer.py
-	{
-		python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
-		
-	} || {
-		echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
-	#	- varanalyzer
-	{
-		python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
-
-	} || {
-		echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Varanalyzer finished.' >> $my_log_file
-
-	# (6) Run primer generation script
-	{
-		$location/primers/primer-generation.py -file $f3/variants.txt -fasta $f1/$my_gs -out $f3/variants2.txt  
-	}|| {
-		echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
-	}
-	echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
-
-	# (7) Filter SNPs to draw
-	af_min=0.25
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min 
-
-	} || {
-		echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Third VCF filtering step finished.' >> $my_log_file
-
-	# (8) Create graphic output
-	{
-		python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-		
-	} || {
-		echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Graphic output created.' >> $my_log_file
 fi
+
 
 #_________________________________________________________________________________________________________________________________________________________________________________
 #
@@ -432,8 +503,8 @@ then
 	get_problem_va
 	get_control_va
 	#draw snps
-	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	# (2) Run VA filter: eliminate SNPs with FA > 0.7 from control reads
 	{
@@ -473,74 +544,9 @@ then
 	}
 	echo $(date) ': Mutation mapping module finished.' >> $my_log_file
 
-	# (5) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.txt -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
+	# (4) Candidate region analysis function
+	cr_analysis
 
-	} || {
-		echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Second VCF filtering step finished.' >> $my_log_file
-
-	# (6) Create input for varanalyzer and run varanalyzer.py
-	#	- snp-to-varanalyzer.py
-	{
-		python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
-		
-	} || {
-		echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
-	#	- varanalyzer
-	{
-		python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
-
-	} || {
-		echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Varanalyzer finished.' >> $my_log_file
-
-	# (7) Run primer generation script
-	{
-		$location/primers/primer-generation.py -file $f3/variants.txt -fasta $f1/$my_gs -out $f3/variants2.txt  
-	}|| {
-		echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
-	}
-	echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
-
-	# (8) Filter SNPs to draw
-	af_min=0.25
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min 
-
-	} || {
-		echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Third VCF filtering step finished.' >> $my_log_file
-
-	# (9) Create graphic output
-	{
-		python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-		
-	} || {
-		echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Graphic output created.' >> $my_log_file
 fi
 
 
@@ -557,8 +563,8 @@ then
 	get_problem_va
 	get_control_va
 	#draw snps
-	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	# (2) Run VA operations: Remove control SNPs from problem file
 	my_operation_mode=A
@@ -587,74 +593,9 @@ then
 	}
 	echo $(date) ': Mutation mapping module finished.' >> $my_log_file
 
-	# (4) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.txt -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
+	# (4) Candidate region analysis function
+	cr_analysis
 
-	} || {
-		echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Second VCF filtering step finished.' >> $my_log_file
-
-	# (5) Create input for varanalyzer and run varanalyzer.py
-	#	- snp-to-varanalyzer.py
-	{
-		python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
-		
-	} || {
-		echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
-	#	- varanalyzer
-	{
-		python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
-
-	} || {
-		echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Varanalyzer finished.' >> $my_log_file
-
-	# (6) Run primer generation script
-	{
-		$location/primers/primer-generation.py -file $f3/variants.txt -fasta $f1/$my_gs -out $f3/variants2.txt  
-	}|| {
-		echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
-	}
-	echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
-
-	# (7) Filter SNPs to draw
-	af_min=0.1
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min 
-
-	} || {
-		echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Third VCF filtering step finished.' >> $my_log_file
-
-	# (8) Create graphic output
-	{
-		python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-		
-	} || {
-		echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Graphic output created.' >> $my_log_file
 fi
 
 
@@ -673,7 +614,7 @@ then
 	{
 		python $location/scripts_snp/filter/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_min 0.75 
 		#draw snps
-		python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+		python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
@@ -702,12 +643,12 @@ then
 	# (4) Get problem VA file
 	get_problem_va
 	#draw snps
-	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	# (5) Run VA operations: Intersection to get SNPs for mapping the mutation
 	my_operation_mode=I
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered2.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered2.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  
 
 	} || {
 		echo $(date) ': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -720,7 +661,7 @@ then
 	# (6) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date) ': Error during execution of map-mutation.py .' >> $my_log_file
@@ -734,9 +675,9 @@ then
 	# (7) Run VA operations: Remove control SNPs from problem file 
 	my_operation_mode=A
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison2.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 		#draw snps
-		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date) ': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -746,74 +687,9 @@ then
 	}
 	echo $(date) ': VCF operations finished.' >> $my_log_file
 
-	# (8) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison2.va -b $f1/final_variants.txt -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
+	# (4) Candidate region analysis function
+	cr_analysis
 
-	} || {
-		echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Second VCF filtering step finished.' >> $my_log_file
-
-	# (9) Create input for varanalyzer and run varanalyzer.py
-	#	- snp-to-varanalyzer.py
-	{
-		python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
-		
-	} || {
-		echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
-	#	- varanalyzer
-	{
-		python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
-
-	} || {
-		echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Varanalyzer finished.' >> $my_log_file
-
-	# (10) Run primer generation script
-	{
-		$location/primers/primer-generation.py -file $f3/variants.txt -fasta $f1/$my_gs -out $f3/variants2.txt  
-	}|| {
-		echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
-	}
-	echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
-
-	# (11) Filter SNPs to draw
-	af_min=0.1
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min 
-
-	} || {
-		echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Third VCF filtering step finished.' >> $my_log_file
-
-	# (12) Create graphic output
-	{
-		python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-		
-	} || {
-		echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Graphic output created.' >> $my_log_file
 fi
 
 
@@ -830,13 +706,13 @@ then
 	get_problem_va
 	get_control_va
 	#draw snps
-	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	# (2) Run VA operations: Intersection to get mapping SNPs
 	my_operation_mode=I
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  
 
 	} || {
 		echo $(date) ': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -849,7 +725,7 @@ then
 	# (3) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date) ': Error during execution of map-mutation.py .' >> $my_log_file
@@ -863,9 +739,9 @@ then
 	# (4) Run VA operations: Remove control SNPs from problem
 	my_operation_mode=A
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison2.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 		#draw snps
-		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
+		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date) ': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -875,125 +751,12 @@ then
 	}
 	echo $(date) ': VCF operations finished.' >> $my_log_file
 
-	# (5) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison2.va -b $f1/final_variants.txt -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
+	# (4) Candidate region analysis function
+	cr_analysis
 
-	} || {
-		echo $(date) ': Error during the second execution of variants-filter.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Second VCF filtering step finished.' >> $my_log_file
-
-	# (6) Create input for varanalyzer and run varanalyzer.py
-	#	- snp-to-varanalyzer.py
-	{
-		python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.txt -b $f1/final_variants2.txt	
-		
-	} || {
-		echo $(date) ': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Input for varanalyzer finished.' >> $my_log_file
-	#	- varanalyzer
-	{
-		python $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/final_variants2.txt -rrl $my_rrl -pname $project_name
-
-	} || {
-		echo $(date) ': Error during execution of varanalyzer.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Varanalyzer finished.' >> $my_log_file
-
-	# (7) Run primer generation script
-	{
-		$location/primers/primer-generation.py -file $f3/variants.txt -fasta $f1/$my_gs -out $f3/variants2.txt  
-	}|| {
-		echo $(date) ': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
-	}
-	echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
-
-	# (6) Filter SNPs to draw
-	af_min=0.1
-	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison2.va -step 1 -af_min $af_min 
-
-	} || {
-		echo $(date) ': Error during third execution of variants-filter.py . ' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Third VCF filtering step finished.' >> $my_log_file
-
-	# (8) Create graphic output
-	{
-		python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/3_workflow_output/variants.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-		
-	} || {
-		echo $(date) ': Error during execution of graphic-output.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date) ': Graphic output created.' >> $my_log_file
 fi
 
-
-
-#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
-{
-python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt
-
-################################QUITAR LUEGO
-rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.bam
-
-} || {
-	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
-
-{
-python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 
-} || {
-	echo $(date) ': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
-
-
-
-{
-python $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt
-################################QUITAR LUEGO
-rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.bam
-
-} || {
-	echo $(date) ': Error during obtaining of alignment depth .' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
-{
-python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt -out $f3/frequence_depth_alignment_distribution_control.png 
-} || {
-	echo $(date) ': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
-
-
-#############TAKE A LOOK ON HOW MANY READS ARE NEEDED AND HOW TO DO THE SELECTION
+depth_aligment
 
 
 echo $exit_code
