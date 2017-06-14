@@ -51,10 +51,7 @@ def red(p):
 		r = str(p)[:3] + ' Mb'
 	return r; 
 
-
-
 args = parser.parse_args()
-
 
 #############################################################################################################
 #																											#
@@ -349,7 +346,7 @@ def insertions_overview_and_histograms():
 		num_contigs+=1
 	contigs_image_length = 65 * num_contigs + 60
 
-	im = Image.new("RGB", (1000, contigs_image_length+100), (255,255,255))
+	im = Image.new("RGB", (1000, contigs_image_length+120), (255,255,255))
 
 
 	contig_source = args.input_f
@@ -432,6 +429,7 @@ def insertions_overview_and_histograms():
 	number = 1
 
 	#Drawing the chromosomes:
+
 	for c in superlist:
 		previous_pos_x = 0
 		previous_chr = 'none'
@@ -464,19 +462,19 @@ def insertions_overview_and_histograms():
 		im.paste(cap.rotate(270), (c[4], c[2]-6))
 
 	#Axis
-	draw.line((100, contigs_image_length + 30) + (950, contigs_image_length + 30), fill=256, width=1)
+	draw.line((100, contigs_image_length + 50) + (950, contigs_image_length + 50), fill=256, width=1)
 
 	mb = 850.0/mb_max
 	m = 100.0
 	tag = 'Position (Mb)'
 	num = 0
-	draw.text((480, contigs_image_length + 68), str(tag), font=fnt3, fill=256)
+	draw.text((480, contigs_image_length + 88), str(tag), font=fnt3, fill=256)
 	while int(m) in range(100, 951):
-		draw.line(( int(m), contigs_image_length + 28) + (int(m), contigs_image_length + 32), fill=256, width=1)
+		draw.line(( int(m), contigs_image_length + 48) + (int(m), contigs_image_length + 52), fill=256, width=1)
 
 		w, h = draw.textsize(str(num))
 
-		draw.text((int(m) - w/2 -2, contigs_image_length + 37), str(num), font=fnt3, fill=256)
+		draw.text((int(m) - w/2 -2, contigs_image_length + 57), str(num), font=fnt3, fill=256)
 		num = num + 1
 		m = m + mb
 
@@ -1030,8 +1028,8 @@ def gene_plot():
 
 		scale = 100
 		px_scale = float(scale/gene_scaling_factor)
-		draw.line((int(0.92*wide) - int(px_scale), int(250/350.0*height)) + (int(0.92*wide), int(250/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
-		draw.text((int(0.88*wide), int(257.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
+		draw.line((int(0.97*wide) - int(px_scale), int(250/350.0*height)) + (int(0.97*wide), int(250/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
+		draw.text((int(0.93*wide), int(257.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
 
 
 		#Insertion triangle and info
@@ -1065,10 +1063,10 @@ def gene_plot():
 		#save image, specifying the format with the extension
 		w, h = im.size
 		if args.my_mut == 'lin':
-			im.crop((90, 100, w-70, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[2]) + '_gene_' + str(p[3])+ '.png')
+			im.crop((70, 100, w-20, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[2]) + '_gene_' + str(p[3])+ '.png')
 
 		if args.my_mut == 'snp':
-			im.crop((90, 100, w-70, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
+			im.crop((70, 100, w-20, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
 
 #############################################################################################################
 #																											#
