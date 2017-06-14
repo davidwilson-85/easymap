@@ -304,7 +304,7 @@ contig_used = ""
 mode = first_list[0][0]
 
 if mode == "snp":
-	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tforward primer\tTm forward\treverse primer\tTm reverse\n")
+	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tgene_funct_annotation\tforward primer\tTm forward\treverse primer\tTm reverse\n")
 if mode == "lim":
 	#try:
 	consensus = fastaq_to_dic(args.fq_lim)
@@ -313,11 +313,11 @@ if mode == "lim":
 	#except:
 	#	print "Fq file missing"
 	#	exit()
-	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tforward primer\tTm forward\tinsertion primer 5'\tTm insertion primer 5'\tinsertion primer 3'\tTm insertion primer 3'\treverse primer\tTm reverse\n")
+	result.write("@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_funct_annotation\tforward primer\tTm forward\tinsertion primer 5'\tTm insertion primer 5'\tinsertion primer 3'\tTm insertion primer 3'\treverse primer\tTm reverse\n")
 
 for line in first_list:
-	if mode == "snp": v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14].rstrip()
-	else: v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13].rstrip()
+	if mode == "snp": v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14]+"\t"+line[15].rstrip()
+	else: v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14].rstrip()
 	if line[5] == "nh":
 		if mode == "snp": list2.append(v+"\t-\t-\t-\t-\n")
 		else: list2.append(v+"\t-\t-\t-\t-\t-\t-\n")
