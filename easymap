@@ -287,7 +287,7 @@ if data_source == "sim":
 		values[5] = values[5].lower()
 		if values[5] not in options:
 			error = 1
-			problems.append("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ") It is no longer required for the user. It depends on the number of arguments are given in the read argument.
+			problems.append("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ") #It is no longer required for the user. It depends on the number of arguments are given in the read argument.
 		else:			
 			lib_type_sample = values[5]
 			lib_type_control = values[5]
