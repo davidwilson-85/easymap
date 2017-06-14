@@ -281,19 +281,19 @@ else
 	exit_code=1
 fi
 
-
+# The format or the gene functional annotation file is very flexible. Do not check anything from here for now.
 # Check gene funtional annotation input
 # Do this only if user has provided file (it's optional)
-if [ $ann_option != 'n/p' ]; then
-	ann=`python process_input/verify-input.py -ann $ann_file 2>> $my_log_file` 
-	echo 'Checking gene functional annotation input...' >> $my_log_file
-	if [ $ann == 0 ]; then
-		echo $(date)": Gene annotation file check passed." >> $my_log_file
-	else
-		echo $(date)": Gene annotation file check failed. File is empty or has an incorrect format. Please replace input gene functional annotation file or turn off the gene annotation option." >> $my_log_file
-		exit_code=1
-	fi
-fi
+#if [ $ann_option != 'n/p' ]; then
+#	ann=`python process_input/verify-input.py -ann $ann_file 2>> $my_log_file` 
+#	echo 'Checking gene functional annotation input...' >> $my_log_file
+#	if [ $ann == 0 ]; then
+#		echo $(date)": Gene annotation file check passed." >> $my_log_file
+#	else
+#		echo $(date)": Gene annotation file check failed. File is empty or has an incorrect format. Please replace input gene functional annotation file or turn off the gene annotation option." >> $my_log_file
+#		exit_code=1
+#	fi
+#fi
 
 
 # Check contigs match between fasta and gff3 files

@@ -99,40 +99,31 @@ if fq_source != None:
 # If gff argument provided, check gff3 file
 if gff_source != None:
 	gff_result = 0 # 0:pass ; 1:error
-	
 	if os.stat(gff_source).st_size == 0:
 		gff_result = 1
 	else:
 		gff_contents = open(gff_source, 'r')
-
 		for index, line in enumerate(gff_contents):
-
 			if index == 10:
 				fields = line.split('\t')
-			
 				try:
 					y = int(fields[3]) # This raises an exception if the variable inside int() is not an integer
 				except:
 					gff_result = 1
 					break
-			
 				try:
 					y = int(fields[4])
 				except:
 					gff_result = 1
 					break
-			
 				if fields[6].strip() != '+' and fields[6].strip() != '-':
 					gff_result = 1
-			
 			if index == 11:
 				break
-
 		gff_contents.close()
-
 	print gff_result
 
-
+# The format of the annotation file is flexible, so this block is nowadays not called by process-input.sh
 # If ann argument provided, check functional annotation file file
 if ann_source != None:
 	ann_result = 0 # 0:pass ; 1:error
@@ -141,7 +132,7 @@ if ann_source != None:
 	if os.stat(ann_source).st_size == 0:
 		ann_result = 1
 	else:		
-		for index, line in enumerate(ann_contents):
+		for line in ann_contents:
 			line_content = line.strip()
 		
 			if line_content:
@@ -152,7 +143,8 @@ if ann_source != None:
 			
 				if len(fields) >= 2:
 					if not fields[1].strip():
-						ann_result = 1	
+						ann_result = 1
+						print line
 	
 		ann_contents.close()
 
