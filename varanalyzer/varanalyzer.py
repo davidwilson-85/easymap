@@ -46,7 +46,7 @@ from string import maketrans
 
 # Parse command arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('-pname', action="store", dest='project_name')
+parser.add_argument('-pname', action="store", dest='project_name', required=True)
 parser.add_argument('-itp', action="store", dest='input_type', choices=set(('snp','lim')), required=True)
 parser.add_argument('-con', action="store", dest='contigs_source', required=True)
 parser.add_argument('-gff', action="store", dest='gff_source', required=True)
@@ -380,26 +380,6 @@ for variant_info in variants_info:
 		variants_info2.append(variant_info)
 
 del input_mut, input_gff, variants_info
-
-
-#Calculate distance to predicted position of mutation according to map_info.txt (created with map-mutation.py)
-if input_type == 'snp':
-	with open(project + '/1_intermediate_files/map_info.txt') as map_info:
-		for map_info_line in map_info:
-			map_fields = map_info_line.split('\t')
-			if map_fields[0] == '?': # This line stores the information I am retrieving
-				# 'selected_position' is the center of the candidate interval calculated by map-mutation.py
-				selected_position = (int(map_fields[2]) + int(map_fields[3])) / 2 # map_fields[2] and map_fields[3] are the left and right boundaries of the candidate interval
-
-	variants_info3 = [] # This list is used temporarily to store info, but its info is later assigned again to a list called 'variants_info2'
-							  # This way, I don't have to modify the code downstream (used for both snp and lim modes)
-
-	for variant_info in variants_info2:
-		distance_to_selected_position = variant_info[2] - selected_position
-		variant_info_and_distance = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], variant_info[10], variant_info[11], variant_info[12], variant_info[13], distance_to_selected_position
-		variants_info3.append(variant_info_and_distance)
-		
-	variants_info2 = variants_info3
 	
 
 # Retrieve gene functional annotation and create final output
@@ -409,10 +389,7 @@ output = open(project + '/1_intermediate_files/varanalyzer_output.txt', 'w')
 
 # If no gene annotation file provided, simply print 'variants_info2' to output file.
 if gene_ann_source == 'user_data/n/p':
-	if input_type == 'lim':
-		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')
-	if input_type == 'snp':
-		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tgene_annotation_info\n')
+	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')
 		
 	for variant in variants_info2:	
 		for index, field in enumerate(variant):
@@ -420,9 +397,7 @@ if gene_ann_source == 'user_data/n/p':
 				output.write(str(field))
 			else:
 				output.write('\t' + str(field))
-		
 		output.write('\t-\n')
-
 	output.close()	
 
 # If genome annotation file provided, merge that info with variants_info2 i a new list called 'variants_info3'
@@ -462,11 +437,7 @@ else:
 					ann_result = ann_info_string.strip('\n')
 
 			# Combine info and append it to 'variants_info3'
-			if input_type == 'lim':
-				condensed_info2 = variant_info2[0], variant_info2[1], variant_info2[2], variant_info2[3], variant_info2[4], variant_info2[5], variant_info2[6], variant_info2[7], variant_info2[8], variant_info2[9], variant_info2[10], variant_info2[11], variant_info2[12], variant_info2[13], ann_result
-			if input_type == 'snp':
-				condensed_info2 = variant_info2[0], variant_info2[1], variant_info2[2], variant_info2[3], variant_info2[4], variant_info2[5], variant_info2[6], variant_info2[7], variant_info2[8], variant_info2[9], variant_info2[10], variant_info2[11], variant_info2[12], variant_info2[13], variant_info2[14], ann_result
-			
+			condensed_info2 = variant_info2[0], variant_info2[1], variant_info2[2], variant_info2[3], variant_info2[4], variant_info2[5], variant_info2[6], variant_info2[7], variant_info2[8], variant_info2[9], variant_info2[10], variant_info2[11], variant_info2[12], variant_info2[13], ann_result
 			variants_info3.append(condensed_info2)
 		
 		# If the variant does not interrupt any gene, just copy its info from variants_info2
@@ -474,10 +445,7 @@ else:
 			tmp_variant_info2_list = list(variant_info2); tmp_variant_info2_list.append('-'); variant_info2 = tuple(tmp_variant_info2_list)
 			variants_info3.append(variant_info2)
 	
-	if input_type == 'lim':
-		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')
-	if input_type == 'snp':
-		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tdistance_to_selected_position\tgene_annotation_info\n')	
+	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')	
 	
 	for variant in variants_info3:		
 		for index, field in enumerate(variant):

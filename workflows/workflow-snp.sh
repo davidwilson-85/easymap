@@ -345,8 +345,20 @@ function cr_analysis {
 		echo $(date)': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
 	}
 	echo $(date)': Primer-generation.py module finished.' >> $my_log_file
-
-	# (4) Filter SNPs to draw
+	
+	# (4) Run extend-snp-variants
+	result_extend_snp_info=`python $location/scripts_snp/extend-snp-variants-info.py --project-name $project_name --variants $f1/primer_generation_output.txt --snp-info $f1/snp-to-varanalyzer.txt --map-info $f1/map_info.txt --output-file $f3/candidate_variants.txt 2>> $my_log_file`
+	
+	if [ $result_extend_snp_info == 'success' ]; then
+		echo $(date)": extend-snp-variants-info.py finished." >> $my_log_file
+	elif [ $result_extend_snp_info == 'error' ]; then
+		echo $(date)": Error: extend-snp-variants-info.py failed." >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	fi
+	
+	# (5) Filter SNPs to draw
 	af_min=0.25
 	{
 		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $af_min 
@@ -359,7 +371,7 @@ function cr_analysis {
 	}
 	echo $(date)': Third VCF filtering step finished.' >> $my_log_file
 
-	# (5) Create graphic output
+	# (6) Create graphic output
 	{
 		python $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison_drawn.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $project_name/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 		
