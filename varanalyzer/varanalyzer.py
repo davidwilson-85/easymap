@@ -408,7 +408,7 @@ if input_type == 'snp':
 output = open(project + '/1_intermediate_files/varanalyzer_output.txt', 'w')
 
 # If no gene annotation file provided, simply print 'variants_info2' to output file.
-if gene_ann_source == None:
+if gene_ann_source == 'user_data/n/p':
 	if input_type == 'lim':
 		output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')
 	if input_type == 'snp':
