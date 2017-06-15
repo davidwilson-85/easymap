@@ -318,27 +318,27 @@ if mode == "lim":
 for line in first_list:
 	if mode == "snp": v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14]+"\t"+line[15].rstrip()
 	else: v = line[0]+"\t"+line[1]+"\t"+line[2]+"\t"+line[3]+"\t"+line[4]+"\t"+line[5]+"\t"+line[6]+"\t"+line[7]+"\t"+line[8]+"\t"+line[9]+"\t"+line[10]+"\t"+line[11]+"\t"+line[12]+"\t"+line[13]+"\t"+line[14].rstrip()
-	if line[5] == "nh":
+	#if line[5] == "nh":
+	#	if mode == "snp": list2.append(v+"\t-\t-\t-\t-\n")
+	#	else: list2.append(v+"\t-\t-\t-\t-\t-\t-\n")
+	#else:
+	a = line[1]+"-"+line[2]
+	if a == former:
 		if mode == "snp": list2.append(v+"\t-\t-\t-\t-\n")
 		else: list2.append(v+"\t-\t-\t-\t-\t-\t-\n")
-	else:
-		a = line[1]+"-"+line[2]
-		if a == former:
-			if mode == "snp": list2.append(v+"\t-\t-\t-\t-\n")
-			else: list2.append(v+"\t-\t-\t-\t-\t-\t-\n")
-		elif a != former:
-			if mode == "snp":
-				if line[1] != contig_used:
-					genom = genome_selection(line[1],genome)
-					contig_used = line[1]
-				r = snp_calculation(line[2],genom)
-				list2.append(v+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][1]+"\t"+r[1][1]+"\n")
-			if mode == "lim":
-				if line[1] != contig_used:
-					genom = genome_selection(line[1],genome)
-					contig_used = line[1]
-				r = insertion_calculation(line[2],genom,contig_used)
-				list2.append(v+"\t"+r[0][2]+"\t"+r[1][2]+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][1]+"\t"+r[1][1]+"\t"+r[0][3]+"\t"+r[1][3]+"\n") 
+	elif a != former:
+		if mode == "snp":
+			if line[1] != contig_used:
+				genom = genome_selection(line[1],genome)
+				contig_used = line[1]
+			r = snp_calculation(line[2],genom)
+			list2.append(v+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][1]+"\t"+r[1][1]+"\n")
+		if mode == "lim":
+			if line[1] != contig_used:
+				genom = genome_selection(line[1],genome)
+				contig_used = line[1]
+			r = insertion_calculation(line[2],genom,contig_used)
+			list2.append(v+"\t"+r[0][2]+"\t"+r[1][2]+"\t"+r[0][0]+"\t"+r[1][0]+"\t"+r[0][1]+"\t"+r[1][1]+"\t"+r[0][3]+"\t"+r[1][3]+"\n") 
 
 
 		former = a
