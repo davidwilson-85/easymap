@@ -176,21 +176,6 @@ for line1 in in1_array:
 	# Append line to the final list of SNPs	
 	list_extended_info.append(line1)
 
-
-
-'''
-for i,j in enumerate(list_extended_info[1]):
-	print i, j
-	if i == 19:
-		print j[0]
-		print j[1]
-		print j[2]
-		print j[3]
-		print j[4]
-'''
-
-
-
 # Create output file
 output = open(output_file, 'w')
 output.write('@type\tcontig\tposition\tref_base\talt_base\tquality\tref_count\talt_count\talt_allele_freq\tdist_to_selected_pos\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_funct_annot\tf_primer\ttm_f_primer\tr_primer\ttm_r_primer\n')    

@@ -342,9 +342,9 @@ function cr_analysis {
 	{
 		$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -out $f1/primer_generation_output.txt  
 	}|| {
-		echo $(date)': Error Primer-generation.py module failed. See details above in log. '>> $my_log_file
+		echo $(date)': primer-generation.py failed.'>> $my_log_file
 	}
-	echo $(date)': Primer-generation.py module finished.' >> $my_log_file
+	echo $(date)': primer-generation.py finished.' >> $my_log_file
 	
 	# (4) Run extend-snp-variants
 	result_extend_snp_info=`python $location/scripts_snp/extend-snp-variants-info.py --project-name $project_name --variants $f1/primer_generation_output.txt --snp-info $f1/snp-to-varanalyzer.txt --map-info $f1/map_info.txt --output-file $f3/candidate_variants.txt 2>> $my_log_file`
