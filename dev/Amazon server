@@ -1,0 +1,35 @@
+
+--------------------
+Conectar
+--------------------
+ssh -i ./easymap.pem  ubuntu@34.212.16.178
+
+--------------------
+Install easymap
+--------------------
+
+1.Git clone ----> Git repository
+2. . . .
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------
+Enviar 
+-------------------------------------------
+
+En el ordenador con el archivo:
+sudo scp -i easymap.pem ./genome.py ubuntu@ec2-34-212-16-178.us-west-2.compute.amazonaws.com:/home
+
+IMPORTANTE: El archivo que se va a enviar tienen 777 en chmod
+DNS tiene que venir después de ubuntu@
+archivo .pem tiene que tener chmod 600
+la carpeta a la que se va a enviar tiene que tener permiso 777 ( u otro). Para conseguirlo usar sudo si no funciona 
