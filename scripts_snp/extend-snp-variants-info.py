@@ -5,10 +5,7 @@
 This script was written to add more info to the list of variants that is presented to the user
 when snp mode is used.
 
-The new info is qual, ref_count, alt_count, af
-
-The info 'distance_to_selected position' is already calculated by varanalyzer.py, although 
-it could have been calculated by this script extend-snp-variants-info.y
+The new info is qual, ref_count, alt_count, af, dist_to_selected pos
 
 The process from the first list of candidate variants to the final list that is given to user
 is a bit complicated. The following scripts and files are involved:
@@ -49,8 +46,7 @@ snp mode {
 	11	aa_pos
 	12	aa_ref
 	13	aa_alt
-	14 dist_to_selected_position
-	15	gene_funct_annotation
+	14	gene_funct_annotation
 
 	primers.py adds more columns
 	primers.py: 1_intermediate_files/varanalyzer_output.txt --> 1_intermediate_files/primers_output.txt
@@ -61,10 +57,11 @@ snp mode {
 	
 	And here is where this script acts:
 	extend-snp-variants-info.py: 1_intermediate_files/primers_output.txt --> 3_workflow_output/snp_variants_report.txt
-	20	qual
-	21	ref_count
-	22	alt_count
-	23	af
+	20	qual								(from_snp_to_varanalyzer.txt)
+	21	ref_count						(from_snp_to_varanalyzer.txt)
+	22	alt_count						(from_snp_to_varanalyzer.txt)
+	23	af									(from_snp_to_varanalyzer.txt)
+	24 dist_to_selectes_pos			(calculated from map_info.txt)
 }
 
 ins mode {
@@ -90,9 +87,6 @@ ins mode {
 	21	reverse primer
 	22	Tm reverse
 }
-
-To create a table that meets user needs, a final script simply procecess the output of extend-snp-variants-info.py (snp mode) or primers.py (ins mode)
-list-candidate-variants.py reorganizes columns and writes to new file that is places in dir 3_workflow_output
 
 '''
 
