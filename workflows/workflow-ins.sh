@@ -381,7 +381,7 @@ rm -f ./user_data/*.fai
 
 #Primer generation script
 {
-	$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f1/primer_generation_output.txt  
+	$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt  
 }|| {
 	echo $(date) ': Error. primer-generation.py failed. ' >> $my_log_file
 	exit_code=1

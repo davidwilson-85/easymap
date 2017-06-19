@@ -359,7 +359,7 @@ function cr_analysis {
 	fi
 	
 	# (5) Filter SNPs to draw
-	af_min=0.25
+	af_min=$2
 	{
 		python $location/scripts_snp/filter/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $af_min 
 
@@ -497,7 +497,7 @@ then
 	echo $(date)': Mutation mapping module finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison.va
+	cr_analysis F2_control_comparison.va 0.25
 
 fi
 
@@ -557,7 +557,7 @@ then
 	echo $(date)': Mutation mapping module finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison.va
+	cr_analysis F2_control_comparison.va 0.1
 
 fi
 
@@ -606,7 +606,7 @@ then
 	echo $(date)': Mutation mapping module finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison.va
+	cr_analysis F2_control_comparison.va 0.1
 
 fi
 
@@ -700,7 +700,7 @@ then
 	echo $(date)': VCF operations finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison_mapping.va
+	cr_analysis F2_control_comparison_mapping.va 0.25
 
 fi
 
@@ -764,7 +764,7 @@ then
 	echo $(date)': VCF operations finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison_mapping.va
+	cr_analysis F2_control_comparison_mapping.va 0.25
 
 fi
 
