@@ -576,23 +576,6 @@ def insertions_overview_and_histograms():
 						raw_y_position = int(sp[4])
 						img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
 				
-
-						'''
-						try:
-							if img_relative_x_position == img_relative_x_position_2:
-								raw_y_position = int(sp[4])
-								img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
-						
-								if img_y_position_p > img_y_position_p_2: 	
-									img_y_position_p_2 = img_y_position_p
-						
-							img_relative_x_position_2 = img_relative_x_position
-						except:
-							img_relative_x_position_2 = img_relative_x_position
-							raw_y_position = int(sp[4])
-							img_y_position_p = 450 - int(raw_y_position/scaling_factor_y_paired)
-						'''
-
 						#draw
 						if sp[5].strip() == 'R':
 							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(64, 159, 65, 100), width=1)	
@@ -600,6 +583,8 @@ def insertions_overview_and_histograms():
 						elif sp[5].strip() == 'F':
 							draw.line((img_relative_x_position, 448) + (img_relative_x_position, img_y_position_p), fill=(31, 120, 180, 100), width=1)
 
+			img_relative_y_position_2_r = float('inf')
+			img_relative_y_position_2_l = float('inf')
 
 			for i, line in enumerate(lines):
 				if not line.startswith('@'):
@@ -614,14 +599,18 @@ def insertions_overview_and_histograms():
 						img_y_position_l = int(raw_y_position/scaling_factor_y_paired)
 						img_relative_y_position = 755 - img_y_position_l 
 
-
 						#draw
 						if sp[5].strip() == 'RIGHT_RD':
 							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=1)
+							if img_relative_y_position < img_relative_y_position_2_r:
+								cand_pos_r = img_relative_x_position
+								img_relative_y_position_2_r = img_relative_y_position
 
 						if sp[5].strip() == 'LEFT_RD':
 							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=1)
-
+							if img_relative_y_position < img_relative_y_position_2_l:
+								cand_pos_l = img_relative_x_position
+								img_relative_y_position_2_l = img_relative_y_position
 
 			#Candidate regions
 			for i, line in enumerate(lines):
@@ -633,9 +622,13 @@ def insertions_overview_and_histograms():
 								cr_min = min(cr)
 								cr_max = max(cr)
 								draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
-								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(150, 0, 150, 0), width=1)
-								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(150, 0, 150, 0), width=1)
+								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(147, 147, 147, 0), width=1)
+								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(147, 147, 147, 0), width=1)
 
+			#Candidate position:
+
+			#draw.line((cand_pos_l-1 , 456) + (cand_pos_l-1 , 753), fill=(150, 0, 150, 0), width=1)
+			draw.line((cand_pos_r-1 , 456) + (cand_pos_r-1 , 753), fill=(147, 147, 147, 0), width=1)
 
 			#Axis anotations
 			#x Axis

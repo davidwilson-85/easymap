@@ -34,7 +34,7 @@ for ins in insertion_list:
 	for line in lines: 
 		if not line.startswith('@'):
 			sp = line.split()
-			if sp[0] == 'LOCAL' and sp[2].strip() == ins and max_rd < int(sp[4]):
+			if sp[0] == 'LOCAL' and sp[2].strip() == ins and max_rd < int(sp[4]) and 'TOTAL' not in str(sp[5]):
 				max_rd = int(sp[4])
 				chrom = sp[1].strip()
 				pos = sp[3].strip()
