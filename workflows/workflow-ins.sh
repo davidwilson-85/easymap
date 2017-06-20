@@ -70,23 +70,23 @@ export location="$PWD"
 	$location/bowtie2/bowtie2-build $f0/$my_is $f1/$my_ix2 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
 	
 } || {
-	echo 'bowtie2-build on insertion sequence returned an error. See log files.' >> $my_log_file
+	echo $(date)': bowtie2-build on insertion sequence returned an error. See log files.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo bowtie2-build insertion index finished. >> $my_log_file
+echo $(date)': bowtie2-build insertion index finished.' >> $my_log_file
 
 {
 	$location/bowtie2/bowtie2-build $f1/$my_gs $f1/$my_ix 1> $f2/bowtie2-build2_std3.txt 2> $f2/bowtie2-build2_std4.txt
 	
 } || {
-	echo 'bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
+	echo $(date)': bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo bowtie2-build genome index finished. >> $my_log_file
+echo $(date)': bowtie2-build genome index finished.' >> $my_log_file
 
 
 #Execute bowtie2 paired to align raw reads to insertion sequence
@@ -96,13 +96,13 @@ then
 		$location/bowtie2/bowtie2 -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 	
 	} || {
-		echo 'bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
+		echo $(date)': bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
 
-	echo bowtie2 paired finished. >> $my_log_file
+	echo $(date)': bowtie2 paired finished.' >> $my_log_file
 fi
 
 if [ $my_mode == 'se' ] 
@@ -111,13 +111,13 @@ then
 		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
 	
 	} || {
-		echo 'bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
+		echo $(date)': bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
 
-	echo bowtie2 unpaired finished. >> $my_log_file
+	echo $(date)': bowtie2 unpaired finished.' >> $my_log_file
 fi
 
 if [ $my_mode == 'pe' ]
@@ -127,12 +127,12 @@ then
 		python $location/scripts_ins/filter_1/filter1.py -a $f1/alignment1.sam -b $f1/output_F1.fq 2>> $my_log_file
 	
 	} || {
-		echo 'error: filter1.py' >> $my_log_file
+		echo $(date)': error: filter1.py' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo First filter finished. >> $my_log_file
+	echo $(date)': First filter finished.' >> $my_log_file
 
 
 	#Execute bowtie2 to align filtered reads to genome sequence
@@ -140,12 +140,12 @@ then
 		$location/bowtie2/bowtie2 -x $f1/$my_ix -U $f1/output_F1.fq -S $f1/alignment2.sam 2> $f2/bowtie2_std4.txt
 	
 	} || {
-		echo 'bowtie2 on the genome sequence returned an error. See log files.' >> $my_log_file
+		echo  $(date)': bowtie2 on the genome sequence returned an error. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo bowtie2 finished. >> $my_log_file
+	echo $(date)': bowtie2 finished.' >> $my_log_file
 fi
 
 
@@ -156,12 +156,12 @@ then
 		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
 	
 	} || {
-		echo 'bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file
+		echo $(date)': bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo bowtie2 finished. >> $my_log_file
+	echo $(date)': bowtie2 finished.' >> $my_log_file
 fi
 
 
@@ -172,12 +172,12 @@ then
 		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -U $my_rd -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
 	
 	} || {
-		echo 'bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file
+		echo $(date)': bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo bowtie2 finished. >> $my_log_file
+	echo $(date)': bowtie2 finished.' >> $my_log_file
 fi
 
 
@@ -186,12 +186,12 @@ fi
 	python $location/scripts_ins/filter_2/filter2.py -a $f1/alignment3.sam -b $f1/output_F2.fq 2>> $my_log_file
 
 } || {
-	echo 'error: filter2.py' >> $my_log_file
+	echo $(date)': error: filter2.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo Second filter finished. >> $my_log_file
+echo $(date)': Second filter finished.' >> $my_log_file
 
 
 #Execute bowtie2 to align filtered reads to genome sequence
@@ -199,12 +199,12 @@ echo Second filter finished. >> $my_log_file
 	$location/bowtie2/bowtie2 --local -x $f1/$my_ix -U $f1/output_F2.fq -S $f1/alignment4.sam 2> $f2/bowtie2_local_std2.txt
 
 } || {
-	echo 'bowtie2 local alignment to the genome sequence returned an error. See log files.' >> $my_log_file
+	echo $(date)': bowtie2 local alignment to the genome sequence returned an error. See log files.' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo bowtie2 finished. >> $my_log_file
+echo $(date)': bowtie2 finished.' >> $my_log_file
 
 
 
@@ -216,16 +216,18 @@ then
 		python $location/scripts_ins/analysis/paired-analysis.py -a $f1/alignment2.sam -b $f1/output_analysis.txt -c $f1/$my_gs 2>> $my_log_file
 
 	} || {
-		echo 'error: paired-analysis.py' >> $my_log_file
+		echo $(date)': error: paired-analysis.py' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
+	echo $(date)': Paired reads analysis finished.' >> $my_log_file
+
 	{
 		python $location/scripts_ins/analysis/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode 2>> $my_log_file
 
 	} || {
-		echo 'error: local-analysis.py' >> $my_log_file
+		echo $(date)': error: local-analysis.py' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
@@ -239,13 +241,13 @@ then
 		python $location/scripts_ins/analysis/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode 2>> $my_log_file
 
 	} || {
-		echo 'error: local-analysis.py' >> $my_log_file
+		echo $(date)': error: local-analysis.py' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
+	echo $(date)': Local reads analysis finished.' >> $my_log_file
 fi
-echo Analysis finished. >> $my_log_file
 
 
 #Sort insertions
@@ -253,12 +255,12 @@ echo Analysis finished. >> $my_log_file
 	python $location/scripts_ins/sort_insertions/sort.py -a $f1/output_analysis.txt -b $f1/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -m $my_mode 2>> $my_log_file
 	
 } || {
-	echo 'error: sort.py' >> $my_log_file
+	echo $(date)': error: sort.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo Insertions sorted. >> $my_log_file
+echo $(date)': Insertions sorted.' >> $my_log_file
 
 
 #ma-input.py
@@ -266,12 +268,12 @@ echo Insertions sorted. >> $my_log_file
 	python $location/scripts_ins/ins_to_varanalyzer/ins-to-varanalyzer.py -a $f3/sorted_insertions.txt -b $f1/ins-to-varanalyzer.txt 2>> $my_log_file
 	
 } || {
-	echo 'error: ins-to-varanalyzer.py' >> $my_log_file
+	echo $(date)': error: ins-to-varanalyzer.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo Done. >> $my_log_file
+echo $(date)': ins-to-varanalyzer.py finished.' >> $my_log_file
 
 
 #varanalyzer
@@ -279,12 +281,12 @@ echo Done. >> $my_log_file
 	python $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann 2>> $my_log_file
 	
 } || {
-	echo 'error: varanalyzer.py' >> $my_log_file
+	echo $(date)': error: varanalyzer.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo Done. >> $my_log_file
+echo $(date)': varanalyzer.py finished.' >> $my_log_file
 
 #Primers________________________________________________________________________________________________________________________________________________________________
 #Run SAM-FQ
@@ -295,7 +297,7 @@ mkdir $f1/primers
 	python $location/scripts_ins/ins_primers/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f1/varanalyzer_output.txt -sam_out $f1/primers/ 2>> $my_log_file
 	
 } || {
-	echo 'error:ins-primers.py' >> $my_log_file
+	echo $(date)': error:ins-primers.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
@@ -310,14 +312,14 @@ do
 		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2> $f1/bowtie2_std5.txt
 
 	} || {
-		echo 'error: Bowtie2 - primers' >> $my_log_file
+		echo $(date)': error: Bowtie2 - primers' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
 done
 
-
+echo $(date)': Running primer generation module'
 #Consensus sequence generation
 
 #Generation of a variable with the path were the SAM files of each insertion will be held
@@ -403,15 +405,13 @@ echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 	python $location/graphic_output/graphic-output.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -m $my_mode	-gff $f0/$my_gff  -iva $f1/varanalyzer_output.txt -rrl $my_rrl -pname $project_name -ins_pos $f1/ins-to-varanalyzer.txt 2>> $my_log_file
 	
 } || {
-	echo 'error:graphic-output.py' >> $my_log_file
+	echo $(date)': error:graphic-output.py' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo Graphic output created. >> $my_log_file
+echo $(date) ':Graphic output created.' >> $my_log_file
 
-
-echo run time is $(expr `date +%s` - $start_time) s >> $my_log_file
 
 echo $exit_code
 

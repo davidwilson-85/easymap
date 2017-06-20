@@ -687,15 +687,6 @@ def insertions_overview_and_histograms():
 
 
 
-
-
-
-
-
-
-
-
-
 			#save image, specifying the format with the extension
 			w, h = im.size
 			im.crop((0, 100, w, h-100)).save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
@@ -889,8 +880,8 @@ def gene_plot():
 					positions.append(int(sp[3]))
 					positions.append(int(sp[4]))
 					features.append(feature)
-					p.append(features)
-					p.append(positions)
+		p.append(features)
+		p.append(positions)
 			
 
 	for p in intermediate_list:
@@ -901,6 +892,7 @@ def gene_plot():
 			p[6].append(max(p[6]) +  int(args.rrl))
 
 	for p in intermediate_list:
+
 		wide=1000 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
 		height=(35/100.0)*wide
 		im = Image.new("RGB", (wide, int(height)), (255,255,255))
@@ -954,10 +946,7 @@ def gene_plot():
 						draw.line((s, int(180/350.0*height)) + (s + step, int(180/350.0*height)), fill=(14, 54, 119), width=int(0.004*wide))
 						s = s + step*2
 
-
-
 		for e in p[5]:
-
 			if e[0].strip() == 'exon':
 				inicio = int((int(e[1]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide)
 				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
@@ -970,8 +959,10 @@ def gene_plot():
 					draw.line((inicio, int(170/350.0*height)) + (inicio, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 				if p[4][5] == '-':
 					draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
-
-			if 'UTR' in e[0].strip():																														# Backup UTR drawing
+		
+		for e in p[5]:
+			'''
+			if 'UTR' in e[0].strip():																														
 				inicio = int((int(e[1]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
 				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
 				draw.line((inicio, int(180/350.0*height)) + (fin, int(180/350.0*height)), fill=(188, 209, 242), width=int(0.02*wide))
@@ -981,7 +972,7 @@ def gene_plot():
 					draw.line((inicio, int(170/350.0*height)) + (inicio, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 				if p[4][5] == '-':
 					draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
-
+			'''
 			if 'utr' in (e[0].strip()).lower() and 'five' in (e[0].strip()).lower():																		# Backup UTR drawing
 				inicio = int((int(e[1]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
 				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
@@ -990,8 +981,6 @@ def gene_plot():
 				draw.line((inicio, int(190/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 				draw.line((inicio, int(170/350.0*height)) + (inicio, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 				draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
-
-
 			if 'utr' in (e[0].strip()).lower() and 'three' in (e[0].strip()).lower():																		# Backup UTR drawing
 				inicio = int((int(e[1]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
 				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
@@ -1003,9 +992,6 @@ def gene_plot():
 				if p[4][5] == '-':
 					draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 
-
-
-
 		#Gene direction
 		if p[4][5] == '+':
 			draw.polygon([(int(0.84*wide), int(168/350.0*height)), (int(0.851*wide) , int(168/350.0*height)), (int(0.851*wide), int(181/350.0*height))], fill = (255, 255, 255, 0))
@@ -1013,8 +999,7 @@ def gene_plot():
 			draw.line((int(0.841*wide), int(170/350.0*height)) + (int(0.85*wide), int(180/350.0*height)), fill=(0, 4, 71, 0), width=2)
 			draw.line((int(0.841*wide), int(190/350.0*height)) + (int(0.851*wide), int(180/350.0*height)), fill=(0, 4, 71, 0), width=2)
 
-
-		
+				
 		if p[4][5] == '-':
 			draw.polygon([(int(0.16*wide), int(168/350.0*height)), (int(0.149*wide) , int(168/350.0*height)), (int(0.149*wide), int(180/350.0*height))], fill = (255, 255, 255, 0))
 			draw.polygon([(int(0.16*wide), int(192/350.0*height)), (int(0.149*wide) , int(192/350.0*height)), (int(0.149*wide), int(180/350.0*height))], fill = (255, 255, 255, 0))
@@ -1023,7 +1008,7 @@ def gene_plot():
 
 			draw.line((int(0.15*wide), int(169/350.0*height)) + (int(0.16*wide), int(169/350.0*height)), fill=(255, 255, 255, 0), width=1)
 
-
+		
 		#Scale bar
 
 		scale = 100
