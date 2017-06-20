@@ -1,6 +1,6 @@
 echo CASO 1___________________________________________________________________________________________
 #_________________________________Case 1: Mutant in ref background, backcross, mutant parental control (ref bc mut)_______________________________________________________________
-#./easymap -n caso1 -w snp -sim -r mini -g complete.gff -rs ref -cr bc -co par_mut -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 25+100,0+500,100+1+50+se
+./easymap -n caso1 -w snp -sim -r mini -g complete.gff -rs ref -cr bc -co par_mut -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 25+100,0+500,100+1+50+se
 
 
 echo CASO 2/5___________________________________________________________________________________________

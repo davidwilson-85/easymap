@@ -173,7 +173,7 @@ function get_problem_va {
 
 	#Groom vcf
 	{
-		python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va 
+		python $location/scripts_snp/vcf-groomer.py -a $f1/raw_variants.vcf -b $f1/F2_raw.va 
 
 	} || {
 		echo $(date)': Error during execution of vcf-groomer.py with F2 data.' >> $my_log_file
@@ -186,7 +186,7 @@ function get_problem_va {
 
 	#Run vcf filter
 	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 7 -qual_min 20
+		python $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 7 -qual_min 20
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -271,7 +271,7 @@ function get_control_va {
 
 	#Groom vcf
 	{
-		python $location/scripts_snp/groomer/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/control_raw.va 
+		python $location/scripts_snp/vcf-groomer.py -a $f1/raw_p_variants.vcf -b $f1/control_raw.va 
 
 	} || {
 		echo $(date)': Error during execution of vcf-groomer.py with control data.' >> $my_log_file
@@ -284,7 +284,7 @@ function get_control_va {
 
 	#Run vcf filter
 	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 7 -qual_min 20
+		python $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 7 -qual_min 20
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -309,7 +309,7 @@ function cr_analysis {
 
 	# (1) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
 	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
+		python $location/scripts_snp/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS 
 
 	} || {
 		echo $(date)': Error during the second execution of variants-filter.py .' >> $my_log_file
@@ -322,7 +322,7 @@ function cr_analysis {
 	# (2) Create input for varanalyzer and run varanalyzer.py
 	#	- snp-to-varanalyzer.py
 	{
-		python $location/scripts_snp/snp_to_varanalyzer/snp-to-varanalyzer.py -a $f1/final_variants.va -b $f1/snp-to-varanalyzer.txt	
+		python $location/scripts_snp/snp-to-varanalyzer.py -a $f1/final_variants.va -b $f1/snp-to-varanalyzer.txt	
 		
 	} || {
 		echo $(date)': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
@@ -366,7 +366,7 @@ function cr_analysis {
 	# (5) Filter SNPs to draw
 	af_min=$2
 	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $af_min 
+		python $location/scripts_snp/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $af_min 
 
 	} || {
 		echo $(date)': Error during third execution of variants-filter.py . ' >> $my_log_file
@@ -475,7 +475,7 @@ then
 	# (2) Run VA operations: Remove control SNPs from problem file
 	my_operation_mode=A
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 		#draw snps
 		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
@@ -491,7 +491,7 @@ then
 	# (3) Run mapping analysis
 	my_analysis_mode=back
 	{
-		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+		python $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -525,7 +525,7 @@ then
 
 	# (2) Run VA filter: eliminate SNPs with FA > 0.7 from control reads
 	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_max 0.7 
+		python $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_max 0.7 
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -538,7 +538,7 @@ then
 
 	# (3) Run af-comparison: Intersection of filtered control SNPs with problem reads: outputs VA file with 4 columns of allele absolute frequence
 	{
-		python $location/scripts_snp/af_comparison/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs
+		python $location/scripts_snp/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs
 
 	} || {
 		echo $(date)': Error during execution of af_comparison.py .' >> $my_log_file
@@ -551,7 +551,7 @@ then
 	# (4) Run mapping analysis
 	my_analysis_mode=back
 	{
-		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+		python $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -586,7 +586,7 @@ then
 	# (2) Run VA operations: Remove control SNPs from problem file
 	my_operation_mode=A
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 
 	} || {
 		echo $(date)': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -599,7 +599,7 @@ then
 	# (3) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+		python $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 
 	} || {
@@ -629,7 +629,7 @@ then
 
 	# (2) Run vcf filter to get SNPs with af > 0.75
 	{
-		python $location/scripts_snp/filter/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_min 0.75 
+		python $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_min 0.75 
 		#draw snps
 		python $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
@@ -644,7 +644,7 @@ then
 
 	# (3) Change ref seq, generate a "noref genome"
 	{
-		python $location/scripts_snp/change_snp/change-snp.py -var $f1/control_filtered2.va  -gnm_ref $f1/$my_gs -out $f1/gnm_ref_merged/genome2.fa
+		python $location/scripts_snp/change-snp.py -var $f1/control_filtered2.va  -gnm_ref $f1/$my_gs -out $f1/gnm_ref_merged/genome2.fa
 	
 		rm -rf $f1/$my_gs
 		mv $f1/gnm_ref_merged/genome2.fa $f1/gnm_ref_merged/genome.fa
@@ -665,7 +665,7 @@ then
 	# (5) Run VA operations: Intersection to get SNPs for mapping the mutation
 	my_operation_mode=I
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered2.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered2.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  
 
 	} || {
 		echo $(date)': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -678,7 +678,7 @@ then
 	# (6) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+		python $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -692,7 +692,7 @@ then
 	# (7) Run VA operations: Remove control SNPs from problem file 
 	my_operation_mode=A
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 		#draw snps
 		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
@@ -729,7 +729,7 @@ then
 	# (2) Run VA operations: Intersection to get mapping SNPs
 	my_operation_mode=I
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison_mapping.va -mode $my_operation_mode -primary 1  
 
 	} || {
 		echo $(date)': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -742,7 +742,7 @@ then
 	# (3) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python $location/scripts_snp/analysis/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
+		python $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -756,7 +756,7 @@ then
 	# (4) Run VA operations: Remove control SNPs from problem
 	my_operation_mode=A
 	{
-		python $location/scripts_snp/operations/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
+		python $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  
 		#draw snps
 		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
