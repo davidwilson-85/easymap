@@ -492,7 +492,7 @@ def insertions_overview_and_histograms():
 				insertion = str(sp[2]).strip()
 				if insertion not in insertions and insertion != '-':
 					insertions.append(insertion)
-				
+
 		for e in insertions:
 			try:
 				del region_min
@@ -633,8 +633,8 @@ def insertions_overview_and_histograms():
 								cr_min = min(cr)
 								cr_max = max(cr)
 								draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
-								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 119)), fill=(150, 0, 150, 0), width=1)
-								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 119)), fill=(150, 0, 150, 0), width=1)
+								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(150, 0, 150, 0), width=1)
+								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(150, 0, 150, 0), width=1)
 
 
 			#Axis anotations
