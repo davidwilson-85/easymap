@@ -96,14 +96,14 @@ from string import maketrans
 
 # Parse command arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--project-name', action="store", dest='project_name', required=True)
+#parser.add_argument('--project-name', action="store", dest='project_name', required=True)
 parser.add_argument('--variants', action="store", dest='variants_input', required=True)
 parser.add_argument('--snp-info', action="store", dest='snp_info_input', required=True)
 parser.add_argument('--map-info', action="store", dest='map_info', required=True)
 parser.add_argument('--output-file', action="store", dest='output_file', required=True)
 args = parser.parse_args()
 
-project = args.project_name
+#project = args.project_name
 variants_input = args.variants_input
 snp_info_input = args.snp_info_input
 map_info_input = args.map_info
@@ -148,7 +148,7 @@ for line1 in in1_array:
 		
 		quality, ref_count, alt_count, allele_frequency = '-', '-', '-', '-'
 		
-		if id1 == id2:
+		if id1.lower() == id2.lower():
 			quality = line2[5].strip()
 			ref_count = line2[6].strip()
 			alt_count = line2[7].strip()
@@ -159,7 +159,8 @@ for line1 in in1_array:
 	# something wrong is happening (every variant should always be in both input files).
 	# In this event, stop the workflow by sending 'error' to the workflow
 	if quality == '-' or ref_count == '-' or alt_count == '-' or allele_frequency == '-':
-			quit('error')
+			print 'error'
+			quit()
 	
 	# Calculate the distance from the variant position to the selected position
 	dist_to_selected_position = int(line1[2]) - selected_position
