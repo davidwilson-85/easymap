@@ -668,17 +668,45 @@ def insertions_overview_and_histograms():
 				y_p = int(y_p - (10/scaling_factor_y_paired))
 
 
-			#Legend________________________________________________________________________________________				<---------------------------------------------
+			#Legend paired________________________________________________________________________________________				<---------------------------------------------
+			#w and h can be used to re-position the legend in the figure
+			w = 690
+			h = 160
 
+			#legend box
+			draw.polygon([(w,h), (w,h+100), (w+200,h+100), (w+200,h) ], fill = (255, 255, 255, 0))
+			draw.line((w, h) + (w+200, h), fill=256, width=1)
+			draw.line((w, h) + (w, h+100), fill=256, width=1)
+			draw.line((w+200, h) + (w+200, h+100), fill=256, width=1)
+			draw.line((w, h+100) + (w+200, h+100), fill=256, width=1)
+			draw.text((w+10, h+10), 'Legend:', font=fnt3, fill=(0,0,0,255))
+			#legend items
+			draw.text((w+45, h+32), 'Forward reads', font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+32+7) + (w+35, h+32+7), fill=(31, 120, 180), width=10)
+			draw.text((w+45, h+52), 'Reverse reads ', font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+52+7) + (w+35, h+52+7), fill=(64, 159, 65), width=10)
+			draw.text((w+45, h+72), 'Candidate region', font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
 
+			#Legend local________________________________________________________________________________________				<---------------------------------------------
+			#w and h can be used to re-position the legend in the figure
+			w = 690
+			h = 465
 
-
-
-
-
-
-
-
+			#legend box
+			draw.polygon([(w,h), (w,h+100), (w+200,h+100), (w+200,h) ], fill = (255, 255, 255, 0))
+			draw.line((w, h) + (w+200, h), fill=256, width=1)
+			draw.line((w, h) + (w, h+100), fill=256, width=1)
+			draw.line((w+200, h) + (w+200, h+100), fill=256, width=1)
+			draw.line((w, h+100) + (w+200, h+100), fill=256, width=1)
+			draw.text((w+10, h+10), 'Legend:', font=fnt3, fill=(0,0,0,255))
+			#legend items
+			draw.text((w+45, h+32), """3' clipped reads """, font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+32+7) + (w+35, h+32+7), fill=(31, 120, 180), width=10)
+			draw.text((w+45, h+52), """5' clipped reads """, font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+52+7) + (w+35, h+52+7), fill=(64, 159, 65), width=10)
+			draw.text((w+45, h+72), 'Predicted position', font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
 
 			#save image, specifying the format with the extension
 			w, h = im.size
@@ -773,7 +801,6 @@ def insertions_overview_and_histograms():
 						if sp[5].strip() == 'LEFT_RD':
 							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=3)
 
-
 			#Axis anotations
 			#x Axis
 			x_p = 120 + int(25/scaling_factor_x)
@@ -783,12 +810,9 @@ def insertions_overview_and_histograms():
 			while x_p in range(120, 900):
 
 				draw.line((x_p, 450) + (x_p, 457), fill=256, width=1)
-
 				w, h = draw.textsize(str(ruler))
-				draw.text((x_p - w/2 - 5, 457), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
-
+				draw.text((x_p - w/2 - 5, 460), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 				ruler = ruler + 50
-
 				x_p = int(x_p + (50/scaling_factor_x)) #Ruler with 200 nts separations
 
 			while x_p_2 in range(120, 900):
@@ -797,6 +821,8 @@ def insertions_overview_and_histograms():
 
 			#y Axis 
 			y_p = 450 - int(5/scaling_factor_y_local)
+			y_p_2 = 450 - int(1/scaling_factor_y_local)
+
 			counter = 5
 			while y_p in range(150, 451): 
 				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
@@ -804,10 +830,37 @@ def insertions_overview_and_histograms():
 				counter = counter + 5
 				y_p = int(y_p - (5/scaling_factor_y_local))
 
+			#Legend local________________________________________________________________________________________				<---------------------------------------------
+			#w and h can be used to re-position the legend in the figure
+			w = 690
+			h = 160
 
+			#legend box
+			draw.polygon([(w,h), (w,h+100), (w+200,h+100), (w+200,h) ], fill = (255, 255, 255, 0))
+			draw.line((w, h) + (w+200, h), fill=256, width=1)
+			draw.line((w, h) + (w, h+100), fill=256, width=1)
+			draw.line((w+200, h) + (w+200, h+100), fill=256, width=1)
+			draw.line((w, h+100) + (w+200, h+100), fill=256, width=1)
+			draw.text((w+10, h+10), 'Legend:', font=fnt3, fill=(0,0,0,255))
+			#legend items
+			draw.text((w+45, h+32), """3' clipped reads """, font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+32+7) + (w+35, h+32+7), fill=(31, 120, 180), width=10)
+			draw.text((w+45, h+52), """5' clipped reads """, font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+52+7) + (w+35, h+52+7), fill=(64, 159, 65), width=10)
+			draw.text((w+45, h+72), 'Predicted position', font=fnt3, fill=(0,0,0,255))
+			draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
+
+
+
+			'''
+			while y_p_2 in range(150, 451): 
+				draw.line((120, y_p_2) + (117, y_p_2), fill=256, width=1)
+				y_p_2 = int(y_p_2 - (1/scaling_factor_y_local))
+			'''
+			
 			#save image, specifying the format with the extension
-			im.save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
-
+			w, h = im.size
+			im.crop((0, 100, w, h-50)).save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
 
 #############################################################################################################
 #																											#
@@ -896,7 +949,7 @@ def gene_plot():
 
 		gene_px_length = float((0.7)*wide)
 
-		gene_scaling_factor = gene_length/gene_px_length  #pb/pixel
+		gene_scaling_factor = gene_length/gene_px_length  #bp/pixel
 
 		#Fonts
 		fnt1 = ImageFont.truetype('fonts/arial.ttf', int(0.03*wide))
@@ -1007,7 +1060,7 @@ def gene_plot():
 		scale = 100
 		px_scale = float(scale/gene_scaling_factor)
 		draw.line((int(0.97*wide) - int(px_scale), int(250/350.0*height)) + (int(0.97*wide), int(250/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
-		draw.text((int(0.93*wide), int(257.8/350.0*height)), ('100 pb'), font=fnt2, fill=(0,0,0,255))
+		draw.text((int(0.93*wide), int(257.8/350.0*height)), ('100 bp'), font=fnt2, fill=(0,0,0,255))
 
 
 		#Insertion triangle and info
