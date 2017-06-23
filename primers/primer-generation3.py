@@ -95,125 +95,124 @@ def cross_dimerization(oligo,against):
 	#number  = 0
 
 	#for oligo in lista:		
-		
 	#	oligo = oligo.upper()
 	if against == "self":
 		backwards = reverse_complementary(oligo)
 	else:
 		backwards = reverse_complementary(against)
 
-		counter_list = []
+	counter_list = []
 
-		for j in range(len(oligo)):
-			match = []
-			counter = 0
-			former = "no"
+	for j in range(len(oligo)):
+		match = []
+		counter = 0
+		former = "no"
 
-			#######################################One sense
-			for i in range(len(oligo)):
-				try:
-					if oligo[j+i] == backwards[i]:
-						if former == "yes":
-							match[-1]= match[-1]+oligo[j+i]
+		#######################################One sense
+		for i in range(len(oligo)):
+			try:
+				if oligo[j+i] == backwards[i]:
+					if former == "yes":
+						match[-1]= match[-1]+oligo[j+i]
 
-						else:
-							match.append(oligo[j+i])
-						
-						former = "yes"
 					else:
-						match.append("-")
-						former = "no"
-
-				except:
-					continue
-			##################################Calculation of value
-			pos = 0
-			for nuc in match:
-				if len(nuc) == 1:
-					if nuc == "G" or nuc == "C":
-						if pos == 0 or pos == 1: counter += 3*1.2
-						elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=3*1.2
-						else: counter += 3
-
-					elif nuc == "T" or nuc == "A":
-						if pos == 0 or pos == 1: counter +=2*1.2
-						elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-2: counter +=2*1.2 
-
-						else: counter +=2
-				else:
-					c = 0
-					for n in nuc:
-						if n == "G" or n == "C":
-							c += 3
-						elif n == "T" or n == "A":
-							c +=2
+						match.append(oligo[j+i])
 					
-					if pos == 0 or pos == 1: counter += c * len(nuc) * 1.2
-					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
-					else: counter += c * len(nuc)
-				pos += 1
-			#if counter > 50:
-			
-			#print match, counter, number
-			
-			counter_list.append(counter)
-			####################################Other sense
-			match = []
-			counter = 0
-			former = "no"
-			for i in range(len(oligo)):
-				try:
-					if oligo[i-j] == backwards[i]:
-						if former == "yes":
-							match[-1]= match[-1]+oligo[j+i]
+					former = "yes"
+				else:
+					match.append("-")
+					former = "no"
 
-						else:
-							match.append(oligo[j+i])
-						
-						former = "yes"
+			except:
+				continue
+		##################################Calculation of value
+		pos = 0
+		for nuc in match:
+			if len(nuc) == 1:
+				if nuc == "G" or nuc == "C":
+					if pos == 0 or pos == 1: counter += 3*1.2
+					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=3*1.2
+					else: counter += 3
+
+				elif nuc == "T" or nuc == "A":
+					if pos == 0 or pos == 1: counter +=2*1.2
+					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-2: counter +=2*1.2 
+
+					else: counter +=2
+			else:
+				c = 0
+				for n in nuc:
+					if n == "G" or n == "C":
+						c += 3
+					elif n == "T" or n == "A":
+						c +=2
+				
+				if pos == 0 or pos == 1: counter += c * len(nuc) * 1.2
+				elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
+				else: counter += c * len(nuc)
+			pos += 1
+		#if counter > 50:
+		
+		#print match, counter, number
+		
+		counter_list.append(counter)
+		####################################Other sense
+		match = []
+		counter = 0
+		former = "no"
+		for i in range(len(oligo)):
+			try:
+				if oligo[i-j] == backwards[i]:
+					if former == "yes":
+						match[-1]= match[-1]+oligo[j+i]
+
 					else:
-						match.append("-")
-						former = "no"
-
-				except:
-					continue
-
-			#################################Calculation of value
-			pos = 0
-			for nuc in match:
-				if len(nuc) == 1:
-					if nuc == "G" or nuc == "C":
-						if pos == 0 or pos == 1: counter += 3*1.2
-						elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=3*1.2
-						else: counter += 3
-
-					elif nuc == "T" or nuc == "A":
-						if pos == 0 or pos == 1: counter +=2*1.2
-						elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=2*1.2 
-
-						else: counter +=2
-				else:
-					c = 0
-					for n in nuc:
-						if n == "G" or n == "C":
-							c += 3
-						elif n == "T" or n == "A":
-							c +=2
+						match.append(oligo[j+i])
 					
-					if pos == 0 or pos == 1: counter += c * len(nuc) * 1.2
-					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
-					else: counter += c * len(nuc)
-				pos += 1
-			#if counter > 50:
-			#print  match, counter, number
-			
-			counter_list.append(counter)
-		#print counter_list, len(counter_list), max(counter_list)
+					former = "yes"
+				else:
+					match.append("-")
+					former = "no"
+
+			except:
+				continue
+
+		#################################Calculation of value
+		pos = 0
+		for nuc in match:
+			if len(nuc) == 1:
+				if nuc == "G" or nuc == "C":
+					if pos == 0 or pos == 1: counter += 3*1.2
+					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=3*1.2
+					else: counter += 3
+
+				elif nuc == "T" or nuc == "A":
+					if pos == 0 or pos == 1: counter +=2*1.2
+					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=2*1.2 
+
+					else: counter +=2
+			else:
+				c = 0
+				for n in nuc:
+					if n == "G" or n == "C":
+						c += 3
+					elif n == "T" or n == "A":
+						c +=2
+				
+				if pos == 0 or pos == 1: counter += c * len(nuc) * 1.2
+				elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
+				else: counter += c * len(nuc)
+			pos += 1
+		#if counter > 50:
+		#print  match, counter, number
+		
+		counter_list.append(counter)
+	#print counter_list, len(counter_list), max(counter_list)
 
 
-		#print max(counter_list), oligo
-		#number += 1	
-		return max(counter_list)
+	#print max(counter_list), oligo
+	#number += 1
+	return max(counter_list)
 	#exit()
 				
 
@@ -279,17 +278,17 @@ def rule_1(oligo,sense,oligo2):
 		###################################################### Filter: Tm of the primer, repetitions in the primer, homodimer formation
 			if Tm > 60 and Tm < 64:
 
-				contain_repetition = find_repetitive(primer,4)
+				contain_repetition = find_repetitive(primer,3)
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= 45:
+					if cross <= 60:
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
 							if cross > 60:
 								break
 					
-					if cross <= 45:
+					if cross <= 40:
 						found = "yes"
 						return found, primer, Tm
 					else:
@@ -322,7 +321,7 @@ def rule_2(oligo,sense,oligo2):
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= 45:
+					if cross <= 60:
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
 							if cross > 60:
