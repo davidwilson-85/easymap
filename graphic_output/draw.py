@@ -53,6 +53,7 @@ def red(p):
 
 args = parser.parse_args()
 
+
 #############################################################################################################
 #																											#
 # 							SNP - Alelic frequence VS Chromosome position									#
@@ -913,7 +914,7 @@ def gene_plot():
 		for p in intermediate_list: 
 			for i, line in enumerate(lines): 
 				sp = line.split()
-				if p[0].lower().strip() == sp[1].lower().strip() and p[1].strip() == sp[3].strip() and sp[5] == 'TOTAL' and sp[2] not in p[2]:
+				if p[0].lower().strip() == sp[1].lower().strip() and p[1].strip() == sp[3].strip() and 'TOTAL' in sp[5] and sp[2] not in p[2]:
 					p[2] = sp[2]
 
 
@@ -982,7 +983,6 @@ def gene_plot():
 					while s in range(inicio, int(fin)):
 						draw.line((s, int(180/350.0*height)) + (s + step, int(180/350.0*height)), fill=(14, 54, 119), width=int(0.004*wide))
 						s = s + step*2
-
 
 		if p[4][5] == '-':
 			for e in p[5]:		
@@ -1059,12 +1059,13 @@ def gene_plot():
 
 		
 		#Scale bar
-
 		scale = 100
-		px_scale = float(scale/gene_scaling_factor)
-		draw.line((int(0.97*wide) - int(px_scale), int(250/350.0*height)) + (int(0.97*wide), int(250/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
-		draw.text((int(0.93*wide), int(257.8/350.0*height)), ('100 bp'), font=fnt2, fill=(0,0,0,255))
+		scale_tag = '100 bp'
+		w, h = draw.textsize(str(scale_tag))
 
+		px_scale = float(scale/gene_scaling_factor)
+		draw.line((int(0.97*wide) - int(px_scale) - w/2 + px_scale/2, int(250/350.0*height)) + (int(0.97*wide) - w/2 + px_scale/2, int(250/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
+		draw.text((int(0.93*wide), int(257.8/350.0*height)), (scale_tag), font=fnt2, fill=(0,0,0,255))
 
 		#Insertion triangle and info
 		if args.my_mut == 'lin':
