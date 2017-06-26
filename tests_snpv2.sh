@@ -22,5 +22,9 @@
 #./easymap -n caso6 -w snp -sim -r mini -g complete.gff -rs noref -cr oc -co par_mut -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 25+100,0+500,100+1+50+se
 
 echo INS
-./easymap -n ins_sim -w ins -sim -r at -g complete.gff  -sm 10+li -ss 60+100,0+500,100+1+50+pe -i pbinprok2.fa
-./easymap -n ins_sim -w ins -sim -r at -g complete.gff  -sm 10+li -ss 60+100,0+500,100+1+50+se -i pbinprok2.fa
+#./easymap -n ins_sim -w ins -sim -r at -g complete.gff  -sm 10+li -ss 60+100,0+500,100+1+50+pe -i pbinprok2.fa
+#./easymap -n ins_sim -w ins -sim -r at -g complete.gff  -sm 10+li -ss 60+100,0+500,100+1+50+se -i pbinprok2.fa
+
+
+./easymap -n ins_sim -w ins -sim -r insim -g complete.gff  -sm 10+li -ss 15+100,0+500,100+1+50+pe -i pbinprok2.fa
+./easymap -n ins_sim -w ins -sim -r insim -g complete.gff  -sm 10+li -ss 15+100,0+500,100+1+50+se -i pbinprok2.fa

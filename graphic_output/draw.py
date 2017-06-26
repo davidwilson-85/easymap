@@ -517,16 +517,16 @@ def insertions_overview_and_histograms():
 								region_min = int(sp[3])
 			
 					#Max and min read depth 
-					if sp[2] == e and sp[0] == 'PAIRED': 
+					if sp[2] == e and sp[0] == 'PAIRED' and sp[5].strip() != 'TOTAL': 
 						if int(sp[4]) > rd_max_paired:
 							rd_max_paired = int(sp[4])		
 
-					if sp[2] == e and sp[0] == 'LOCAL_RD': 
+					if sp[2] == e and sp[0] == 'LOCAL_RD' and sp[5].strip() != 'TOTAL_RD': 
 						if int(sp[4]) > rd_max_local:
 							rd_max_local = int(sp[4])		
 
-			rd_max_paired = rd_max_paired + 10
-			rd_max_local = rd_max_local + 5
+			rd_max_paired = rd_max_paired + 1
+			rd_max_local = rd_max_local + 1
 			region_max = region_max + 100
 			if region_min > 200:
 				region_min = region_min - 100
@@ -560,8 +560,8 @@ def insertions_overview_and_histograms():
 			#Scaling factors 
 			nucleotides = region_max - region_min
 			scaling_factor_x = nucleotides/780.0
-			scaling_factor_y_paired = rd_max_paired/300.0
-			scaling_factor_y_local = rd_max_local/300.0
+			scaling_factor_y_paired = rd_max_paired/280.0
+			scaling_factor_y_local = rd_max_local/280.0
 
 
 			#LOCAL/PAIRED GRAPHICS
@@ -586,7 +586,8 @@ def insertions_overview_and_histograms():
 
 			img_relative_y_position_2_r = float('inf')
 			img_relative_y_position_2_l = float('inf')
-
+			cand_pos_l = 'none'
+			cand_pos_r = 'none'
 			for i, line in enumerate(lines):
 				if not line.startswith('@'):
 					sp = line.split('\t')
@@ -597,7 +598,7 @@ def insertions_overview_and_histograms():
 						img_relative_x_position = img_x_position - int(region_min/scaling_factor_x) + 121
 
 						raw_y_position = int(sp[4])
-						img_y_position_l = int(raw_y_position/scaling_factor_y_paired)
+						img_y_position_l = int(raw_y_position/scaling_factor_y_local)
 						img_relative_y_position = 755 - img_y_position_l 
 
 						#draw
@@ -609,10 +610,9 @@ def insertions_overview_and_histograms():
 
 						if sp[5].strip() == 'LEFT_RD':
 							draw.line((img_relative_x_position, 753) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=1)
-							if img_relative_y_position < img_relative_y_position_2_l:
+							if img_relative_y_position <= img_relative_y_position_2_l:
 								cand_pos_l = img_relative_x_position
 								img_relative_y_position_2_l = img_relative_y_position
-
 			#Candidate regions
 			for i, line in enumerate(lines):
 				if line.startswith('@#'):
@@ -622,14 +622,16 @@ def insertions_overview_and_histograms():
 								cr = [int(sp[0].strip('@#')), int(sp[1].strip())]
 								cr_min = min(cr)
 								cr_max = max(cr)
-								draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + ')'), font=fnt3, fill=(0,0,0,255))
+								#draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + '), The most likely position por the insertion is ' + str('potato') + '.'), font=fnt3, fill=(0,0,0,255))
 								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(147, 147, 147, 0), width=1)
 								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(147, 147, 147, 0), width=1)
 
 			#Candidate position:
+			if cand_pos_r != 'none':
+				draw.line((cand_pos_r-1 , 456) + (cand_pos_r-1 , 753), fill=(147, 147, 147, 0), width=1)		
+			if cand_pos_r == 'none':
+				draw.line((cand_pos_l-1 , 456) + (cand_pos_l-1 , 753), fill=(147, 147, 147, 0), width=1)
 
-			#draw.line((cand_pos_l-1 , 456) + (cand_pos_l-1 , 753), fill=(150, 0, 150, 0), width=1)
-			draw.line((cand_pos_r-1 , 456) + (cand_pos_r-1 , 753), fill=(147, 147, 147, 0), width=1)
 
 			#Axis anotations
 			#x Axis
@@ -648,25 +650,61 @@ def insertions_overview_and_histograms():
 				draw.line((x_p_2, 755) + (x_p_2, 758), fill=256, width=1)
 				x_p_2 = int(x_p_2 + (200/scaling_factor_x)) #Ruler with 100 nts separations
 
-
 			#y Axis - paired
-			y_p = 450 - int(10/scaling_factor_y_paired)
-			counter = 10
-			while y_p in range(150, 451): 
-				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
-				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
-				counter = counter + 10
-				y_p = int(y_p - (10/scaling_factor_y_paired))
+			if rd_max_paired > 20:
+				y_p = 450 - int(5/scaling_factor_y_paired)
+				counter = 10
+				while y_p in range(150, 451): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 10
+					y_p = int(y_p - (10/scaling_factor_y_paired))
 
+			if 20 >= rd_max_paired > 10:
+				y_p = 450 - int(5/scaling_factor_y_paired)
+				counter = 5
+				while y_p in range(150, 451): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 5
+					y_p = int(y_p - (5/scaling_factor_y_paired))
 
+			if rd_max_paired <= 10:
+				y_p = 450 - int(1/scaling_factor_y_paired)
+				counter = 1
+				while y_p in range(150, 451): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 1
+					y_p = int(y_p - (1/scaling_factor_y_paired))
+			
 			#y Axis - local
-			y_p = 755 - int(10/scaling_factor_y_paired)
-			counter = 10
-			while y_p in range(455, 751): 
-				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
-				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
-				counter = counter + 10
-				y_p = int(y_p - (10/scaling_factor_y_paired))
+			if rd_max_local > 20:
+				y_p = 755 - int(5/scaling_factor_y_local)
+				counter = 5
+				while y_p in range(455, 751): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 5
+					y_p = int(y_p - (5/scaling_factor_y_local))
+
+			if 20 >= rd_max_local > 10:
+				y_p = 755 - int(5/scaling_factor_y_local)
+				counter = 5
+				while y_p in range(455, 751): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 5
+					y_p = int(y_p - (5/scaling_factor_y_local))
+
+			if rd_max_local <= 10:
+				y_p = 755 - int(1/scaling_factor_y_local)
+				counter = 1
+				while y_p in range(455, 751): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 1
+					y_p = int(y_p - (1/scaling_factor_y_local))
 
 
 			#Legend paired________________________________________________________________________________________				<---------------------------------------------
@@ -745,10 +783,10 @@ def insertions_overview_and_histograms():
 							except:
 								region_min = int(sp[3])
 			
-					#Max and min read depth 
-					if sp[2] == e and sp[0] == 'LOCAL_RD': 
+					#Max read depth 
+					if sp[2] == e and sp[0] == 'LOCAL_RD' and sp[5].strip() != 'TOTAL_RD': 
 						if int(sp[4]) > rd_max_local:
-							rd_max_local = int(sp[4])		
+							rd_max_local = int(sp[4]) + 1
 
 			region_max = region_max + 100
 			if region_min > 200:
@@ -779,7 +817,10 @@ def insertions_overview_and_histograms():
 			scaling_factor_x = nucleotides/780.0
 			scaling_factor_y_local = rd_max_local/280.0
 
-
+			img_relative_y_position_2_r = float('inf')
+			img_relative_y_position_2_l = float('inf')
+			cand_pos_l = 'none'
+			cand_pos_r = 'none'
 			#LOCAL GRAPHICS
 			for i, line in enumerate(lines):
 				if not line.startswith('@'):
@@ -798,9 +839,22 @@ def insertions_overview_and_histograms():
 						#draw
 						if sp[5].strip() == 'RIGHT_RD':
 							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=3)
+							if img_relative_y_position < img_relative_y_position_2_r:
+								cand_pos_r = img_relative_x_position
+								img_relative_y_position_2_r = img_relative_y_position
 
 						if sp[5].strip() == 'LEFT_RD':
 							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(31, 120, 180, 100), width=3)
+							if img_relative_y_position <= img_relative_y_position_2_l:
+								cand_pos_l = img_relative_x_position
+								img_relative_y_position_2_l = img_relative_y_position
+
+			#Candidate position
+			if cand_pos_r != 'none':
+				draw.line((cand_pos_r-1 , 449) + (cand_pos_r-1 , 151), fill=(147, 147, 147, 0), width=1)		
+			if cand_pos_r == 'none':
+				draw.line((cand_pos_l-1 , 449) + (cand_pos_l-1 , 151), fill=(147, 147, 147, 0), width=1)
+			
 
 			#Axis anotations
 			#x Axis
@@ -824,15 +878,24 @@ def insertions_overview_and_histograms():
 				x_p_2 = int(x_p_2 + (50/scaling_factor_x)) #Ruler with x nts separations
 
 			#y Axis 
-			y_p = 450 - int(5/scaling_factor_y_local)
-			y_p_2 = 450 - int(1/scaling_factor_y_local)
+			if rd_max_local > 8:
+				y_p = 450 - int(5/scaling_factor_y_local)
+				counter = 5
+				while y_p in range(150, 451): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 5
+					y_p = int(y_p - (5/scaling_factor_y_local))
 
-			counter = 5
-			while y_p in range(150, 451): 
-				draw.line((120, y_p) + (115, y_p), fill=256, width=1)
-				draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
-				counter = counter + 5
-				y_p = int(y_p - (5/scaling_factor_y_local))
+			if rd_max_local < 8:
+				y_p = 450 - int(1/scaling_factor_y_local)
+				counter = 1
+				while y_p in range(150, 451): 
+					draw.line((120, y_p) + (115, y_p), fill=256, width=1)
+					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
+					counter = counter + 1
+					y_p = int(y_p - (1/scaling_factor_y_local))
+
 
 			#Legend local________________________________________________________________________________________				<---------------------------------------------
 			#w and h can be used to re-position the legend in the figure
@@ -914,9 +977,9 @@ def gene_plot():
 		for p in intermediate_list: 
 			for i, line in enumerate(lines): 
 				sp = line.split()
-				if p[0].lower().strip() == sp[1].lower().strip() and p[1].strip() == sp[3].strip() and 'TOTAL' in sp[5] and sp[2] not in p[2]:
-					p[2] = sp[2]
-
+				if p[0].lower().strip() == sp[1].lower().strip() and sp[2] not in p[2]:	#and 'TOTAL' in sp[5]
+					if int(p[1]) == int(sp[3]) or int(p[1]) == (int(sp[3]) - 1):
+						p[2] = sp[2]
 
 	for p in intermediate_list:
 		features = list()
