@@ -805,19 +805,22 @@ def insertions_overview_and_histograms():
 			#x Axis
 			x_p = 120 + int(25/scaling_factor_x)
 			x_p_2 = 120 + int(50/scaling_factor_x)
+
 			ruler = region_min + 25
 		
 			while x_p in range(120, 900):
-
+				
 				draw.line((x_p, 450) + (x_p, 457), fill=256, width=1)
 				w, h = draw.textsize(str(ruler))
 				draw.text((x_p - w/2 - 5, 460), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 				ruler = ruler + 50
-				x_p = int(x_p + (50/scaling_factor_x)) #Ruler with 200 nts separations
+				x_p = int(x_p + (50/scaling_factor_x)) #Ruler with x nts separations
+
 
 			while x_p_2 in range(120, 900):
+
 				draw.line((x_p_2, 450) + (x_p_2, 455), fill=256, width=1)
-				x_p_2 = int(x_p_2 + (50/scaling_factor_x)) #Ruler with 100 nts separations
+				x_p_2 = int(x_p_2 + (50/scaling_factor_x)) #Ruler with x nts separations
 
 			#y Axis 
 			y_p = 450 - int(5/scaling_factor_y_local)

@@ -82,8 +82,6 @@ f2.write('@' + 'DATA\t' + 'Contig' + '\tins'+ '\t' + 'NT' + '\t' + '  RD' + '\t'
 
 insertion_id = 1
 
-
-
 #Insertion sorting
 if args.mode == 'pe': 
 	for i, line in enumerate(lines):
@@ -112,13 +110,13 @@ if args.mode == 'pe':
 			else:
 				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 
-
-
 elif args.mode == 'se':
 	for i, line in enumerate(lines):
 		if not line.startswith('@'): 
 			sp = line.split(',')
-			if str(sp[0]).strip() == 'LOCAL_RD' and  str(sp[4]).strip() == 'TOTAL_RD':
+			#if str(sp[0]).strip() == 'LOCAL_RD' and  str(sp[4]).strip() == 'TOTAL_RD':
+			if 'LOCAL' in str(sp[0]).strip(): # and  'TOTAL' in str(sp[4]).strip():
+
 				p = int(sp[2])
 				contig = sp[1].strip('\t')
 
@@ -142,10 +140,8 @@ elif args.mode == 'se':
 			else:
 				f2.write(sp[0] + '\t' + sp[1] + '\t' + str(insertion_id) + '\t' + sp[2] + '\t' + sp[3] + '\t' + sp[4] )
 
-
 f1.close()
 f2.close()
-
 
 ###################################################################################################################################################################
 #																																								  #
@@ -163,7 +159,6 @@ insertions_raw = list()
 
 for e in range(1, (insertion_id + 1)):
 	insertions_raw.append(e)
-
 
 if args.mode == 'pe': 
 	for insertion in insertions_raw:
