@@ -150,7 +150,6 @@ def fa_vs_pos():
 					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(245, 120, 44))
 
 
-		################################################################################################################################################################################################################
 		my_cross = str(args.my_cross)
 		#Boost / mm 																						
 		
@@ -233,7 +232,6 @@ def fa_vs_pos():
 		draw.line(((wide - 50), int(15/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-Y axis
 		draw.line((68, int(15/100.0*height)) + ((wide - 50), int(15/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-X axis
 
-		#draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt3, fill=(0,0,0,255))
 		
 		#Axis rulers_____________________
 		#X Axis
@@ -267,8 +265,6 @@ def fa_vs_pos():
 		draw.text(((32), fa_img_1-8), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
 		draw.text(((32), fa_img_05-8), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
 
-
-		#______________________________________
 
 		#Y axis label
 
@@ -967,13 +963,6 @@ def insertions_overview_and_histograms():
 			draw.text((w+45, h+72), 'Predicted position', font=fnt3, fill=(0,0,0,255))
 			draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
 
-
-
-			'''
-			while y_p_2 in range(150, 451): 
-				draw.line((120, y_p_2) + (117, y_p_2), fill=256, width=1)
-				y_p_2 = int(y_p_2 - (1/scaling_factor_y_local))
-			'''
 			
 			#save image, specifying the format with the extension
 			w, h = im.size
@@ -1122,18 +1111,7 @@ def gene_plot():
 					draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 		
 		for e in p[5]:
-			'''
-			if 'UTR' in e[0].strip():																														
-				inicio = int((int(e[1]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
-				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
-				draw.line((inicio, int(180/350.0*height)) + (fin, int(180/350.0*height)), fill=(188, 209, 242), width=int(0.02*wide))
-				draw.line((inicio, int(170/350.0*height)) + (fin, int(170/350.0*height)), fill=(0, 4, 71, 0), width=2)
-				draw.line((inicio, int(190/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
-				if p[4][5] == '+':
-					draw.line((inicio, int(170/350.0*height)) + (inicio, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
-				if p[4][5] == '-':
-					draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
-			'''
+
 			if 'utr' in (e[0].strip()).lower() and 'five' in (e[0].strip()).lower():																		# Backup UTR drawing
 				inicio = int((int(e[1]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
 				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
@@ -1169,7 +1147,6 @@ def gene_plot():
 
 			draw.line((int(0.15*wide), int(169/350.0*height)) + (int(0.16*wide), int(169/350.0*height)), fill=(255, 255, 255, 0), width=1)
 
-		
 		#Scale bar
 		scale = 100
 		scale_tag = '100 bp'
@@ -1214,38 +1191,4 @@ def gene_plot():
 
 		if args.my_mut == 'snp':
 			im.crop((70, 100, w-20, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
-
-#############################################################################################################
-#																											#
-# 											GENE PLOT - PRUEBAS												#
-#																											#
-#############################################################################################################
-
-def gene_plot2(): 
-
-	W=1000 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
-	H=(350)
-	im = Image.new("RGB", (W, H), (255,255,255))
-	draw = ImageDraw.Draw(im)
-
-
-
-	text = 'potato'
-
-
-
-	w, h = draw.textsize(text)
-
-
-	point_x = 600
-	point_y = 350/2
-
-	draw.text(((point_x - w/2), (point_y-h/2)), text, fill="black")
-
-
-	draw.ellipse((point_x-2, point_y-2, point_x+2, point_y+2), fill=(255, 25, 216))
-
-
-
-	im.save('project/3_workflow_output/prueba' + '.png')
 
