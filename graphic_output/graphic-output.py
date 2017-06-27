@@ -1,6 +1,6 @@
 #from __future__ import division
 import argparse
-from draw import fa_vs_pos, insertions_overview_and_histograms, gene_plot, gene_plot2, legend
+from draw import fa_vs_pos, insertions_overview_and_histograms, gene_plot, legend
 parser = argparse.ArgumentParser()
 
 #INPUT VARIABLES FOR SNP
