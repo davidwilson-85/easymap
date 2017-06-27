@@ -90,12 +90,7 @@ def find_repetitive(oligo,repetitions):
 
 
 def cross_dimerization(oligo,against):
-	#lista= ["ccgtcggagaaacttacatg","aacggcagagcagatttg","tgccatcagaccaacttttc","gtaaaactctagccagctcag","aaggaagaggaaaggggg","aaaataatcctggaaaccttaatg","cattaaacaattcacaaactcaag","tcaatttttagaagctaaatccatg","aaccaaaacaggggaaattttc","caaatctgagtcggtgacg","cctctcttcaagtccaagttg","ttgtcagcatcaagaccaac","ttccagctgggtaccatc","ggaaataaaagttagcctacctc","ccaccaatatagctcctgc","gagagggatttaccattctttc","caaaacctgatgatgatgatcc","gcttagattgttgtatataagcttag" ,"tgctatactggtgattgttgc","attatagagctttagagcatttttag" ,"ctcaaccacaacctgagg"]
-	#lista=[]
-	#number  = 0
-
-	#for oligo in lista:		
-	#	oligo = oligo.upper()
+	
 	if against == "self":
 		backwards = reverse_complementary(oligo)
 	else:
@@ -151,9 +146,7 @@ def cross_dimerization(oligo,against):
 				elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
 				else: counter += c * len(nuc)
 			pos += 1
-		#if counter > 50:
 		
-		#print match, counter, number
 		
 		counter_list.append(counter)
 		####################################Other sense
@@ -203,17 +196,12 @@ def cross_dimerization(oligo,against):
 				elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
 				else: counter += c * len(nuc)
 			pos += 1
-		#if counter > 50:
-		#print  match, counter, number
+		
 		
 		counter_list.append(counter)
-	#print counter_list, len(counter_list), max(counter_list)
-
-
-	#print max(counter_list), oligo
-	#number += 1
+	
 	return max(counter_list)
-	#exit()
+	
 				
 
 
@@ -287,8 +275,6 @@ def rule_1(oligo,sense,oligo2):
 							cross = cross_dimerization(primer,oligo2)
 							if cross > 50:
 								break
-					
-					if cross <= 40:
 						found = "yes"
 						return found, primer, Tm
 					else:
