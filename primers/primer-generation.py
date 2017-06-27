@@ -162,21 +162,24 @@ def cross_dimerization(oligo,against):
 		counter = 0
 		former = "no"
 		for i in range(len(backwards)):
-			try:
+			try:		
+			
+				if i-j < 0:
+					continue
 				if oligo[i-j] == backwards[i]:
 					if former == "yes":
-						match[-1]= match[-1]+oligo[j+i]
+						match[-1]= match[-1]+oligo[i-j]
 
 					else:
-						match.append(oligo[j+i])
+						match.append(oligo[i-j])
 					
 					former = "yes"
 				else:
 					match.append("-")
 					former = "no"
-
 			except:
 				continue
+			
 
 		#################################Calculation of value
 		pos = 0
@@ -210,8 +213,6 @@ def cross_dimerization(oligo,against):
 	
 	#print max(counter_list), oligo
 	#number += 1
-	
-
 	return max(counter_list)
 	
 				
@@ -282,13 +283,14 @@ def rule_1(oligo,sense,oligo2):
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= 50:
+					if cross <= 45:
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
-							if cross > 50:
+							if cross > 45:
 								break
 						
 						found = "yes"
+						print cross, primer,oligo2
 						return found, primer, Tm
 					else:
 						break
@@ -320,10 +322,10 @@ def rule_2(oligo,sense,oligo2):
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= float(50):
+					if cross <= float(45):
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
-							if cross > float(50):
+							if cross > float(45):
 								break
 						found = "yes"
 						return found, primer, Tm
