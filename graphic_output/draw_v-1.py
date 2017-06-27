@@ -14,6 +14,7 @@ parser.add_argument('-iva', action="store", dest = 'input_va')	 		#Output de var
 parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region lenght
 parser.add_argument('-f', action="store", dest = 'output_html')
 
+
 #Arguments for point mutation mapping graphic output
 parser.add_argument('-asnp', action="store", dest = 'input_snp')		
 parser.add_argument('-bsnp', action="store", dest = 'input_f_snp')		#Fasta genome input
@@ -119,16 +120,14 @@ def fa_vs_pos():
 		r = red(int(i[1]))
 
 		if 'Mb' in r:
-			#max_graph_x = int(math.ceil(int(i[1])/1000000.0))*1000000
-			max_graph_x = int(i[1]) + 10000 													#<---------------------------  +10000 para que los puntos no toquen el eje;; AJUSTAR
-
+			max_graph_x = int(math.ceil(int(i[1])/1000000.0))*1000000
 
 		elif 'kb' in r: 
 			max_graph_x = i[1]
 
 		#Scaling factors
-		scaling_factor_x = (max_graph_x)/(wide - 120)							#nts/pixel        
-		scaling_factor_y = (1.001/(63/100.0*height))								#fa/pixels
+		scaling_factor_x = (max_graph_x)/(wide - 120)							#nts/pixel         <-----------------------------------------------------------#######################
+		scaling_factor_y = (1.1/(63/100.0*height))								#fa/pixels
 
 		#snps
 		for l, line in enumerate(lines):
@@ -236,37 +235,33 @@ def fa_vs_pos():
 		#draw.text(((int(3/100.0*wide)), (int(7.5/100.0*height))), ('AF'), font=fnt3, fill=(0,0,0,255))
 		
 		#Axis rulers_____________________
-		#X Axis
-		mbs = int(0/scaling_factor_x) + 68
-		x_tag = 0
-		while mbs in range(68, wide-120):
-			draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
-			if len(str(x_tag)) == 1:
-				draw.text(((mbs - 4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-			elif len(str(x_tag)) == 2: 
-				draw.text(((mbs - 8), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-			
-			mbs = mbs + 1000000/scaling_factor_x
-			x_tag = x_tag + 1
+		#X Axis 																		
+		r = red(int(i[1]))
+		mb_max = (max_graph_x/1000000)
+		axis_px = (wide - 120)
+		if 'Mb' in r:
+			mb = 1
+			for mb in range(1, mb_max + 1):	
+				pos_x = int((mb*(float(axis_px)/mb_max)) + 70)
+				draw.line((pos_x, int(81/100.0*height) ) + (pos_x, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+				
+				if len(str(mb)) == 1:
+					draw.text(((pos_x - 4), (int(81.5/100.0*height))), (str(mb).strip()), font=fnt2, fill=(0,0,0,255))
+				elif len(str(mb)) == 2: 
+					draw.text(((pos_x - 8), (int(81.5/100.0*height))), (str(mb).strip()), font=fnt2, fill=(0,0,0,255))
 
 
 		#Y axis
-		fa_img_0 = int(80/100.0*height) - int(0/scaling_factor_y) - 1		
-		fa_img_1 = int(80/100.0*height) - int(1/scaling_factor_y) - 1
-		fa_img_05 = int(80/100.0*height) - int(0.5/scaling_factor_y) - 1
-		fa_img_025 = int(80/100.0*height) - int(0.25/scaling_factor_y) - 1
-		fa_img_075 = int(80/100.0*height) - int(0.75/scaling_factor_y) - 1
+		draw.line(( 68 , int(22.7/100.0*height) ) + ( 63 , int(22.7/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( 68 , int((28.65 + 22.7)/100.0*height) ) + ( 63 , int((28.65 + 22.7)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( 68 , int((28.65 + 22.7 - 28.65/2)/100.0*height) ) + ( 65 , int((28.65 + 22.7 - 28.65/2)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
+		draw.line(( 68 , int((28.65 + 22.7 + 28.65/2)/100.0*height) ) + ( 65 , int((28.65 + 22.7 + 28.65/2)/100.0*height) ), fill=(0, 0, 0, 0), width=1)	
 
-		draw.line(( 68 , fa_img_0 +1) + ( 63 , fa_img_0 +1 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_1 ) + ( 63 , fa_img_1 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_05 ) + ( 63 , fa_img_05 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_025 ) + ( 65 , fa_img_025 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_075 ) + ( 65 , fa_img_075 ), fill=(0, 0, 0, 0), width=1)	
-
-		draw.text(((48), fa_img_0-6), ( '0' ), font=fnt2, fill=(0,0,0,255))
-		draw.text(((32), fa_img_1-8), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
-		draw.text(((32), fa_img_05-8), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
-
+		draw.text(((32), (int(21/100.0*height))), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
+		draw.text(((32), (int((29 + 20.7)/100.0*height))), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
+		
+		#draw.text(((32), (int((28.65 + 22.7 - 28.65/2)/100.0*height))), ( '0.75' ), font=fnt2, fill=(0,0,0,255))
+		#draw.text(((32), (int((28.65 + 22.7 + 28.65/2)/100.0*height))), ( '0.25' ), font=fnt2, fill=(0,0,0,255))
 
 		#______________________________________
 
@@ -282,82 +277,6 @@ def fa_vs_pos():
 		x_title = str(i[0]) + ' (Mb)'
 		w, h = draw.textsize(str(x_title))
 		draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
-
-
-
-
-		#Legend___________________________________________________________________________________________
-
-		#Legend 1 : Case 1
-		if args.my_cross == 'bc' and args.my_snp_analysis_type == 'par':
-			w = wide-50
-			h = 30
-			l_width = 300
-			#legend box
-			draw.polygon([(w,h), (w,h+35), (w-l_width,h+40), (w-35,h) ], fill = (255, 255, 255, 0))
-			draw.line((w, h) + (w-l_width, h), fill=256, width=1)
-			draw.line((w, h) + (w, h+35), fill=256, width=1)
-			draw.line((w-l_width, h) + (w-l_width, h+35), fill=256, width=1)
-			draw.line((w, h+35) + (w-l_width, h+35), fill=256, width=1)
-			draw.text((w-l_width+10, h+10), 'Legend:', font=fnt2, fill=(0,0,0,255))
-			
-			draw.ellipse((w-l_width+80-2, h+19-2, w-l_width+80+2, h+19+2), fill=(31, 120, 180))
-			draw.text((w-l_width+90, h+10), 'SNPs', font=fnt2, fill=(0,0,0,255))
-
-			draw.line((w-l_width+145, h+18) + (w-l_width+150, h+18), fill=(46, 255, 0), width=2)
-			draw.text((w-l_width+158, h+10), 'SMA', font=fnt2, fill=(0,0,0,255))
-
-		#Legend 2 : Case 2 and case 5
-		if args.my_cross == 'bc' and args.my_snp_analysis_type == 'f2wt':
-			w = wide-50
-			h = 30
-			l_width = 200
-			#legend box
-			draw.polygon([(w,h), (w,h+35), (w-l_width,h+40), (w-35,h) ], fill = (255, 255, 255, 0))
-			draw.line((w, h) + (w-l_width, h), fill=256, width=1)
-			draw.line((w, h) + (w, h+35), fill=256, width=1)
-			draw.line((w-l_width, h) + (w-l_width, h+35), fill=256, width=1)
-			draw.line((w, h+35) + (w-l_width, h+35), fill=256, width=1)
-			draw.text((w-l_width+10, h+10), 'Legend:', font=fnt2, fill=(0,0,0,255))
-			
-			draw.ellipse((w-l_width+80-2, h+19-2, w-l_width+80+2, h+19+2), fill=(31, 120, 180))
-			draw.text((w-l_width+90, h+10), 'SNPs', font=fnt2, fill=(0,0,0,255))
-
-			draw.line((w-l_width+145, h+18) + (w-l_width+150, h+18), fill=(46, 255, 0), width=2)
-			draw.text((w-l_width+158, h+10), 'SMA', font=fnt2, fill=(0,0,0,255))
-
-		#Legend 3 : Case 3, case 4 and case 6
-		if args.my_cross == 'oc':
-			w = wide-50
-			h = 30
-			l_width = 200
-			#legend box
-			draw.polygon([(w,h), (w,h+35), (w-l_width,h+40), (w-35,h) ], fill = (255, 255, 255, 0))
-			draw.line((w, h) + (w-l_width, h), fill=256, width=1)
-			draw.line((w, h) + (w, h+35), fill=256, width=1)
-			draw.line((w-l_width, h) + (w-l_width, h+35), fill=256, width=1)
-			draw.line((w, h+35) + (w-l_width, h+35), fill=256, width=1)
-			draw.text((w-l_width+10, h+10), 'Legend:', font=fnt2, fill=(0,0,0,255))
-			
-			draw.ellipse((w-l_width+80-2, h+19-2, w-l_width+80+2, h+19+2), fill=(31, 120, 180))
-			draw.text((w-l_width+90, h+10), 'SNPs', font=fnt2, fill=(0,0,0,255))
-
-			draw.line((w-l_width+145, h+18) + (w-l_width+150, h+18), fill=(46, 255, 0), width=2)
-			draw.text((w-l_width+158, h+10), 'SMA', font=fnt2, fill=(0,0,0,255))
-
-
-
-
-		'''
-		#legend items
-		draw.text((w+45, h+32), 'Forward reads', font=fnt2, fill=(0,0,0,255))
-		draw.line((w+10, h+32+7) + (w+35, h+32+7), fill=(31, 120, 180), width=10)
-		draw.text((w+45, h+52), 'Reverse reads ', font=fnt2, fill=(0,0,0,255))
-		draw.line((w+10, h+52+7) + (w+35, h+52+7), fill=(64, 159, 65), width=10)
-		draw.text((w+45, h+72), 'Candidate region', font=fnt2, fill=(0,0,0,255))
-		draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
-		'''
-
 
 		#save image, specifying the format with the extension
 		if args.my_mut == 'snp':
