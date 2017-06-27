@@ -282,10 +282,10 @@ def rule_1(oligo,sense,oligo2):
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= 60:
+					if cross <= 50:
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
-							if cross > 60:
+							if cross > 50:
 								break
 					
 					if cross <= 40:
@@ -321,10 +321,10 @@ def rule_2(oligo,sense,oligo2):
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= 60:
+					if cross <= 50:
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
-							if cross > 60:
+							if cross > 50:
 								break
 						found = "yes"
 						return found, primer, Tm
@@ -375,10 +375,7 @@ def snp_calculation(position,genome):
 		if result[0] == "yes":
 			oligos.append(result[1])
 			Tms.append(str(result[2]))
-	print ">h"
-	print oligos[0]
-	print ">h2"
-	print oligos[1]
+	
 	return oligos,Tms
 def insertion_calculation(position,genome,contig_used):
 	size= 600
