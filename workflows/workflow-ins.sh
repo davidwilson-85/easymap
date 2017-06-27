@@ -358,7 +358,7 @@ echo $(date)': Running primer generation module' >> $my_log_file
 		    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
 			$location/samtools1/samtools sort $i  > $substring.bam 
 			
-			$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq
+			$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq 2> $f2/samtools-consensus.log
 			
 			#sed -i "s/pbinprok2/$substring/g" ./cns.fq
 			tail -n +2 $f1/cns.fq > $f1/cns.fq.temp && mv $f1/cns.fq.temp $f1/cns.fq
