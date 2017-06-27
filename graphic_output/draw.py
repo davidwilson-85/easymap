@@ -111,17 +111,13 @@ def fa_vs_pos():
 		draw = ImageDraw.Draw(im)
 		
 		#get fonts from foler 'fonts'
-		fnt1 = ImageFont.truetype('fonts/VeraMono.ttf', 28)
 		fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
-		fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', 22)
-		fnt4 = ImageFont.truetype('fonts/VeraMono.ttf', 18)
 
 		r = red(int(i[1]))
 
 		if 'Mb' in r:
 			#max_graph_x = int(math.ceil(int(i[1])/1000000.0))*1000000
 			max_graph_x = int(i[1]) + 10000 													#<---------------------------  +10000 para que los puntos no toquen el eje;; AJUSTAR
-
 
 		elif 'kb' in r: 
 			max_graph_x = i[1]
@@ -131,14 +127,18 @@ def fa_vs_pos():
 		scaling_factor_y = (1.001/(63/100.0*height))								#fa/pixels
 
 		#snps
+
+		r, g, b = 31, 120, 180
+		if args.my_mut == 'af_control':
+			r, g, b = 245, 120, 44
+
 		for l, line in enumerate(lines):
 			sp = line.split()
 			if i[0].lower() == sp[0].lower():
 				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
 				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
 				pos_img = int(int(sp[1])/scaling_factor_x) + 70
-				draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(31, 120, 180))
-
+				draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(r, g, b))
 
 		if args.my_snp_analysis_type == 'f2wt' and args.my_mut == 'snp':
 			for l, line in enumerate(lines):
@@ -147,7 +147,7 @@ def fa_vs_pos():
 					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(64, 159, 65))
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(245, 120, 44))
 
 
 		################################################################################################################################################################################################################
@@ -214,7 +214,7 @@ def fa_vs_pos():
 						window_position = int(sp[1])
 						window_position_img = int(window_position/scaling_factor_x) + 70
 						try:
-							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
+							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 0, 255), width=1)	
 							window_position_img_2 = window_position_img
 							mm_value_img_2 = mm_value_img
 						except:
@@ -283,82 +283,6 @@ def fa_vs_pos():
 		w, h = draw.textsize(str(x_title))
 		draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
 
-
-
-
-		#Legend___________________________________________________________________________________________
-
-		#Legend 1 : Case 1
-		if args.my_cross == 'bc' and args.my_snp_analysis_type == 'par':
-			w = wide-50
-			h = 30
-			l_width = 300
-			#legend box
-			draw.polygon([(w,h), (w,h+35), (w-l_width,h+40), (w-35,h) ], fill = (255, 255, 255, 0))
-			draw.line((w, h) + (w-l_width, h), fill=256, width=1)
-			draw.line((w, h) + (w, h+35), fill=256, width=1)
-			draw.line((w-l_width, h) + (w-l_width, h+35), fill=256, width=1)
-			draw.line((w, h+35) + (w-l_width, h+35), fill=256, width=1)
-			draw.text((w-l_width+10, h+10), 'Legend:', font=fnt2, fill=(0,0,0,255))
-			
-			draw.ellipse((w-l_width+80-2, h+19-2, w-l_width+80+2, h+19+2), fill=(31, 120, 180))
-			draw.text((w-l_width+90, h+10), 'SNPs', font=fnt2, fill=(0,0,0,255))
-
-			draw.line((w-l_width+145, h+18) + (w-l_width+150, h+18), fill=(46, 255, 0), width=2)
-			draw.text((w-l_width+158, h+10), 'SMA', font=fnt2, fill=(0,0,0,255))
-
-		#Legend 2 : Case 2 and case 5
-		if args.my_cross == 'bc' and args.my_snp_analysis_type == 'f2wt':
-			w = wide-50
-			h = 30
-			l_width = 200
-			#legend box
-			draw.polygon([(w,h), (w,h+35), (w-l_width,h+40), (w-35,h) ], fill = (255, 255, 255, 0))
-			draw.line((w, h) + (w-l_width, h), fill=256, width=1)
-			draw.line((w, h) + (w, h+35), fill=256, width=1)
-			draw.line((w-l_width, h) + (w-l_width, h+35), fill=256, width=1)
-			draw.line((w, h+35) + (w-l_width, h+35), fill=256, width=1)
-			draw.text((w-l_width+10, h+10), 'Legend:', font=fnt2, fill=(0,0,0,255))
-			
-			draw.ellipse((w-l_width+80-2, h+19-2, w-l_width+80+2, h+19+2), fill=(31, 120, 180))
-			draw.text((w-l_width+90, h+10), 'SNPs', font=fnt2, fill=(0,0,0,255))
-
-			draw.line((w-l_width+145, h+18) + (w-l_width+150, h+18), fill=(46, 255, 0), width=2)
-			draw.text((w-l_width+158, h+10), 'SMA', font=fnt2, fill=(0,0,0,255))
-
-		#Legend 3 : Case 3, case 4 and case 6
-		if args.my_cross == 'oc':
-			w = wide-50
-			h = 30
-			l_width = 200
-			#legend box
-			draw.polygon([(w,h), (w,h+35), (w-l_width,h+40), (w-35,h) ], fill = (255, 255, 255, 0))
-			draw.line((w, h) + (w-l_width, h), fill=256, width=1)
-			draw.line((w, h) + (w, h+35), fill=256, width=1)
-			draw.line((w-l_width, h) + (w-l_width, h+35), fill=256, width=1)
-			draw.line((w, h+35) + (w-l_width, h+35), fill=256, width=1)
-			draw.text((w-l_width+10, h+10), 'Legend:', font=fnt2, fill=(0,0,0,255))
-			
-			draw.ellipse((w-l_width+80-2, h+19-2, w-l_width+80+2, h+19+2), fill=(31, 120, 180))
-			draw.text((w-l_width+90, h+10), 'SNPs', font=fnt2, fill=(0,0,0,255))
-
-			draw.line((w-l_width+145, h+18) + (w-l_width+150, h+18), fill=(46, 255, 0), width=2)
-			draw.text((w-l_width+158, h+10), 'SMA', font=fnt2, fill=(0,0,0,255))
-
-
-
-
-		'''
-		#legend items
-		draw.text((w+45, h+32), 'Forward reads', font=fnt2, fill=(0,0,0,255))
-		draw.line((w+10, h+32+7) + (w+35, h+32+7), fill=(31, 120, 180), width=10)
-		draw.text((w+45, h+52), 'Reverse reads ', font=fnt2, fill=(0,0,0,255))
-		draw.line((w+10, h+52+7) + (w+35, h+52+7), fill=(64, 159, 65), width=10)
-		draw.text((w+45, h+72), 'Candidate region', font=fnt2, fill=(0,0,0,255))
-		draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
-		'''
-
-
 		#save image, specifying the format with the extension
 		if args.my_mut == 'snp':
 			im.save(project + '/3_workflow_output/img_2_mapping_' + str(i[0]) + '.png')
@@ -371,6 +295,55 @@ def fa_vs_pos():
 
 		if args.my_mut == 'af_candidates':
 			im.save(project + '/3_workflow_output/img_2_candidates_' + str(i[0]) + '.png')
+
+
+
+#############################################################################################################
+#																											#
+# 							SNP - Alelic frequence VS Chromosome position - LEGEND							#
+#																											#
+#############################################################################################################
+
+
+def legend():
+
+	wide = 250
+	high = 230
+
+	im = Image.new("RGB", (wide, high), (255,255,255))
+	draw = ImageDraw.Draw(im)
+	fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
+
+	w = 10
+	h = 10
+	length = high - 10
+	width = wide - 10
+
+	#legend box
+
+	draw.line((w, h) + (width, h), fill=256, width=1)
+	draw.line((w, h) + (w, length), fill=256, width=1)
+	draw.line((width, length) + (width, h), fill=256, width=1)
+	draw.line((w, length) + (width, length), fill=256, width=1)
+
+	draw.text((w+20, h+20), 'Legend:', font=fnt2, fill=(0,0,0,255))
+	
+	draw.ellipse((w+40-2, h+60-2, w+40+2, h+60+2), fill=(31, 120, 180))
+	draw.text((w+60, h+52), 'F2 problem SNPs', font=fnt2, fill=(0,0,0,255))
+
+	draw.ellipse((w+40-2, h+90-2, w+40+2, h+90+2), fill=(245, 120, 44))
+	draw.text((w+60, h+82), 'Control SNPs', font=fnt2, fill=(0,0,0,255))
+
+	draw.line((w+38, h+120) + (w+44, h+120), fill=(46, 255, 0), width=2)
+	draw.text((w+60, h+112), 'SMA', font=fnt2, fill=(0,0,0,255))
+
+	draw.line((w+38, h+150) + (w+44, h+150), fill=(255, 0, 0), width=2)
+	draw.text((w+60, h+142), 'Boost', font=fnt2, fill=(0,0,0,255))
+
+	draw.line((w+38, h+180) + (w+44, h+180), fill=(255, 0, 255), width=2)
+	draw.text((w+60, h+172), 'AF difference', font=fnt2, fill=(0,0,0,255))
+
+	im.save(project + '/3_workflow_output/legend.png')
 
 
 #############################################################################################################
@@ -501,11 +474,7 @@ def insertions_overview_and_histograms():
 	#initialize draw
 	draw = ImageDraw.Draw(im)
 	#get fonts from foler 'fonts'
-	fnt1 = ImageFont.truetype('fonts/VeraMono.ttf', 30)
-	fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 16)
 	fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
-	fnt4 = ImageFont.truetype('fonts/VeraMono.ttf', 20)
-	fnt5 = ImageFont.truetype('fonts/VeraMono.ttf', 18)
 
 	tab = 50
 	number = 1
@@ -1100,7 +1069,6 @@ def gene_plot():
 		gene_scaling_factor = gene_length/gene_px_length  #bp/pixel
 
 		#Fonts
-		fnt1 = ImageFont.truetype('fonts/arial.ttf', int(0.03*wide))
 		fnt2 = ImageFont.truetype('fonts/arial.ttf', int(0.016*wide))
 		fnt3 = ImageFont.truetype('fonts/arial.ttf', int(0.024*wide))
 		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(0.02*wide))
@@ -1208,8 +1176,8 @@ def gene_plot():
 		w, h = draw.textsize(str(scale_tag))
 
 		px_scale = float(scale/gene_scaling_factor)
-		draw.line((int(0.97*wide) - int(px_scale) - w/2 + px_scale/2, int(250/350.0*height)) + (int(0.97*wide) - w/2 + px_scale/2, int(250/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
-		draw.text((int(0.93*wide), int(257.8/350.0*height)), (scale_tag), font=fnt2, fill=(0,0,0,255))
+		draw.line((int(0.91*wide) - int(px_scale) - w/2 + px_scale/2, int(110/350.0*height)) + (int(0.91*wide) - w/2 + px_scale/2, int(110/350.0*height)), fill=(0, 0, 0, 0), width=int(0.002*wide))
+		draw.text((int(0.87*wide), int(117.8/350.0*height)), (scale_tag), font=fnt2, fill=(0,0,0,255))
 
 		#Insertion triangle and info
 		if args.my_mut == 'lin':

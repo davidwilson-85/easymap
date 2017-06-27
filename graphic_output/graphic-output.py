@@ -1,6 +1,6 @@
 #from __future__ import division
 import argparse
-from draw import fa_vs_pos, insertions_overview_and_histograms, gene_plot, gene_plot2
+from draw import fa_vs_pos, insertions_overview_and_histograms, gene_plot, gene_plot2, legend
 parser = argparse.ArgumentParser()
 
 #INPUT VARIABLES FOR SNP
@@ -42,11 +42,14 @@ if args.my_mut == 'af_candidates':
 
 
 if args.my_mut == 'snp':
+	
 	#FA vs POS image
 	fa_vs_pos()
+	
 	#Gene gene_plot
 	gene_plot()
-
+	#Legend
+	#legend()
 
 
 elif args.my_mut == 'lin':
