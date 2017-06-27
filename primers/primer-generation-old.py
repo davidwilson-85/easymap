@@ -15,8 +15,6 @@ args = parser.parse_args()
 
 genome = args.genome
 
-
-
 #Tm calculation of an oligo. Based on biophp script of Joseba Bikandi https://www.biophp.org/minitools/melting_temperature/demo.php
 def Tm_calculation(oligo):
 	primer = float(400) #400 nM are supposed as a standard [primer]	
@@ -75,147 +73,14 @@ def Tm_calculation(oligo):
 def reverse_complementary(oligo):
 	revcomp = oligo.translate(maketrans('ACGT', 'TGCA'))[::-1]
 	return revcomp	
-def rever(oligo):
-	return oligo[::-1]
-
 
 
 def find_repetitive(oligo,repetitions):
-	for i in range(len(oligo)-repetitions+1):
+	for i in range(len(oligo)-repetitions):
 		subdivision = oligo[i:i+repetitions]
 		sub_list = list(subdivision)
 		if len(set(sub_list)) == 1:
 			return "yes"
-	return "no"
-
-
-def cross_dimerization(oligo,against):
-	#lista= ["ccgtcggagaaacttacatg","aacggcagagcagatttg","tgccatcagaccaacttttc","gtaaaactctagccagctcag","aaggaagaggaaaggggg","aaaataatcctggaaaccttaatg","cattaaacaattcacaaactcaag","tcaatttttagaagctaaatccatg","aaccaaaacaggggaaattttc","caaatctgagtcggtgacg","cctctcttcaagtccaagttg","ttgtcagcatcaagaccaac","ttccagctgggtaccatc","ggaaataaaagttagcctacctc","ccaccaatatagctcctgc","gagagggatttaccattctttc","caaaacctgatgatgatgatcc","gcttagattgttgtatataagcttag" ,"tgctatactggtgattgttgc","attatagagctttagagcatttttag" ,"ctcaaccacaacctgagg"]
-	#lista=[]
-	#number  = 0
-
-	#for oligo in lista:		
-	#	oligo = oligo.upper()
-	if against == "self":
-		backwards = reverse_complementary(oligo)
-	else:
-		backwards = reverse_complementary(against)
-
-	counter_list = []
-
-	for j in range(len(oligo)):
-		match = []
-		counter = 0
-		former = "no"
-
-		#######################################One sense
-		for i in range(len(oligo)):
-			try:
-				if oligo[j+i] == backwards[i]:
-					if former == "yes":
-						match[-1]= match[-1]+oligo[j+i]
-
-					else:
-						match.append(oligo[j+i])
-					
-					former = "yes"
-				else:
-					match.append("-")
-					former = "no"
-
-			except:
-				continue
-		##################################Calculation of value
-		pos = 0
-		for nuc in match:
-			if len(nuc) == 1:
-				if nuc == "G" or nuc == "C":
-					if pos == 0 or pos == 1: counter += 3*1.2
-					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=3*1.2
-					else: counter += 3
-
-				elif nuc == "T" or nuc == "A":
-					if pos == 0 or pos == 1: counter +=2*1.2
-					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-2: counter +=2*1.2 
-
-					else: counter +=2
-			else:
-				c = 0
-				for n in nuc:
-					if n == "G" or n == "C":
-						c += 3
-					elif n == "T" or n == "A":
-						c +=2
-				
-				if pos == 0 or pos == 1: counter += c * len(nuc) * 1.2
-				elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
-				else: counter += c * len(nuc)
-			pos += 1
-		#if counter > 50:
-		
-		#print match, counter, number
-		
-		counter_list.append(counter)
-		####################################Other sense
-		match = []
-		counter = 0
-		former = "no"
-		for i in range(len(oligo)):
-			try:
-				if oligo[i-j] == backwards[i]:
-					if former == "yes":
-						match[-1]= match[-1]+oligo[j+i]
-
-					else:
-						match.append(oligo[j+i])
-					
-					former = "yes"
-				else:
-					match.append("-")
-					former = "no"
-
-			except:
-				continue
-
-		#################################Calculation of value
-		pos = 0
-		for nuc in match:
-			if len(nuc) == 1:
-				if nuc == "G" or nuc == "C":
-					if pos == 0 or pos == 1: counter += 3*1.2
-					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=3*1.2
-					else: counter += 3
-
-				elif nuc == "T" or nuc == "A":
-					if pos == 0 or pos == 1: counter +=2*1.2
-					elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter +=2*1.2 
-
-					else: counter +=2
-			else:
-				c = 0
-				for n in nuc:
-					if n == "G" or n == "C":
-						c += 3
-					elif n == "T" or n == "A":
-						c +=2
-				
-				if pos == 0 or pos == 1: counter += c * len(nuc) * 1.2
-				elif pos == len(match)-1 or pos == len(match)-2 or pos == len(match)-3: counter+=c*len(nuc)*1.2 
-				else: counter += c * len(nuc)
-			pos += 1
-		#if counter > 50:
-		#print  match, counter, number
-		
-		counter_list.append(counter)
-	#print counter_list, len(counter_list), max(counter_list)
-
-
-	#print max(counter_list), oligo
-	#number += 1
-	return max(counter_list)
-	#exit()
-				
-
 
 
 # Function to parse fasta file (based on one of the Biopython IOs)
@@ -239,71 +104,45 @@ def genome_selection(contig,genome):
 				genome = seq_contig
 		return genome
 
-def rule_1(oligo,sense,oligo2):
+def rule_1(oligo,sense):
 	last_element = len(oligo)
 	if sense == "reverse" : oligo = reverse_complementary(oligo)
-	if oligo2 != "-": oligo2 = "self"
 	while True:
 		end_of_primer = 21
 		begin_of_primer = 0
 		oligo = oligo[:last_element]
-		
-		######################################
 		guanine = oligo.rfind("G")
 		cytosine = oligo.rfind("C")
-		###################################### It looks for a G/C ending
 		
 		#Checking wheter there are both G and C in the oligo
 		if guanine != -1 and cytosine != -1:
 			last_element =  max([guanine,cytosine])
 		else:
 			if guanine == -1 and cytosine == -1:
-				found = "no" # No more G or C, end of rule 1, go to a non restrictive one.
+				found = "no"
 				return found, found, "-"
 				break
 			elif guanine == -1 and cytosine != -1:
 				last_element = cytosine
 			elif guanine != -1 and cytosine == -1:
 				last_element = guanine
-
-		begin = last_element - end_of_primer #Begining of the oligo, Last G/C found as the last position and 21 positions before as the fist position.
+		begin = last_element - end_of_primer 
 		end = last_element 
-
-		while end - begin < 26 and end - begin > 16: #Size of the oligo 25 pb max, 17 pb min
+		while end - begin < 26 and end - begin > 16:
 			if begin < 0:
-				break	
-
+				break
 			primer = oligo[begin:end+1]
 			Tm = Tm_calculation(primer)
-		###################################################### Filter: Tm of the primer, repetitions in the primer, homodimer formation
 			if Tm > 60 and Tm < 64:
-
-				contain_repetition = find_repetitive(primer,3)
-				if contain_repetition == "no":
-					
-					cross = cross_dimerization(primer,"self")
-					if cross <= 60:
-						if oligo2 != "self":
-							cross = cross_dimerization(primer,oligo2)
-							if cross > 60:
-								break
-					
-					if cross <= 40:
-						found = "yes"
-						return found, primer, Tm
-					else:
-						break
-				else:
-					break
-		######################################################
+				found = "yes"
+				return found, primer, Tm
 			elif Tm < 60:
 				begin -= 1
 			elif Tm > 64:
 				begin += 1
-def rule_2(oligo,sense,oligo2):
+def rule_2(oligo,sense):
 	#This rule just looks for primers which 
 	begin_of_primer = 0
-	if oligo2 == "-": oligo2 = "self"
 	if sense == "reverse" : oligo = reverse_complementary(oligo)
 	while True:
 		end_of_primer =21 + begin_of_primer
@@ -314,25 +153,7 @@ def rule_2(oligo,sense,oligo2):
 		while end_of_primer - begin_of_primer < 26 and end_of_primer - begin_of_primer > 16:
 			primer = oligo[begin_of_primer:end_of_primer+1]
 			Tm = Tm_calculation(primer)
-			###################################################### Filter: Tm of the primer, repetitions in the primer, homodimer formation
-			if Tm > 60 and Tm < 64:
-
-				contain_repetition = find_repetitive(primer,4)
-				if contain_repetition == "no":
-					
-					cross = cross_dimerization(primer,"self")
-					if cross <= 60:
-						if oligo2 != "self":
-							cross = cross_dimerization(primer,oligo2)
-							if cross > 60:
-								break
-						found = "yes"
-						return found, primer, Tm
-					else:
-						break
-				else:
-					break
-		######################################################
+			if Tm >= 60 and Tm <= 64:
 				found = "yes"
 				return found, primer, Tm
 			elif Tm < 60:
@@ -340,7 +161,6 @@ def rule_2(oligo,sense,oligo2):
 			elif Tm > 64:
 				end_of_primer -= 1		
 		begin_of_primer +=1
-
 
 def snp_calculation(position,genome):
 	#Total size of the amplification 
@@ -350,11 +170,11 @@ def snp_calculation(position,genome):
 	oligos = []
 	Tms = []
 	#upstream primer
-	up_primer_pos = int(position) - size_i #Starting position: mutation - downstream position of the primer
-	oligo = genome[up_primer_pos-1 : up_primer_pos + 200] #This is the window which will be screaned in order to look for the primer
-	result = rule_1(oligo, "upstream","-") #Rule 1: Finish in G/C, does not contain repetitive sequences, does not form homodimers
+	up_primer_pos = int(position) - size_i
+	oligo = genome[up_primer_pos-1 : up_primer_pos + 100]
+	result = rule_1(oligo, "upstream")
 	if result[0] == "no":
-		result = rule_2(oligo, "upstream","-")
+		result = rule_2(oligo, "upstream")
 		if result[0] == "no":
 			oligos.append("not found")
 			oligos.append("-")
@@ -366,19 +186,15 @@ def snp_calculation(position,genome):
 		#downstream primer
 		down_primer_pos = int(position) + size_f
 		oligo = genome[down_primer_pos-1 : down_primer_pos + 100]
-		result = rule_1(oligo,"downstream",oligos[0])
+		result = rule_1(oligo,"downstream")
 		if result[0] == "no":
-			result = rule_2(oligo, "downstream",oligos[0])
+			result = rule_2(oligo, "downstream")
 			if result[0] == "no":
 				oligos.append("not found")
 				Tms.append("-")
 		if result[0] == "yes":
 			oligos.append(result[1])
-			Tms.append(str(result[2]))
-	print ">h"
-	print oligos[0]
-	print ">h2"
-	print oligos[1]
+			Tms.append(str(result[2]))		
 	return oligos,Tms
 def insertion_calculation(position,genome,contig_used):
 	size= 600
@@ -407,9 +223,9 @@ def insertion_calculation(position,genome,contig_used):
 			oligos.extend(["not found","-","-","-"])
 			Tms.extend(["-","-","-","-"])		
 
-		result = rule_1(try_oligo,how,"-")
+		result = rule_1(try_oligo,how)
 		if result[0] == "no":
-			result = rule_2(try_oligo, how,"-")
+			result = rule_2(try_oligo, how)
 			if result[0] == "no":
 				oligos.extend(["not found","-","-","-"])
 				Tms.extend(["-","-","-","-"])
@@ -421,9 +237,9 @@ def insertion_calculation(position,genome,contig_used):
 	#Generation of the forward and reverse oligos
 	up_primer_pos = int(position) - size
 	try_oligo = genome[up_primer_pos-1 : up_primer_pos + 100]
-	result = rule_1(try_oligo, "forward",result[1])
+	result = rule_1(try_oligo, "forward")
 	if result[0] == "no":
-		result = rule_2(try_oligo, "forward",result[1])
+		result = rule_2(try_oligo, "forward")
 		if result[0] == "no":
 			oligos.append("not found")
 			oligos.append("-")
@@ -435,16 +251,15 @@ def insertion_calculation(position,genome,contig_used):
 		#downstream primer
 		down_primer_pos = int(position) + size
 		try_oligo = genome[down_primer_pos-1 : down_primer_pos + 100]
-		result = rule_1(try_oligo,"reverse",result[0])
+		result = rule_1(try_oligo,"reverse")
 		if result[0] == "no":
-			result = rule_2(try_oligo, "reverse",result[0])
+			result = rule_2(try_oligo, "reverse")
 			if result[0] == "no":
 				oligos.append("not found")
 				Tms.append("-")
 		if result[0] == "yes":
 			oligos.append(result[1])
 			Tms.append(str(result[2]))
-
 	return oligos,Tms  
 
 def fastaq_to_dic(fq):
@@ -482,6 +297,7 @@ def fastaq_to_dic(fq):
 
 positions = open(args.File,"r")
 result = open(args.output,"w")
+
 
 n = 0
 first_list = []
