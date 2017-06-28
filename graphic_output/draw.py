@@ -226,9 +226,9 @@ def fa_vs_pos():
 			mm_value_img_2 = None
 
 		#Axes
+		draw.line(((wide - 49), int(15/100.0*height)) + ((wide - 49), int(80/100.0*height)), fill=(255, 255, 255, 0), width=2)  #cleanup
 		draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
 		draw.line((68, int(80/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#X axis
-
 		draw.line(((wide - 50), int(15/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-Y axis
 		draw.line((68, int(15/100.0*height)) + ((wide - 50), int(15/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-X axis
 
@@ -237,7 +237,7 @@ def fa_vs_pos():
 		#X Axis
 		mbs = int(0/scaling_factor_x) + 68
 		x_tag = 0
-		while mbs in range(68, wide-120):
+		while mbs in range(68, wide-50):
 			draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
 			if len(str(x_tag)) == 1:
 				draw.text(((mbs - 4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
