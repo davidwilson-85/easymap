@@ -631,6 +631,8 @@ then
 	# (1) Get control VA file
 	get_control_va
 
+
+
 	# (2) Run vcf filter to get SNPs with af > 0.75
 	{
 		python $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_min 0.75 
@@ -663,6 +665,16 @@ then
 
 	# (4) Get problem VA file
 	get_problem_va
+
+	####################################### NO DEJES ESTO PEDAZO DE 
+	exit
+
+
+	#BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+
+
+	
 	#draw snps
 	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
 
