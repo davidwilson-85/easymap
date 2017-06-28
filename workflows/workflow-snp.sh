@@ -351,8 +351,8 @@ function cr_analysis {
 	}
 	echo $(date)': primer-generation.py finished.' >> $my_log_file
 	
-	# (4) Run extend-snp-variants
-	result_extend_snp_info=`python $location/scripts_snp/extend-snp-variants-info.py --project-name $project_name --variants $f1/primer_generation_output.txt --snp-info $f1/snp-to-varanalyzer.txt --map-info $f1/map_info.txt --output-file $f3/candidate_variants.txt 2>> $my_log_file`
+	# (4) Run extend-snp-variants-info                                              --project-name $project_name
+	result_extend_snp_info=`python $location/scripts_snp/extend-snp-variants-info.py  --variants $f1/primer_generation_output.txt --snp-info $f1/snp-to-varanalyzer.txt --map-info $f1/map_info.txt --output-file $f3/candidate_variants.txt 2>> $my_log_file`
 	
 	if [ $result_extend_snp_info == 'success' ]; then
 		echo $(date)": extend-snp-variants-info.py finished." >> $my_log_file

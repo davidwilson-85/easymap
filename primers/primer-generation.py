@@ -283,14 +283,14 @@ def rule_1(oligo,sense,oligo2):
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= 45:
+					if cross <= 47:
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
-							if cross > 45:
+							if cross > 47:
 								break
 						
 						found = "yes"
-						print cross, primer,oligo2
+						#print cross, primer,oligo2
 						return found, primer, Tm
 					else:
 						break
@@ -322,10 +322,10 @@ def rule_2(oligo,sense,oligo2):
 				if contain_repetition == "no":
 					
 					cross = cross_dimerization(primer,"self")
-					if cross <= float(45):
+					if cross <= float(47):
 						if oligo2 != "self":
 							cross = cross_dimerization(primer,oligo2)
-							if cross > float(45):
+							if cross > float(47):
 								break
 						found = "yes"
 						return found, primer, Tm
@@ -381,8 +381,8 @@ def insertion_calculation(position,genome,contig_used):
 	size= 600
 	oligos = []
 	Tms = []
-	selection = "5"
-	try_size = 100
+	#selection = "5"
+	#try_size = 100
 	pos_n_contig = contig_used+"_"+position
 	if pos_n_contig not in consensus_3:
 		oligos.extend(["not found","-","-","-"])
@@ -403,26 +403,29 @@ def insertion_calculation(position,genome,contig_used):
 			other = "-"			
 
 		if lenght_consensus < 10:
-			oligos.extend(["not found","-","-","-"])
-			Tms.extend(["-","-","-","-"])		
+			oligos.extend(["not found","-"])
+			Tms.extend(["-","-"])		
 
 		result = rule_1(try_oligo,how,other)
 		if result[0] == "no":
 			result = rule_2(try_oligo, how,"-")
 			if result[0] == "no":
-				oligos.extend(["not found","-","-","-"])
-				Tms.extend(["-","-","-","-"])
-				return oligos,Tms
+				oligos.extend(["not found","-"])
+				Tms.extend(["-","-"])
+
 		if result[0] == "yes":
 			oligos.append(result[1])
 			Tms.append(str(result[2]))
 
 	#Generation of the forward and reverse oligos
 	up_primer_pos = int(position) - size
-	try_oligo = genome[up_primer_pos-1 : up_primer_pos + 100]
+	try_oligo = genome[up_primer_pos-1 : up_primer_pos + 200]
 	result = rule_1(try_oligo, "forward",oligos[1])
 	if result[0] == "no":
-		result = rule_2(try_oligo, "forward",oligos[1])
+		if oligos[1] != "-" and oligos[1] != "not found":
+			result = rule_2(try_oligo, "forward",oligos[1])
+		else:
+			result = rule_2(try_oligo, "forward","-")
 		if result[0] == "no":
 			oligos.append("not found")
 			oligos.append("-")
@@ -433,10 +436,13 @@ def insertion_calculation(position,genome,contig_used):
 		Tms.append(str(result[2])) 
 		#downstream primer
 		down_primer_pos = int(position) + size
-		try_oligo = genome[down_primer_pos-1 : down_primer_pos + 100]
+		try_oligo = genome[down_primer_pos-1 : down_primer_pos + 200]
 		result = rule_1(try_oligo,"reverse",oligos[0])
 		if result[0] == "no":
-			result = rule_2(try_oligo, "reverse",oligos[0])
+			if oligos[1] != "-" and oligos[1] != "not found":
+				result = rule_2(try_oligo, "reverse",oligos[0])
+			else:
+				result = rule_2(try_oligo, "reverse",oligos[2])
 			if result[0] == "no":
 				oligos.append("not found")
 				Tms.append("-")
