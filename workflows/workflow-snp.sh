@@ -506,7 +506,7 @@ then
 	echo $(date)': Mutation mapping module finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison.va 0.25
+	cr_analysis F2_control_comparison.va 0.1
 
 fi
 
@@ -721,7 +721,7 @@ then
 	echo $(date)': VCF operations finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison_mapping.va 0.25
+	cr_analysis F2_control_comparison_mapping.va 0.1
 
 fi
 
@@ -785,7 +785,7 @@ then
 	echo $(date)': VCF operations finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
-	cr_analysis F2_control_comparison_mapping.va 0.25
+	cr_analysis F2_control_comparison_mapping.va 0.1
 
 fi
 

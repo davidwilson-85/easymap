@@ -47,7 +47,7 @@ if args.my_mut == 'snp':
 	fa_vs_pos()
 	
 	#Gene gene_plot
-	gene_plot()
+	gene_plot()	
 	#Legend
 	#legend()
 
