@@ -205,6 +205,9 @@ def fa_vs_pos():
 							mm_value_img_2 = mm_value_img
 
 			if my_cross == 'bc' :
+				r, g, b = 46, 255, 0
+				if args.my_snp_analysis_type == 'f2wt':
+					r, g, b = 255, 0, 255
 				for b, bline in enumerate(blines):
 					sp = bline.split()					
 					if bline.startswith('@') and sp[3].lower().strip('>') == i[0].lower():
@@ -213,7 +216,7 @@ def fa_vs_pos():
 						window_position = int(sp[1])
 						window_position_img = int(window_position/scaling_factor_x) + 70
 						try:
-							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(255, 0, 255), width=1)	
+							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(r, g, b), width=1)	
 							window_position_img_2 = window_position_img
 							mm_value_img_2 = mm_value_img
 						except:
