@@ -666,14 +666,7 @@ then
 	# (4) Get problem VA file
 	get_problem_va
 
-	####################################### NO DEJES ESTO PEDAZO DE 
-	exit
-
-
-	#BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
-
-
+	
 	
 	#draw snps
 	python $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
