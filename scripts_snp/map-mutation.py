@@ -299,5 +299,9 @@ for chromosome in ch:
 		best_dictionary = result_data[3]
 	else:
 		result_data = data_analysis(windows, x_value, chromosome,maximum_position,best, best_chromosome, best_dictionary, size, mode, control,mut1)
+		best = result_data[1]
+		maximum_position = result_data[0]
+		best_chromosome = result_data[2]
+		best_dictionary = result_data[3]
 	z += 1
 final_processing(result_data, interval_width)
