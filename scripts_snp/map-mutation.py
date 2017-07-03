@@ -158,7 +158,8 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 			parameter = average
 			result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n")   
 		elif mode =="out" and control == "par":
-			boost = 1/abs(1-(1/max(average, 1-average)))
+			try: boost = 1/abs(1-(1/max(average, 1-average)))
+			except: boost = 0
 			parameter = boost
 			dictionary[items]= boost
 			result.write("@"+"\t"+str(items)+"\t"+ str(average)+"\t"+ str(boost)+ "\t"+str(chromosome)+ "\n")
