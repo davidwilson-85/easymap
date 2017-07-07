@@ -39,7 +39,7 @@ for i in range(len(mutated_positions)):
 	a = str(mutated_positions[i])
 	#Case 3
 
-	os.system("./easymap -n take_caso_3-"+str(i+13)+" -w snp -sim -r at4 -g chr1+4.gff -rs ref -cr oc -co par_mut -sm 80+e -sr 0,16-1,34-2,31-3,14-4,4-5,1+1,"+a+"+r+100 -ss 25+100,0+500,100+1+50+se")
+	os.system("./easymap -n take_caso_3-"+str(i+20)+" -w snp -sim -r at4 -g chr1+4.gff -rs ref -cr oc -co par_mut -sm 80+e -sr 0,16-1,34-2,31-3,14-4,4-5,1+1,"+a+"+r+100 -ss 25+100,0+500,100+1+50+se")
 
 	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.sam"])
 	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.bam"])
@@ -50,19 +50,19 @@ for i in range(len(mutated_positions)):
 
 	#Case 4
 
-	os.system("./easymap -n take_caso_4-"+str(i+13)+" -w snp -sim -r at4 -g chr1+4.gff -rs ref -cr oc -co par_nomut -sm 80+e -sr 0,16-1,34-2,31-3,14-4,4-5,1+1,"+a+"+r+100 -ss 25+100,0+500,100+1+50+se")
+#	os.system("./easymap -n take_caso_4-"+str(i+13)+" -w snp -sim -r at4 -g chr1+4.gff -rs ref -cr oc -co par_nomut -sm 80+e -sr 0,16-1,34-2,31-3,14-4,4-5,1+1,"+a+"+r+100 -ss 25+100,0+500,100+1+50+se")
 
-	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.sam"])
-	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.bam"])
-	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/sim_data"])
-	purge()
+#	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.sam"])
+#	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.bam"])
+#	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/sim_data"])
+#	purge()
 
 	#Case 6, former 7 
 
-	os.system("./easymap -n take_caso_6-"+str(i+13)+" -w snp -sim -r at4 -g chr1+4.gff -rs noref -cr oc -co par_mut -sm 80+e -sr 0,16-1,34-2,31-3,14-4,4-5,1+1,"+a+"+r+100 -ss 25+100,0+500,100+1+50+se")
+#	os.system("./easymap -n take_caso_6-"+str(i+13)+" -w snp -sim -r at4 -g chr1+4.gff -rs noref -cr oc -co par_mut -sm 80+e -sr 0,16-1,34-2,31-3,14-4,4-5,1+1,"+a+"+r+100 -ss 25+100,0+500,100+1+50+se")
 
 
-	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.sam"])
-	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.bam"])
-	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/sim_data"])
-	purge()
+#	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.sam"])
+#	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/*.bam"])
+#	subprocess.call(["rm", "-rf" ,"./user_projects/*/1_intermediate_files/sim_data"])
+#	purge()
