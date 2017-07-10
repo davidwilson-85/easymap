@@ -29,6 +29,10 @@ pip install Pillow
 
 # Compile Bowtie2, Samtools, Bcftools
 #############
+./bcftools-1.3.1/ make
+./bowtie2/ make
+./samtools1/ make
+
 
 # Make files executable and give logged user execution permissions (.sh, .py, binaries)
 
