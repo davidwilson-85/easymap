@@ -27,7 +27,10 @@ def purge():
 	
 				for j in i[2]:
 					if j[-4:] == ".sam" or j[-4] == ".bai":
-						os.remove(path+"/"+j)
+						try:
+							os.remove(path+"/"+j)
+						except:
+							i = "nothing"
 
 #os.remove("./user_projects/*/1_intermediate_files/*.sam")
 #os.mdir("./user_projects/*/1_intermediate_files/sim_data")

@@ -33,3 +33,10 @@ IMPORTANTE: El archivo que se va a enviar tienen 777 en chmod
 DNS tiene que venir después de ubuntu@
 archivo .pem tiene que tener chmod 600
 la carpeta a la que se va a enviar tiene que tener permiso 777 ( u otro). Para conseguirlo usar sudo si no funciona 
+
+-----------
+If instance gets full
+----------
+df -h --> space left
+sudo find / -type f -size +10M -exec ls -lh {} \;
+If after removal of files is still full, reboot the instance: E2C, instances, instance-state, reboot
