@@ -22,6 +22,7 @@ profile-installed.py
 py3.h
 requirements.txt
 selftest.py
+setup.cfg
 setup.py
 test-installed.py
 PIL/BdfFontFile.py
