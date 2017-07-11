@@ -22,7 +22,9 @@ sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblc
 sudo apt install python-pip
 
 # Install Pillow
-pip install Pillow
+#pip install Pillow
+sudo python ./graphic_output/Pillow-4.2.1/setup.py install
+
 
 # Uninstall Pillow using pip
 #pip uninstall Pillow

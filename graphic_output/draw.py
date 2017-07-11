@@ -506,10 +506,16 @@ def insertions_overview_and_histograms():
 			previous_chr = c[0]
 
 		#Chromosome caps
-		image_file = StringIO(open("./fonts/up_cap.png",'rb').read())
-		cap = Image.open(image_file)
-		im.paste(cap.rotate(90), (c[3], c[2]-6))
-		im.paste(cap.rotate(270), (c[4], c[2]-6))
+		image_file_left = StringIO(open("./fonts/left_cap.png",'rb').read())
+		image_file_right = StringIO(open("./fonts/right_cap.png",'rb').read())
+
+		cap_left = Image.open(image_file_left)
+		cap_right = Image.open(image_file_right)
+
+		im.paste(cap_left, (c[3], c[2]-6))
+		im.paste(cap_right, (c[4], c[2]-6))
+
+
 
 	#Axis
 	draw.line((100, contigs_image_length + 50) + (950, contigs_image_length + 50), fill=256, width=1)
@@ -599,12 +605,18 @@ def insertions_overview_and_histograms():
 			draw.text(((140), (460)), ('Flanking local alignments'), font=fnt3, fill=(0,0,0,255))
 
 			#Y axis label
+			'''
 			label = Image.new("RGB", (150, 30), (255,255,255))
 			draw2 = ImageDraw.Draw(label)
 			draw2.text((1, 1), "Read depth (x)", font=fnt3, fill=(0,0,0))
 			label.rotate(90)
 			im.paste(label.rotate(90), (35, 350))
-
+			'''
+			txt=Image.new('L', (500, 50))
+			d = ImageDraw.Draw(txt)
+			d.text( (0, 0), "Read depth (x)",  font=fnt3, fill=255)
+			w=txt.rotate(90,  expand=1)
+			im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (35,0),  w)
 
 			#Scaling factors 
 			nucleotides = region_max - region_min
