@@ -34,6 +34,14 @@ DNS tiene que venir después de ubuntu@
 archivo .pem tiene que tener chmod 600
 la carpeta a la que se va a enviar tiene que tener permiso 777 ( u otro). Para conseguirlo usar sudo si no funciona 
 
+
+--------------------------------------------
+Para copiar de ec2 a local:  
+--------------------------------------------
+
+scp -i ec2key.pem username@ec2ip:/path/to/file .
+
+
 -----------
 If instance gets full
 ----------
