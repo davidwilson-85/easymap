@@ -99,11 +99,18 @@ def draw(dic,sort_positions,out):
 	x_name = "Read depth (X)"
 	draw.text((size_x_window/2+10, size_y_window+b+35), x_name , font=fnt1, fill=(0,0,0,0)) #Horizontal
 	y_name ="Frequency (%)"
-	label = Image.new("RGB", (140, 20), (255,255,255))
-	draw2 = ImageDraw.Draw(label)
-	draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
-	label = label.rotate(90)
-	im.paste(label, (2,size_y_window/2+c-80))
+	#label = Image.new("RGB", (140, 20), (255,255,255))
+	#draw2 = ImageDraw.Draw(label)
+	#draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
+	#label = label.rotate(90)
+	#im.paste(label, (2,size_y_window/2+c-80))
+	txt=Image.new('L', (500, 50))
+	d = ImageDraw.Draw(txt)
+	d.text( (0, 0), y_name,  font=fnt1, fill=255)
+	w=txt.rotate(90,  expand=1)
+	im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,-size_y_window/3+20),  w)
+
+
 
 	#Graph draw
 	#draw.line(((a, size_y_window+b),(c+sort_positions[0]*step,  size_y_window+b)), fill=(0, 0, 0, 0), width=1)

@@ -861,14 +861,6 @@ def insertions_overview_and_histograms():
 			#draw.text(((20), (120)), ('RD'), font=fnt3, fill=(0,0,0,255))
 
 			#Y axis label
-			'''
-			label = Image.new("RGB", (150, 30), (255,255,255))
-			draw2 = ImageDraw.Draw(label)
-			draw2.text((1, 1), "Read depth (x)", font=fnt3, fill=(0,0,0))
-			label.rotate(90)
-			im.paste(label.rotate(90), (35, 195))
-			'''
-
 			txt=Image.new('L', (150, 30))
 			d = ImageDraw.Draw(txt)
 			d.text( (0, 0), "Read depth (x)",  font=fnt3, fill=255)
