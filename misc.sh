@@ -49,3 +49,5 @@ rm -rf ./user_projects/*/1_intermediate_files
 
 ./easymap -P TFM -w ins -rs at -d sim -g complete.gff -sm 5+li -i pbinprok2.fa -ss 40+100,0+500,100+1+50+pe
 rm -rf ./user_projects/*/1_intermediate_files
+
+time ./easymap -n caso2 -w snp -sim -r mini -g complete.gff -rs ref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 30+100,0+500,100+1+50+se

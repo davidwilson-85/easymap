@@ -271,11 +271,12 @@ def fa_vs_pos():
 
 		#Y axis label
 
-		label = Image.new("RGB", (140, 20), (255,255,255))
-		draw2 = ImageDraw.Draw(label)
-		draw2.text((1, 1), "Allele frequency", font=fnt2, fill=(0,0,0))
-		label.rotate(90)
-		im.paste(label.rotate(90), (2, int(30/100.0*height)))
+		txt=Image.new('L', (140, 20))
+		d = ImageDraw.Draw(txt)
+		d.text( (0, 0), "Allele frequency",  font=fnt2, fill=255)
+		w=txt.rotate(90,  expand=1)
+		im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,150),  w)
+
 
 		#X axis label
 		x_title = str(i[0]) + ' (Mb)'
@@ -605,13 +606,7 @@ def insertions_overview_and_histograms():
 			draw.text(((140), (460)), ('Flanking local alignments'), font=fnt3, fill=(0,0,0,255))
 
 			#Y axis label
-			'''
-			label = Image.new("RGB", (150, 30), (255,255,255))
-			draw2 = ImageDraw.Draw(label)
-			draw2.text((1, 1), "Read depth (x)", font=fnt3, fill=(0,0,0))
-			label.rotate(90)
-			im.paste(label.rotate(90), (35, 350))
-			'''
+
 			txt=Image.new('L', (500, 50))
 			d = ImageDraw.Draw(txt)
 			d.text( (0, 0), "Read depth (x)",  font=fnt3, fill=255)
@@ -866,11 +861,19 @@ def insertions_overview_and_histograms():
 			#draw.text(((20), (120)), ('RD'), font=fnt3, fill=(0,0,0,255))
 
 			#Y axis label
+			'''
 			label = Image.new("RGB", (150, 30), (255,255,255))
 			draw2 = ImageDraw.Draw(label)
 			draw2.text((1, 1), "Read depth (x)", font=fnt3, fill=(0,0,0))
 			label.rotate(90)
 			im.paste(label.rotate(90), (35, 195))
+			'''
+
+			txt=Image.new('L', (150, 30))
+			d = ImageDraw.Draw(txt)
+			d.text( (0, 0), "Read depth (x)",  font=fnt3, fill=255)
+			w=txt.rotate(90,  expand=1)
+			im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (35,200),  w)
 
 		
 			#Scaling factors 
