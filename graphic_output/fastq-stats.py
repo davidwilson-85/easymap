@@ -235,12 +235,18 @@ def Draw_box_plot(table,out):
 
 
 
-	label = Image.new("RGB", (140, 20), (255,255,255))
-	draw2 = ImageDraw.Draw(label)
-	draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
+	#label = Image.new("RGB", (140, 20), (255,255,255))
+	#draw2 = ImageDraw.Draw(label)
+	#draw2.text((1, 1), y_name, font=fnt1, fill=(0,0,0))
+	#label = label.rotate(90)
+	#im.paste(label, (2,size_y_axis/2-50))
 
-	label = label.rotate(90)
-	im.paste(label, (2,size_y_axis/2-50))
+	txt=Image.new('L', (500, 50))
+	d = ImageDraw.Draw(txt)
+	d.text( (0, 0), y_name,  font=fnt1, fill=255)
+	w=txt.rotate(90,  expand=1)
+	im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,-(size_y_axis/2+20)),  w)
+
 
 	#Vertical
 	#save image, specifying the format with the extension
