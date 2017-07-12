@@ -29,6 +29,7 @@ sudo python ./graphic_output/Pillow-4.2.1/setup.py install
 # Uninstall Pillow using pip
 #pip uninstall Pillow
 
+sudo apt-get install libncurses5-dev libncursesw5-dev #Some computers lack it and have problems while compilation
 # Compile Bowtie2, Samtools, Bcftools
 #############
 
