@@ -316,6 +316,8 @@ def candidates_zoom():
 		if line.startswith('?'):
 			sp = line.split()
 			reg_min = sp[2]
+			reg_min_real = reg_min
+			if int(reg_min) < 0 : reg_min = '0'
 			reg_max = sp[3]
 			chromosome = str(sp[1])
 
@@ -344,8 +346,15 @@ def candidates_zoom():
 			fa = float(sp[8]) - 0.8
 			fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 			pos_img = int((int(sp[2])-int(reg_min))/scaling_factor_x) + 70
-			draw.ellipse((pos_img-3, fa_img-3, pos_img+3, fa_img+3), fill=(r, g, b))
+			draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(r, g, b))
 
+	
+	#Peak line
+	peak = ((int(reg_max) + int(reg_min_real))/2)/scaling_factor_x + 70
+	draw.line((peak, int(15/100.0*height)) + (peak, int(80/100.0*height)), fill=(255, 0, 0, 0), width=1)
+	
+
+	'''
 	#boost/mm
 	binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
 	blines = binput.readlines()
@@ -422,7 +431,7 @@ def candidates_zoom():
 	mm_value_img = None
 	window_position_img_2 = None 
 	mm_value_img_2 = None
-
+	'''
 	#Axes
 	draw.line(((wide - 49), int(15/100.0*height)) + ((wide - 49), int(80/100.0*height)), fill=(255, 255, 255, 0), width=2)  #cleanup
 	draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
@@ -441,10 +450,11 @@ def candidates_zoom():
 		draw.text(((mark - w/2 -4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
 		mark = mark + 500000/scaling_factor_x
 		x_tag = x_tag + 500000
-
+	'''
 	while mark_2 in range(68, wide-50):
 		draw.line((mark_2, int(80.7/100.0*height) ) + (mark_2, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
 		mark_2 = mark_2 + 100000/scaling_factor_x
+	'''
 
 	#Y axis
 	fa_img_0 = int(80/100.0*height) - int(0/scaling_factor_y) -1
