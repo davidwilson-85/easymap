@@ -182,9 +182,9 @@ if workflow == "snp":
 		if cross_type == "oc" and is_ref_strain == "noref" and control_parental == "nomut":
 			error = 1
 			problems.append("Unfortunatelly this software does not allow the process of an outcross which is not in the reference background using as a control a parental in a polymorfic background. Please see web-based documentation regarding experimental designs for more details.")
-		if cross_type == "bc" and is_ref_strain =="noref":
-			error = 1
-			problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.Please see web-based documentation regarding experimental designs for more details.")
+		#if cross_type == "bc" and is_ref_strain =="noref":
+		#	error = 1
+		#	problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.Please see web-based documentation regarding experimental designs for more details.")
 		if cross_type == "bc" and is_ref_strain == "ref":
 			if control_parental != "mut":
 				print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
