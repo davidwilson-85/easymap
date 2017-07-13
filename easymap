@@ -29,7 +29,6 @@ parser.add_argument('--reads-control','-C', action = 'store', default = 'n/p', d
 parser.add_argument('--is-ref-strain','-rs', action = 'store', default = 'n/p', dest = 'is_ref_strain', choices = set(('ref','noref')))
 parser.add_argument('--cross-type', '-cr', action = 'store', default = 'n/p', dest = 'cross_type', choices = set(('oc','bc')))
 parser.add_argument('--control-type','-co', action = 'store', default = 'n/p', dest ='control_type', choices = set(('par_mut','par_nomut','f2wt')))
-#parser.add_argument('--simulate-reads', '-sim', action = 'store_true', dest = 'simulate_reads')
 parser.add_argument('--sim-mut', '-sm', action = 'store',default = 'n/p', dest = 'sim_mut')
 parser.add_argument('--sim-recsel','-sr', action = 'store', default = 'n/p', dest = 'sim_recsel')
 parser.add_argument('--sim-seq', '-ss', action = 'store', default = 'n/p', dest = 'sim_seq')
@@ -371,16 +370,16 @@ if data_source == "exp":
 				problems.append("Please introduce the file containing the control reads in " + input_folder)	
 
 
-
+#This code checks the configuration of the program. It calls php allow-new-project script and checks its result.
 proc = subprocess.Popen("php allow-new-project.php",cwd=r'./interface', shell=True, stdout=subprocess.PIPE)
 script_response = proc.stdout.read()
 response = script_response.split(",")
 try: int(response[0])
 except: error = 1; problems.append(response[0])
-if int(response[0]) >= 100: error = 1; problems.append("Number of bytes exceed the maximum allowed")
+if int(response[0]) >= 100: error = 1; problems.append("Number of bytes exceed the maximum allowed("+response[2]+")")
 try: int(response[1])
 except: error = 1; problems.append(response[1])
-if int(response[1]) >= 100: error = 1; problems.append("Number of projects exceed the maximum allowed")
+if int(response[1]) >= 100: error = 1; problems.append("Number of simultaneously running projects exceed the maximum allowed("+response[3]+")")
 
 
 
