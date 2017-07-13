@@ -1,18 +1,8 @@
 <?php
 
-
-
-
-
-// Change this line 
-$py_out = system('python myscript.py', $retval);
-
-
-
-//echo $py_out;
-
-
-
+// Run allow-new-project.py, get output, and send it to whichever script that calls the present script
+py_out  = shell_exec('cd ../config; python allow-new-project.py');
+echo $py_out;
 
 
 // The following commented code is the former way we used to check if data and compute limits

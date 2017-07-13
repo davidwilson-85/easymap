@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+
 import subprocess
 import os
 
@@ -27,7 +28,7 @@ for project in list_projects:
 
 #Get the information from Config
 n = 0
-with open("../config/config") as con_file:
+with open("./config") as con_file:
 	for lines in con_file:
 		n += 1
 		if n == 17:

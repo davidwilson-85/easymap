@@ -23,7 +23,7 @@ parser.add_argument('--simulate-data', '-sim', action = 'store_true', dest = 'si
 parser.add_argument('--reference-sequence', '-r', action = 'store', default = 'n/p', dest = 'ref_seq') 
 parser.add_argument('--insertion-sequence', '-i', action = 'store', default = 'n/p', dest = 'ins_seq')
 parser.add_argument('--gff-file','-g', action = 'store', default = 'n/p', dest = 'gff_file')
-parser.add_argument('--ann-file', '-a', action = 'store', default = 'n/p', dest = 'ann_file')
+parser.add_argument('--annotation-file', '-a', action = 'store', default = 'n/p', dest = 'ann_file')
 parser.add_argument('--reads-problem', '-P', action = 'store', default = 'n/p', dest = 'reads_sample')
 parser.add_argument('--reads-control','-C', action = 'store', default = 'n/p', dest = 'reads_control')
 parser.add_argument('--is-ref-strain','-rs', action = 'store', default = 'n/p', dest = 'is_ref_strain', choices = set(('ref','noref')))
@@ -93,21 +93,21 @@ lib_type_control = "n/p"
 lib_type_sample = "n/p"
 snp_analysis_type = "n/p"
 
-
 problems = []
 error = 0
-
 
 # Check whether the user has provided a project_name and it has no space:  
 is_there_space = project_name.split(" ")
 if len(is_there_space) != 1:
 	error = 1
-	problems.append("Please select a project name (--project_name)(-n) whithout any empty space. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
+	problems.append("The name provided to argument -n/--project-name cannot contain spaces.")
+
 #Check whether user_data directory exists
 input_folder = "./user_data"
 if os.path.isdir(input_folder) == False:
 	error = 1
-	problems.append("Easymap could not find "+ input_folder + ". Please create the folder and place your input files inside.")
+	problems.append("The folder /user_data could not be found. Please create it and place your input files inside.")
+
 #THE FOLLOWING LINES ARE DEPRECATED
 #else:
 #	#Check whether there are reference file/s in 0_input/gnm_ref
@@ -124,7 +124,7 @@ if os.path.isdir(input_folder) == False:
 # Create a list with the names of all the files in the folder user_data
 input_files = os.listdir(input_folder)
 
-# Check -rs input
+# Check reference sequence input
 # First, check that the user string does not have any spaces or dots in it. We need the basename of the file (basename.fa) or files (1.basename.fa, 2.basename.fa, ...)
 # ? Checking for spaces and dots isn't really necessary because any name with these will not match any valid .fa file in the folder /user_data.
 if len(ref_seq.split(".")) != 1:
@@ -150,7 +150,7 @@ if gff_file not in input_files:
 if ann_file != "n/p":
 	if ann_file not in input_files:
 		error =1
-		problems.append("Annotation file has been specified to be used (--ann_file)(-a), but the name given has not been succesfully found in user_data")
+		problems.append("The name provided to argument -a/--annotation-file does not match any file in the folder /user_data.")
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
 if workflow == "snp":
@@ -161,7 +161,7 @@ if workflow == "snp":
 	if snp_analysis_type == "f2wt":
 		if cross_type == "oc":
 			error = 1
-			problems.append("This program does not support an experimental design in which an outcross is performed and a wild type F2-bulk is used as control. Please see web-based documentation regarding experimental designs for more details.")
+			problems.append("This program does not support the experimental design chosen (-cr/--cross-type = oc and -co/--control-type = f2wt)")
 		else:
 			cross_type = "bc"
 			control_parental = "n/p"
@@ -369,9 +369,8 @@ if data_source == "exp":
 				error = 1
 				problems.append("Please introduce the file containing the control reads in " + input_folder)	
 
-
 #This code checks the configuration of the program. It calls php allow-new-project script and checks its result.
-proc = subprocess.Popen("python allow-new-project.py",cwd=r'./interface', shell=True, stdout=subprocess.PIPE)
+proc = subprocess.Popen("python allow-new-project.py",cwd=r'./config', shell=True, stdout=subprocess.PIPE)
 script_response = proc.stdout.read()
 response = script_response.split(",")
 try: int(response[0])
