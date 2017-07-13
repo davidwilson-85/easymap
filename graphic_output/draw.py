@@ -453,18 +453,15 @@ def candidates_zoom():
 	fa_img_95 = int(80/100.0*height) - int(0.15/scaling_factor_y) -1
 	fa_img_85 = int(80/100.0*height) - int(0.05/scaling_factor_y) -1
 
-
 	draw.line(( 68 , fa_img_0 +1) + ( 63 , fa_img_0 +1 ), fill=(0, 0, 0, 0), width=1)	
 	draw.line(( 68 , fa_img_09 +1) + ( 63 , fa_img_09 +1 ), fill=(0, 0, 0, 0), width=1)	
 	draw.line(( 68 , fa_img_1 +1) + ( 63 , fa_img_1 +1 ), fill=(0, 0, 0, 0), width=1)	
 	draw.line(( 68 , fa_img_95 +1) + ( 65 , fa_img_95 +1 ), fill=(0, 0, 0, 0), width=1)	
 	draw.line(( 68 , fa_img_85 +1) + ( 65 , fa_img_85 +1 ), fill=(0, 0, 0, 0), width=1)	
 
-
 	draw.text(((32), fa_img_0-8), ( '0.8' ), font=fnt2, fill=(0,0,0,255))
 	draw.text(((32), fa_img_1-8), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
 	draw.text(((32), fa_img_09-8), ( '0.9' ), font=fnt2, fill=(0,0,0,255))
-
 
 	#Y axis label
 	txt=Image.new('L', (140, 20))
@@ -478,81 +475,10 @@ def candidates_zoom():
 	w, h = draw.textsize(str(x_title))
 	draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
 
-
 	#Crop and save image, specifying the format with the extension
 	w, h = im.size
 	if args.my_mut == 'snp':
 		im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_candidates_zoom.png')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #############################################################################################################
