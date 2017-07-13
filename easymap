@@ -13,6 +13,7 @@
 
 import argparse, os, fnmatch
 from subprocess import call
+import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--usage', '-u', action = 'store_true', dest = 'usage')
@@ -368,6 +369,20 @@ if data_source == "exp":
 			if reads_control not in input_files:
 				error = 1
 				problems.append("Please introduce the file containing the control reads in " + input_folder)	
+
+
+
+proc = subprocess.Popen("php allow-new-project.php",cwd=r'./interface', shell=True, stdout=subprocess.PIPE)
+script_response = proc.stdout.read()
+response = script_response.split(",")
+try: int(response[0])
+except: error = 1; problems.append(response[0])
+if int(response[0]) > 100: error = 1; problems.append("Number of bytes exceed the maximum allowed")
+try: int(response[1])
+except: error = 1; problems.append(response[1])
+if int(response[1]) > 100: error = 1; problems.append("Number of projects exceed the maximum allowed")
+print response
+
 
 
 if error == 1:
