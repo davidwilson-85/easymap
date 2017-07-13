@@ -371,7 +371,7 @@ if data_source == "exp":
 
 
 #This code checks the configuration of the program. It calls php allow-new-project script and checks its result.
-proc = subprocess.Popen("php allow-new-project.php",cwd=r'./interface', shell=True, stdout=subprocess.PIPE)
+proc = subprocess.Popen("python allow-new-project.py",cwd=r'./interface', shell=True, stdout=subprocess.PIPE)
 script_response = proc.stdout.read()
 response = script_response.split(",")
 try: int(response[0])
