@@ -270,31 +270,31 @@ def fa_vs_pos():
 
 
 		#Y axis label
-
 		txt=Image.new('L', (140, 20))
 		d = ImageDraw.Draw(txt)
 		d.text( (0, 0), "Allele frequency",  font=fnt2, fill=255)
 		w=txt.rotate(90,  expand=1)
 		im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,150),  w)
 
-
 		#X axis label
 		x_title = str(i[0]) + ' (Mb)'
 		w, h = draw.textsize(str(x_title))
 		draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
 
-		#save image, specifying the format with the extension
+
+		#Crop and save image, specifying the format with the extension
+		w, h = im.size
 		if args.my_mut == 'snp':
-			im.save(project + '/3_workflow_output/img_2_mapping_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_mapping_' + str(i[0]) + '.png')
 
 		if args.my_mut == 'af_control':
-			im.save(project + '/3_workflow_output/img_2_control_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_control_' + str(i[0]) + '.png')
 
 		if args.my_mut == 'af_sample':
-			im.save(project + '/3_workflow_output/img_2_problem_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_problem_' + str(i[0]) + '.png')
 
 		if args.my_mut == 'af_candidates':
-			im.save(project + '/3_workflow_output/img_2_candidates_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_candidates_' + str(i[0]) + '.png')
 
 
 
