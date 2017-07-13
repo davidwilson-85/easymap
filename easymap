@@ -182,9 +182,9 @@ if workflow == "snp":
 		if cross_type == "oc" and is_ref_strain == "noref" and control_parental == "nomut":
 			error = 1
 			problems.append("Unfortunatelly this software does not allow the process of an outcross which is not in the reference background using as a control a parental in a polymorfic background. Please see web-based documentation regarding experimental designs for more details.")
-		if cross_type == "bc" and is_ref_strain =="noref":
-			error = 1
-			problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.Please see web-based documentation regarding experimental designs for more details.")
+		#if cross_type == "bc" and is_ref_strain =="noref":
+		#	error = 1
+		#	problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.Please see web-based documentation regarding experimental designs for more details.")
 		if cross_type == "bc" and is_ref_strain == "ref":
 			if control_parental != "mut":
 				print "Please mind a backcross analysis in reference background always has a parental in the mutant strain"	
@@ -377,11 +377,10 @@ script_response = proc.stdout.read()
 response = script_response.split(",")
 try: int(response[0])
 except: error = 1; problems.append(response[0])
-if int(response[0]) > 100: error = 1; problems.append("Number of bytes exceed the maximum allowed")
+if int(response[0]) >= 100: error = 1; problems.append("Number of bytes exceed the maximum allowed")
 try: int(response[1])
 except: error = 1; problems.append(response[1])
-if int(response[1]) > 100: error = 1; problems.append("Number of projects exceed the maximum allowed")
-print response
+if int(response[1]) >= 100: error = 1; problems.append("Number of projects exceed the maximum allowed")
 
 
 
