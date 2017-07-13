@@ -377,11 +377,10 @@ script_response = proc.stdout.read()
 response = script_response.split(",")
 try: int(response[0])
 except: error = 1; problems.append(response[0])
-if int(response[0]) > 100: error = 1; problems.append("Number of bytes exceed the maximum allowed")
+if int(response[0]) >= 100: error = 1; problems.append("Number of bytes exceed the maximum allowed")
 try: int(response[1])
 except: error = 1; problems.append(response[1])
-if int(response[1]) > 100: error = 1; problems.append("Number of projects exceed the maximum allowed")
-print response
+if int(response[1]) >= 100: error = 1; problems.append("Number of projects exceed the maximum allowed")
 
 
 
