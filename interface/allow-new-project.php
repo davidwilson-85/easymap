@@ -1,6 +1,24 @@
 <?php
 
 
+
+
+
+// Change this line 
+$py_out = system('python myscript.py', $retval);
+
+
+
+//echo $py_out;
+
+
+
+
+
+// The following commented code is the former way we used to check if data and compute limits
+// specified in config/config had been reached
+
+/*
 // Get amount of data currently in user_projects directory
 $folder_size_output = shell_exec('du -s ../user_projects');
 $folder_size_output_array = explode('	', $folder_size_output);
@@ -74,5 +92,7 @@ if (!isset($output2)) {
 }
 
 echo $output1 .','. $output2 .','. $size_limit .','. $max_jobs;
+
+*/
 
 ?>
