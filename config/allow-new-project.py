@@ -58,4 +58,4 @@ except:
 	percentage_running = "Error during maximum simultaneous running allowed reading. Please check config file."
 
 
-print percentage_size,percentage_running,size_limit,simultaneous_limit
+print str(int(percentage_size))+","+str(int(percentage_running))+","+str(size_limit)+","+str(simultaneous_limit)
