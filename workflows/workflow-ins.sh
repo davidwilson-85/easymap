@@ -401,6 +401,18 @@ rm -f ./user_data/*.fai
 echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 
 
+# Extend Ins info (adds flanking sequences)
+# {
+#	$location/scripts_ins/extend-ins-info.py --project-name $project_name
+#}|| {
+#	echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
+#	exit_code=1
+#	echo $exit_code
+#	exit
+# }
+#echo $(date) ': extend-ins-info.py module finished.' >> $my_log_file
+
+
 #______________________________________________________________________________________________________________________________________________________________________
 
 

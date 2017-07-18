@@ -18,10 +18,25 @@
 
 
 #Caso 2, caso 5, seminario
-time ./easymap -n caso5 -w snp -sim -r chr -g complete.gff -rs noref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 30+100,0+500,100+1+50+se
+time ./easymap -n caso5 -w snp -sim -r chr -g complete.gff -rs noref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,12000000+r+100 -ss 30+100,0+500,100+1+50+se
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/
-time ./easymap -n caso2 -w snp -sim -r chr -g complete.gff -rs ref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 30+100,0+500,100+1+50+se
+
+time ./easymap -n caso2 -w snp -sim -r chr -g complete.gff -rs ref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,12000000+r+100 -ss 30+100,0+500,100+1+50+se
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/
+
+time ./easymap -n caso5 -w snp -sim -r chr -g complete.gff -rs noref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,12000000+r+100 -ss 30+100,0+500,100+1+50+se
+rm -rf ./user_projects/*/1_intermediate_files/sim_data/
+
+time ./easymap -n caso2 -w snp -sim -r chr -g complete.gff -rs ref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,12000000+r+100 -ss 30+100,0+500,100+1+50+se
+rm -rf ./user_projects/*/1_intermediate_files/sim_data/
+
+time ./easymap -n caso5 -w snp -sim -r chr -g complete.gff -rs noref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,12000000+r+100 -ss 30+100,0+500,100+1+50+se
+rm -rf ./user_projects/*/1_intermediate_files/sim_data/
+
+time ./easymap -n caso2 -w snp -sim -r chr -g complete.gff -rs ref -cr bc -co f2wt -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,12000000+r+100 -ss 30+100,0+500,100+1+50+se
+rm -rf ./user_projects/*/1_intermediate_files/sim_data/
+
+
 
 exit 
 

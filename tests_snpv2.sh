@@ -21,3 +21,10 @@ echo CASO 4_____________________________________________________________________
 echo CASO 7___________________________________________________________________________________________
 #_________________________________Case 6: Mutant in noref background, outcross, mutant parental control (noref oc mut)________________________________________________________________
 ./easymap -n caso7 -w snp -sim -r 8mb -g complete.gff -rs noref -cr oc -co par_mut -sm 300+e -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 25+100,0+500,100+1+50+se
+
+
+
+
+
+
+./easymap -n caso1 -w snp -sim -r insim -g complete.gff -rs ref -cr bc -co par_mut -sm 30+e -sr 0,24-1,42-2,25-3,6-4,1-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+r+100 -ss 25+100,0+500,100+1+50+se

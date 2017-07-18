@@ -1195,6 +1195,20 @@ def gene_plot():
 	f4 = open(input, 'r')
 	lines_gff = f4.readlines()	
 
+	# Function to parse fasta file (based on one of the Biopython IOs)
+	def read_fasta(fp):
+		name, seq = None, []
+		for line in fp:
+			line = line.rstrip()
+			if line.startswith('>'):
+				if name: yield (name, ''.join(seq))
+				name, seq = line, []
+			else:
+				seq.append(line)
+		if name: yield (name, ''.join(seq))
+
+
+
 	#We create an 'intermediate list', which will contain the information necesary for the gene plot gathered from the output file of the varanalyzer module, the 
 	#sorted_insertions.txt file and the genome feature file. Intermediate list format:
 	#	['Chr', 'insertion/snp position', 'insertion number / -', 'gene name', [ref-aa, alt-aa, pos-aa, ref-base, alt-base, strand], [list of gene features: 'type', 'start', 'end'], [list of positions(required for calculations)]]
@@ -1405,3 +1419,22 @@ def gene_plot():
 		if args.my_mut == 'snp':
 			im.crop((70, 100, w-20, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
 
+
+
+	'''
+
+	#Flanking sequences
+
+	fp = open(project + '/1_intermediate_files/gnm_ref_merged/genome.fa', 'r')
+
+	adjacent_sequences = list()					 		#['Chr', 'insertion position', 'insertion number', '20 pbs upstream ', '20 pbs downstream']
+	for p in intermediate_list:
+		fastalist = list()
+		for name_contig, seq_contig in read_fasta(fp):
+			if name_contig.lower() == '>'+p[0].strip():
+				upstream =  seq_contig[int(p[1])-20:int(p[1])]
+				downstream =  seq_contig[int(p[1]):int(p[1])+20]
+				print upstream + '[ins]' + downstream
+				p.append(upstream)
+				p.append(downstream)
+	'''
