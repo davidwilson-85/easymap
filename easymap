@@ -140,6 +140,7 @@ if len(ref_seq.split(" ")) != 1:
 
 # Check if there are .fa files in the folder user_data that have the string provided by the user as basename
 refs_in_input_files = fnmatch.filter(input_files, '*'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
+refs_in_input_files.sort()
 
 if not refs_in_input_files:
 	error = 1
@@ -153,7 +154,7 @@ if gff_file not in input_files:
 #In case the user decides to give an annotation file, it will be checked whether it is in the corresponding place.
 if ann_file != "n/p":
 	if ann_file not in input_files:
-		error =1
+		error = 1
 		problems.append("The name provided to argument -a/--annotation-file does not match any file in the folder /user_data.")
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
@@ -206,131 +207,167 @@ if workflow == "ins":
 
 #If the user chooses to simulate reads:  
 if data_source == "sim":
-	if workflow == "snp":
-		if sim_mut == "n/p" : error = 1; problems.append("Argument -sm/--sim-mut is required.")
-		if sim_recsel == "n/p": error = 1; problems.append("Argument -sr/--sim-recsel is required.") 
-		if sim_seq == "n/p": error = 1; problems.append("Argument -ss/--sim-seq is required.") 
-	else:
-		if sim_mut == "n/p": error = 1; problems.append("Argument -sm/--sim-mut is required.")
-		if sim_seq == "n/p": error = 1; problems.append("Argument -ss/--sim-seq is required.")
+
+	# If the user provided a basename that does not match any files, many of the following checks are impossible.
+	# Therefore, do the following only if refs_in_input_files is not empty:
+	if refs_in_input_files:
+
+		# Function to parse fasta file
+		def read_fasta(fp):
+			name, seq = None, []
+			for line in fp:
+				line = line.rstrip()
+				if line.startswith('>'):
+					if name: yield (name, ''.join(seq))
+					name, seq = line, []
+				else:
+					seq.append(line)
+			if name: yield (name, ''.join(seq))
+
+		# Create variable to contain the legth of the genome.
+		genome_length = 0
+
+		# This list contains the length of each contig and the total length. The number of elements corresponds to the number of contigs in the genome.
+		ref_seq_stats = []
+
+		for contig in refs_in_input_files:
+			# Read fasta file
+			with open('user_data/' + contig) as fp:
+				for name, seq in read_fasta(fp):
+					contig_length = len(seq)
+					genome_length += contig_length
+					ref_seq_stats.append(contig_length)
 	
-	#Check sim_mut ex: 40+e 
-	if sim_mut != "n/p":
-		
-		# Calculate the length of the reference genome
-		gnm_total_len = 0
-		for ref_file in refs_in_input_files:
-			subprocess_gnm_len = subprocess.Popen("python calculate-genome-length.py -gnm ../user_data/" + ref_file, cwd=r'./simulator', shell=True, stdout=subprocess.PIPE)
-			subprocess_gnm_len_response = subprocess_gnm_len.stdout.read()
-			gnm_total_len = gnm_total_len + int(subprocess_gnm_len_response)
-
-		# Calculate the ratio between reference bases and mutations
-		mut_per_mb = int(sim_mut) / float(gnm_total_len / 1000000)
-
+		# Process user input
 		if workflow == "snp":
-			#Check that number of mutations is < 100 / Mb
-			if mut_per_mb > 100.0:
-				error = 1; problems.append("The number of EMS SNPs to create is over the maximum allowed (100/Mb).")
-			sim_mut = sim_mut + "e"		
-		if workflow == "ins":
-			#Check that number of mutations is < 1 / Mb
-			if mut_per_mb > 1.0:
-				error = 1; problems.append("The number of insertions to create is over the maximum allowed (1/Mb).")
-			sim_mut = sim_mut + "li"
+			if sim_mut == "n/p" : error = 1; problems.append("Argument -sm/--sim-mut is required.")
+			if sim_recsel == "n/p": error = 1; problems.append("Argument -sr/--sim-recsel is required.") 
+			if sim_seq == "n/p": error = 1; problems.append("Argument -ss/--sim-seq is required.") 
+		else:
+			if sim_mut == "n/p": error = 1; problems.append("Argument -sm/--sim-mut is required.")
+			if sim_seq == "n/p": error = 1; problems.append("Argument -ss/--sim-seq is required.")
+		
+		#Check sim_mut ex: 40+e 
+		if sim_mut != "n/p":
+			
+			# Calculate the ratio between reference bases and mutations
+			mut_per_mb = int(sim_mut) / float(genome_length / 1000000)
 
-		# Deprecated
-		'''	
-		try:
-			values = sim_mut.split("+")
-			if len(values) == 2:
-				number = int(values[0])
-				options = ["e", "d","li"]
-				if values[1] not in options and workflow == "snp":
-					error = 1
-					problems.append("The parameter --sim_mut / -sm requires a second parameter that has to be <  e  > if the mode is EMS mutations or <  d  > if the mode is drift mutations")
-					if values[1] == "li":
+			if workflow == "snp":
+				#Check that number of mutations is < 100 / Mb
+				if mut_per_mb > 100.0:
+					error = 1; problems.append("The number of EMS SNPs to create is over the maximum allowed (100/Mb).")
+				sim_mut = sim_mut + "+e"		
+			if workflow == "ins":
+				#Check that number of mutations is < 1 / Mb
+				if mut_per_mb > 1.0:
+					error = 1; problems.append("The number of insertions to create is over the maximum allowed (1/Mb).")
+				sim_mut = sim_mut + "+li"
+
+			# Deprecated
+			'''	
+			try:
+				values = sim_mut.split("+")
+				if len(values) == 2:
+					number = int(values[0])
+					options = ["e", "d","li"]
+					if values[1] not in options and workflow == "snp":
 						error = 1
-						problems.append("The parameter --sim_mut / -sm requires a second parameter that has to be <  li  > in insertion mode. A non-defined parameter is also accepted")	
-			elif len(values) == 1 and workflow == "ins":
-				number = int(values[0])
-				sim_mut = sim_mut+"+li"
+						problems.append("The parameter --sim_mut / -sm requires a second parameter that has to be <  e  > if the mode is EMS mutations or <  d  > if the mode is drift mutations")
+						if values[1] == "li":
+							error = 1
+							problems.append("The parameter --sim_mut / -sm requires a second parameter that has to be <  li  > in insertion mode. A non-defined parameter is also accepted")	
+				elif len(values) == 1 and workflow == "ins":
+					number = int(values[0])
+					sim_mut = sim_mut+"+li"
 
-			else:
-				error = 1	
-				problems.append("The parameter --sim_mut / -sm requires more arguments. Number_of_mutations(+mode)*     *Only required in snp mode, in insertion mode it is not needed. ee the documentation (--usage)(-u) in order to obtain more information regarding this format. ")
-		except:
-			error = 1
-			problems.append("Please mind the format of --sim_mut / -sm: number_of_mutations+mode  where number_of_mutations is any positive number and mode has to be chosen between e (EMS) and d (drift). See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
-		'''
-
-	if sim_recsel != "n/p" and workflow == "snp":
-		
-		# Calculate the number of contigs
-		number_of_contigs = 0
-		for item in refs_in_input_files:
-			with open(input_folder+"/"+item,"r") as contig_file:
-				for l in contig_file:
-					i = l.count(">")
-					number_of_contigs += i
-		
-		#0,14-1,31-2,33-3,15-4,5-5,2/0,24;1,42;2,25;3,6;4,1;5,1+1,10000000+r+50
-		try: 
-			values = sim_recsel.split("+")
-			if len(values) == 4:
-				
-				chromo = values[0].split("/")
-
-				if len(chromo) != number_of_contigs:
-					error = 1
-					problems.append("The recombination frequences given at  the first parameter of --sim-rec-sel /-sr do not match the number of fasta files found in user_data.")
-				for ch in chromo:
-					c = ch.split("-")
-					for v in c:
-						v = v.split(",")
-						if len(v) != 2 or not v[0] or not v[1] : error = 1, problems.append("One or more than one of the values you supplied as recombination frequences for --sim-rec-sel /-sr input in simulator does not contain the two required values 2,50 being 2 the number of events of recombination and 50 the probability of happening. See the documentation (--usage)(-u) in order to obtain more information regarding this format.") 
-						if not v[1]: error =1
-						if not v[0]: error =1 			
-				val = values[1].split("-")
-				for mutations in val: val1= mutations.split(",");int(val1[0]);int(val1[1])
-				
-				options = ["r", "d","dr"] 
-				if values[2] not in options:
-					error = 1
-					problems.append("Please, choose a valid selection mode in --sim-rec-sel /-sr: < r > for recesive mutations or < d > dominant mutations or <dr> for double recessive mutations. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")	
-				int(values[3])
-			else:
-				error =1
-				problems.append("Please, mind the format of --sim-rec-sel /-sr. The number of arguments given are do not match the required ones. See the documentation (--usage)(-u) in order to obtain more information regarding this format." ) 
-		except:
-			error = 1
-			problems.append("Please, mind the format of --sim-rec-sel /-sr. Unexpected inputs were given. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
-	
-	#sim_seq 1+100,0+500,100+1+50+se           
-	if sim_seq != "n/p":
-		try:
-			values = sim_seq.split("+")
-			val1 = values[1].split(",")
-			val2 = values[2].split(",")
-			int(values[0])
-			int(val1[0])
-			int(val1[1])
-			int(val2[0])
-			int(val2[1])
-			int(values[3])
-			int(values[4])
-			options = ("se","pe")
-			values[5] = values[5].lower()
-			if values[5] not in options:
+				else:
+					error = 1	
+					problems.append("The parameter --sim_mut / -sm requires more arguments. Number_of_mutations(+mode)*     *Only required in snp mode, in insertion mode it is not needed. ee the documentation (--usage)(-u) in order to obtain more information regarding this format. ")
+			except:
 				error = 1
-				problems.append("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ") #It is no longer required for the user. It depends on the number of arguments are given in the read argument.
-			else:			
-				lib_type_sample = values[5]
-				lib_type_control = values[5]
+				problems.append("Please mind the format of --sim_mut / -sm: number_of_mutations+mode  where number_of_mutations is any positive number and mode has to be chosen between e (EMS) and d (drift). See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
+			'''
 
-		except:
-			error = 1
-			problems.append("Unexpected arguments were given in --sim-seq / -ss. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
-			#append error
+		if sim_recsel != "n/p" and workflow == "snp":
+			
+			# Calculate the number of contigs in the reference genome
+			number_of_contigs = len(ref_seq_stats)
+
+			#0,14-1,31-2,33-3,15-4,5-5,2/0,24;1,42;2,25;3,6;4,1;5,1+1,10000000+50
+			try: 
+				values = sim_recsel.split("+")
+				if len(values) == 3:
+					
+					chromo = values[0].split("/")
+
+					if len(chromo) != number_of_contigs:
+						error = 1
+						problems.append("Argument -sr/--sim-recsel: The first parameter supplied has an incorrect format (the number of recombination frequency lists does not match the number of contigs in the reference sequence).")
+					for ch in chromo:
+						c = ch.split("-")
+						for v in c:
+							v = v.split(",")
+							if len(v) != 2 or not v[0] or not v[1] : error = 1, problems.append("Argument -sr/--sim-recsel: The first parameter supplied has an incorrect format.")
+							if not v[1]: error = 1
+							if not v[0]: error = 1 			
+					val = values[1].split("-")
+					for mutations in val: val1 = mutations.split(","); int(val1[0]); int(val1[1])
+					
+					# Deprecated
+					'''
+					options = ["r", "d","dr"] 
+					if values[2] not in options:
+						error = 1
+						problems.append("Please, choose a valid selection mode in --sim-rec-sel /-sr: < r > for recesive mutations or < d > dominant mutations or <dr> for double recessive mutations. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")	
+					int(values[3])
+					'''
+
+					#############################################################################
+					#
+					#
+					# HERE CHECK THAT 3rd PARAM IS A PAIR OF TWO ELEMENTS SEPARATED BY A COMMA,
+					# THAT ARE NUMBERS AND INTEGERS, AND THE CONTIG EXISTS AND THE COORDINATE IS
+					# WITHIN THE LENGTH OF THE CONTIG 
+					#
+					#
+					#############################################################################
+
+
+
+				else:
+					error =1
+					problems.append("Argument -sr/--sim-recsel: The number of parameters supplied is incorrect. Must be three." ) 
+			except:
+				error = 1
+				problems.append("Argument -sr/--sim-recsel: The parameters supplied have an incorrect format.")
+		
+		#sim_seq 1+100,0+500,100+1+50+se           
+		if sim_seq != "n/p":
+			try:
+				values = sim_seq.split("+")
+				val1 = values[1].split(",")
+				val2 = values[2].split(",")
+				int(values[0])
+				int(val1[0])
+				int(val1[1])
+				int(val2[0])
+				int(val2[1])
+				int(values[3])
+				int(values[4])
+				options = ("se","pe")
+				values[5] = values[5].lower()
+				if values[5] not in options:
+					error = 1
+					problems.append("Please introduce se/pe as the last input in sim_seq, ex: 1+100,0+500,100+1+50+se ") #It is no longer required for the user. It depends on the number of arguments are given in the read argument.
+				else:			
+					lib_type_sample = values[5]
+					lib_type_control = values[5]
+
+			except:
+				error = 1
+				problems.append("Unexpected arguments were given in --sim-seq / -ss. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")
+				#append error
 
 #If the user is providing its own data (not simulating reads), reads should be provided:
 if data_source == "exp":
@@ -404,8 +441,6 @@ if int(response[0]) >= 100: error = 1; problems.append("Number of bytes exceed t
 try: int(response[1])
 except: error = 1; problems.append(response[1])
 if int(response[1]) >= 100: error = 1; problems.append("Number of simultaneously running projects exceed the maximum allowed("+response[3]+"). Please mind that the projects that have been killed manually most of the times remain as running")
-
-
 
 if error == 1: 
 	print "=======================================================\nCOMMAND ERROR. Please fix the following issues:"

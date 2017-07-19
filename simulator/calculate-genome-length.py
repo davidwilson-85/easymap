@@ -28,7 +28,7 @@ def read_fasta(fp):
 
 genome_length = 0
 
-# Read insertion fasta file
+# Read fasta file
 with open(genome) as fp:
 	for name, seq in read_fasta(fp):
 		contig_length = len(seq)
