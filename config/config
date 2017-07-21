@@ -10,14 +10,14 @@
 
 web-interface-password:0000
 
-# Maximum number of bytes allowed in folder user_projects.
-# To make it unlimited, set it to 0. 
+# Maximum number of gigabytes allowed in folder user_projects.
+# To make it unlimited, set it to 0.
 # If the maximum is reached, easymap does not allow starting new projects
 
-user_projects-size-limit:0
+user_projects-size-limit:5.1
 
 # Maximum number of simultaneos jobs that can be run.
 # To make it unlimited, set it to 0.
 # If the maximum is reached, easymap does not allow starting new projects
 
-max-simultaneous-jobs:0
+max-simultaneous-jobs:2
