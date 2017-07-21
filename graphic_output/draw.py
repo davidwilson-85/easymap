@@ -126,6 +126,70 @@ def fa_vs_pos():
 		scaling_factor_x = (max_graph_x)/(wide - 120)							#nts/pixel        
 		scaling_factor_y = (1.001/(63/100.0*height))								#fa/pixels
 
+
+
+		#Candidate region 
+		if args.my_mut == 'snp':
+			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
+			
+			#Retrieving candidate region coordinates
+			for line in binput:
+				if line.startswith('?'):
+					sp = line.split()						
+					chromosome = sp[1].strip().lower()
+					if chromosome == i[0].lower():
+						if int(sp[2]) > 0 :
+							cr_start = int(sp[2])  
+						else:
+							cr_start = 0
+						if  int(sp[3]) < int(i[1]) :
+							cr_end = int(sp[3]) 
+						else:
+							cr_end = int(i[1])
+
+			#Drawing candidate region:
+			cr_start_im = int(cr_start/scaling_factor_x) + 70
+			cr_end_im = int(cr_end/scaling_factor_x) + 70
+
+			draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(254, 244, 255) )
+
+
+		# af_candidates: framing the candidate region
+		if args.my_mut == 'af_candidates':
+			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
+			#Retrieving candidate region coordinates
+			for line in binput:
+				if line.startswith('?'):
+					sp = line.split()						
+					chromosome = sp[1].strip().lower()
+					if chromosome == i[0].lower():
+						cr_start_raw = int(sp[2])
+						cr_end_raw = int(sp[3])
+						if int(sp[2]) > 0 :
+							cr_start = int(sp[2])  
+						else:
+							cr_start = 0
+						if  int(sp[3]) < int(i[1]) :
+							cr_end = int(sp[3]) 
+						else:
+							cr_end = int(i[1])
+
+
+			#Drawing a frame for the candidate region:
+			cr_start_im = int(cr_start/scaling_factor_x) + 70
+			cr_end_im = int(cr_end/scaling_factor_x) + 70
+			fa_img_08 = int(80/100.0*height) - int(0.8/scaling_factor_y) - 1
+			draw.rectangle( [cr_start_im, int(15/100.0*height)+1, cr_end_im+1, fa_img_08], fill=(254, 244, 255), outline=(112, 112, 112) )
+
+			#Drawing a dotted line in the frame
+			cr_middle = ((cr_start_raw + cr_end_raw)/2)/scaling_factor_x + 70
+			h = int(16/100.0*height)
+			while h in range(int(15/100.0*height), fa_img_08):
+				draw.line((cr_middle, h) + (cr_middle, h+5), fill=(255, 0, 0, 0), width=1)
+				h = h + 10
+			
+
+
 		#snps
 
 		r, g, b = 31, 120, 180
@@ -228,6 +292,7 @@ def fa_vs_pos():
 			window_position_img_2 = None 
 			mm_value_img_2 = None
 
+
 		#Axes
 		draw.line(((wide - 49), int(15/100.0*height)) + ((wide - 49), int(80/100.0*height)), fill=(255, 255, 255, 0), width=2)  #cleanup
 		draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
@@ -311,15 +376,50 @@ def candidates_zoom():
 	input2 = open(project + '/1_intermediate_files/map_info.txt', 'r')
 	lines_map = input2.readlines()	
 
-	
+	#Input fasta
+	contig_source = args.input_f_snp
+
+
+	# Function to parse fasta file (based on one of the Biopython IOs)
+	def read_fasta(fp):
+		name, seq = None, []
+		for line in fp:
+			line = line.rstrip()
+			if line.startswith('>'):
+				if name: yield (name, ''.join(seq))
+				name, seq = line, []
+			else:
+				seq.append(line)
+		if name: yield (name, ''.join(seq))
+
+
+	# Read contig fasta file
+	contig_lengths = list()
+
+	with open(contig_source) as fp:
+		fastalist = list()
+		for name_contig, seq_contig in read_fasta(fp):
+			innerlist = list()
+			innerlist.append(name_contig.strip('>'))
+			innerlist.append(len(seq_contig))
+			fastalist.append(innerlist)
+			contig_lengths.append(len(seq_contig))
+
 	for line in lines_map:
 		if line.startswith('?'):
 			sp = line.split()
+			chromosome = str(sp[1]).lower().strip()
+			for i in fastalist:
+				if i[0].strip().lower() == chromosome:
+					chromosome_length = int(i[1])
+
 			reg_min = sp[2]
 			reg_min_real = reg_min
 			if int(reg_min) < 0 : reg_min = '0'
+			
 			reg_max = sp[3]
-			chromosome = str(sp[1])
+			if int(reg_max) > chromosome_length : reg_max = chromosome_length
+
 
 	#Create image
 	wide=1000								
@@ -333,10 +433,12 @@ def candidates_zoom():
 	max_graph_x = int(int(reg_max) - int(reg_min))
 
 	#Scaling factors
-	scaling_factor_x = (max_graph_x)/(wide - 120)							#nts/pixel        
+	scaling_factor_x = (max_graph_x)/(wide - 120)									#nts/pixel        
 	scaling_factor_y = float(0.201/(63/100.0*height))								#fa/pixels
 	scaling_factor_y_1 = float(1.001/(63/100.0*height))								#fa/pixels
 
+	#shading
+	draw.rectangle( [70, int(15/100.0*height), wide-50, int(80/100.0*height)], fill=(254, 244, 255) )
 
 	#snps
 	r, g, b = 31, 120, 180
@@ -350,8 +452,11 @@ def candidates_zoom():
 
 	
 	#Peak line
-	peak = ((int(reg_max) + int(reg_min_real))/2)/scaling_factor_x + 70
-	draw.line((peak, int(15/100.0*height)) + (peak, int(80/100.0*height)), fill=(255, 0, 0, 0), width=1)
+	peak = (((int(reg_max) + int(reg_min_real))/2) - int(reg_min))/scaling_factor_x + 70
+	h = int(16/100.0*height)
+	while h in range(int(15/100.0*height), int(80/100.0*height)):
+		draw.line((peak, h) + (peak, h+7), fill=(255, 0, 0, 0), width=1)
+		h = h + 14
 	
 
 	'''
@@ -488,7 +593,7 @@ def candidates_zoom():
 	#Crop and save image, specifying the format with the extension
 	w, h = im.size
 	if args.my_mut == 'snp':
-		im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_candidates_zoom.png')
+		im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_candidates_' + chromosome + '_zoom.png')
 
 
 #############################################################################################################
