@@ -104,7 +104,7 @@ error = 0
 is_there_space = project_name.split(" ")
 if len(is_there_space) != 1:
 	error = 1
-	problems.append("The name provided to argument -n/--project-name cannot contain spaces.")
+	problems.append("Argument -n/--project-name: the name provided cannot contain spaces.")
 
 #Check whether user_data directory exists
 input_directory = "./user_data"
@@ -133,10 +133,10 @@ input_files = os.listdir(input_directory)
 # ? Checking for spaces and dots isn't really necessary because any name with these will not match any valid .fa file in the directory /user_data.
 if len(ref_seq.split(".")) != 1:
 	error = 1
-	problems.append("The name provided to argument -r/--reference-sequence cannot contain dots.")
+	problems.append("Argument -r/--reference-sequence: the name provided cannot contain dots.")
 if len(ref_seq.split(" ")) != 1:
 	error = 1
-	problems.append("The name provided to argument -r/--reference-sequence cannot contain spaces.")
+	problems.append("Argument -r/--reference-sequence: the name provided cannot contain spaces.")
 
 # Check if there are .fa files in the directory user_data that have the string provided by the user as basename
 refs_in_input_files = fnmatch.filter(input_files, '*'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
@@ -144,18 +144,18 @@ refs_in_input_files.sort()
 
 if not refs_in_input_files:
 	error = 1
-	problems.append("The name provided to argument -r/--reference-sequence does not match the basename of any .fa file in the directory /user_data.")
+	problems.append("Argument -r/--reference-sequence: the name provided does not match the basename of any .fa file in the directory /user_data.")
 
 #Check the existence of gff file in the appropiate directory
 if gff_file not in input_files:
 		error = 1
-		problems.append("The name provided to argument -g/--gff-file does not match any file in the directory /user_data.")
+		problems.append("Argument -g/--gff-file: the name provided does not match any file in the directory /user_data.")
 
 #In case the user decides to give an annotation file, it will be checked whether it is in the corresponding place.
 if ann_file != "n/p":
 	if ann_file not in input_files:
 		error = 1
-		problems.append("The name provided to argument -a/--annotation-file does not match any file in the directory /user_data.")
+		problems.append("Argument -a/--annotation-file: the name provided does not match any file in the directory /user_data.")
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
 if workflow == "snp":
@@ -176,7 +176,7 @@ if workflow == "snp":
 				if data_source == "sim":
 					if is_ref_strain == "n/p":
 						error = 1
-						problems.append("In order to use simulation data of snp with f2wt control line, it is necessary to provide --mutant_background / -mb argument as ref/noref.")
+						problems.append("In order to use simulation data of snp with f2wt control line, it is necessary to provide --mutant_background / -mb argument as ref/noref.") #######################################################3
 				else:
 					is_ref_strain = "n/p"
 
@@ -203,7 +203,7 @@ if workflow == "ins":
 	else:
 		if ins_seq not in input_files:
 			error = 1
-			problems.append("The name provided to argument -i/--insertion-sequence does not match any file in the directory /user_data.")
+			problems.append("Argument -i/--insertion-sequence: the name provided does not match any file in the directory /user_data.")
 
 #If the user chooses to simulate reads:  
 if data_source == "sim":
@@ -274,7 +274,7 @@ if data_source == "sim":
 
 			except ValueError:
 				error = 1
-				problems.append("Argument -sm/--sim-mut: the information supplied is not an integer.")
+				problems.append("Argument -sm/--sim-mut: the information provided is not an integer.")
 
 
 			# Deprecated
@@ -312,12 +312,12 @@ if data_source == "sim":
 				values = sim_recsel.split("+")
 				if len(values) == 3:
 					
-					# Check parameter 1 (recombination frequncy distributions)
+					# Check parameter 1 (recombination frequency distributions)
 					chromo = values[0].split("/")
 
 					if len(chromo) != number_of_contigs:
 						error = 1
-						problems.append("Argument -sr/--sim-recsel: the first parameter supplied has an incorrect format (the number of recombination frequency lists does not match the number of contigs in the reference sequence).")
+						problems.append("Argument -sr/--sim-recsel: the first parameter provided has an incorrect format (the number of recombination frequency lists does not match the number of contigs in the reference sequence).")
 					already = 0
 					for ch in chromo:
 						c = ch.split("-")
@@ -327,36 +327,26 @@ if data_source == "sim":
 							if v[0] == "" or v[1] == "":
 								if already != 1:
 									already = 1
-									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter supplied has an incorrect format.")
+									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter provided has an incorrect format.")
 
 							if len(v) != 2: # or not v[0] or not v[1]
 								if already != 1:
 									already = 1
-									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter supplied has an incorrect format.")
-					
-					#######################################################################
-					#
-					# PARECE QUE ESTO NO FUNCIONA: if len(v) != 2 or not v[0] or not v[1] ---> checked
-					#
-					#######################################################################
+									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter provided has an incorrect format.")
 
 					# Check parameter 2 (contig,position of the causal mutation)
 					val = values[1].split("-")
 					for mutations in val: 
 						val1 = mutations.split(",")
-						int(val1[0])
-						int(val1[1])
-						if int(ref_seq_stats[int(val1[0])-1]) < int(val1[1]): 
+						causalmut_contig = int(val1[0])
+						causalmut_position = int(val1[1])
+						if causalmut_contig > len(ref_seq_stats):
 							error = 1
-							problems.append("mutacion fuera de rango") ############CAMBIAR error
-	
-					#############################################################################
-					#
-					# HERE CHECK THAT 2nd PARAM IS A PAIR OF TWO ELEMENTS SEPARATED BY A COMMA,
-					# THAT ARE NUMBERS AND INTEGERS, AND THAT THE CONTIG EXISTS AND THE COORDINATE IS
-					# WITHIN THE LENGTH OF THE CONTIG --------> checked
-					#
-					#############################################################################
+							problems.append("Argument -sr/--sim-recsel: the second parameter refers to a contig not present in the reference sequence.")
+						else:
+							if int(ref_seq_stats[int(val1[0])-1]) < int(val1[1]): 
+								error = 1
+								problems.append("Argument -sr/--sim-recsel: the second parameter refers to a position not present in the contig specified.")
 
 					# Check parameter 3 (number of recombinant chromosomes to generate)
 					val = values[2]
@@ -364,7 +354,7 @@ if data_source == "sim":
 						int(val)
 					except:
 						error = 1
-						problems.append("Argument -sr/--sim-recsel: the third parameter supplied is not an integer.")
+						problems.append("Argument -sr/--sim-recsel: the third parameter provided is not an integer.")
 
 					#############################################################################
 					#
@@ -387,10 +377,10 @@ if data_source == "sim":
 
 				else:
 					error =1
-					problems.append("Argument -sr/--sim-recsel: the number of parameters supplied is incorrect. It must be three.")
+					problems.append("Argument -sr/--sim-recsel: the number of parameters provided is incorrect. It must be three.")
 			except:
 				error = 1
-				problems.append("Argument -sr/--sim-recsel: the parameters supplied have an incorrect format.")
+				problems.append("Argument -sr/--sim-recsel: the parameters provided have an incorrect format.")
 		
 		#sim_seq 1+100,0+500,100+1+50+se           
 		if sim_seq != "n/p":
@@ -404,9 +394,9 @@ if data_source == "sim":
 					
 					try: int(params[0])
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 1st parameter. Use an integer.")
-					try: int(param1[0]);int(param1[1])
+					try: int(param1[0]); int(param1[1])
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 2nd parameter. Use an integer'.") 
-					try: int(param2[0]);int(param2[1])
+					try: int(param2[0]); int(param2[1])
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 3rd parameter. Use an integer'.") 
 					try: int(params[3])
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 4th parameter. Use an integer'.")  
@@ -434,11 +424,11 @@ if data_source == "sim":
 
 				else:
 					error =1
-					problems.append("Argument -ss/--sim-seq: the number of parameters supplied is incorrect. It must be six.")
+					problems.append("Argument -ss/--sim-seq: the number of parameters provided is incorrect. It must be six.")
 
 			except:
 				error = 1
-				problems.append("Argument -ss/--sim-seq: the parameters supplied have an incorrect format.")
+				problems.append("Argument -ss/--sim-seq: the parameters provided have an incorrect format.")
 
 #If the user is providing its own data (not simulating reads), reads should be provided:
 if data_source == "exp":
@@ -459,19 +449,19 @@ if data_source == "exp":
 	if lib_type_sample == "se":
 		if reads_sample not in input_files:
 			error = 1
-			problems.append("The name provided to argument -P/--reads-problem does not match any file in the directory /user_data.")	
+			problems.append("Argument -P/--reads-problem: the name provided does not match any file in the directory /user_data.")	
 
 	if lib_type_sample == "pe":
 		if read_f not in input_files: 
 			error = 1
-			problems.append("The first name provided to argument -P/--reads-problem does not match any file in the directory /user_data.")
+			problems.append("Argument -P/--reads-problem: the name provided does not match any file in the directory /user_data.")
 		if read_r not in input_files:
 			error = 1
-			problems.append("The second name provided to argument -P/--reads-problem does not match any file in the directory /user_data.")
+			problems.append("Argument -P/--reads-problem: the name provided does not match any file in the directory /user_data.")
 		else:
 			if read_f == read_r:
 				error = 1
-				problems.append("The two names provided to argument -P/--reads-problem are identical.")
+				problems.append("Argument -P/--reads-problem: the two names provided are identical.")
 
 	# If snp mode, check control reads
 	if workflow == "snp":
@@ -486,22 +476,22 @@ if data_source == "exp":
 			elif len(RC) == 2:
 				lib_type_control ="pe"
 				read_f_control = RC[0]
-				read_r_control =RC[1]
+				read_r_control = RC[1]
 		if lib_type_control == "pe":
 			if read_f_control not in input_files:
 				error = 1
-				problems.append("The first name provided to argument -C/--reads-control does not match any file in the directory /user_data.")
+				problems.append("Argument -C/--reads-control: the first name provided does not match any file in the directory /user_data.")
 			if read_r_control not in input_files:
 				error = 1
-				problems.append("The second name provided to argument -C/--reads-control does not match any file in the directory /user_data.")
+				problems.append("Argument -C/--reads-control: the second name provided does not match any file in the directory /user_data.")
 			else:
 				if read_f_control == read_r_control:
 					error = 1
-					problems.append("The two names provided to argument -C/--reads-control are identical.")
-		if lib_type_control== "se":
+					problems.append("Argument -C/--reads-control: the two names provided are identical.")
+		if lib_type_control == "se":
 			if reads_control not in input_files:
 				error = 1
-				problems.append("The name provided to argument -C/--reads-control does not match any file in the directory /user_data.")	
+				problems.append("Argument -C/--reads-control: the name provided does not match any file in the directory /user_data.")
 
 
 #This code checks the configuration of the program. It calls allow-new-project.py and checks its result.
