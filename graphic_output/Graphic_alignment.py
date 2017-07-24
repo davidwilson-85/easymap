@@ -129,7 +129,9 @@ def draw(dic,sort_positions,out):
 		except: #if there is no next i
 			draw.line(((c+x_coverage*step, size_y_window+b-y_proportion*step2),(c+x_coverage*step, size_y_window+b-y_proportion*step2)))
 # X en try y except tenia -3 despues de step, asi como draw.line de debajo de draw.line
-	im.save(out)
+	#im.save(out)
+	w, h = im.size
+	im.crop((0, 60, w-0, h-0)).save(out)
 
 
 

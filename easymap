@@ -318,36 +318,57 @@ if data_source == "sim":
 					if len(chromo) != number_of_contigs:
 						error = 1
 						problems.append("Argument -sr/--sim-recsel: the first parameter supplied has an incorrect format (the number of recombination frequency lists does not match the number of contigs in the reference sequence).")
+					already = 0
 					for ch in chromo:
 						c = ch.split("-")
-						for v in c:
+						for v in c: 
 							v = v.split(",")
-							if len(v) != 2 or not v[0] or not v[1]:
-								error = 1, problems.append("Argument -sr/--sim-recsel: the first parameter supplied has an incorrect format.")
+						
+							if v[0] == "" or v[1] == "":
+								if already != 1:
+									already = 1
+									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter supplied has an incorrect format.")
+
+							if len(v) != 2: # or not v[0] or not v[1]
+								if already != 1:
+									already = 1
+									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter supplied has an incorrect format.")
 					
 					#######################################################################
 					#
-					# PARECE QUE ESTO NO FUNCIONA: if len(v) != 2 or not v[0] or not v[1]
+					# PARECE QUE ESTO NO FUNCIONA: if len(v) != 2 or not v[0] or not v[1] ---> checked
 					#
 					#######################################################################
 
 					# Check parameter 2 (contig,position of the causal mutation)
 					val = values[1].split("-")
-					for mutations in val: val1 = mutations.split(","); int(val1[0]); int(val1[1])
-					
+					for mutations in val: 
+						val1 = mutations.split(",")
+						int(val1[0])
+						int(val1[1])
+						if int(ref_seq_stats[int(val1[0])-1]) < int(val1[1]): 
+							error = 1
+							problems.append("mutacion fuera de rango") ############CAMBIAR error
+	
 					#############################################################################
 					#
 					# HERE CHECK THAT 2nd PARAM IS A PAIR OF TWO ELEMENTS SEPARATED BY A COMMA,
 					# THAT ARE NUMBERS AND INTEGERS, AND THAT THE CONTIG EXISTS AND THE COORDINATE IS
-					# WITHIN THE LENGTH OF THE CONTIG
+					# WITHIN THE LENGTH OF THE CONTIG --------> checked
 					#
 					#############################################################################
 
 					# Check parameter 3 (number of recombinant chromosomes to generate)
+					val = values[2]
+					try:
+						int(val)
+					except:
+						error = 1
+						problems.append("Argument -sr/--sim-recsel: the third parameter supplied is not an integer.")
 
 					#############################################################################
 					#
-					# HERE CHECK THAT 3rd PARAM IS AN INTEGER
+					# HERE CHECK THAT 3rd PARAM IS AN INTEGER ---> checked
 					#
 					#############################################################################
 
@@ -381,6 +402,7 @@ if data_source == "sim":
 
 					param1 = params[1].split(",")
 					param2 = params[2].split(",")
+
 					int(params[0])
 					int(param1[0])
 					int(param1[1])
