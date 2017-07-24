@@ -376,9 +376,6 @@ function cr_analysis {
 	}
 	echo $(date)': Third VCF filtering step finished.' >> $my_log_file
 
-	########################################################################################################################################################################3
-
-
 	# Draw candidates 
 	{
 		python $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  
@@ -390,11 +387,6 @@ function cr_analysis {
 		exit
 	}
 	echo $(date)': Graphic output created.' >> $my_log_file
-
-
-
-	########################################################################################################################################################################3
-
 
 	# python ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison_drawn.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 150 -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname project  -cross bc -snp_analysis_type par  
 
@@ -411,6 +403,20 @@ function cr_analysis {
 	}
 	echo $(date)': Graphic output created.' >> $my_log_file
 
+	# (7) Create report
+	cp $location/fonts/legend.png $f3/legend.png
+	
+	{
+		
+		python $location/graphic_output/report.py -files_dir $f3 -variants $f3/candidate_variants.txt -log $f2/log.log -output_html $f3/report.html -project $project_name -mut_type $my_mut
+		
+	} || {
+		echo $(date)': Error during report generation.' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	echo $(date)': Report file created.' >> $my_log_file
 }
 
 ##################################################################################################################################################################################
