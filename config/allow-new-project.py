@@ -8,6 +8,7 @@ proc = subprocess.Popen("du -s ../user_projects", shell=True, stdout=subprocess.
 folder_size_output = proc.stdout.read()
 user_projects_size_gb = float(float(folder_size_output.split("	")[0]) / 1048576)
 
+
 # Get number of projects currently running
 proc = subprocess.Popen("ls ../user_projects", shell=True, stdout=subprocess.PIPE)
 list_projects = proc.stdout.read().split()
@@ -19,8 +20,9 @@ for project in list_projects:
 			for lines in status:
 				if lines[:6] =="status":
 					lines = lines.rstrip()
-					if lines.split(":")[1] == "running":#################################################################################################################
-						number_running_files += 1				
+					stat = lines.split(":")[1] 
+			if stat == "running":
+				number_running_files += 1				
 	except:
 		continue
 
@@ -29,14 +31,15 @@ n = 0
 with open("./config") as con_file:
 	for lines in con_file:
 		n += 1
-		if n == 17:#################################################################################################################################################
+		if lines[:5] == "user_":#################################################################################################################################################
 			size_limit = float(lines.rstrip().split(":")[1])
-		if n == 23:#########################################################################################################################################################
+		if lines[:3] == "max":#########################################################################################################################################################
 			simultaneous_limit = lines.rstrip().split(":")[1]
 
 # Check whether it is possible to keep running the project
+
 try:
-	if int(size_limit) != 0:
+	if float(size_limit) != 0:
 			percentage_size = (float(user_projects_size_gb)/float(size_limit))*100	
 	else:
 		percentage_size = 0
@@ -44,7 +47,7 @@ except:
 	percentage_size = "Error during maximum size allowed reading. Please check config file." ########## Si esta excepcion ocurre, luego easymap.py peta
 
 try:
-	if int(simultaneous_limit) != 0:
+	if float(simultaneous_limit) != 0:
 		percentage_running = (float(number_running_files)/float(simultaneous_limit))*100
 		
 	else:
