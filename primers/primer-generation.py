@@ -522,7 +522,7 @@ for line in first_list:
 	a = line[1]+"-"+line[2]
 	if a == former:
 		if mode == "snp": list2.append(v+"\t-\t-\t-\t-\n")
-		else: list2.append(v+"\t-\t-\t-\t-\t-\t-\n")
+		else: list2.append(v+"\t-\t-\t-\t-\t-\t-\t-\t-\n")
 	elif a != former:
 		if mode == "snp":
 			if line[1] != contig_used:
