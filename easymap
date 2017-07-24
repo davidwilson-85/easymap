@@ -259,7 +259,7 @@ if data_source == "sim":
 				int(sim_mut)
 
 				# Calculate the ratio between reference bases and mutations
-				mut_per_mb = int(sim_mut) / float(genome_length / 1000000)
+				mut_per_mb = int(sim_mut) / (float(genome_length) / 1000000)
 
 				if workflow == "snp":
 					#Check that number of mutations is < 100 / Mb
@@ -399,17 +399,19 @@ if data_source == "sim":
 				params = sim_seq.split("+")
 
 				if len(params) == 6:
-
 					param1 = params[1].split(",")
 					param2 = params[2].split(",")
-
-					int(params[0])
-					int(param1[0])
-					int(param1[1])
-					int(param2[0])
-					int(param2[1])
-					int(params[3])
-					int(params[4])
+					
+					try: int(params[0])
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 1st parameter. Use an integer.")
+					try: int(param1[0]);int(param1[1])
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 2nd parameter. Use an integer'.") 
+					try: int(param2[0]);int(param2[1])
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 3rd parameter. Use an integer'.") 
+					try: int(params[3])
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 4th parameter. Use an integer'.")  
+					try: int(params[4])
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 5th parameter. Use an integer'." )
 
 					############################################################################
 					#
@@ -417,7 +419,7 @@ if data_source == "sim":
 					#
 					# THE CURRENT WAY TO CHECK THIS DOES NOT ALLOW TO TELL USER WHAT PARAMETER IS WRONG
 					#
-					# MORE CHECKS: SEE DOCUMENTATION. OUTPUT ERROR MESSAGES THAT SPECIFY INDIVIDUAL PARAMETERS.
+					# MORE CHECKS: SEE DOCUMENTATION. OUTPUT ERROR MESSAGES THAT SPECIFY INDIVIDUAL PARAMETERS. ---> checked 
 					#
 					############################################################################
 
@@ -425,7 +427,7 @@ if data_source == "sim":
 					params[5] = params[5].lower()
 					if params[5] not in options:
 						error = 1
-						problems.append("Argument -ss/--sim-seq: invalid choice in the 5th parameter. Choose between 'se' and 'pe'.")
+						problems.append("Argument -ss/--sim-seq: invalid choice in the 6th parameter. Choose between 'se' and 'pe'.")
 					else:			
 						lib_type_sample = params[5]
 						lib_type_control = params[5]
