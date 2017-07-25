@@ -27,3 +27,7 @@ echo CASO 3_____________________________________________________________________
 ./easymap -n caso3 -w snp -sim -r 8mb -g complete.gff -mb ref -cr oc -co par_mut -sm 300 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,4000000+100 -ss 25+100,0+500,100+1+50+se
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/
 
+
+
+
+time ./easymap -n caso5_ICU11 -w snp -r at -g complete.gff -mb noref -cr bc -co f2wt -P Clonacion_icu11.fastq -C Clonacion_S96.fastq

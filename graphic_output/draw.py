@@ -151,7 +151,7 @@ def fa_vs_pos():
 			cr_start_im = int(cr_start/scaling_factor_x) + 70
 			cr_end_im = int(cr_end/scaling_factor_x) + 70
 
-			draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(254, 244, 255) )
+			draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(249, 222, 252) )
 
 
 		# af_candidates: framing the candidate region
@@ -179,7 +179,7 @@ def fa_vs_pos():
 			cr_start_im = int(cr_start/scaling_factor_x) + 70
 			cr_end_im = int(cr_end/scaling_factor_x) + 70
 			fa_img_08 = int(80/100.0*height) - int(0.8/scaling_factor_y) - 1
-			draw.rectangle( [cr_start_im, int(15/100.0*height)+1, cr_end_im+1, fa_img_08], fill=(254, 244, 255), outline=(112, 112, 112) )
+			draw.rectangle( [cr_start_im, int(15/100.0*height)+1, cr_end_im+1, fa_img_08], fill=(249, 222, 252), outline=(112, 112, 112) )
 
 			#Drawing a dotted line in the frame
 			cr_middle = ((cr_start_raw + cr_end_raw)/2)/scaling_factor_x + 70
@@ -438,7 +438,7 @@ def candidates_zoom():
 	scaling_factor_y_1 = float(1.001/(63/100.0*height))								#fa/pixels
 
 	#shading
-	draw.rectangle( [70, int(15/100.0*height), wide-50, int(80/100.0*height)], fill=(254, 244, 255) )
+	draw.rectangle( [70, int(15/100.0*height), wide-50, int(80/100.0*height)], fill=(249, 222, 252) )
 
 	#snps
 	r, g, b = 31, 120, 180
@@ -526,7 +526,7 @@ def candidates_zoom():
 def legend():
 
 	wide = 250
-	high = 230
+	high = 290
 
 	im = Image.new("RGB", (wide, high), (255,255,255))
 	draw = ImageDraw.Draw(im)
@@ -560,6 +560,16 @@ def legend():
 
 	draw.line((w+38, h+180) + (w+44, h+180), fill=(255, 0, 255), width=2)
 	draw.text((w+60, h+172), 'AF difference', font=fnt2, fill=(0,0,0,255))
+
+	draw.line((w+38, h+210) + (w+44, h+210), fill=(249, 222, 252), width=8)
+	draw.text((w+60, h+202), 'Candidate region', font=fnt2, fill=(0,0,0,255))
+	draw.rectangle( [w+38, h+214, w+44, h+206], fill=None, outline=(0,0,0) )
+
+	draw.line((w+37, h+240) + (w+45, h+240), fill=(255, 0, 0), width=2)
+	draw.line((w+40, h+240) + (w+42, h+240), fill=(255, 255, 255), width=2)
+
+	draw.text((w+60, h+232), 'Selected position', font=fnt2, fill=(0,0,0,255))
+
 
 	im.save(project + '/3_workflow_output/legend.png')
 
@@ -1428,13 +1438,15 @@ def gene_plot():
 			if p[4][0].strip() != '-' : 												
 				
 				draw.text((int(snp_pos - int(0.092*wide)), int(0.75*height)), (
-					str(p[4][0])+ ' (' + str(p[4][2]) +')' +  '    >    '  +
+					str(p[4][0])+ ' (' + str(p[4][2]) +')' +  '    >   '  +
 					str(p[4][1])), font=fnt4, fill=(0,0,0,255))   
 
 			#Base change
 			draw.text((int(snp_pos - int(0.036*wide)), int(0.67*height)), (
-				str(p[4][3]) +   '    >    '  +
+				str(p[4][3]) +   '    >   '  +
 				str(p[4][4])), font=fnt4, fill=(0,0,0,255))   
+
+
 
 		#save image, specifying the format with the extension
 		w, h = im.size

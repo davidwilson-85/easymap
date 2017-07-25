@@ -501,11 +501,17 @@ if mut_type == 'lin':
 						'		<table id="t">' + '\n'
 						'		<col width="300">' + '\n'
 						'		<col width="700">' + '\n'
-						
-						'		<tr>' + '\n'
-						'			<td> <b>Functional annotation:</b></td>' + '\n'
-						'			<td>' + str(i[11]) + '</td>' + '\n'
-						'		</tr>' + '\n'
+						)
+
+						if ann_file != "Not provided": 
+							output.write(
+							'		<tr>' + '\n'
+							'			<td> <b>Functional annotation:</b></td>' + '\n'
+							'			<td>' + str(i[11]) + '</td>' + '\n'
+							'		</tr>' + '\n'
+							)
+
+						output.write(
 
 						'		<tr>' + '\n'
 						'			<td> <b>Forward primer:</b></td>' + '\n'
@@ -681,12 +687,17 @@ if mut_type == 'snp':
 				'		<table id="t">' + '\n'
 				'		<col width="300">' + '\n'
 				'		<col width="700">' + '\n'
-				
-				'		<tr>' + '\n'
-				'			<td> <b>Functional annotation:</b></td>' + '\n'
-				'			<td>' + var[12] + '</td>' + '\n'
-				'		</tr>' + '\n'
+				)
 
+				if ann_file != "Not provided":
+					output.write(
+					'		<tr>' + '\n'
+					'			<td> <b>Functional annotation:</b></td>' + '\n'
+					'			<td>' + var[12] + '</td>' + '\n'
+					'		</tr>' + '\n'
+					)
+
+				output.write(
 				'		<tr>' + '\n'
 				'			<td> <b>Forward primer:</b></td>' + '\n'
 				'			<td>' + var[8] + '</td>' + '\n'
