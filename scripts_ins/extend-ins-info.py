@@ -46,6 +46,9 @@ for line in input_file:
 # We re-write the file with the extended information to the output file from the final_lines list
 output_file = open(project + '/3_workflow_output/insertions_output.txt', 'w')
 
-output_file.write('@type\tcontig\tposition\tref_base\talt_base\tquality\tref_count\talt_count\talt_allele_freq\tdist_to_selected_pos\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_funct_annot\tf_primer\ttm_f_primer\tr_primer\ttm_r_primer\tupstream\tdownstream\n')    
+output_file.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_funct_annot\tf_primer\ttm_f_primer\tinsertion_primer_5\ttm_insertion_primer_5\tinsertion_primer_3\ttm_insertion_primer_3\tr_primer\ttm_r_primer\tupstream\tdownstream\n')    
 for line in final_lines:
 	output_file.write(line + '\n')
+
+
+

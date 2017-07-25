@@ -402,15 +402,15 @@ echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 
 
 # Extend Ins info (adds flanking sequences)
-# {
-#	$location/scripts_ins/extend-ins-info.py --project-name $project_name
-#}|| {
-#	echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
-#	exit_code=1
-#	echo $exit_code
-#	exit
-# }
-#echo $(date) ': extend-ins-info.py module finished.' >> $my_log_file
+{
+	$location/scripts_ins/extend-ins-info.py --project-name $project_name
+}|| {
+	echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+echo $(date) ': extend-ins-info.py module finished.' >> $my_log_file
 
 
 #______________________________________________________________________________________________________________________________________________________________________
@@ -430,6 +430,20 @@ echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 	exit
 }
 echo $(date) ': Graphic output created.' >> $my_log_file
+
+
+
+#Report
+{
+	python $location/graphic_output/report.py -variants $f3/insertions_output.txt -log $my_log_file -output_html $f3/report.html -project $project_name  -mut_type lin -files_dir $f3
+
+} || {
+	echo $(date)': error:report.py' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+echo $(date) ': Report file created.' >> $my_log_file
 
 
 echo $exit_code
