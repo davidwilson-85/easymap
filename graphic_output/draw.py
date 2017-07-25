@@ -453,90 +453,15 @@ def candidates_zoom():
 	
 	#Peak line
 	peak = (((int(reg_max) + int(reg_min_real))/2) - int(reg_min))/scaling_factor_x + 70
+
+	if 	(((int(reg_max) + int(reg_min_real))/2) - int(reg_min)) < 0: peak = 70
+
 	h = int(16/100.0*height)
 	while h in range(int(15/100.0*height), int(80/100.0*height)):
 		draw.line((peak, h) + (peak, h+7), fill=(255, 0, 0, 0), width=1)
 		h = h + 14
 	
 
-	'''
-	#boost/mm
-	binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
-	blines = binput.readlines()
-
-	#Boost line
-	my_cross = args.my_cross
-	if my_cross == 'oc' :
-		for b, bline in enumerate(blines):
-			sp = bline.split()
-			if bline.startswith('!'):
-				boost_max = float(sp[3])
-		for b, bline in enumerate(blines):
-			sp = bline.split()					
-			if bline.startswith('@') and sp[4].lower().strip('>') == str(chromosome).lower():
-				boost_value = float(sp[3].strip())/boost_max
-				boost_value_img = int(80/100.0*height) - int(boost_value/scaling_factor_y_1 )
-				if int(sp[1]) >= int(reg_min) and int(sp[1]) <= int(reg_max) : 
-					window_position = int(sp[1]) -int(reg_min)
-					window_position_img = int(window_position/scaling_factor_x) + 70
-
-					try:
-						draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=1)	
-						window_position_img_2 = window_position_img
-						boost_value_img_2 = boost_value_img
-
-					except:
-						window_position_img_2 = window_position_img
-						boost_value_img_2 = boost_value_img
-
-		window_position_img = None 
-		boost_value_img = None
-		window_position_img_2 = None 
-		boost_value_img_2 = None
-
-	#MM line
-	if my_cross == 'oc' :
-		for b, bline in enumerate(blines):
-			sp = bline.split()					
-			if bline.startswith('@') and sp[4].lower().strip('>') == str(chromosome).lower():
-				mm_value = float(sp[2].strip())
-				mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y_1 )
-				window_position = int(sp[1]) -int(reg_min)
-				if int(sp[1]) >= int(reg_min) and int(sp[1]) <= int(reg_max) : 
-					window_position_img = int(window_position/scaling_factor_x) + 70
-					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-					except:
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-
-	if my_cross == 'bc' :
-		r, g, bl = 46, 255, 0
-		if args.my_snp_analysis_type == 'f2wt':
-			r, g, bl = 255, 0, 255
-		for b, bline in enumerate(blines):
-			sp = bline.split()					
-			if bline.startswith('@') and sp[3].lower().strip('>') == str(chromosome).lower():
-				mm_value = float(sp[2].strip())
-				mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y_1 )
-				window_position = int(sp[1]) -int(reg_min)
-				if int(sp[1]) >= int(reg_min) and int(sp[1]) <= int(reg_max) : 
-					window_position_img = int(window_position/scaling_factor_x) + 70
-					try:
-						draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(r, g, bl), width=1)	
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-					except:
-						window_position_img_2 = window_position_img
-						mm_value_img_2 = mm_value_img
-
-	window_position_img = None 
-	mm_value_img = None
-	window_position_img_2 = None 
-	mm_value_img_2 = None
-	'''
 	#Axes
 	draw.line(((wide - 49), int(15/100.0*height)) + ((wide - 49), int(80/100.0*height)), fill=(255, 255, 255, 0), width=2)  #cleanup
 	draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
@@ -555,11 +480,6 @@ def candidates_zoom():
 		draw.text(((mark - w/2 -4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
 		mark = mark + 500000/scaling_factor_x
 		x_tag = x_tag + 500000
-	'''
-	while mark_2 in range(68, wide-50):
-		draw.line((mark_2, int(80.7/100.0*height) ) + (mark_2, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
-		mark_2 = mark_2 + 100000/scaling_factor_x
-	'''
 
 	#Y axis
 	fa_img_0 = int(80/100.0*height) - int(0/scaling_factor_y) -1

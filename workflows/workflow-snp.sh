@@ -404,7 +404,9 @@ function cr_analysis {
 	echo $(date)': Graphic output created.' >> $my_log_file
 
 	# (7) Create report
+	#Some arrangements
 	cp $location/fonts/legend.png $f3/legend.png
+	tar cvzf $f3/report_images.tar.gz $f3/*.png  > $f2/tar.txt
 	
 	{
 		

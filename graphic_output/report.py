@@ -90,6 +90,7 @@ with open(input_log, 'r') as f1:
 		if line.startswith('Annotation file:'):
 			sp = line.split()
 			if str(sp[-1]) == "n/p": ann_file = "Not provided"
+			else: ann_file = str(sp[-1])
 
 		if line.startswith('Data source:'):
 			sp = line.split()
@@ -198,7 +199,7 @@ output.write(
 '		table td {border:solid 0px #fab;  word-wrap:break-word; vertical-align:top;}' + '\n'
 '       tr:hover { background-color: #ededed; }' + '\n'
 '		#t {  border: 0px solid red; word-wrap:break-word; table-layout:fixed; }' + '\n'
-'		#candidates { line-height: 10px; text-align:left; word-wrap:break-word; ; }' + '\n'
+'		#candidates { vertical-align:top; line-height: normal; text-align:left; word-wrap:break-word; ; }' + '\n'
 
 '	</style>' + '\n'
 
@@ -210,7 +211,7 @@ output.write(
 '<body>' + '\n'
 '	<div id="wrapper">' + '\n'
 '		<hr class="easymap">' + '\n'
-'		<h1>Poject: ' +  project_name + '</h1>' + '\n'
+'		<h1>Project: ' +  project_name + '</h1>' + '\n'
 '		<hr class="easymap">' + '\n'
 
 )
@@ -284,8 +285,6 @@ if mut_type == 'snp' and data_source == 'exp':
 '			<td>' + reads_s_control + '</td>' + '\n'
 '		</tr>' + '\n'
 			)
-
-
 
 
 if data_source == 'sim':
@@ -395,7 +394,7 @@ if data_source == 'exp':
 		if reads_type_control == 'se':
 			output.write(
 	'		<b>Control single end reads quality assessment<br></b>' + '\n'
-	'		<center> <img src="./single-end-problem-reads-qual-stats.png" width="500" > </center> ' + '\n'
+	'		<center> <img src="./single-end-control-reads-qual-stats.png" width="500" > </center> ' + '\n'
 
 			)
 
@@ -426,7 +425,7 @@ if mut_type == 'lin':
 		'		    <th>Contig</th>' + '\n'
 		'		    <th>Position</th>' + '\n'
 		'		    <th>Gene (gene element)</th>' + '\n'
-		'		    <th>Wt aminoacids</th>' + '\n'
+		'		    <th>Wt amino acids</th>' + '\n'
 		'		  </tr>' + '\n'
 
 
@@ -451,9 +450,9 @@ if mut_type == 'lin':
 				else:
 					gene = '-'
 				if str(sp[14]).strip() != '-':
-					annotation = str(sp[14]).strip()  
+					annotation = str(sp[14]).strip()
 				else:
-					annotation = ' Functional annotation file not provided'
+					annotation = ' Functional annotation not available'
 
 				for i in insertions_pos_list:
 					if int(i[1]) == int(position) and str(i[2]).lower().strip() == contig.lower():
@@ -478,13 +477,13 @@ if mut_type == 'lin':
 	#Link to variants file
 	output.write(
 	'		<br><a href=./insertions_output.txt target="_blank">Cick to see full information</a>' + '\n'
-	'		<hr class="easymap">' + '\n'
 	)
 	#Insertions
 	for ins in insertions_list:
 		for f in sorted(files): 
 			if '_ins_' + ins[0] in str(f):
 				output.write(
+				'		<hr class="easymap">' + '\n'
 				'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
 				'		<center> <img src="./'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
 				)
@@ -497,15 +496,57 @@ if mut_type == 'lin':
 					if gene in str(i[3]):
 
 						output.write(
-						'		<h3>  ' +  gene +'</h3>' + '\n'
+						'		<h3>' + gene + '</h3>' + '\n'
 						'		<center> <img src="./'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
-						'		<p>Functional annotation:' + str(i[11]) + '<br>Forward primer: '+str(i[5])+ '<br> Reverse primer: ' + str(i[6]) +'<br>Insertion 5 primer: '+str(i[7])+ '<br> Insertion 6 primer: ' +str(i[8]) +' <p>' + '\n'
+						'		<table id="t">' + '\n'
+						'		<col width="300">' + '\n'
+						'		<col width="700">' + '\n'
+						
+						'		<tr>' + '\n'
+						'			<td> <b>Functional annotation:</b></td>' + '\n'
+						'			<td>' + str(i[11]) + '</td>' + '\n'
+						'		</tr>' + '\n'
+
+						'		<tr>' + '\n'
+						'			<td> <b>Forward primer:</b></td>' + '\n'
+						'			<td>' + str(i[5]) + '</td>' + '\n'
+						'		</tr>' + '\n'
+
+						'		<tr>' + '\n'
+						'			<td> <b>Reverse primer:</b></td>' + '\n'
+						'			<td>' + str(i[6]) + '</td>' + '\n'
+						'		</tr>' + '\n'
+
+						'		<tr>' + '\n'
+						'			<td> <b>Insertion 5 primer:</b></td>' + '\n'
+						'			<td>' + str(i[7]) + '</td>' + '\n'
+						'		</tr>' + '\n'
+
+						'		<tr>' + '\n'
+						'			<td> <b>Insertion 3 primer:</b></td>' + '\n'
+						'			<td>' + str(i[8]) + '</td>' + '\n'
+						'		</tr>' + '\n'
 
 
+						'		<tr>' + '\n'
+						'			<td> <b>Upstream sequence:</b></td>' + '\n'
+						'			<td>' +  str(i[9]) + '</td>' + '\n'
+						'		</tr>' + '\n'
+
+						'		<tr>' + '\n'
+						'			<td> <b>Downstream sequence:</b></td>' + '\n'
+						'			<td>' +  str(i[10]) + '</td>' + '\n'
+						'		</tr>' + '\n'
+
+						'		</table>' + '\n'
 
 						)
 
-
+	#Link to images 
+	output.write(
+	'		<br><a href=./report_images.tar.gz target="_blank">Cick to download all image files</a>' + '\n'
+	'		<hr class="easymap">' + '\n'
+	)
 
 
 #__________________________________SNP cartographic report________________________________________________________________
@@ -569,7 +610,7 @@ if mut_type == 'snp':
 		'		    <th>DTP</th>' + '\n'
 		'		    <th>Nucleotide (Ref/Alt)</th>' + '\n'
 		'		    <th>Gene (gene element)</th>' + '\n'
-		'		    <th>Aminoacid (Ref/Alt)</th>' + '\n'
+		'		    <th>Amino acid (Ref/Alt)</th>' + '\n'
 		'		  </tr>' + '\n'
 		)
 
@@ -583,8 +624,9 @@ if mut_type == 'snp':
 				position = str(sp[2]).strip()
 				AF = str(sp[8]).strip()
 				DTP = str(sp[9]).strip()
-				nucleotide = str(sp[3]).strip() + '/' + str(sp[4]).strip()
-				aminoacid = str(sp[17]).strip() + '/' + str(sp[18]).strip()
+				nucleotide = str(sp[3]).strip() + ' &rarr; ' + str(sp[4]).strip()
+				aminoacid = str(sp[17]).strip() + ' &rarr; ' + str(sp[18]).strip()
+				if aminoacid == '- &rarr; -': aminoacid = '-'
 				primer_f = str(sp[20]).strip()
 				primer_r = str(sp[22]).strip()
 				upstream = str(sp[24]).strip()
@@ -594,9 +636,9 @@ if mut_type == 'snp':
 				else:
 					gene = '-'
 				if str(sp[19]).strip() != '-':
-					annotation = str(sp[19]).strip()  
+					annotation = str(sp[19]).strip() 
 				else:
-					annotation = ' Functional annotation file not provided'
+					annotation = ' Functional annotation not available'
 
 				variants_list.append([str(i), contig, position, AF, DTP, nucleotide, gene, aminoacid, primer_f, primer_r, upstream, downstream, annotation])
 
@@ -636,6 +678,41 @@ if mut_type == 'snp':
 				output.write(
 				'		<h3>' + str(var[0]) + '. ' + gene_name + '</h3>' + '\n'
 				'		<left> <img src="./'  +  str(f)  + ' " align="middle" >  </left>' + '\n'
-				'		<p>Functional annotation:' + annotation + '<br>Forward primer: '+primer_f+ '<br> Reverse primer: ' +primer_r +' <p>' + '\n'
+				'		<table id="t">' + '\n'
+				'		<col width="300">' + '\n'
+				'		<col width="700">' + '\n'
+				
+				'		<tr>' + '\n'
+				'			<td> <b>Functional annotation:</b></td>' + '\n'
+				'			<td>' + var[12] + '</td>' + '\n'
+				'		</tr>' + '\n'
+
+				'		<tr>' + '\n'
+				'			<td> <b>Forward primer:</b></td>' + '\n'
+				'			<td>' + var[8] + '</td>' + '\n'
+				'		</tr>' + '\n'
+
+				'		<tr>' + '\n'
+				'			<td> <b>Reverse primer:</b></td>' + '\n'
+				'			<td>' + var[9] + '</td>' + '\n'
+				'		</tr>' + '\n'
+
+				'		<tr>' + '\n'
+				'			<td> <b>Upstream sequence:</b></td>' + '\n'
+				'			<td>' + var[10] + '</td>' + '\n'
+				'		</tr>' + '\n'
+
+				'		<tr>' + '\n'
+				'			<td> <b>Downstream sequence:</b></td>' + '\n'
+				'			<td>' + var[11] + '</td>' + '\n'
+				'		</tr>' + '\n'
+
+				'		</table>' + '\n'
 
 				)
+
+	#Link to images 
+	output.write(
+	'		<br><a href=./report_images.tar.gz target="_blank">Cick to download all image files</a>' + '\n'
+	'		<hr class="easymap">' + '\n'
+	)
