@@ -49,6 +49,10 @@ IFS='+' read -ra sim_recsel_array <<< "$sim_recsel_statement"
 rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pass it to program as a string and analyze it with python
 mut_pos=${sim_recsel_array[1]} #This parameter will be used in sim_mut as well, due to the fact the mutations will be generated previously.
 sel_mode=${sim_recsel_array[2]} #I don't need this information. I assume that mutation is always recessive and I select the HM individuals.
+if [ $sel_mode == 'dr' ]; then
+		is_second="yes"
+fi
+
 # In f2wt mode, for the sample I select the HM individuals and for the control the HZ+WT individuals
 nbr_rec_chrs=${sim_recsel_array[3]}
 
@@ -165,8 +169,10 @@ if [ $analysis_type == 'snp' ]; then
 	fi
 	
 	# Run sim-mut.py to create mutant strain
+	mut_pos_1=$(echo $mut_pos| cut -d'-' -f 1) #I'm adding this just in case we are dealing with a second site mutagenesis. Fist mutagenesis happens here, whilte the second is below.
+	 
 	{
-		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $template -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos 2>> $my_log_file
+		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $template -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos_1 2>> $my_log_file
 
 	} || {
 		echo $(date)": Simulation of mutagenesis to create the mutant strain failed. Quit." >> $my_log_file
@@ -174,12 +180,40 @@ if [ $analysis_type == 'snp' ]; then
 	}
 	echo $(date)": Simulation of mutagenesis to create the mutant strain completed." >> $my_log_file
 
+
 	# Create recombinant F2 population(s)
 	# If control sample is going to be one of the parentals, simply simulate the recessive phenotype F2 population.
 	# If the control sample is going to be the dominant phenotype population, simulate this one also
 	
 	# Define location of mutant genome
 	parmut_sample=$sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa
+
+
+	#IF WE ARE DEALING WITH A SECOND SITE MUTAGENESIS : Second mutagenesis occurs after the first.
+	
+	sim_mut_output_folder_mutantstrain2=$project_name/$f1/sim_data/sim_mut_output/mutant_strain_2
+	
+	if [ $is_second == 'yes' ]; then 
+
+		mut_pos_2=$(echo $mut_pos| cut -d'-' -f 2)
+
+		{
+			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $parmut_sample -out $sim_mut_output_folder_mutantstrain2 -causal_mut $mut_pos_2 2>> $my_log_file
+
+		} || {
+			echo $(date)": Simulation of second site mutagenesis to create the mutant strain failed. Quit." >> $my_log_file
+			exit_code=1; echo exit_code; exit
+		}
+		echo $(date)": Simulation of second site mutagenesis to create the mutant strain completed." >> $my_log_file
+
+
+
+		sim_mut_output_folder_ref_lab=$sim_mut_output_folder_mutantstrain
+		sim_mut_output_folder_noref_lab=$sim_mut_output_folder_mutantstrain
+		sim_mut_output_folder_mutantstrain=$sim_mut_output_folder_mutantstrain2
+		
+
+	fi
 	
 	# Define locations of polymorphic samples, necessary to run sim-recsel.py
 	if [ $is_ref_strain == 'ref' ] && [ $cross_type == 'bc' ]; then

@@ -336,6 +336,10 @@ if data_source == "sim":
 
 					# Check parameter 2 (contig,position of the causal mutation)
 					val = values[1].split("-")
+					if len(val)== 1:
+						mode_used = "r"
+					elif len(val)==2:
+						mode_used = "dr"
 					for mutations in val: 
 						val1 = mutations.split(",")
 						causalmut_contig = int(val1[0])
@@ -349,32 +353,28 @@ if data_source == "sim":
 								problems.append("Argument -sr/--sim-recsel: the second parameter refers to a position not present in the contig specified.")
 
 					# Check parameter 3 (number of recombinant chromosomes to generate)
+					
 					val = values[2]
 					try:
 						int(val)
 					except:
 						error = 1
 						problems.append("Argument -sr/--sim-recsel: the third parameter provided is not an integer.")
+					
 
-					#############################################################################
-					#
-					# HERE CHECK THAT 3rd PARAM IS AN INTEGER ---> checked
-					#
-					#############################################################################
-
-					# Deprecated
-					'''
+					# Deprecated ------------------> HABLARLO
+					"""
 					options = ["r", "d","dr"] 
 					if values[2] not in options:
 						error = 1
 						problems.append("Please, choose a valid selection mode in --sim-rec-sel /-sr: < r > for recesive mutations or < d > dominant mutations or <dr> for double recessive mutations. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")	
 					int(values[3])
-					'''
-
+					
+					"""
 					# Create string to be sent as the sim_recsel argument to easymap.sh
 					# sim-recsel.py within easymap will only be used in r mode (recessive mutation). Therefore, there is no need to ask the user to specify the mode.
-					sim_recsel = values[0] + "+" + values[1] + "+r+" + values[2]
-
+					sim_recsel = values[0] + "+" + values[1] + "+"+mode_used+"+" + values[2]
+					
 				else:
 					error =1
 					problems.append("Argument -sr/--sim-recsel: the number of parameters provided is incorrect. It must be three.")
@@ -395,23 +395,14 @@ if data_source == "sim":
 					try: int(params[0])
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 1st parameter. Use an integer.")
 					try: int(param1[0]); int(param1[1])
-					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 2nd parameter. Use an integer'.") 
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 2nd parameter. Use an integer.") 
 					try: int(param2[0]); int(param2[1])
-					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 3rd parameter. Use an integer'.") 
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 3rd parameter. Use an integer.") 
 					try: int(params[3])
-					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 4th parameter. Use an integer'.")  
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 4th parameter. Use an integer.")  
 					try: int(params[4])
-					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 5th parameter. Use an integer'." )
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 5th parameter. Use an integer." )
 
-					############################################################################
-					#
-					# CHECK IF NUMBERS PROVIDED ARE INTEGERS
-					#
-					# THE CURRENT WAY TO CHECK THIS DOES NOT ALLOW TO TELL USER WHAT PARAMETER IS WRONG
-					#
-					# MORE CHECKS: SEE DOCUMENTATION. OUTPUT ERROR MESSAGES THAT SPECIFY INDIVIDUAL PARAMETERS. ---> checked 
-					#
-					############################################################################
 
 					options = ("se","pe")
 					params[5] = params[5].lower()
@@ -465,6 +456,9 @@ if data_source == "exp":
 
 	# If snp mode, check control reads
 	if workflow == "snp":
+		if reads_control == reads_sample:
+			error = 1
+			problems.append("Argument -C/--reads-control has the same name than argument -P/--reads-problem.")
 		if reads_control == "n/p":
 			error = 1
 			problems.append("Argument -C/--reads-control is required.")
@@ -499,20 +493,17 @@ proc = subprocess.Popen("python allow-new-project.py", cwd=r'./config', shell=Tr
 script_response = proc.stdout.read()
 response = script_response.split(",")
 try:
-	int(response[0])
+	if int(response[0]) >= 100:
+		error = 1; problems.append("The number of gigabytes in the folder /user_projects exceeds the maximum allowed in the config/config file ("+response[2].strip()+")")
 except:
 	error = 1; problems.append(response[0])
-
-if int(response[0]) >= 100:
-	error = 1; problems.append("The number of gigabytes in the folder /user_projects exceeds the maximum allowed in the config/config file ("+response[2].strip()+")")
-
 try:
 	int(response[1])
+	if int(response[1]) >= 100:
+		error = 1; problems.append("The number of projects currently running exceeds the maximum allowed in the config/config file ("+response[3].strip()+") [Manually killed projects can be interpreted as running by easymap. This can be solved by removing the project folder]")
 except:
 	error = 1; problems.append(response[1])
 
-if int(response[1]) >= 100:
-	error = 1; problems.append("The number of projects currently running exceeds the maximum allowed in the config/config file ("+response[3].strip()+") [Manually killed projects can be interpreted as running by easymap. This can be solved by removing the project folder]")
 if error == 1: 
 	print "=======================================================\nCOMMAND ERROR. Please fix the following issues:"
 	for items in problems:

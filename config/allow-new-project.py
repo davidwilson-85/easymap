@@ -32,27 +32,28 @@ with open("./config") as con_file:
 	for lines in con_file:
 		n += 1
 		if lines[:5] == "user_":#################################################################################################################################################
-			size_limit = float(lines.rstrip().split(":")[1])
+			size_limit = lines.rstrip().split(":")[1]
 		if lines[:3] == "max":#########################################################################################################################################################
 			simultaneous_limit = lines.rstrip().split(":")[1]
 
 # Check whether it is possible to keep running the project
 
 try:
-	if float(size_limit) != 0:
-			percentage_size = (float(user_projects_size_gb)/float(size_limit))*100	
+	if float(size_limit) > 0:
+			percentage_size = (float(user_projects_size_gb)/float(size_limit))*100
+			percentage_size = str(int(percentage_size))	
 	else:
 		percentage_size = 0
 except:
 	percentage_size = "Error during maximum size allowed reading. Please check config file." ########## Si esta excepcion ocurre, luego easymap.py peta
 
 try:
-	if float(simultaneous_limit) != 0:
+	if float(simultaneous_limit) > 0:
 		percentage_running = (float(number_running_files)/float(simultaneous_limit))*100
-		
+		percentage_running = str(int(percentage_running))
 	else:
 		percentage_running = 0
 except:
 	percentage_running = "Error during maximum simultaneous running allowed reading. Please check config file."###################################
 
-print str(int(percentage_size))+","+str(int(percentage_running))+","+str(size_limit)+","+str(simultaneous_limit)
+print str(percentage_size)+","+str(percentage_running)+","+str(size_limit)+","+str(simultaneous_limit)
