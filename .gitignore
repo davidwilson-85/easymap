@@ -1,4 +1,5 @@
 .DS_Store
+config/config
 user_projects
 user_data
 graphic_output/draw.pyc
