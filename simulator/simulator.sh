@@ -49,7 +49,7 @@ IFS='+' read -ra sim_recsel_array <<< "$sim_recsel_statement"
 rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pass it to program as a string and analyze it with python
 mut_pos=${sim_recsel_array[1]} # This parameter is also used by in sim_mut
 if [[ $mut_pos == *"-"* ]]; then
-		second_site_mutagenesis=true
+	second_site_mutagenesis=true
 fi
 sel_mode=${sim_recsel_array[2]} # I assume that mutation is always recessive and I select the HM individuals.
 
