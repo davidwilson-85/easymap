@@ -329,19 +329,14 @@ if data_source == "sim":
 									already = 1
 									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter provided has an incorrect format.")
 
-							if len(v) != 2: # or not v[0] or not v[1]
+							if len(v) != 2:
 								if already != 1:
 									already = 1
 									error = 1; problems.append("Argument -sr/--sim-recsel: the first parameter provided has an incorrect format.")
 
 					# Check parameter 2 (contig,position of the causal mutation)
 					val = values[1].split("-")
-					#if len(val)== 1:
-					mode_used = "r"
-
-					#elif len(val)==2:
-					#	mode_used = "dr"
-					for mutations in val: 
+					for mutations in val:           # Loop though val because it can contain 2 mutations (first and second site mutations)
 						val1 = mutations.split(",")
 						causalmut_contig = int(val1[0])
 						causalmut_position = int(val1[1])
@@ -354,7 +349,6 @@ if data_source == "sim":
 								problems.append("Argument -sr/--sim-recsel: the second parameter refers to a position not present in the contig specified.")
 
 					# Check parameter 3 (number of recombinant chromosomes to generate)
-					
 					val = values[2]
 					try:
 						int(val)
@@ -363,18 +357,18 @@ if data_source == "sim":
 						problems.append("Argument -sr/--sim-recsel: the third parameter provided is not an integer.")
 					
 
-					# Deprecated ------------------> HABLARLO
+					# Deprecated
 					"""
 					options = ["r", "d","dr"] 
 					if values[2] not in options:
 						error = 1
-						problems.append("Please, choose a valid selection mode in --sim-rec-sel /-sr: < r > for recesive mutations or < d > dominant mutations or <dr> for double recessive mutations. See the documentation (--usage)(-u) in order to obtain more information regarding this format.")	
+						problems.append("")	
 					int(values[3])
 					
 					"""
-					# Create string to be sent as the sim_recsel argument to easymap.sh
+					# Create sim_recsel string for easymap.sh
 					# sim-recsel.py within easymap will only be used in r mode (recessive mutation). Therefore, there is no need to ask the user to specify the mode.
-					sim_recsel = values[0] + "+" + values[1] + "+"+mode_used+"+" + values[2]
+					sim_recsel = values[0] + "+" + values[1] + "+r+" + values[2]
 					
 				else:
 					error =1
@@ -403,7 +397,6 @@ if data_source == "sim":
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 4th parameter. Use an integer.")  
 					try: int(params[4])
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 5th parameter. Use an integer." )
-
 
 					options = ("se","pe")
 					params[5] = params[5].lower()

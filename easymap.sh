@@ -271,19 +271,6 @@ if [ $workflow == 'snp' ]; then
 	fi
 fi
 
-# Create HTML report
-# {
-#	python graphic_output/create-report.py -project_name $project_name 
-#
-#} || {
-#	echo $(date)": Program to create report file failed. Quit." >> $my_log_file
-#	echo 'status:error' >> $my_status_file
-#	exit_code=1
-#	exit
-#}
-#echo $(date)": Program to create report file completed." >> $my_log_file
-
-
 echo $(date)": Execution of project {" $project_name "} finished." >> $my_log_file
 echo 'status:finished' >> $my_status_file
 echo "Easymap analysis properly completed."

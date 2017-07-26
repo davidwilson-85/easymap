@@ -31,9 +31,9 @@ n = 0
 with open("./config") as con_file:
 	for lines in con_file:
 		n += 1
-		if lines[:5] == "user_":#################################################################################################################################################
+		if lines[:5] == "user_":
 			size_limit = lines.rstrip().split(":")[1]
-		if lines[:3] == "max":#########################################################################################################################################################
+		if lines[:3] == "max":
 			simultaneous_limit = lines.rstrip().split(":")[1]
 
 # Check whether it is possible to keep running the project
@@ -45,7 +45,7 @@ try:
 	else:
 		percentage_size = 0
 except:
-	percentage_size = "Error during maximum size allowed reading. Please check config file." ########## Si esta excepcion ocurre, luego easymap.py peta
+	percentage_size = "The maximum number of gigabytes allowed in folder user_projects is not defined. Please define it in the file config/config."
 
 try:
 	if float(simultaneous_limit) > 0:
@@ -54,6 +54,6 @@ try:
 	else:
 		percentage_running = 0
 except:
-	percentage_running = "Error during maximum simultaneous running allowed reading. Please check config file."###################################
+	percentage_running = "The maximum number of simultaneos jobs allowed is not defined. Please define it in the file config/config."
 
 print str(percentage_size)+","+str(percentage_running)+","+str(size_limit)+","+str(simultaneous_limit)

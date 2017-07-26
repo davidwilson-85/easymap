@@ -49,7 +49,7 @@ IFS='+' read -ra sim_recsel_array <<< "$sim_recsel_statement"
 rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pass it to program as a string and analyze it with python
 mut_pos=${sim_recsel_array[1]} # This parameter is also used by in sim_mut
 if [[ $mut_pos == *"-"* ]]; then
-		is_second="yes"
+		second_site_mutagenesis=true
 fi
 sel_mode=${sim_recsel_array[2]} # I assume that mutation is always recessive and I select the HM individuals.
 
@@ -185,11 +185,10 @@ if [ $analysis_type == 'snp' ]; then
 	parmut_sample=$sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa
 
 
-	#IF WE ARE DEALING WITH A SECOND SITE MUTAGENESIS : Second mutagenesis occurs after the first.
-	
+	# Perform second site mutagenesis
 	sim_mut_output_folder_mutantstrain2=$project_name/$f1/sim_data/sim_mut_output/mutant_strain_2
 	
-	if [ $is_second == 'yes' ]; then 
+	if [ $second_site_mutagenesis == true ]; then
 
 		mut_pos=$(echo $mut_pos | cut -d'-' -f 2)
 
