@@ -550,7 +550,7 @@ if mut_type == 'lin':
 
 	#Link to images 
 	output.write(
-	'		<br><a href=./report_images.tar.gz target="_blank">Cick to download all image files</a>' + '\n'
+	'		<br><a href=./report_images.zip target="_blank">Cick to download all image files</a>' + '\n'
 	'		<hr class="easymap">' + '\n'
 	)
 
@@ -724,6 +724,6 @@ if mut_type == 'snp':
 
 	#Link to images 
 	output.write(
-	'		<br><a href=./report_images.tar.gz target="_blank">Cick to download all image files</a>' + '\n'
+	'		<br><a href=./report_images.zip target="_blank">Cick to download all image files</a>' + '\n'
 	'		<hr class="easymap">' + '\n'
 	)

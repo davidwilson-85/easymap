@@ -434,7 +434,7 @@ echo $(date) ': Graphic output created.' >> $my_log_file
 
 
 #Report
-tar cvzf $f3/report_images.tar.gz $f3/*.png  > $f2/tar.txt
+zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 
 {
 	python $location/graphic_output/report.py -variants $f3/insertions_output.txt -log $my_log_file -output_html $f3/report.html -project $project_name  -mut_type lin -files_dir $f3

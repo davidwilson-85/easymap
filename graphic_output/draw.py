@@ -1436,10 +1436,12 @@ def gene_plot():
 
 			#Aa change
 			if p[4][0].strip() != '-' : 												
-				
+				aach = 'yes'
 				draw.text((int(snp_pos - int(0.092*wide)), int(0.75*height)), (
 					str(p[4][0])+ ' (' + str(p[4][2]) +')' +  '    >   '  +
 					str(p[4][1])), font=fnt4, fill=(0,0,0,255))   
+			else:
+				aach = 'no'
 
 			#Base change
 			draw.text((int(snp_pos - int(0.036*wide)), int(0.67*height)), (
@@ -1447,14 +1449,16 @@ def gene_plot():
 				str(p[4][4])), font=fnt4, fill=(0,0,0,255))   
 
 
-
-		#save image, specifying the format with the extension
+		#save image, specifying the format with the extension. For SNP images we save them with diferent sizes depending on if theres an aminoacid change or not
 		w, h = im.size
 		if args.my_mut == 'lin':
 			im.crop((70, 100, w-20, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[2]) + '_gene_' + str(p[3])+ '.png')
 
-		if args.my_mut == 'snp':
-			im.crop((70, 100, w-20, h-60)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
+		if args.my_mut == 'snp' and aach == 'no':
+			im.crop((70, 100, w-20, h-70)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
+		
+		if args.my_mut == 'snp' and aach == 'yes':
+			im.crop((70, 100, w-20, h-40)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
 
 
 

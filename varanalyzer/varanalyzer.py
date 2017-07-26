@@ -104,7 +104,7 @@ def dna_to_prot(dna_seq):
 	while start + 2 < len(dna_seq):
 		codon = dna_seq[start:start+3]
 		if genetic_code[codon] == "STOP":
-			prot_seq.append('*')
+			prot_seq.append('STOP')
 			break
 		prot_seq.append(genetic_code[codon])
 		start += 3
@@ -360,9 +360,9 @@ for variant_info in variants_info:
 					result_intron_number = number_of_introns - result_intron_number +1
 			
 			if intron_left_end_hit == True:
-				intron_result = 'intron [putative splicing ' + str(intron_left_end) + ' sequence of intron ' + str(result_intron_number) + ' affected]'
+				intron_result = 'intron, putative splicing ' + str(intron_left_end) + ' sequence of intron ' + str(result_intron_number) + ' affected'
 			elif intron_right_end_hit == True:
-				intron_result = 'intron [putative splicing ' + str(intron_right_end) + ' sequence of intron ' + str(result_intron_number) + ' affected]'
+				intron_result = 'intron, putative splicing ' + str(intron_right_end) + ' sequence of intron ' + str(result_intron_number) + ' affected'
 			else:
 				intron_result = 'intron'
 			
