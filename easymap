@@ -338,8 +338,9 @@ if data_source == "sim":
 					val = values[1].split("-")
 					if len(val)== 1:
 						mode_used = "r"
-					elif len(val)==2:
-						mode_used = "dr"
+
+					#elif len(val)==2:
+					#	mode_used = "dr"
 					for mutations in val: 
 						val1 = mutations.split(",")
 						causalmut_contig = int(val1[0])
