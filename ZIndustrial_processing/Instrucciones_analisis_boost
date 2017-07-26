@@ -1,0 +1,40 @@
+bash eez-eh-map
+	Este script ejecuta tanto running.py como run.sh de easy_map-boost_essay
+	mutation= lista de posiciones donde van a caer las mutaciones causales (conviene que sea una posición donde sepas con certeza que va a caer una G/C, puedes usar genome.py para comprobarlo)
+	Llama a running.py dando la lsita de mutaciones como argumento
+	Hace un bucle por todos los archivos con el formato take_ (generados en running.py)
+	Corta cada uno de los archivops y los manda a easy_map-boost_essay/user_projects.
+	Ejectuta run.sh 
+
+running.py
+	Se ejecuta desde eez-eh-map
+	Crea una lsita de mutaciones desde el input de eez-eh-map
+	itera sobre la lista y desarrolla los casos de interés para cada una de las mutaciones
+	El nombre del caso es importante, el formato que tiene es el que indica más tarde al programa el orden a seguir.
+	la parte que pone str(i+20) --> i es el número de mutación por la que va, el 20 es para no confundir con las 20 primeras que ya realicé. Si quieres hacer más sçúmale más 40 o así.
+	purge limpia algunos archivos que ocupan espacio
+
+run.sh
+	Wind es una lsita con los tamaños de ventana que quieres probar
+	step una lista con los saltos entre ventana que quieras probar
+	f es una lista con el número de los replicados que quieras probar (añadir un número extra al finald e la lista)
+	iteration es una lista con el número de casos de interés (añadir un número extra al final de la lista).
+	
+	IMPORTANTE:	 CUANDO VAYA A CORRER UN CASO CONCRETO, LA FORMA CON LA QUE LLAMAS A EASYMAP CAMBIA	
+
+Tras esto, en cada una de las carpetas de user_projects deberá haber una serie de carpetas que contienen los outputs de todas las combinaciones posibles.
+
+Para obtener una lista ordenada de los archivos variants.txt:
+Dentro de user_projects usar:  find  | grep variants.txt
+ordering.py:
+	input requerido: lista de rutas variatns.txt
+	La primera operación que se hace es leer cada uno de los nombres de archivo y filtar los nombres que no quiero. Los que se llaman "project...", los que no sean del caso que me interesa...
+	la lista mi es el caso, ordénalos como quieras que aparezcan en el output
+	luego hay una serie de lsita, cada una de ellas guardará la combinación que más te interese
+	Finalmente las listas se imprimirán en el orden que te interese para tenerlas ordenadas.
+
+root.py:
+	abre siempre un archivo llamdo lista-rutas-ordenadas.txt
+	neceistas crear una lista de las mutaciones causales ordenadas de la primera a la última
+	en la variable mut se le restan 20 por hacer los cosas del 1-30, pero deberías cambiarlo
+	

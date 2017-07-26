@@ -47,11 +47,11 @@ mut_mode=${sim_mut_array[1]}
 sim_recsel_statement=$7
 IFS='+' read -ra sim_recsel_array <<< "$sim_recsel_statement"
 rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pass it to program as a string and analyze it with python
-mut_pos=${sim_recsel_array[1]} #This parameter will be used in sim_mut as well, due to the fact the mutations will be generated previously.
-sel_mode=${sim_recsel_array[2]} #I don't need this information. I assume that mutation is always recessive and I select the HM individuals.
-if [ $sel_mode == 'dr' ]; then
+mut_pos=${sim_recsel_array[1]} # This parameter is also used by in sim_mut
+if [[ $mut_pos == *"-"* ]]; then
 		is_second="yes"
 fi
+sel_mode=${sim_recsel_array[2]} # I assume that mutation is always recessive and I select the HM individuals.
 
 # In f2wt mode, for the sample I select the HM individuals and for the control the HZ+WT individuals
 nbr_rec_chrs=${sim_recsel_array[3]}
@@ -151,7 +151,7 @@ if [ $analysis_type == 'snp' ]; then
 	}
 	echo $(date)": Simulation of mutagenesis to create ref-lab strain completed." >> $my_log_file
 
-	# Run sim-mut.py to create noref-lab strain. Mutate only 0.4% of bases.
+	# Run sim-mut.py to create noref-lab strain. Mutate 0.4% of bases.
 	{
 		python simulator/sim-mut.py -nbr $nbr_natural_mutations_noref -mod d -con $ref_seqs_merged_file -out $sim_mut_output_folder_noref_lab 2>> $my_log_file
 
@@ -169,7 +169,7 @@ if [ $analysis_type == 'snp' ]; then
 	fi
 	
 	# Run sim-mut.py to create mutant strain
-	mut_pos_1=$(echo $mut_pos| cut -d'-' -f 1) #I'm adding this just in case we are dealing with a second site mutagenesis. Fist mutagenesis happens here, whilte the second is below.
+	mut_pos_1=$(echo $mut_pos | cut -d'-' -f 1) #I'm adding this just in case we are dealing with a second site mutagenesis. Fist mutagenesis happens here, while the second is below.
 	 
 	{
 		python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $template -out $sim_mut_output_folder_mutantstrain -causal_mut $mut_pos_1 2>> $my_log_file
@@ -180,10 +180,6 @@ if [ $analysis_type == 'snp' ]; then
 	}
 	echo $(date)": Simulation of mutagenesis to create the mutant strain completed." >> $my_log_file
 
-
-	# Create recombinant F2 population(s)
-	# If control sample is going to be one of the parentals, simply simulate the recessive phenotype F2 population.
-	# If the control sample is going to be the dominant phenotype population, simulate this one also
 	
 	# Define location of mutant genome
 	parmut_sample=$sim_mut_output_folder_mutantstrain/mutated_genome/mutated_genome.fa
@@ -195,10 +191,10 @@ if [ $analysis_type == 'snp' ]; then
 	
 	if [ $is_second == 'yes' ]; then 
 
-		mut_pos_2=$(echo $mut_pos| cut -d'-' -f 2)
+		mut_pos=$(echo $mut_pos | cut -d'-' -f 2)
 
 		{
-			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $parmut_sample -out $sim_mut_output_folder_mutantstrain2 -causal_mut $mut_pos_2 2>> $my_log_file
+			python simulator/sim-mut.py -nbr $nbr_muts -mod $mut_mode -con $parmut_sample -out $sim_mut_output_folder_mutantstrain2 -causal_mut $mut_pos 2>> $my_log_file
 
 		} || {
 			echo $(date)": Simulation of second site mutagenesis to create the mutant strain failed. Quit." >> $my_log_file
@@ -206,14 +202,17 @@ if [ $analysis_type == 'snp' ]; then
 		}
 		echo $(date)": Simulation of second site mutagenesis to create the mutant strain completed." >> $my_log_file
 
-
+		parmut_sample=$sim_mut_output_folder_mutantstrain2/mutated_genome/mutated_genome.fa
 
 		sim_mut_output_folder_ref_lab=$sim_mut_output_folder_mutantstrain
 		sim_mut_output_folder_noref_lab=$sim_mut_output_folder_mutantstrain
 		sim_mut_output_folder_mutantstrain=$sim_mut_output_folder_mutantstrain2
-		
-
 	fi
+
+
+	# Create recombinant F2 population(s)
+	# If control sample is going to be one of the parentals, simply simulate the recessive phenotype F2 population.
+	# If the control sample is going to be the dominant phenotype population, simulate this one also.
 	
 	# Define locations of polymorphic samples, necessary to run sim-recsel.py
 	if [ $is_ref_strain == 'ref' ] && [ $cross_type == 'bc' ]; then
@@ -227,7 +226,7 @@ if [ $analysis_type == 'snp' ]; then
 	fi
 	
 	if [ $snp_control == 'par' ]; then
-	
+		
 		# Run sim-recsel.py to create recombinant chromosomes selected to carry the mutation
 		{
 			python simulator/sim-recsel.py -outdir $sim_recsel_output_folder_recessive -rec_freq_distr $rec_freq_distr -parmut $parmut_sample -parpol $parpol_sample -mutpos $mut_pos -smod $sel_mode -nrec $nbr_rec_chrs 2>> $my_log_file 
