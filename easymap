@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 
 # ./easymap -n project_name -w snp -sim -r at -g chr1+4.gff -rs ref -cr bc -co par_mut -sm 600 -sr 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,5860210+100 -ss 25+100,0+500,100+1+50+se
+# ./easymap -n ins-test -w ins -sim -r at2 -i at_chloroplast.fa -g chr1+4.gff -sm 10 -ss 15+100,0+500,100+1+50+pe
 #
-# Recombination frequencies:
+# Recombination frequencies for Arabidopsis thaliana:
 # chr1: 0,14-1,31-2,33-3,15-4,5-5,2
 # chr2: 0,26-1,42-2,25-3,5-4,1-5,1
 # chr3: 0,20-1,39-3,28-4,2-5,1
 # chr4: 0,24-1,43-2,25-3,6-4,1-5,1
 # chr5: 0,16-1,34-2,31-3,14-4,4-5,1
-
-# ./easymap -n ins-test -w ins -sim -r at2 -i at_chloroplast.fa -g chr1+4.gff -sm 10 -ss 15+100,0+500,100+1+50+pe
-
-# Explore possibility of condensing the arguments -mb, -cr, -co in a single string (or even a number described in the documentation):
+#
+# Explore possibility of condensing the arguments -mb, -cr, -co in a single string (or even to the case number, as described in the documentation):
 # ref-bc-parmut, ref-bc-parnomut, ref-bc-f2wt, ref-oc-parmut, ref-oc-parnomut, ref-oc-f2wt
 # noref-bc-parmut, noref-bc-parnomut, noref-bc-f2wt, noref-oc-parmut, noref-oc-parnomut, noref-oc-f2wt
 
-import argparse, os, fnmatch
+import argparse, os, fnmatch, subprocess
 from subprocess import call
-import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--usage', '-u', action = 'store_true', dest = 'usage')
@@ -106,7 +104,7 @@ if len(is_there_space) != 1:
 	error = 1
 	problems.append("Argument -n/--project-name: the name provided cannot contain spaces.")
 
-#Check whether user_data directory exists
+# Check whether user_data directory exists
 input_directory = "./user_data"
 if os.path.isdir(input_directory) == False:
 	error = 1
@@ -131,27 +129,32 @@ input_files = os.listdir(input_directory)
 # Check reference sequence input
 # First, check that the user string does not have any spaces or dots in it. We need the basename of the file (basename.fa) or files (1.basename.fa, 2.basename.fa, ...)
 # ? Checking for spaces and dots isn't really necessary because any name with these will not match any valid .fa file in the directory /user_data.
+fasta_name_has_bad_format = False
+
 if len(ref_seq.split(".")) != 1:
 	error = 1
 	problems.append("Argument -r/--reference-sequence: the name provided cannot contain dots.")
+	fasta_name_has_bad_format = True
+
 if len(ref_seq.split(" ")) != 1:
 	error = 1
 	problems.append("Argument -r/--reference-sequence: the name provided cannot contain spaces.")
+	fasta_name_has_bad_format = True
 
-# Check if there are .fa files in the directory user_data that have the string provided by the user as basename
-refs_in_input_files = fnmatch.filter(input_files, '*'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
-refs_in_input_files.sort()
+if fasta_name_has_bad_format == False:
+	# Check if there are .fa files in the directory user_data that have the string provided by the user as basename
+	refs_in_input_files = fnmatch.filter(input_files, '*'+ref_seq+'.fa') # fnmatch filters a list using a string that accepts wildcards
+	refs_in_input_files.sort()
+	if not refs_in_input_files:
+		error = 1
+		problems.append("Argument -r/--reference-sequence: the name provided does not match the basename of any .fa file in the directory /user_data.")
 
-if not refs_in_input_files:
-	error = 1
-	problems.append("Argument -r/--reference-sequence: the name provided does not match the basename of any .fa file in the directory /user_data.")
-
-#Check the existence of gff file in the appropiate directory
+# Check gff file
 if gff_file not in input_files:
 		error = 1
 		problems.append("Argument -g/--gff-file: the name provided does not match any file in the directory /user_data.")
 
-#In case the user decides to give an annotation file, it will be checked whether it is in the corresponding place.
+# In case the user decides to give an annotation file, check it.
 if ann_file != "n/p":
 	if ann_file not in input_files:
 		error = 1
@@ -419,7 +422,7 @@ if data_source == "sim":
 if data_source == "exp":
 	if reads_sample == "n/p":
 		error = 1
-		problems.append("Argument -P/--reads-problem is required.")
+		problems.append("Argument -P/--reads-problem is required. Alternatively, you can use the -sim/--simulate-reads mode.")
 	else:
 		RS = reads_sample.split(",")
 		if len(RS) == 1:
@@ -432,14 +435,17 @@ if data_source == "exp":
 
 	# Check names of reads
 	if lib_type_sample == "se":
+		
 		if reads_sample not in input_files:
 			error = 1
 			problems.append("Argument -P/--reads-problem: the name provided does not match any file in the directory /user_data.")	
 
 	if lib_type_sample == "pe":
+		
 		if read_f not in input_files: 
 			error = 1
 			problems.append("Argument -P/--reads-problem: the name provided does not match any file in the directory /user_data.")
+		
 		if read_r not in input_files:
 			error = 1
 			problems.append("Argument -P/--reads-problem: the name provided does not match any file in the directory /user_data.")
@@ -450,12 +456,10 @@ if data_source == "exp":
 
 	# If snp mode, check control reads
 	if workflow == "snp":
-		if reads_control == reads_sample:
-			error = 1
-			problems.append("Argument -C/--reads-control has the same name than argument -P/--reads-problem.")
+		
 		if reads_control == "n/p":
 			error = 1
-			problems.append("Argument -C/--reads-control is required.")
+			problems.append("Argument -C/--reads-control is required. Alternatively, you can use the -sim/--simulate-reads mode.")
 		else:
 			RC = reads_control.split(",") 
 			if len(RC) == 1:
@@ -465,6 +469,7 @@ if data_source == "exp":
 				lib_type_control ="pe"
 				read_f_control = RC[0]
 				read_r_control = RC[1]
+		
 		if lib_type_control == "pe":
 			if read_f_control not in input_files:
 				error = 1
@@ -476,10 +481,15 @@ if data_source == "exp":
 				if read_f_control == read_r_control:
 					error = 1
 					problems.append("Argument -C/--reads-control: the two names provided are identical.")
+		
 		if lib_type_control == "se":
 			if reads_control not in input_files:
 				error = 1
 				problems.append("Argument -C/--reads-control: the name provided does not match any file in the directory /user_data.")
+
+		if reads_control == reads_sample:
+			error = 1
+			problems.append("The same name was provided to arguments -P/--reads-problem and -C/--reads-control.")
 
 
 #This code checks the configuration of the program. It calls allow-new-project.py and checks its result.

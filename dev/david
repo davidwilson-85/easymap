@@ -1,0 +1,6 @@
+# Login as www-data
+sudo -u www-data bash
+
+# Execute a command as other user (examples with www-data)
+sudo -u www-data git pull
+sudo -u www-data ./easymap -n pn -w ins -sim -r mini_chr1 [...]

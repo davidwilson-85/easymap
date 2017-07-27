@@ -2,7 +2,7 @@
 This .js file simply calls PHP files via AJAX
 easymap.htm --> ajax.js --> fire-wf.php --> easymap.sh --> log.log --> read_log.php ... 
 
-Rhis file contains the function to update project info on screen, to stop running projects,
+This file contains the function to update project info on screen, to stop running projects,
 and to delete from disk finished/killed/error projects
 
 
