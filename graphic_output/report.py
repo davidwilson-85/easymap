@@ -96,6 +96,10 @@ with open(input_log, 'r') as f1:
 			sp = line.split()
 			data_source = str(sp[-1])
 
+		if line.startswith('Simulator (sim-recsel.py) command:'):
+			sp = line.split('+')
+			selected_position = str(sp[-3])
+
 		if line.startswith('Type of cross [bc/oc]:'):
 			sp = line.split()
 			if str(sp[-1]) == 'bc': cross_type = 'backcross'
@@ -302,6 +306,10 @@ if data_source == 'sim':
 
 	elif mut_type == 'snp':
 		output.write(
+'		<tr>' + '\n'
+'			<td> <b>Selected causal mutation (simulation)</b></td>' + '\n'
+'			<td>' + selected_position.split(',')[1] + '</td>' + '\n'
+'		</tr>' + '\n'
 '		<tr>' + '\n'
 '			<td> <b>Number of mutations (simulation)</b></td>' + '\n'
 '			<td>' + number_mutations + '</td>' + '\n'
@@ -725,12 +733,6 @@ if mut_type == 'snp':
 	'		<br><a href=./report_images.zip target="_blank">Cick to download all image files</a>' + '\n'
 	'		<hr class="easymap">' + '\n'
 	)
-
-	output.write(
-	'<p style="font-family:Lucida Console, monospace">This text is monospace text.</p>'
-
-	)
-
 
 
 
