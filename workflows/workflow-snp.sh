@@ -186,7 +186,7 @@ function get_problem_va {
 
 	#Run vcf filter
 	{
-		python $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 7 -qual_min 20
+		python $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 15 -qual_min 20
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -284,7 +284,7 @@ function get_control_va {
 
 	#Run vcf filter
 	{
-		python $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 7 -qual_min 20
+		python $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 15 -qual_min 20
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -598,10 +598,10 @@ then
 fi
 
 
-#_________________________________________________________________________________________________________________________________________________________________________________
+# _________________________________________________________________________________________________________________________________________________________________________________
 
-#_________________________________Case 3: Mutant in ref background, outcross, mutant parental control (ref oc mut)________________________________________________________________
-#_________________________________________________________________________________________________________________________________________________________________________________
+# _________________________________Case 3: Mutant in ref background, outcross, mutant parental control (ref oc mut)________________________________________________________________
+# _________________________________________________________________________________________________________________________________________________________________________________
 
 
 if [ $my_mutbackgroud == ref ] && [ $my_pseq == mut ] && [ $my_cross == oc ]  && [ $snp_analysis_type == par ]

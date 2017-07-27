@@ -137,6 +137,7 @@ def fa_vs_pos():
 				if line.startswith('?'):
 					sp = line.split()						
 					chromosome = sp[1].strip().lower()
+					chromosome_candidate = chromosome
 					if chromosome == i[0].lower():
 						if int(sp[2]) > 0 :
 							cr_start = int(sp[2])  
@@ -148,10 +149,11 @@ def fa_vs_pos():
 							cr_end = int(i[1])
 
 			#Drawing candidate region:
-			cr_start_im = int(cr_start/scaling_factor_x) + 70
-			cr_end_im = int(cr_end/scaling_factor_x) + 70
+			if chromosome_candidate == i[0].lower():
+				cr_start_im = int(cr_start/scaling_factor_x) + 70
+				cr_end_im = int(cr_end/scaling_factor_x) + 70
 
-			draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(249, 222, 252) )
+				draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(249, 222, 252) )
 
 
 		# af_candidates: framing the candidate region
@@ -162,6 +164,7 @@ def fa_vs_pos():
 				if line.startswith('?'):
 					sp = line.split()						
 					chromosome = sp[1].strip().lower()
+					chromosome_candidate = chromosome
 					if chromosome == i[0].lower():
 						cr_start_raw = int(sp[2])
 						cr_end_raw = int(sp[3])
@@ -174,20 +177,20 @@ def fa_vs_pos():
 						else:
 							cr_end = int(i[1])
 
+			if chromosome_candidate == i[0].lower():
+				#Drawing a frame for the candidate region:
+				cr_start_im = int(cr_start/scaling_factor_x) + 70
+				cr_end_im = int(cr_end/scaling_factor_x) + 70
+				fa_img_08 = int(80/100.0*height) - int(0.8/scaling_factor_y) - 1
+				draw.rectangle( [cr_start_im, int(15/100.0*height)+1, cr_end_im+1, fa_img_08], fill=(249, 222, 252), outline=(112, 112, 112) )
 
-			#Drawing a frame for the candidate region:
-			cr_start_im = int(cr_start/scaling_factor_x) + 70
-			cr_end_im = int(cr_end/scaling_factor_x) + 70
-			fa_img_08 = int(80/100.0*height) - int(0.8/scaling_factor_y) - 1
-			draw.rectangle( [cr_start_im, int(15/100.0*height)+1, cr_end_im+1, fa_img_08], fill=(249, 222, 252), outline=(112, 112, 112) )
-
-			#Drawing a dotted line in the frame
-			cr_middle = ((cr_start_raw + cr_end_raw)/2)/scaling_factor_x + 70
-			h = int(16/100.0*height)
-			while h in range(int(15/100.0*height), fa_img_08):
-				draw.line((cr_middle, h) + (cr_middle, h+5), fill=(255, 0, 0, 0), width=1)
-				h = h + 10
-			
+				#Drawing a dotted line in the frame
+				cr_middle = ((cr_start_raw + cr_end_raw)/2)/scaling_factor_x + 70
+				h = int(16/100.0*height)
+				while h in range(int(15/100.0*height), fa_img_08):
+					draw.line((cr_middle, h) + (cr_middle, h+5), fill=(255, 0, 0, 0), width=1)
+					h = h + 10
+				
 
 
 		#snps
