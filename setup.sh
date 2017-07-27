@@ -10,6 +10,9 @@
 [ -d user_data ] || mkdir user_data
 [ -d user_projects ] || mkdir user_projects
 
+# Allow server users like www-data (Apache user) work with data in directory user_projects
+sudo chmod -R 777 user_projects
+
 ################################################################################
 
 # Compile bcftools, bowtie and samtools

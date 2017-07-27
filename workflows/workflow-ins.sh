@@ -391,7 +391,7 @@ rm -f ./user_data/*.fai
 
 #Primer generation script
 {
-	$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt  
+	$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt 2>> $my_log_file
 }|| {
 	echo $(date) ': Error. primer-generation.py failed. ' >> $my_log_file
 	exit_code=1
@@ -403,7 +403,7 @@ echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 
 # Extend Ins info (adds flanking sequences)
 {
-	$location/scripts_ins/extend-ins-info.py --project-name $project_name
+	$location/scripts_ins/extend-ins-info.py --project-name $project_name 2>> $my_log_file
 }|| {
 	echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
 	exit_code=1
@@ -437,7 +437,7 @@ echo $(date) ': Graphic output created.' >> $my_log_file
 zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 
 {
-	python $location/graphic_output/report.py -variants $f3/insertions_output.txt -log $my_log_file -output_html $f3/report.html -project $project_name  -mut_type lin -files_dir $f3
+	python $location/graphic_output/report.py -variants $f3/insertions_output.txt -log $my_log_file -output_html $f3/report.html -project $project_name  -mut_type lin -files_dir $f3 2>> $my_log_file
 
 } || {
 	echo $(date)': error:report.py' >> $my_log_file
