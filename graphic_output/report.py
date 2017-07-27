@@ -198,8 +198,8 @@ output.write(
 '		table {border-collapse:collapse; table-layout:fixed;}' + '\n'
 '		table td {border:solid 0px #fab;  word-wrap:break-word; vertical-align:top;}' + '\n'
 '       tr:hover { background-color: #ededed; }' + '\n'
-'		#t {  border: 0px solid red; word-wrap:break-word; table-layout:fixed; }' + '\n'
-'		#candidates { vertical-align:top; line-height: normal; text-align:left; word-wrap:break-word; ; }' + '\n'
+'		#t {  border: 0px solid red; word-wrap:break-word; table-layout:fixed; line-height: 24px;}' + '\n'
+'		#candidates { vertical-align:top; line-height: normal; text-align:left; word-wrap:break-word; line-height: 14px;; }' + '\n'
 
 '	</style>' + '\n'
 
@@ -219,7 +219,7 @@ output.write(
 #Exp/sim and read files
 output.write(
 '		<h2>Run summary</h2>' + '\n'
-'		<table id="t">' + '\n'
+'		<table id="t" >' + '\n'
 '		<col width="300">' + '\n'
 '		<col width="700">' + '\n'
 	)
@@ -341,7 +341,9 @@ output.write(
 
 #Link to log file
 output.write(
+'		<br>' + '\n'
 '		<a href=../2_logs/log.log target="_blank">Cick to see log file</a>' + '\n'
+'		<br><br>' + '\n'
 '		<hr class="easymap">' + '\n'
 )
 
@@ -476,7 +478,10 @@ if mut_type == 'lin':
 
 	#Link to variants file
 	output.write(
+	'		<br>' + '\n'
 	'		<br><a href=./insertions_output.txt target="_blank">Cick to see full information</a>' + '\n'
+	'		<br><br>' + '\n'
+
 	)
 	#Insertions
 	for ins in insertions_list:
@@ -515,36 +520,33 @@ if mut_type == 'lin':
 
 						'		<tr>' + '\n'
 						'			<td> <b>Forward primer:</b></td>' + '\n'
-						'			<td>' + str(i[5]) + '</td>' + '\n'
+						'			<td style="font-family:Lucida Console, monospace">' + str(i[5]) + '</td>' + '\n'
 						'		</tr>' + '\n'
 
 						'		<tr>' + '\n'
 						'			<td> <b>Reverse primer:</b></td>' + '\n'
-						'			<td>' + str(i[6]) + '</td>' + '\n'
+						'			<td style="font-family:Lucida Console, monospace">' + str(i[6]) + '</td>' + '\n'
 						'		</tr>' + '\n'
 
 						'		<tr>' + '\n'
 						'			<td> <b>Insertion 5 primer:</b></td>' + '\n'
-						'			<td>' + str(i[7]) + '</td>' + '\n'
+						'			<td style="font-family:Lucida Console, monospace">' + str(i[7]) + '</td>' + '\n'
 						'		</tr>' + '\n'
 
 						'		<tr>' + '\n'
 						'			<td> <b>Insertion 3 primer:</b></td>' + '\n'
-						'			<td>' + str(i[8]) + '</td>' + '\n'
+						'			<td style="font-family:Lucida Console, monospace">' + str(i[8]) + '</td>' + '\n'
 						'		</tr>' + '\n'
 
 
 						'		<tr>' + '\n'
-						'			<td> <b>Upstream sequence:</b></td>' + '\n'
-						'			<td>' +  str(i[9]) + '</td>' + '\n'
+						'			<td> <b>Flanking sequences:</b></td>' + '\n'
+						'			<td style="font-family:Lucida Console, monospace">' + str(i[9])[15:] + '<font style="font-family:Lucida Console, monospace" color="red">[INS' + str(ins[0]) + ']</font>' + str(i[10])[0:35] + '</td>' + '\n'
 						'		</tr>' + '\n'
 
-						'		<tr>' + '\n'
-						'			<td> <b>Downstream sequence:</b></td>' + '\n'
-						'			<td>' +  str(i[10]) + '</td>' + '\n'
-						'		</tr>' + '\n'
 
 						'		</table>' + '\n'
+						'		<br>' + '\n'
 
 						)
 
@@ -631,6 +633,7 @@ if mut_type == 'snp':
 				AF = str(sp[8]).strip()
 				DTP = str(sp[9]).strip()
 				nucleotide = str(sp[3]).strip() + ' &rarr; ' + str(sp[4]).strip()
+				alt_nt = str(sp[4]).strip()
 				aminoacid = str(sp[17]).strip() + ' &rarr; ' + str(sp[18]).strip()
 				if aminoacid == '- &rarr; -': aminoacid = '-'
 				primer_f = str(sp[20]).strip()
@@ -646,7 +649,7 @@ if mut_type == 'snp':
 				else:
 					annotation = ' Functional annotation not available'
 
-				variants_list.append([str(i), contig, position, AF, DTP, nucleotide, gene, aminoacid, primer_f, primer_r, upstream, downstream, annotation])
+				variants_list.append([str(i), contig, position, AF, DTP, nucleotide, gene, aminoacid, primer_f, primer_r, upstream, downstream, annotation, alt_nt])
 
 				output.write(
 				'		  <tr>' + '\n'
@@ -682,7 +685,7 @@ if mut_type == 'snp':
 		for f in sorted(files):
 			if 'gene_plot_snp' in str(f) and gene_name in str(f) and var[2] in str(f):
 				output.write(
-				'		<h3>' + str(var[0]) + '. ' + gene_name + '</h3>' + '\n'
+				'		<h3>ID ' + str(var[0]) + ': ' + gene_name + '</h3>' + '\n'
 				'		<left> <img src="./'  +  str(f)  + ' " align="middle" >  </left>' + '\n'
 				'		<table id="t">' + '\n'
 				'		<col width="300">' + '\n'
@@ -700,22 +703,17 @@ if mut_type == 'snp':
 				output.write(
 				'		<tr>' + '\n'
 				'			<td> <b>Forward primer:</b></td>' + '\n'
-				'			<td>' + var[8] + '</td>' + '\n'
+				'			<td style="font-family:Lucida Console, monospace">' + var[8] + '</td>' + '\n'
 				'		</tr>' + '\n'
 
 				'		<tr>' + '\n'
 				'			<td> <b>Reverse primer:</b></td>' + '\n'
-				'			<td>' + var[9] + '</td>' + '\n'
+				'			<td style="font-family:Lucida Console, monospace">' + var[9] + '</td>' + '\n'
 				'		</tr>' + '\n'
 
 				'		<tr>' + '\n'
-				'			<td> <b>Upstream sequence:</b></td>' + '\n'
-				'			<td>' + var[10] + '</td>' + '\n'
-				'		</tr>' + '\n'
-
-				'		<tr>' + '\n'
-				'			<td> <b>Downstream sequence:</b></td>' + '\n'
-				'			<td>' + var[11] + '</td>' + '\n'
+				'			<td> <b>Flanking sequences:</b></td>' + '\n'
+				'			<td style="font-family:Lucida Console, monospace">' + var[10][10:] + '<font style="font-family:Lucida Console, monospace" color="red">' + var[13] + '</font>' + var[11][0:40] + '</td>' + '\n'
 				'		</tr>' + '\n'
 
 				'		</table>' + '\n'
@@ -727,3 +725,43 @@ if mut_type == 'snp':
 	'		<br><a href=./report_images.zip target="_blank">Cick to download all image files</a>' + '\n'
 	'		<hr class="easymap">' + '\n'
 	)
+
+	output.write(
+	'<p style="font-family:Lucida Console, monospace">This text is monospace text.</p>'
+
+	)
+
+
+
+
+
+
+
+'''
+
+
+'		<tr>' + '\n'
+'			<td> <b>Upstream sequence:</b></td>' + '\n'
+'			<td style="font-family:Lucida Console, monospace">' + var[10] + '</td>' + '\n'
+'		</tr>' + '\n'
+
+'		<tr>' + '\n'
+'			<td> <b>Downstream sequence:</b></td>' + '\n'
+'			<td style="font-family:Lucida Console, monospace">' + var[11] + '</td>' + '\n'
+'		</tr>' + '\n'
+
+
+
+
+
+
+'		<tr>' + '\n'
+'			<td> <b>Upstream sequence:</b></td>' + '\n'
+'			<td style="font-family:Lucida Console, monospace">' +  str(i[9]) + '</td>' + '\n'
+'		</tr>' + '\n'
+
+'		<tr>' + '\n'
+'			<td> <b>Downstream sequence:</b></td>' + '\n'
+'			<td style="font-family:Lucida Console, monospace">' +  str(i[10]) + '</td>' + '\n'
+'		</tr>' + '\n'
+'''
