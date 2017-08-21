@@ -146,7 +146,7 @@ body {font-size:16px;}
 			Reference sequence (select multiple files by pressing and holding the Ctrl/Cmd key):<br>
 			<div id="refSeqs"></div>
 			
-			<div id="insSeqSelector"> <!-- Not displayed by default -->
+			<div id="insSeqSelector">
 			Insertion sequence:
 				<select id="insSeq">
 					<option value="default">Choose insertion sequence file</option>

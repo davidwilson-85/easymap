@@ -60,5 +60,4 @@ was also created by the W3C.
 	margin:5px 0;
 	padding:20px;
 	background-color: red;
-	border-radius: 5px;
 }

@@ -14,7 +14,7 @@ web-interface-password:0000
 # To make it unlimited, set it to 0.
 # If the maximum is reached, easymap does not allow starting new projects
 
-user_projects-size-limit:0
+user_projects-size-limit:38
 
 # Maximum number of simultaneos jobs allowed.
 # To make it unlimited, set it to 0.

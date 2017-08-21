@@ -1,8 +1,8 @@
 <?php
 
 // Run allow-new-project.py, get output, and send it to whichever script that calls the present script
-py_out  = shell_exec('cd ../config; python allow-new-project.py');
-echo $py_out;
+$out  = shell_exec('cd ../config; python allow-new-project.py');
+echo $out;
 
 
 // The following commented code is the former way we used to check if data and compute limits

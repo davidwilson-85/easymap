@@ -7,12 +7,12 @@
 }
 */
 
-* {
-	font-family: Ubuntu;
-	font-size: 16px;
+#runNewProject {
+	font-family: Arial; /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	font-size: 17px;
 	color: #333333;
 }
-
+/*
 #formLeft, #formRight {
 	display: inline-block;
 	width: 49%;
@@ -29,6 +29,7 @@
 	vertical-align: top;
 	padding: 3px;
 }
+*/
 
 /* By default do not display the following divs. They must only be displayed 
 after the user has selected a mode, the source of the data, and the library type */
@@ -54,12 +55,11 @@ after the user has selected a mode, the source of the data, and the library type
 	font-size: 12px;
 }
 
-
-/* validation messages */
-.validationMessage {
-	background-color: red;
+/* Styles for divs that act as button wraps */
+.buttons-wrap {
+	margin-top: 10px;
+	margin-bottom: 15px;
 }
-
 
 
 /*
@@ -74,6 +74,10 @@ exclusive button choices.
 .mx-button {
     float: left;
     padding: 10px;
+}
+
+.clear-floats {
+	clear: both;
 }
 
 .mx-button label {

@@ -1,9 +1,81 @@
+/*
+This .js file simply calls PHP files via AJAX
+easymap.htm --> ajax.js --> fire-wf.php --> easymap.sh --> log.log --> read_log.php ... 
+
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// THIS SECTION DEALS WITH GENERAL FUNCTIONALITY OF THE PAGE, SUSH AS CHECKING CONFIG FILE OR TRIGGERING A PROJECT
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Function to communicate html with php via AJAX to check if user_projects directory
+// is over config/config>user_projects-size-limit
+// This function has to be triggered whe page loads
+function allowNewProject() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var response = this.responseText;
+			var responseFields = response.split(",");
+			if (responseFields[0] >= 100) {
+				document.getElementById("runNewProject").style.display = "none";
+				document.getElementById("sizeWarning").style.display = "block";
+				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over the maximum space limit set by the machine administrator (" + responseFields[2] + " Gb). Delete past projects to free disk space.";
+			} else if (responseFields[0] >= 75 && responseFields[0] < 100) {
+				document.getElementById("sizeWarning").style.display = "block";
+				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over 75% of the maximum space limit set by the machine administrator (" + responseFields[2] + " Gb).";
+			}
+			if (responseFields[1] >= 100) {
+				document.getElementById("runNewProject").style.display = "none";
+				document.getElementById("simultWarning").style.display = "block";
+				document.getElementById("simultWarning").innerHTML = "WARNING: You have reached the maximum number of simultaneously running projects set by the machine administrator (" + responseFields[3] + " projects). Wait until currently running jobs finish.";
+			}
+		}
+	};
+	xmlhttp.open("GET", "allow-new-project.php", true);
+	xmlhttp.send();
+}
+
+// Function to list all genome reference files to be displayed inside <select multiple> tag
+// This function has to be triggered whe page loads
+function listInputFiles() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("refSeqs").innerHTML = this.responseText;
+		}
+	};
+	xmlhttp.open("GET", "run-new-project-listInputFiles.php?args=refSeqs", true);
+	xmlhttp.send();
+}
+
+// Function to communicate html with php via AJAX to trigger a workflow run 
+function runProject() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("commandResponse").innerHTML = this.responseText;
+		}
+	};
+	var arguments = "test-arg";
+	xmlhttp.open("GET", "run-new-project-create-command.php?args=" + arguments, true);
+	xmlhttp.send();
+}
+
+// Trigger required functions when page loads
+allowNewProject();
+listInputFiles()
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// THIS SECTION DEALS WITH THE DYNAMIC FORMATTING OF THE FORM AND WITH FIELDS VALIDATION
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function resetTextField() {
 	this.value = "";
 }
-
-
 	
 window.onload = function() {
 	
@@ -19,19 +91,22 @@ window.onload = function() {
 	//
 	function verifyProjectName(){
 		var text = document.getElementById("form1").projectName.value;
-		if( /[^a-zA-Z0-9]/.test( text ) ) {
+		if(/[^a-zA-Z0-9]/.test( text) ) {
 			//alert('Input is not alphanumeric');
 			projectNameValidationInfoMessage = 'Input is not alphanumeric';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
+			document.getElementById("projectNameValidationInfo").style.display = "block";
 		} else if (text == '') {
 			//alert('Yoy must give a name to the project');
-			projectNameValidationInfoMessage = 'Yoy must give a name to the project';
+			projectNameValidationInfoMessage = 'You must give a name to the project';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
+			document.getElementById("projectNameValidationInfo").style.display = "block";
 		} else {
 			cmdArgs[0] = document.getElementById("form1").projectName.value;
 			updateCmd()
 			projectNameValidationInfoMessage = '';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
+			document.getElementById("projectNameValidationInfo").style.display = "none";
 		}
 	}
 	
@@ -206,4 +281,8 @@ window.onload = function() {
 //
 //
 //
+
+
+
+
 
