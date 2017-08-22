@@ -143,50 +143,20 @@ body {font-size:16px;}
 			
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
-			Reference sequence (select multiple files by pressing and holding the Ctrl/Cmd key):<br>
+			Reference sequence (You can select multiple files by pressing and holding the Ctrl/Cmd key):<br>
 			<div id="refSeqs"></div>
 			
-			<div id="insSeqSelector"> <!-- Not displayed by default -->
-			Insertion sequence:
-				<select id="insSeq">
-					<option value="default">Choose insertion sequence file</option>
-					<option value="insertion.fa">insertion.fa</option>
-					<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-					<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-					<option value="reads_f.fq">reads_f.fq</option>
-					<option value="reads_r.fq">reads_r.fq</option>
-					<option value="reads_se.fq">reads_se.fq</option>
-				</select>
+			<div id="insSeqField"> <!-- Not displayed by default -->
+				Insertion sequence file:
+				<div id="insSeq"></div>
 			</div>
 			
-			<br>
-	
-			<select id="gffFile">
-				<option value="default">Choose GFF3 file</option>
-				<option value="insertion.fa">insertion.fa</option>
-				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-				<option value="reads_f.fq">reads_f.fq</option>
-				<option value="reads_r.fq">reads_r.fq</option>
-				<option value="reads_se.fq">reads_se.fq</option>
-			</select>
-	
-			<br>
-	
-			<select id="annFile">
-				<option value="default">Choose gene annotation file</option>
-				<option value="insertion.fa">insertion.fa</option>
-				<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-				<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-				<option value="reads_f.fq">reads_f.fq</option>
-				<option value="reads_r.fq">reads_r.fq</option>
-				<option value="reads_se.fq">reads_se.fq</option>
-			</select>
-		
-			<!--
-				All the divs inside <div id="formRight"> are hidden until the user
-				interacts with buttons in <div id="formLeft">
-			-->
+			GFF3 file:<br>
+			<div id="gffFile"></div>
+
+			Gene functional annotation file:<br>
+			<div id="annFile"></div>
+
 		
 			<div id="expDataInterface">
 				Experimental data chosen
@@ -377,11 +347,12 @@ body {font-size:16px;}
 			</div>
 		
 		</form>
-	
+		
+		<br><br><br>
+
 		<div id="command">
 			<p>
-				$project_name $workflow $data_source $lib_type $ref_seq $ins_seq $read_s
-				$reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
+				$project_name $workflow $data_source $lib_type $ref_seq $ins_seq $read_s $reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
 			</p>
 			<p id="commandString"></p>
 		</div>	

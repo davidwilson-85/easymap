@@ -103,7 +103,7 @@ window.onload = function() {
 	
 	// Call filesInfo() when page loads
 	filesInfo();
-	// Call function filesInfo() every 50 seconds to update files status regularly
+	// Call function filesInfo() every 10 seconds to update files status regularly
 	setInterval(filesInfo, 10000);
 	
 }

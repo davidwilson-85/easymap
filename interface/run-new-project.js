@@ -42,7 +42,45 @@ function listInputFiles() {
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			document.getElementById("refSeqs").innerHTML = this.responseText;
+
+			// Parse response in JSON format
+			var inputFilesresponse = JSON.parse(this.responseText);
+
+			// Create interface to select reference sequence contigs and insertion sequence
+			var refSeqsFormField = ['<select multiple id="refSeqsSelector" size=5>'];
+			var insSeqFormField = ['<select id="insSeqSelector">'];
+			refSeqsFormField.push('<option value="n/p">Select a file</option>');
+			insSeqFormField.push('<option value="n/p">Select a file</option>');
+			var fasta = inputFilesresponse[0];
+			for (i = 0; i < fasta.length; i++) {
+				var optionString = '<option value="' + fasta[i] + '">' + fasta[i] + '</option>';
+				refSeqsFormField.push(optionString);
+				insSeqFormField.push(optionString);
+			}
+			refSeqsFormField.push('</select>');
+			insSeqFormField.push('</select>');
+			var refSeqsFormField = refSeqsFormField.join('');
+			var insSeqFormField = insSeqFormField.join('');
+			document.getElementById("refSeqs").innerHTML = refSeqsFormField;
+			document.getElementById("insSeq").innerHTML = insSeqFormField;
+
+			// Create interface to select GFF and ANN files
+			var gffFormField = ['<select id="gffSelector">'];
+			var annFormField = ['<select id="annSelector">'];
+			gffFormField.push('<option value="n/p">Select a file</option>');
+			annFormField.push('<option value="n/p">Select a file</option>');
+			var otherFiles = inputFilesresponse[2];
+			for (i = 0; i < otherFiles.length; i++) {
+				var optionString = '<option value="' + otherFiles[i] + '">' + otherFiles[i] + '</option>';
+				gffFormField.push(optionString);
+				annFormField.push(optionString);
+			}
+			gffFormField.push('</select>');
+			annFormField.push('</select>');
+			var gffFormField = gffFormField.join('');
+			var annFormField = annFormField.join('');
+			document.getElementById("gffFile").innerHTML = gffFormField;
+			document.getElementById("annFile").innerHTML = annFormField;
 		}
 	};
 	xmlhttp.open("GET", "run-new-project-listInputFiles.php?args=refSeqs", true);
@@ -120,14 +158,14 @@ window.onload = function() {
 		}
 		if (checkedOption == 'button1') {
 			cmdArgs[1] = 'ins';
-			document.getElementById("insSeqSelector").style.display = "inline";
+			document.getElementById("insSeqField").style.display = "inline";
 			document.getElementById("expDataIns").style.display = "inline";
 			document.getElementById("expDataSnp").style.display = "none";
 			document.getElementById("simDataIns").style.display = "inline";
 			document.getElementById("simDataSnp").style.display = "none";
 		} else {
 			cmdArgs[1] = 'snp';
-			document.getElementById("insSeqSelector").style.display = "none";
+			document.getElementById("insSeqField").style.display = "none";
 			document.getElementById("expDataIns").style.display = "none";
 			document.getElementById("expDataSnp").style.display = "inline";
 			document.getElementById("simDataIns").style.display = "none";
@@ -186,7 +224,7 @@ window.onload = function() {
 	
 	// Determine all the file names selected, add them to array, and then to argument
 	function refSeqs() {
-		var contigs = document.getElementById("refSeqs");
+		var contigs = document.getElementById("refSeqsSelector");
 		var contigsList = [];
 		
 		for (var i=0; i<contigs.length; i++) {
@@ -198,14 +236,14 @@ window.onload = function() {
 		updateCmd();
 	}
 	
-	function processSingleSelectors() {		
-		if (this.id == 'insSeq') {
+	function processSingleSelectors() {
+		if (this.id == 'insSeqSelector') {
 			cmdArgs[5] = this.value;
 		}
-		if (this.id == 'gffFile') {
+		if (this.id == 'gffSelector') {
 			cmdArgs[9] = this.value;
 		}
-		if (this.id == 'annFile') {
+		if (this.id == 'annSelector') {
 			cmdArgs[10] = this.value;
 		}
 		if (this.id == 'readsSingle') {
@@ -254,12 +292,12 @@ window.onload = function() {
 	document.getElementById("button6").onclick = buttons_libType;
 	
 	// React to interactions with genome contigs selector
-	document.getElementById("form1").refSeqs.onblur = refSeqs;
+	document.getElementById("form1").refSeqsSelector.onblur = refSeqs;
 	
 	// React to single selectors (insSeq, gffFile, annFile...)
-	document.getElementById("form1").insSeq.onblur = processSingleSelectors;
-	document.getElementById("form1").gffFile.onblur = processSingleSelectors;
-	document.getElementById("form1").annFile.onblur = processSingleSelectors;
+	document.getElementById("form1").insSeqSelector.onblur = processSingleSelectors;
+	document.getElementById("form1").gffSelector.onblur = processSingleSelectors;
+	document.getElementById("form1").annSelector.onblur = processSingleSelectors;
 	
 	document.getElementById("form1").readsSingle.onblur = processSingleSelectors;
 	document.getElementById("form1").readsForward.onblur = processSingleSelectors;

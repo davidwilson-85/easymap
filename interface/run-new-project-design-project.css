@@ -33,7 +33,7 @@
 
 /* By default do not display the following divs. They must only be displayed 
 after the user has selected a mode, the source of the data, and the library type */
-#insSeqSelector,
+#insSeqField,
 #expDataInterface,
 #simDataInterface,
 #expDataIns,
