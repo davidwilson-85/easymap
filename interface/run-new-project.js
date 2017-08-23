@@ -48,64 +48,36 @@ function listInputFiles() {
 
 			// Create interface to select reference sequence contigs and insertion sequence
 			var fastaFiles = inputFilesresponse[0];
-			var refSeqs = document.getElementById('refSeqs');
-			var insSeq = document.getElementById('insSeq');
+			var refFiles = document.getElementById('refFileSelector');
+			var insFiles = document.getElementById('insFileSelector');
+			insFiles.options[insFiles.options.length] = new Option('Select a file', 'XXX');
 			for (i = 0; i < fastaFiles.length; i++) {
-				readsProblem.options[readsProblem.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
-				readsControl.options[readsControl.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
+				refFiles.options[refFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
+				insFiles.options[insFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
 			}
-
-			var refSeqsFormField = ['<select multiple id="refSeqsSelector" size=5>'];
-			var insSeqFormField = ['<select id="insSeqSelector">'];
-			refSeqsFormField.push('<option value="n/p">Select a file</option>');
-			insSeqFormField.push('<option value="n/p">Select a file</option>');
-			
-			for (i = 0; i < fasta.length; i++) {
-				var optionString = '<option value="' + fasta[i] + '">' + fasta[i] + '</option>';
-				refSeqsFormField.push(optionString);
-				insSeqFormField.push(optionString);
-			}
-			refSeqsFormField.push('</select>');
-			insSeqFormField.push('</select>');
-			var refSeqsFormField = refSeqsFormField.join('');
-			var insSeqFormField = insSeqFormField.join('');
-			document.getElementById("refSeqs").innerHTML = refSeqsFormField;
-			document.getElementById("insSeq").innerHTML = insSeqFormField;
 
 			// Create interface to select GFF and ANN files
-			var gffFormField = ['<select id="gffSelector">'];
-			var annFormField = ['<select id="annSelector">'];
-			gffFormField.push('<option value="n/p">Select a file</option>');
-			annFormField.push('<option value="n/p">Select a file</option>');
 			var otherFiles = inputFilesresponse[2];
+			var gffFiles = document.getElementById('gffFileSelector');
+			var annFiles = document.getElementById('annFileSelector');
+			gffFiles.options[gffFiles.options.length] = new Option('Select a file', 'XXX');
+			annFiles.options[annFiles.options.length] = new Option('Select a file', 'XXX');
 			for (i = 0; i < otherFiles.length; i++) {
-				var optionString = '<option value="' + otherFiles[i] + '">' + otherFiles[i] + '</option>';
-				gffFormField.push(optionString);
-				annFormField.push(optionString);
+				gffFiles.options[gffFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
+				annFiles.options[annFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
 			}
-			gffFormField.push('</select>');
-			annFormField.push('</select>');
-			var gffFormField = gffFormField.join('');
-			var annFormField = annFormField.join('');
-			document.getElementById("gffFile").innerHTML = gffFormField;
-			document.getElementById("annFile").innerHTML = annFormField;
 
 			// Create interfaces to select fastq files
 			var fastqFiles = inputFilesresponse[1];
-			var readsProblem = document.getElementById('readsProblem');
-			var readsControl = document.getElementById('readsControl');
+			var readsProblem = document.getElementById('readsProblemSelector');
+			var readsControl = document.getElementById('readsControlSelector');
 			for (i = 0; i < fastqFiles.length; i++) {
 				readsProblem.options[readsProblem.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
 				readsControl.options[readsControl.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
 			}
-			
-
-			
-			
-
 		}
 	};
-	xmlhttp.open("GET", "run-new-project-listInputFiles.php?args=refSeqs", true);
+	xmlhttp.open("GET", "run-new-project-listInputFiles.php", true);
 	xmlhttp.send();
 }
 
@@ -125,7 +97,6 @@ function runProject() {
 // Trigger required functions when page loads
 allowNewProject();
 listInputFiles()
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +133,7 @@ window.onload = function() {
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "block";
 		} else {
-			cmdArgs[0] = document.getElementById("form1").projectName.value;
+			cmdArgs[1] = document.getElementById("form1").projectName.value;
 			updateCmd()
 			projectNameValidationInfoMessage = '';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
@@ -179,17 +150,19 @@ window.onload = function() {
 			}
 		}
 		if (checkedOption == 'button1') {
-			cmdArgs[1] = 'ins';
-			document.getElementById("insSeqField").style.display = "inline";
-			document.getElementById("readsControl").style.display = "none";
-			document.getElementById("simDataIns").style.display = "inline";
-			document.getElementById("simDataSnp").style.display = "none";
+			cmdArgs[2] = 'ins';
+			document.getElementById("insSeqField").style.display = "inline";			//////////////////////////
+			document.getElementById("readsControl").style.display = "none";				//////////////////////////
+			document.getElementById("backgroundCrossCtype").style.display = "none";
+			//document.getElementById("simDataIns").style.display = "inline";			//////////////////////////
+			//document.getElementById("simDataSnp").style.display = "none";				//////////////////////////
 		} else {
-			cmdArgs[1] = 'snp';
+			cmdArgs[2] = 'snp';
 			document.getElementById("insSeqField").style.display = "none";
 			document.getElementById("readsControl").style.display = "inline";
-			document.getElementById("simDataIns").style.display = "none";
-			document.getElementById("simDataSnp").style.display = "inline";
+			document.getElementById("backgroundCrossCtype").style.display = "block";
+			//document.getElementById("simDataIns").style.display = "none";
+			//document.getElementById("simDataSnp").style.display = "inline";
 		}
 		updateCmd();
 	}
@@ -203,48 +176,20 @@ window.onload = function() {
 			}
 		}
 		if (checkedOption == 'button3') {
-			cmdArgs[2] = 'exp';
+			cmdArgs[3] = 'exp';
 			document.getElementById("expDataInterface").style.display = "inline";
 			document.getElementById("simDataInterface").style.display = "none";
 		} else {
-			cmdArgs[2] = 'sim';
+			cmdArgs[3] = 'sim';
 			document.getElementById("expDataInterface").style.display = "none";
 			document.getElementById("simDataInterface").style.display = "inline";
 		}
 		updateCmd();
 	}
 	
-	// Determine option button selected and define the appropriate command argument
-	function buttons_libType() {
-		var options = document.getElementsByClassName("libType");
-		for (var i=0; i<options.length; i++) {
-			if (options[i].checked == true) {
-				var checkedOption = options[i].id;
-			}
-		}
-		if (checkedOption == 'button5') {
-			cmdArgs[3] = 'se';
-			document.getElementById("expDataSingle").style.display = "inline";
-			document.getElementById("expDataPaired").style.display = "none";
-			document.getElementById("expDataSingleTwosamples").style.display = "inline";
-			document.getElementById("expDataPairedTwosamples").style.display = "none";
-			document.getElementById("expDataSnpInfo").style.display = "inline";
-			document.getElementById("simSeqFL").style.display = "none";
-		} else {
-			cmdArgs[3] = 'pe';
-			document.getElementById("expDataSingle").style.display = "none";
-			document.getElementById("expDataPaired").style.display = "inline";
-			document.getElementById("expDataSingleTwosamples").style.display = "none";
-			document.getElementById("expDataPairedTwosamples").style.display = "inline";
-			document.getElementById("expDataSnpInfo").style.display = "inline";
-			document.getElementById("simSeqFL").style.display = "block";
-		}
-		updateCmd();
-	}
-	
-	// Determine all the file names selected, add them to array, and then to argument
-	function refSeqs() {
-		var contigs = document.getElementById("refSeqsSelector");
+	// Determine all the reference file names selected, add them to array, and then to command argument
+	function checkRefSeqs() {
+		var contigs = document.getElementById("refFileSelector");
 		var contigsList = [];
 		
 		for (var i=0; i<contigs.length; i++) {
@@ -255,37 +200,160 @@ window.onload = function() {
 		cmdArgs[4] = contigsList;
 		updateCmd();
 	}
-	
+
+	// Update command arguments after each user interaction with sinlge selectors
 	function processSingleSelectors() {
-		if (this.id == 'insSeqSelector') {
+		if (this.id == 'insFileSelector') {
 			cmdArgs[5] = this.value;
 		}
-		if (this.id == 'gffSelector') {
-			cmdArgs[9] = this.value;
-		}
-		if (this.id == 'annSelector') {
-			cmdArgs[10] = this.value;
-		}
-		if (this.id == 'readsSingle') {
+		if (this.id == 'gffFileSelector') {
 			cmdArgs[6] = this.value;
 		}
-		if (this.id == 'readsForward') {
+		if (this.id == 'annFileSelector') {
 			cmdArgs[7] = this.value;
 		}
-		if (this.id == 'readsReverse') {
-			cmdArgs[8] = this.value;
-		}
-		
 		updateCmd();	
+	}
+
+	// Mutant background: determine option button selected and define the appropriate command argument
+	function buttons_mutBackground() {
+		var options = document.getElementsByClassName("mutBackground");
+		for (var i=0; i<options.length; i++) {
+			if (options[i].checked == true) {
+				var checkedOption = options[i].id;
+			}
+		}
+		if (checkedOption == 'button11') {
+			cmdArgs[16] = 'ref';
+		} else {
+			cmdArgs[16] = 'noref';
+		}
+		updateCmd();
+	}
+
+	// Mapping cross preformed: determine option button selected and define the appropriate command argument
+	function buttons_crossType() {
+		var options = document.getElementsByClassName("crossType");
+		for (var i=0; i<options.length; i++) {
+			if (options[i].checked == true) {
+				var checkedOption = options[i].id;
+			}
+		}
+		if (checkedOption == 'button13') {
+			cmdArgs[17] = 'bc';
+		} else {
+			cmdArgs[17] = 'oc';
+		}
+		updateCmd();
+	}
+
+	// Origin of the control reads: determine option button selected and define the appropriate command argument
+	function buttons_contType() {
+		var options = document.getElementsByClassName("contType");
+		for (var i=0; i<options.length; i++) {
+			if (options[i].checked == true) {
+				var checkedOption = options[i].id;
+			}
+		}
+		if (checkedOption == 'button15') {
+			cmdArgs[18] = 'par';
+			cmdArgs[19] = 'mut';
+		} else if (checkedOption == 'button16') {
+			cmdArgs[18] = 'par';
+			cmdArgs[19] = 'nomut';
+		} else {
+			cmdArgs[18] = 'f2wt';
+			cmdArgs[19] = 'n/p';
+		}
+		updateCmd();
+	}
+
+	// Check if combination of mutat background, cross performed, and origin of control reads, is supported
+	function checkBackgroundCrossCtypeIntermediateCheck() {
+		if (cmdArgs[16] == "ref" && cmdArgs[17] == "oc") {
+			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "block";
+		} else {
+			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "none";
+		}
+	}
+
+/*
+	// Check if combination of mutant background, cross performed, and origin of control reads, is supported
+	function checkBackgroundCrossCtypeFinalCheck() {
+		if (cmdArgs[16] == "n/p" || cmdArgs[17] == "n/p" || cmdArgs[18] == "n/p") {
+			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "block";
+		} else {
+			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "none";
+		}
+	}
+*/
+	// Check reads selectors (max two files selected per sample) and update command argument(s)
+	function checkProblemReads() {
+		var reads = document.getElementById("readsProblemSelector");
+		var readsList = [];
+		
+		for (var i=0; i<reads.length; i++) {
+			if (reads[i].selected == true) {
+				readsList.push(reads[i].value);
+			}
+		}
+
+		if (readsList.length == 1) {
+			cmdArgs[8] = readsList; cmdArgs[9] = 'XXX'; cmdArgs[10] = 'XXX'; cmdArgs[11] = 'se';
+			updateCmd();
+			// Hide error message
+			document.getElementById("readsProblemWarnMsg").style.display = "none";
+		} else if (readsList.length == 2) {
+			cmdArgs[8] = 'XXX'; cmdArgs[9] = readsList[0]; cmdArgs[10] = readsList[1]; cmdArgs[11] = 'pe';
+			updateCmd();
+			// Hide error message
+			document.getElementById("readsProblemWarnMsg").style.display = "none";
+		} else {
+			cmdArgs[8] = 'XXX'; cmdArgs[9] = 'XXX'; cmdArgs[10] = 'XXX'; cmdArgs[11] = 'XXX';
+			updateCmd();
+			// Display error message
+			document.getElementById("readsProblemWarnMsg").style.display = "block";
+		}
+	}
+
+	function checkControlReads() {
+		var reads = document.getElementById("readsControlSelector");
+		var readsList = [];
+		
+		for (var i=0; i<reads.length; i++) {
+			if (reads[i].selected == true) {
+				readsList.push(reads[i].value);
+			}
+		}
+
+		if (readsList.length == 1) {
+			cmdArgs[12] = readsList; cmdArgs[13] = 'XXX'; cmdArgs[14] = 'XXX'; cmdArgs[15] = 'se';
+			updateCmd();
+			// Hide error message
+			document.getElementById("readsControlWarnMsg").style.display = "none";
+		} else if (readsList.length == 2) {
+			cmdArgs[12] = 'XXX'; cmdArgs[13] = readsList[0]; cmdArgs[14] = readsList[1]; cmdArgs[15] = 'pe';
+			updateCmd();
+			// Hide error message
+			document.getElementById("readsControlWarnMsg").style.display = "none";
+		} else {
+			cmdArgs[12] = 'XXX'; cmdArgs[13] = 'XXX'; cmdArgs[14] = 'XXX'; cmdArgs[15] = 'XXX';
+			updateCmd();
+			// Show error message
+			document.getElementById("readsControlWarnMsg").style.display = "block";
+		}
 	}
 	
 	// End of functions
 	
 	
 	// Define array with all the command arguments
-	var cmdArgs = ['project', 'workflow', 'dataSource', 'libType', 'refSeqs', 'insSeq',
-						'readsS', 'readsF', 'readsR', 'gffFile', 'annFile', 'simMut', 'simRecsel',
-						'simSeq'];
+	var cmdArgs = ['./easymap.sh','project_name','workflow','data_source','ref_seq','ins_seq','gff_file',
+					'ann_file','read_s','read_f','read_r','lib_type_sample','read_s_ctrl','read_f_ctrl',
+					'read_r_ctrl','lib_type_ctrl','n/p','n/p','n/p','n/p','sim_mut','sim_recsel','sim_seq'];
+
+	// Create the command string for the first time (for development purposes only)
+	updateCmd();
 	
 	// React to interactions with text inputs
 	// Reset default content when user clicks on input bux
@@ -300,28 +368,38 @@ window.onload = function() {
 	// Verify input of text fields
 	document.getElementById("form1").projectName.onblur = verifyProjectName;
 	
-	// Create the command string for the first time (for development purposes only)
-	updateCmd();
-	
-	// React to interactions with 2-way selectors
+	// React to interactions with the main 2-way selectors
 	document.getElementById("button1").onclick = buttons_analysisType;
 	document.getElementById("button2").onclick = buttons_analysisType;
 	document.getElementById("button3").onclick = buttons_dataSource;
 	document.getElementById("button4").onclick = buttons_dataSource;
-	document.getElementById("button5").onclick = buttons_libType;
-	document.getElementById("button6").onclick = buttons_libType;
 	
 	// React to interactions with genome contigs selector
-	document.getElementById("form1").refSeqsSelector.onblur = refSeqs;
+	document.getElementById("form1").refFileSelector.onblur = checkRefSeqs;
 	
 	// React to single selectors (insSeq, gffFile, annFile...)
-	document.getElementById("form1").insSeqSelector.onblur = processSingleSelectors;
-	document.getElementById("form1").gffSelector.onblur = processSingleSelectors;
-	document.getElementById("form1").annSelector.onblur = processSingleSelectors;
+	document.getElementById("form1").insFileSelector.onblur = processSingleSelectors;
+	document.getElementById("form1").gffFileSelector.onblur = processSingleSelectors;
+	document.getElementById("form1").annFileSelector.onblur = processSingleSelectors;
 	
-	document.getElementById("form1").readsProblem.onblur = processSingleSelectors;
-	document.getElementById("form1").readsControl.onblur = processSingleSelectors;
-	
+	// React to interactions with the MbS 2-way selectors
+	document.getElementById("button11").onclick = buttons_mutBackground;
+	document.getElementById("button12").onclick = buttons_mutBackground;
+	document.getElementById("button13").onclick = buttons_crossType;
+	document.getElementById("button14").onclick = buttons_crossType;
+	document.getElementById("button15").onclick = buttons_contType;
+	document.getElementById("button16").onclick = buttons_contType;
+	document.getElementById("button17").onclick = buttons_contType;
+
+	document.getElementById("button17").onmouseover = checkBackgroundCrossCtypeIntermediateCheck;
+
+
+	//React to interactions with reads selectors
+	document.getElementById("form1").readsProblemSelector.onblur = checkProblemReads;
+	document.getElementById("form1").readsControlSelector.onblur = checkControlReads;
+
+	// React to interactions with backgroundCrossCtype buttons
+	document.getElementById("backgroundCrossCtype").onmouseout = checkBackgroundCrossCtypeIntermediateCheck;
 }
 
 // TO DO:

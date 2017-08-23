@@ -1,30 +1,30 @@
 #!/bin/bash
 
 # Command structure:
-#                                           verify-input.py
-#  [0] ./easymap.sh											.
-#  [1] $project_name           					  		.
-#  [2] $workflow[ins/snp]									.                      Maybe add a 3rd workflow: Analysis of SNPs
-#  [3] $data_source[exp/sim]   							.
-#  [4] $ref_seq												*
-#  [5] $ins_seq												*
-#  [6] $gff_file												*
-#  [7] $ann_file												*
-#  [8] $read_s													*
-#  [9] $read_f													*
-# [10] $read_r													*
+#                                           		verify-input.py
+#  [0] ./easymap.sh										.
+#  [1] $project_name									.
+#  [2] $workflow[ins/snp]								.                      Maybe add a 3rd workflow: Analysis of SNPs
+#  [3] $data_source[exp/sim]							.
+#  [4] $ref_seq											*
+#  [5] $ins_seq											*
+#  [6] $gff_file										*
+#  [7] $ann_file										*
+#  [8] $read_s											*
+#  [9] $read_f											*
+# [10] $read_r											*
 # [11] $lib_type_sample[se/pe]							.
-# [12] $read_s_ctrl											*
-# [13] $read_f_ctrl											*
-# [14] $read_r_ctrl											*
-# [15] $lib_type_ctrl [se/pe]								.
+# [12] $read_s_ctrl										*
+# [13] $read_f_ctrl										*
+# [14] $read_r_ctrl										*
+# [15] $lib_type_ctrl [se/pe]							.
 # [16] $is_ref_strain [ref/noref]						.                      Only for linkage analysis mapping
-# [17] $cross_type [oc/bc]        				 		.                      Only for linkage analysis mapping
+# [17] $cross_type [oc/bc]								.                      Only for linkage analysis mapping
 # [18] $snp_analysis_type [par/f2wt]					.
-# [19] $control_parental [mut/nomut] 		.                      Only for linkage analysis mapping
-# [20] $sim_mut												.                      nbr+mod
-# [21] $sim_recsel											.                      rfd+pos+mod+nre
-# [22] $sim_seq												.                      rd+rl+fl+ber+gbs
+# [19] $control_parental [mut/nomut] 					.                      Only for linkage analysis mapping
+# [20] $sim_mut											.                      nbr+mod
+# [21] $sim_recsel										.                      rfd+pos+mod+nre
+# [22] $sim_seq											.                      rd+rl+fl+ber+gbs
 
 # sim-mut.py
 # nbr:		${20}[0]

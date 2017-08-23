@@ -127,9 +127,9 @@ body {font-size:16px;}
 				</div>
 				<div class="clear-floats"></div>
 			</div>
-	
+<!--
 			Type of NGS library:
-			<div class="buttons-wrap" style="display:none;">
+			<div class="buttons-wrap">
 				<div class="mx-button">
 					<input type="radio" class="libType" name="mx56" id="button5" />
 					<label for="button5" unselectable>Single end</label>
@@ -140,32 +140,85 @@ body {font-size:16px;}
 				</div>
 				<div class="clear-floats"></div>
 			</div>
-			
+-->			
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
 			Reference sequence (You can select multiple files by pressing and holding the Ctrl/Cmd key):<br>
-			<!-- <div id="refSeqs"></div> -->
-			<select multiple id="refSeqs"></select>
+			<select multiple id="refFileSelector" size="5" style="display:block; margin-bottom:22px;"></select>
 			
 			<div id="insSeqField"> <!-- Not displayed by default -->
-				Insertion sequence file:
-				<div id="insSeq"></div>
+				Insertion sequence file:<br>
+				<select id="insFileSelector" style="display:block; margin-bottom:22px;"></select>
 			</div>
 			
 			GFF3 file (gene structural annotation):<br>
-			<div id="gffFile"></div>
+			<select id="gffFileSelector" style="display:block; margin-bottom:22px;"></select>
 
-			Gene functional annotation file:<br>
-			<div id="annFile"></div>
+			Gene functional annotation file [OPTIONAL]:<br>
+			<select id="annFileSelector" style="display:block; margin-bottom:22px;"></select>
 
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 		
 			<div id="expDataInterface">
+				<div id="backgroundCrossCtype">
+					
+					Mutant background:
+					<div class="buttons-wrap">
+						<div class="mx-button">
+							<input type="radio" class="mutBackground" name="mxMB" id="button11" />
+							<label for="button11" unselectable>Reference</label>
+						</div>
+						<div class="mx-button">
+							<input type="radio" class="mutBackground" name="mxMB" id="button12" />
+							<label for="button12" unselectable>Non-reference</label>
+						</div>
+						<div class="clear-floats"></div>
+					</div>
+
+					Mapping cross performed:
+					<div class="buttons-wrap">
+						<div class="mx-button">
+							<input type="radio" class="crossType" name="mxCR" id="button13" />
+							<label for="button13" unselectable>Backcross</label>
+						</div>
+						<div class="mx-button">
+							<input type="radio" class="crossType" name="mxCR" id="button14" />
+							<label for="button14" unselectable>Outcross</label>
+						</div>
+						<div class="clear-floats"></div>
+					</div>
+
+					Origin of the control reads:
+					<div class="buttons-wrap">
+						<div class="mx-button">
+							<input type="radio" class="contType" name="mxCO" id="button15" />
+							<label for="button15" unselectable>Mutant parental</label>
+						</div>
+						<div class="mx-button">
+							<input type="radio" class="contType" name="mxCO" id="button16" />
+							<label for="button16" unselectable>Polymorphic parental</label>
+						</div>
+						<div class="mx-button">
+							<input type="radio" class="contType" name="mxCO" id="button17" />
+							<label for="button17" unselectable>F2 wild-types</label>
+						</div>
+						<div class="clear-floats"></div>
+					</div>
+
+					<div id="backgroundCrossCtypeWarnMsg" class="warningMessage">Invalid combination. Easymap does not support this experimental design.</div>
+				</div>
+
 				Sample reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
-				<select multiple id="readsProblem"></select>
-				<br>
-				Control reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
-				<select multiple id="readsControl"></select>
+				<select multiple id="readsProblemSelector" style="display:block; margin-bottom:22px;"></select>
+				<div id="readsProblemWarnMsg" class="warningMessage">Please select one file for single-end reads and two files for paired-end reads.</div>
+				
+				<div id="readsControl">
+					Control reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
+					<select multiple id="readsControlSelector" style="display:block; margin-bottom:22px;"></select>
+					<div id="readsControlWarnMsg" class="warningMessage">Please select one file for single-end reads and two files for paired-end reads.</div>
+				</div>
+
+				<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			</div>
 		
 			<div id="simDataInterface">
@@ -217,24 +270,21 @@ body {font-size:16px;}
 				</div>
 			
 			</div>
-	
+			
 			<div id="formButtons">
 				<input type="button" class="button" id="runButton" value="Run analysis" /> 
-				<input type="button" class="button" id="otherButton" value="Other button" />
+				<input type="button" class="button" id="checkFormButton" value="Check form input" />
 			</div>
 		
 		</form>
 		
 		<br><br><br>
 
-		<div id="command">
-			<p>
-				$project_name $workflow $data_source $lib_type $ref_seq $ins_seq $read_s $reads_f $reads_r $gff_file $ann_file $sim-mut $sim-recsel $sim-seq
-			</p>
-			<p id="commandString"></p>
-		</div>	
-    	
+		<p id="commandString"></p>
+
     	<a href="manage-projects.php" class="button" onclick="runProject()">Run workflow</a>
+
+    	<br><br><br><div class="warningMessage" style="display:block;">Are you sure you want to launch this project?</div>
     </div>
     
   </div>
