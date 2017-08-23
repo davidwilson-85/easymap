@@ -36,15 +36,7 @@ after the user has selected a mode, the source of the data, and the library type
 #insSeqField,
 #expDataInterface,
 #simDataInterface,
-#expDataIns,
-#expDataSnp,
-#simDataIns,
-#simDataSnp,
-#expDataSnpInfo,
-#expDataSingle,
-#expDataPaired,
-#expDataSingleTwosamples,
-#expDataPairedTwosamples,
+#readsControl,
 #simSeqFL {
 	display: none;
 }

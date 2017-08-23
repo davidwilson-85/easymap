@@ -47,11 +47,19 @@ function listInputFiles() {
 			var inputFilesresponse = JSON.parse(this.responseText);
 
 			// Create interface to select reference sequence contigs and insertion sequence
+			var fastaFiles = inputFilesresponse[0];
+			var refSeqs = document.getElementById('refSeqs');
+			var insSeq = document.getElementById('insSeq');
+			for (i = 0; i < fastaFiles.length; i++) {
+				readsProblem.options[readsProblem.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
+				readsControl.options[readsControl.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
+			}
+
 			var refSeqsFormField = ['<select multiple id="refSeqsSelector" size=5>'];
 			var insSeqFormField = ['<select id="insSeqSelector">'];
 			refSeqsFormField.push('<option value="n/p">Select a file</option>');
 			insSeqFormField.push('<option value="n/p">Select a file</option>');
-			var fasta = inputFilesresponse[0];
+			
 			for (i = 0; i < fasta.length; i++) {
 				var optionString = '<option value="' + fasta[i] + '">' + fasta[i] + '</option>';
 				refSeqsFormField.push(optionString);
@@ -81,6 +89,20 @@ function listInputFiles() {
 			var annFormField = annFormField.join('');
 			document.getElementById("gffFile").innerHTML = gffFormField;
 			document.getElementById("annFile").innerHTML = annFormField;
+
+			// Create interfaces to select fastq files
+			var fastqFiles = inputFilesresponse[1];
+			var readsProblem = document.getElementById('readsProblem');
+			var readsControl = document.getElementById('readsControl');
+			for (i = 0; i < fastqFiles.length; i++) {
+				readsProblem.options[readsProblem.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
+				readsControl.options[readsControl.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
+			}
+			
+
+			
+			
+
 		}
 	};
 	xmlhttp.open("GET", "run-new-project-listInputFiles.php?args=refSeqs", true);
@@ -159,15 +181,13 @@ window.onload = function() {
 		if (checkedOption == 'button1') {
 			cmdArgs[1] = 'ins';
 			document.getElementById("insSeqField").style.display = "inline";
-			document.getElementById("expDataIns").style.display = "inline";
-			document.getElementById("expDataSnp").style.display = "none";
+			document.getElementById("readsControl").style.display = "none";
 			document.getElementById("simDataIns").style.display = "inline";
 			document.getElementById("simDataSnp").style.display = "none";
 		} else {
 			cmdArgs[1] = 'snp';
 			document.getElementById("insSeqField").style.display = "none";
-			document.getElementById("expDataIns").style.display = "none";
-			document.getElementById("expDataSnp").style.display = "inline";
+			document.getElementById("readsControl").style.display = "inline";
 			document.getElementById("simDataIns").style.display = "none";
 			document.getElementById("simDataSnp").style.display = "inline";
 		}
@@ -299,9 +319,8 @@ window.onload = function() {
 	document.getElementById("form1").gffSelector.onblur = processSingleSelectors;
 	document.getElementById("form1").annSelector.onblur = processSingleSelectors;
 	
-	document.getElementById("form1").readsSingle.onblur = processSingleSelectors;
-	document.getElementById("form1").readsForward.onblur = processSingleSelectors;
-	document.getElementById("form1").readsReverse.onblur = processSingleSelectors;
+	document.getElementById("form1").readsProblem.onblur = processSingleSelectors;
+	document.getElementById("form1").readsControl.onblur = processSingleSelectors;
 	
 }
 

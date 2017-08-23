@@ -84,7 +84,7 @@ body {font-size:16px;}
     <hr style="width:50px;border:5px solid red" class="w3-round">
     <h3>Design and execute a new project</h3>
     
-    <!-- If the size of data or the number or currently running projects is over the limits,
+    <!-- If the size of data or the number or currently running projects is over the limits established by machine administrator,
     display Warning messages and do not display id runNewProject -->
     
     <div id="sizeWarning" class="warningMessage"></div>
@@ -129,7 +129,7 @@ body {font-size:16px;}
 			</div>
 	
 			Type of NGS library:
-			<div class="buttons-wrap">
+			<div class="buttons-wrap" style="display:none;">
 				<div class="mx-button">
 					<input type="radio" class="libType" name="mx56" id="button5" />
 					<label for="button5" unselectable>Single end</label>
@@ -144,151 +144,28 @@ body {font-size:16px;}
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
 			Reference sequence (You can select multiple files by pressing and holding the Ctrl/Cmd key):<br>
-			<div id="refSeqs"></div>
+			<!-- <div id="refSeqs"></div> -->
+			<select multiple id="refSeqs"></select>
 			
 			<div id="insSeqField"> <!-- Not displayed by default -->
 				Insertion sequence file:
 				<div id="insSeq"></div>
 			</div>
 			
-			GFF3 file:<br>
+			GFF3 file (gene structural annotation):<br>
 			<div id="gffFile"></div>
 
 			Gene functional annotation file:<br>
 			<div id="annFile"></div>
 
+			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 		
 			<div id="expDataInterface">
-				Experimental data chosen
-						
-				<div id="expDataIns">
-					<div id="expDataSingle">
-						<select id="readsSingle">
-							<option value="default">Choose single-end reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-					</div>
-				
-					<div id="expDataPaired">
-						<select id="readsForward">
-							<option value="default">Choose forward reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-						<select id="readsReverse">
-							<option value="default">Choose reverse reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-					</div>
-				</div>
-				
-				<div id="expDataSnp">
-				
-					<div id="expDataSnpInfo">				
-						<div>
-							Mutant strain<br>
-							<input type="radio" id="refStrainYes" name="isRefStrain">
-							<label for="refStrainYes">The same as reference strain</label>
-							<br>
-							<input type="radio" id="refStrainNo" name="isRefStrain">
-							<label for="refStrainNo">Other than the reference strain</label>
-						</div>
-						<br>
-						<div>
-							Type of mapping cross performed<br>
-							<input type="radio" id="crossTypeBack" name="crossType">
-							<label for="crossTypeBack">Backcross</label>
-							<br>
-							<input type="radio" id="crossTypeOut" name="crossType">
-							<label for="crossTypeOut">Outcross</label>
-						</div>
-						<br>
-						<div>
-							Parental reads provided<br>
-							<input type="radio" id="parentalReadsMutant" name="parentalReads">
-							<label for="parentalReadsMutant">The mutant's</label>
-							<br>
-							<input type="radio" id="parentalReadsNoMutant" name="parentalReads">
-							<label for="parentalReadsNoMutant">The other</label>
-						</div>
-					</div>
-				
-					<div id="expDataSingleTwosamples">
-						<select id="readsSinglePar">
-							<option value="default">Parental - choose reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-						<br>
-						<select id="readsSingleF2">
-							<option value="default">F2 - choose reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-					</div>
-			
-					<div id="expDataPairedTwosamples">
-						<select id="readsForwardPar">
-							<option value="default">Parental - choose forward reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-						<select id="readsReversePar">
-							<option value="default">Parental - choose reverse reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-						<br>
-						<select id="readsReversePar">
-							<option value="default">F2 - choose forward reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-						<select id="readsReverseF2">
-							<option value="default">F2 - choose reverse reads</option>
-							<option value="insertion.fa">insertion.fa</option>
-							<option value="arabidopsis_gff.gff">arabidopsis_gff.gff</option>
-							<option value="at-gene-funct-tair10.txt">at-gene-funct-tair10.txt</option>
-							<option value="reads_f.fq">reads_f.fq</option>
-							<option value="reads_r.fq">reads_r.fq</option>
-							<option value="reads_se.fq">reads_se.fq</option>
-						</select>
-					</div>
-				</div>
+				Sample reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
+				<select multiple id="readsProblem"></select>
+				<br>
+				Control reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
+				<select multiple id="readsControl"></select>
 			</div>
 		
 			<div id="simDataInterface">
