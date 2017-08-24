@@ -17,6 +17,8 @@ was also created by the W3C.
 	color: white;
 	text-align: center;
 	text-decoration: none;
+	font-family: "Poppins", sans-serif;
+	font-weight:400;
 	font-size: 15px;
 }
 
@@ -60,5 +62,23 @@ was also created by the W3C.
 	margin:5px 0;
 	padding:20px;
 	background-color: red;
+	color:white;
 	border-radius: 5px;
+}
+
+.checkout {
+	display:none;
+	clear: both;
+	margin:15px 0;
+	padding:20px;
+	border-radius: 5px;
+}
+
+#checkout-error {
+	background-color: red;
+	color:white;
+}
+
+#checkout-success {
+	background-color: rgb(129, 234, 167);
 }

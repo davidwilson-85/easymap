@@ -97,13 +97,13 @@ body {font-size:16px;}
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
 			<p>
-				Give a name to this project:<br>
+				Give a name to this project (only alphanumeric characters are allowed):<br>
 				<input type="text" name="projectName" value="My project" />
 				<div id="projectNameValidationInfo" class="warningMessage"></div>
 			</p>
 			
 			Mapping-by-sequencing strategy:
-			<div class="buttons-wrap">
+			<div class="buttons-wrap" id="analysisTypeWrap">
 				<div class="mx-button">
 					<input type="radio" class="analysisType" name="mx12" id="button1" />
 					<label for="button1" unselectable>Tagged sequence mapping</label>
@@ -114,12 +114,14 @@ body {font-size:16px;}
 				</div>
 				<div class="clear-floats"></div>
 			</div>
+
+			<div id="analysisTypeValidationInfo" class="warningMessage"></div>
 			
 			Data source:
 			<div class="buttons-wrap">
 				<div class="mx-button">
 					<input type="radio" class="dataSource" name="mx34" id="button3" />
-					<label for="button3" unselectable>Use my own data</label>
+					<label for="button3" unselectable>Use my own reads</label>
 				</div>
 				<div class="mx-button">
 					<input type="radio" class="dataSource" name="mx34" id="button4" />
@@ -127,6 +129,9 @@ body {font-size:16px;}
 				</div>
 				<div class="clear-floats"></div>
 			</div>
+
+			<div id="dataSourceValidationInfo" class="warningMessage"></div>
+
 <!--
 			Type of NGS library:
 			<div class="buttons-wrap">
@@ -145,17 +150,21 @@ body {font-size:16px;}
 			
 			Reference sequence (You can select multiple files by pressing and holding the Ctrl/Cmd key):<br>
 			<select multiple id="refFileSelector" size="5" style="display:block; margin-bottom:22px;"></select>
+			<div id="refSeqValidationInfo" class="warningMessage"></div>
 			
 			<div id="insSeqField"> <!-- Not displayed by default -->
 				Insertion sequence file:<br>
 				<select id="insFileSelector" style="display:block; margin-bottom:22px;"></select>
+				<div id="insFileValidationInfo" class="warningMessage"></div>
 			</div>
 			
 			GFF3 file (gene structural annotation):<br>
 			<select id="gffFileSelector" style="display:block; margin-bottom:22px;"></select>
+			<div id="gffFileValidationInfo" class="warningMessage"></div>
 
 			Gene functional annotation file [OPTIONAL]:<br>
 			<select id="annFileSelector" style="display:block; margin-bottom:22px;"></select>
+			<div id="annFileValidationInfo" class="warningMessage"></div>
 
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 		
@@ -175,6 +184,8 @@ body {font-size:16px;}
 						<div class="clear-floats"></div>
 					</div>
 
+					<div id="mutBackgroundValidationInfo" class="warningMessage"></div>
+
 					Mapping cross performed:
 					<div class="buttons-wrap">
 						<div class="mx-button">
@@ -187,6 +198,8 @@ body {font-size:16px;}
 						</div>
 						<div class="clear-floats"></div>
 					</div>
+
+					<div id="crossTypeValidationInfo" class="warningMessage"></div>
 
 					Origin of the control reads:
 					<div class="buttons-wrap">
@@ -205,12 +218,14 @@ body {font-size:16px;}
 						<div class="clear-floats"></div>
 					</div>
 
+					<div id="contTypeValidationInfo" class="warningMessage"></div>
+
 					<div id="backgroundCrossCtypeWarnMsg" class="warningMessage">Invalid combination. Easymap does not support this experimental design.</div>
 				</div>
 
 				Sample reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
 				<select multiple id="readsProblemSelector" style="display:block; margin-bottom:22px;"></select>
-				<div id="readsProblemWarnMsg" class="warningMessage">Please select one file for single-end reads and two files for paired-end reads.</div>
+				<div id="readsProblemWarnMsg" class="warningMessage"></div>
 				
 				<div id="readsControl">
 					Control reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
@@ -272,8 +287,20 @@ body {font-size:16px;}
 			</div>
 			
 			<div id="formButtons">
-				<input type="button" class="button" id="runButton" value="Run analysis" /> 
-				<input type="button" class="button" id="checkFormButton" value="Check form input" />
+				<input type="button" class="button" id="checkFormButton" value="Start project execution" style="display:block;"/>
+				
+				<div class="checkout" id="checkout-error">
+					Your input contains errors. Please review the form and look for mesages in red. Once errors are fixed, proceed again to checkout.
+					<div style="clear:both;"></div>
+				</div>
+				
+				<div class="checkout" id="checkout-success">
+					<p>All inputs seem correct but you can still review now your project.</p>
+					<p id="annReminderMsg" style="display:none;"></p>
+					<p>if you are sure you want to start this project, click on the button below.</p>
+					<a href="manage-projects.php" class="button" onclick="runProject()">Run project</a>
+					<div style="clear:both;"></div>
+				</div>
 			</div>
 		
 		</form>
@@ -281,15 +308,8 @@ body {font-size:16px;}
 		<br><br><br>
 
 		<p id="commandString"></p>
-
-    	<a href="manage-projects.php" class="button" onclick="runProject()">Run workflow</a>
-
-    	<br><br><br><div class="warningMessage" style="display:block;">Are you sure you want to launch this project?</div>
     </div>
-    
   </div>
-  
-
 <!-- End of page content -->
 </div>
 

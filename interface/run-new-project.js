@@ -50,7 +50,7 @@ function listInputFiles() {
 			var fastaFiles = inputFilesresponse[0];
 			var refFiles = document.getElementById('refFileSelector');
 			var insFiles = document.getElementById('insFileSelector');
-			insFiles.options[insFiles.options.length] = new Option('Select a file', 'XXX');
+			insFiles.options[insFiles.options.length] = new Option('Select a file', 'n/p');
 			for (i = 0; i < fastaFiles.length; i++) {
 				refFiles.options[refFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
 				insFiles.options[insFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
@@ -60,8 +60,8 @@ function listInputFiles() {
 			var otherFiles = inputFilesresponse[2];
 			var gffFiles = document.getElementById('gffFileSelector');
 			var annFiles = document.getElementById('annFileSelector');
-			gffFiles.options[gffFiles.options.length] = new Option('Select a file', 'XXX');
-			annFiles.options[annFiles.options.length] = new Option('Select a file', 'XXX');
+			gffFiles.options[gffFiles.options.length] = new Option('Select a file', 'n/p');
+			annFiles.options[annFiles.options.length] = new Option('Select a file', 'n/p');
 			for (i = 0; i < otherFiles.length; i++) {
 				gffFiles.options[gffFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
 				annFiles.options[annFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
@@ -123,20 +123,18 @@ window.onload = function() {
 	function verifyProjectName(){
 		var text = document.getElementById("form1").projectName.value;
 		if(/[^a-zA-Z0-9]/.test( text) ) {
-			//alert('Input is not alphanumeric');
 			projectNameValidationInfoMessage = 'Input is not alphanumeric';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "block";
 		} else if (text == '') {
-			//alert('Yoy must give a name to the project');
 			projectNameValidationInfoMessage = 'You must give a name to the project';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "block";
 		} else {
 			cmdArgs[1] = document.getElementById("form1").projectName.value;
 			updateCmd()
-			projectNameValidationInfoMessage = '';
-			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
+			//projectNameValidationInfoMessage = '';
+			//document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "none";
 		}
 	}
@@ -165,6 +163,7 @@ window.onload = function() {
 			//document.getElementById("simDataSnp").style.display = "inline";
 		}
 		updateCmd();
+		document.getElementById("analysisTypeValidationInfo").style.display = "none";		
 	}
 	
 	// Determine option button selected and define the appropriate command argument
@@ -185,6 +184,7 @@ window.onload = function() {
 			document.getElementById("simDataInterface").style.display = "inline";
 		}
 		updateCmd();
+		document.getElementById("dataSourceValidationInfo").style.display = "none";
 	}
 	
 	// Determine all the reference file names selected, add them to array, and then to command argument
@@ -199,20 +199,24 @@ window.onload = function() {
 		}
 		cmdArgs[4] = contigsList;
 		updateCmd();
+		document.getElementById("refSeqValidationInfo").style.display = "none";
 	}
 
 	// Update command arguments after each user interaction with sinlge selectors
 	function processSingleSelectors() {
 		if (this.id == 'insFileSelector') {
 			cmdArgs[5] = this.value;
+			document.getElementById("insFileValidationInfo").style.display = "none";
 		}
 		if (this.id == 'gffFileSelector') {
 			cmdArgs[6] = this.value;
+			document.getElementById("gffFileValidationInfo").style.display = "none";
 		}
 		if (this.id == 'annFileSelector') {
 			cmdArgs[7] = this.value;
 		}
-		updateCmd();	
+		updateCmd();
+		document.getElementById("annReminderMsg").style.display = "none";	
 	}
 
 	// Mutant background: determine option button selected and define the appropriate command argument
@@ -229,6 +233,7 @@ window.onload = function() {
 			cmdArgs[16] = 'noref';
 		}
 		updateCmd();
+		document.getElementById("mutBackgroundValidationInfo").style.display = "none";
 	}
 
 	// Mapping cross preformed: determine option button selected and define the appropriate command argument
@@ -245,6 +250,7 @@ window.onload = function() {
 			cmdArgs[17] = 'oc';
 		}
 		updateCmd();
+		document.getElementById("crossTypeValidationInfo").style.display = "none";
 	}
 
 	// Origin of the control reads: determine option button selected and define the appropriate command argument
@@ -266,6 +272,7 @@ window.onload = function() {
 			cmdArgs[19] = 'n/p';
 		}
 		updateCmd();
+		document.getElementById("contTypeValidationInfo").style.display = "none";
 	}
 
 	// Check if combination of mutat background, cross performed, and origin of control reads, is supported
@@ -275,18 +282,21 @@ window.onload = function() {
 		} else {
 			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "none";
 		}
+
+		// More checks needed
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
+		///////////////////////////////////////
 	}
 
-/*
-	// Check if combination of mutant background, cross performed, and origin of control reads, is supported
-	function checkBackgroundCrossCtypeFinalCheck() {
-		if (cmdArgs[16] == "n/p" || cmdArgs[17] == "n/p" || cmdArgs[18] == "n/p") {
-			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "block";
-		} else {
-			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "none";
-		}
-	}
-*/
 	// Check reads selectors (max two files selected per sample) and update command argument(s)
 	function checkProblemReads() {
 		var reads = document.getElementById("readsProblemSelector");
@@ -312,6 +322,7 @@ window.onload = function() {
 			cmdArgs[8] = 'XXX'; cmdArgs[9] = 'XXX'; cmdArgs[10] = 'XXX'; cmdArgs[11] = 'XXX';
 			updateCmd();
 			// Display error message
+			document.getElementById("readsProblemWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
 			document.getElementById("readsProblemWarnMsg").style.display = "block";
 		}
 	}
@@ -340,30 +351,144 @@ window.onload = function() {
 			cmdArgs[12] = 'XXX'; cmdArgs[13] = 'XXX'; cmdArgs[14] = 'XXX'; cmdArgs[15] = 'XXX';
 			updateCmd();
 			// Show error message
+			document.getElementById("readsControlWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
 			document.getElementById("readsControlWarnMsg").style.display = "block";
 		}
 	}
+
+	function commandFinalCheck() {
+		var userErrors = false;
+
+		// Check that project name has been set
+		if (cmdArgs[1] == 'n/p') {
+			var userErrors = true;
+			projectNameValidationInfoMessage = 'You must give a name to the project.';
+			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
+			document.getElementById("projectNameValidationInfo").style.display = "block";
+		}
+
+		// Check that mapping by sequencing strategy has been set
+		if (cmdArgs[2] == 'n/p') {
+			var userErrors = true;
+			analysisTypeValidationInfoMessage = 'You must choose a mapping by sequencing strategy.';
+			document.getElementById("analysisTypeValidationInfo").innerHTML = analysisTypeValidationInfoMessage;
+			document.getElementById("analysisTypeValidationInfo").style.display = "block";
+		}
+
+		// Check that data source has been set
+		if (cmdArgs[3] == 'n/p') {
+			var userErrors = true;
+			dataSourceValidationInfoMessage = 'You must choose a data source.';
+			document.getElementById("dataSourceValidationInfo").innerHTML = dataSourceValidationInfoMessage;
+			document.getElementById("dataSourceValidationInfo").style.display = "block";
+		}
+
+		// Check that reference sequence has been set
+		if (cmdArgs[4] == 'n/p') {
+			var userErrors = true;
+			refSeqValidationInfoMessage = 'You must select one or more reference sequence files.';
+			document.getElementById("refSeqValidationInfo").innerHTML = refSeqValidationInfoMessage;
+			document.getElementById("refSeqValidationInfo").style.display = "block";
+		}
+
+		// If user chose tagged sequence mapping, check that an insertion sequence file has been selected
+		if (cmdArgs[2] == 'ins' && cmdArgs[5] == 'n/p') {
+			var userErrors = true;
+			insFileValidationInfoMessage = 'You must select an insertion sequence file.';
+			document.getElementById("insFileValidationInfo").innerHTML = insFileValidationInfoMessage;
+			document.getElementById("insFileValidationInfo").style.display = "block";
+		}
+
+		// Check that gff file has been set
+		if (cmdArgs[6] == 'n/p') {
+			var userErrors = true;
+			gffFileValidationInfoMessage = 'You must select a GFF file that matches the names the reference sequence(s) selected.';
+			document.getElementById("gffFileValidationInfo").innerHTML = gffFileValidationInfoMessage;
+			document.getElementById("gffFileValidationInfo").style.display = "block";
+		}
+
+		// Determine if ann file has been set
+		if (cmdArgs[7] == 'n/p') {
+			var userOptions = true;
+		}
+
+		// If user chose own experimental data, check if problem reads file(s) have been specified
+		if (cmdArgs[3] == 'exp' && cmdArgs[11] == 'n/p') {
+			var userErrors = true;
+			readsProblemValidationInfoMessage = 'You must select your problem reads (one file for single-end reads, and two files for paired-end reads).';
+			document.getElementById("readsProblemWarnMsg").innerHTML = readsProblemValidationInfoMessage;
+			document.getElementById("readsProblemWarnMsg").style.display = "block";
+		}
+
+		// If user chose own experimental data and MbS analysis, check if all two-way selectors were clicked on
+		if (cmdArgs[3] == 'exp' && cmdArgs[2] == 'snp') {
+			if (cmdArgs[16] == 'n/p') {
+				var userErrors = true;
+				document.getElementById("mutBackgroundValidationInfo").innerHTML = 'You must select a mutant background.';
+				document.getElementById("mutBackgroundValidationInfo").style.display = "block";
+			}
+			if (cmdArgs[17] == 'n/p') {
+				var userErrors = true;
+				document.getElementById("crossTypeValidationInfo").innerHTML = 'You must select the mapping cross performed.';
+				document.getElementById("crossTypeValidationInfo").style.display = "block";
+			}
+			if (cmdArgs[18] == 'n/p') {
+				var userErrors = true;
+				document.getElementById("contTypeValidationInfo").innerHTML = 'You must select the origin of the control reads.';
+				document.getElementById("contTypeValidationInfo").style.display = "block";
+			}
+		}
+
+		// If user chose own experimental data and MbS analysis, check if control reads file(s) have been specified
+		if (cmdArgs[3] == 'exp' && cmdArgs[2] == 'snp' && cmdArgs[15] == 'n/p') {
+			var userErrors = true;
+			readsControlValidationInfoMessage = 'You must select your control reads (one file for single-end reads, and two files for paired-end reads).';
+			document.getElementById("readsControlWarnMsg").innerHTML = readsControlValidationInfoMessage;
+			document.getElementById("readsControlWarnMsg").style.display = "block";
+		}
+
+		if (userErrors == true) {
+			document.getElementById("checkout-error").style.display = "block";
+			document.getElementById("checkout-success").style.display = "none";
+		} else {
+			document.getElementById("checkout-error").style.display = "none";
+			document.getElementById("checkout-success").style.display = "block";
+		}
+
+		if (userOptions == true) {
+			document.getElementById("annReminderMsg").innerHTML = 'You did not select any gene functional annotation file. While easymap can run without it, this information can help to interpret the final results.';
+			document.getElementById("annReminderMsg").style.display = "block";
+		}
+	}
 	
-	// End of functions
+	// End of functions *******************************************************************************************************************
 	
 	
 	// Define array with all the command arguments
-	var cmdArgs = ['./easymap.sh','project_name','workflow','data_source','ref_seq','ins_seq','gff_file',
-					'ann_file','read_s','read_f','read_r','lib_type_sample','read_s_ctrl','read_f_ctrl',
-					'read_r_ctrl','lib_type_ctrl','n/p','n/p','n/p','n/p','sim_mut','sim_recsel','sim_seq'];
+/*	var cmdArgs = ['./easymap.sh','project_name','workflow','data_source','ref_seq','ins_seq','gff_file','ann_file',
+					'read_s','read_f','read_r','lib_type_sample',
+					'read_s_ctrl','read_f_ctrl','read_r_ctrl','lib_type_ctrl',
+					'is_ref_strain','cross_type','snp_analysis_type','control_parental',
+					'sim_mut','sim_recsel','sim_seq'];
+*/	
+	var cmdArgs = ['./easymap.sh','n/p','n/p','n/p','n/p','n/p','n/p','n/p',
+					'n/p','n/p','n/p','n/p',
+					'n/p','n/p','n/p','n/p',
+					'n/p','n/p','n/p','n/p',
+					'sim_mut','sim_recsel','sim_seq'];
 
 	// Create the command string for the first time (for development purposes only)
 	updateCmd();
 	
 	// React to interactions with text inputs
-	// Reset default content when user clicks on input bux
+	// Reset default content when user clicks on input box
 	document.getElementById("form1").projectName.onfocus = resetTextField;
-	document.getElementById("form1").simMutNbr.onfocus = resetTextField;
-	document.getElementById("form1").simSeqRD.onfocus = resetTextField;
-	document.getElementById("form1").simSeqRL.onfocus = resetTextField;
-	document.getElementById("form1").simSeqRD.onfocus = resetTextField;
-	document.getElementById("form1").simSeqBER.onfocus = resetTextField;
-	document.getElementById("form1").simSeqGBS.onfocus = resetTextField;
+	//document.getElementById("form1").simMutNbr.onfocus = resetTextField;
+	//document.getElementById("form1").simSeqRD.onfocus = resetTextField;
+	//document.getElementById("form1").simSeqRL.onfocus = resetTextField;
+	//document.getElementById("form1").simSeqRD.onfocus = resetTextField;
+	//document.getElementById("form1").simSeqBER.onfocus = resetTextField;
+	//document.getElementById("form1").simSeqGBS.onfocus = resetTextField;
 	
 	// Verify input of text fields
 	document.getElementById("form1").projectName.onblur = verifyProjectName;
@@ -373,6 +498,7 @@ window.onload = function() {
 	document.getElementById("button2").onclick = buttons_analysisType;
 	document.getElementById("button3").onclick = buttons_dataSource;
 	document.getElementById("button4").onclick = buttons_dataSource;
+
 	
 	// React to interactions with genome contigs selector
 	document.getElementById("form1").refFileSelector.onblur = checkRefSeqs;
@@ -391,33 +517,13 @@ window.onload = function() {
 	document.getElementById("button16").onclick = buttons_contType;
 	document.getElementById("button17").onclick = buttons_contType;
 
-	document.getElementById("button17").onmouseover = checkBackgroundCrossCtypeIntermediateCheck;
-
-
 	//React to interactions with reads selectors
 	document.getElementById("form1").readsProblemSelector.onblur = checkProblemReads;
 	document.getElementById("form1").readsControlSelector.onblur = checkControlReads;
 
 	// React to interactions with backgroundCrossCtype buttons
 	document.getElementById("backgroundCrossCtype").onmouseout = checkBackgroundCrossCtypeIntermediateCheck;
+
+	// Do final input check
+	document.getElementById("checkFormButton").onclick = commandFinalCheck;
 }
-
-// TO DO:
-// Add verification to check that all the three 2-way buttons have been clicked
-// When user clicks on submit, check that all validations passed. This could be done with
-// a flag variable.
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
