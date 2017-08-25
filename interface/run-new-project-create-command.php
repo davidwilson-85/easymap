@@ -8,14 +8,26 @@ Warning: If easymap.sh is run from php, the user is www-data (the apache server)
 must have permission to read and write in the appropriate folders.
 */
 
-//$arguments = $_GET['args'];
+// Handle client data in JSON format
+header("Content-Type: application/json");
+
+// build a PHP variable from JSON sent using POST method
+//$cmdArray = json_decode(stripslashes(file_get_contents("php://input")));
+$cmdArray = json_decode(file_get_contents("php://input"));
+
+// Elaborate the command string
+$refSeqsString = implode("+", $cmdArray[4]);
+$cmdArray[4] = $refSeqsString;
+$cmdString = implode(" ", $cmdArray);
 
 // Run workflow
-//$command = './easymap-tests.sh project-name snp sim se genome.fa n/p n/p n/p n/p chr1.gff n/p 150+e "0,14;1,31;2,33;3,15;4,5;5,2"+1,10000000+r+50 25+200,40+0,0+1+100 n/p n/p n/p oc ref mut f2wt se';
-$command = './easymap -n pn -w ins -sim -r mini_chr1 -i pbinprok2.fa -g complete.gff -sm 3 -ss 5+100,0+500,100+1+50+pe';
+shell_exec('cd ..; '. $cmdString);
 
-shell_exec('cd ..; '. $command);
+// Only for development
+$file = fopen('file.txt', 'w');
+fwrite($file, $cmdString);
+fclose($file);
 
-
+echo 'success';
 
 ?>

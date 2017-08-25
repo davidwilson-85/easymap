@@ -40,7 +40,6 @@ if ($password == $reference_password) {
 <link rel="stylesheet" href="w3c.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-<link rel="stylesheet" type="text/css" href="run-new-project-design-project.css">
 
 <script type="text/javascript" src="run-new-project.js"></script>
 
@@ -132,20 +131,6 @@ body {font-size:16px;}
 
 			<div id="dataSourceValidationInfo" class="warningMessage"></div>
 
-<!--
-			Type of NGS library:
-			<div class="buttons-wrap">
-				<div class="mx-button">
-					<input type="radio" class="libType" name="mx56" id="button5" />
-					<label for="button5" unselectable>Single end</label>
-				</div>
-				<div class="mx-button">
-					<input type="radio" class="libType" name="mx56" id="button6" />
-					<label for="button6" unselectable>Paired end</label>
-				</div>
-				<div class="clear-floats"></div>
-			</div>
--->			
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
 			Reference sequence (You can select multiple files by pressing and holding the Ctrl/Cmd key):<br>
@@ -171,7 +156,7 @@ body {font-size:16px;}
 			<div id="expDataInterface">
 				<div id="backgroundCrossCtype">
 					
-					Mutant background:
+					Mutant background: [TO DO: Perform additional checks to validate the design chosen by user]
 					<div class="buttons-wrap">
 						<div class="mx-button">
 							<input type="radio" class="mutBackground" name="mxMB" id="button11" />
@@ -237,68 +222,35 @@ body {font-size:16px;}
 			</div>
 		
 			<div id="simDataInterface">
-				Simulated data chosen
-				<div id="simDataIns">				
-					<div id="simMutInterface">
-						Number of mutations:<br>
-						<input type="text" name="simMutNbr" class="simNumericInput" value="" />
-						<br><br>
-						Mode:<br>
-						<input type="radio" name="simMutMode" id="simMutModeD">
-						<label for="simMutModeD">Drift</label>
-						<br>
-						<input type="radio" name="simMutMode" id="simMutModeE">
-						<label for="simMutModeE">EMS (GC > AT)</label>
-						<br>
-						<input type="radio" name="simMutMode" id="simMutModeL">
-						<label for="simMutModeL">Large DNA insertions</label>
-					</div>
-			
-					<div id="simRecselInterface">
-						<br><br>No RecSel here<br><br>
-					</div>
-			
-					<div id="simSeqInterface">
-						Read depth (X):<br>
-						<input type="text" name="simSeqRD" class="simNumericInput" value="40" />
-						<br>
-						Read length [mean, SD] (nt):<br>
-						<input type="text" name="simSeqRL" class="simNumericInput" value="90,0" />
-						<br>
-						<div id="simSeqFL">
-							Fragment length [mean, SD] (nt):<br>
-							<input type="text" name="simSeqFL" class="simNumericInput" value="500,100" />
-						</div>
-						Basecalling error rate (%):<br>
-						<input type="text" name="simSeqBER" class="simNumericInput" value="1" />
-						<br>
-						GC bias strength (%):<br>
-						<input type="text" name="simSeqGBS" class="simNumericInput" value="50" />
-						<br>
-					</div>
-			
+				<div id="simMutInterface">
+					Mutagenesis parameters:
+					<input type="text" name="simMut" class="sim" value="nbr,type" />
 				</div>
-				<div id="simDataSnp">
-			
-					Simulate Mapping by Sequencing data
-			
+				
+				<div id="simRecselInterface">
+					Recombination and selection parameters:
+					<input type="text" name="simRecsel" class="sim" value="recFrecs,nbrRecChrs" />
 				</div>
-			
+		
+				<div id="simSeqInterface">
+					Sequencing parameters:
+					<input type="text" name="simSeq" class="simNumericInput" value="ReadDepth;ReadSizeMean,ReadSizeSD;FragmentSizeMean,FragmentSizeSD,..." />
+				</div>			
 			</div>
 			
 			<div id="formButtons">
-				<input type="button" class="button" id="checkFormButton" value="Start project execution" style="display:block;"/>
+				<input type="button" class="button" id="checkFormButton" value="Check input and run project" style="display:block; width:400px;"/>
 				
 				<div class="checkout" id="checkout-error">
-					Your input contains errors. Please review the form and look for mesages in red. Once errors are fixed, proceed again to checkout.
-					<div style="clear:both;"></div>
+					Your input contains errors. Please review all the red messages in the form. Then, click on "Check input and run project" again.
+					<p>If problems persist, please read the documentation.</p>
 				</div>
 				
 				<div class="checkout" id="checkout-success">
-					<p>All inputs seem correct but you can still review now your project.</p>
+					All inputs seem correct but you can review your project now.
 					<p id="annReminderMsg" style="display:none;"></p>
 					<p>if you are sure you want to start this project, click on the button below.</p>
-					<a href="manage-projects.php" class="button" onclick="runProject()">Run project</a>
+					<input type="button" class="button" id="runProjectButton" value="Start project" style="display:block;"/>
 					<div style="clear:both;"></div>
 				</div>
 			</div>

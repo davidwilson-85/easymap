@@ -12,24 +12,6 @@
 	font-size: 17px;
 	color: #333333;
 }
-/*
-#formLeft, #formRight {
-	display: inline-block;
-	width: 49%;
-	vertical-align: top;
-	padding: 3px;
-}
-
-#formRight {
-	border: 1px solid gray;
-	border-radius: 5px;
-}
-
-#formButtons {
-	vertical-align: top;
-	padding: 3px;
-}
-*/
 
 /* By default do not display the following divs. They must only be displayed 
 after the user has selected a mode, the source of the data, and the library type */
@@ -52,7 +34,6 @@ after the user has selected a mode, the source of the data, and the library type
 	margin-top: 10px;
 	margin-bottom: 20px;
 }
-
 
 /*
 Radio buttons and their labels. The radio buttons are hidden and instead their 
@@ -81,11 +62,13 @@ exclusive button choices.
 
 .mx-button label:hover {
     background-color: #ddd;
+    border-color:#848484;
 }
 
 .mx-button input:checked + label {
     background: #668cff;
     color: white;
+    border-color:#365d9b;
 }
 
 /* Text and select inputs */
@@ -99,7 +82,7 @@ input[type=text], select {
 	box-sizing: border-box;
 }
 
-input[type=text]:hover {
+input[type=text]:hover, select:hover {
 	border-color: #737373;
 }
 
@@ -111,33 +94,6 @@ input[type=text]:focus {
 .simNumericInput {
 	width: 75px;
 }
-
-
-/* Buttons */
-.button {
-	width: 30%;
-	padding: 12px 20px;
-	margin: 8px 0;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-	background-color: #3366ff;
-	color: white;
-}
-
-.button:hover {
-	border-color: #737373;
-	background-color: #668cff;
-}
-
-.button:focus {
-	border-color: #737373;
-	background-color: red;
-}
-
-
-
-
 
 
 

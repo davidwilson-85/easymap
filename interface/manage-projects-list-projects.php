@@ -5,7 +5,7 @@ $projects = array_slice(scandir('../user_projects'), 2);
 foreach ($projects as $project) {
 	$status_file = '../user_projects/'. $project .'/2_logs/status';	
 	
-	echo '<div style="background-color: rgb(175,247,124); border: solid green 1px; border-radius: 4px; padding: 10px;">';
+	echo '<div style="background-color:#79e59d; border:solid green 1px; border-radius:5px; padding:10px;">';
 	
 	$status_contents = fopen($status_file, 'r');
 	while(!feof($status_contents)) {

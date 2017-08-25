@@ -23,7 +23,7 @@ was also created by the W3C.
 }
 
 .button:hover {
-	border-color: #737373;
+	border-color: #365d9b;
 	background-color: #668cff;
 }
 
@@ -61,8 +61,8 @@ was also created by the W3C.
 	display:none;
 	margin:5px 0;
 	padding:20px;
-	background-color: red;
-	color:white;
+	background-color: #f76f6f;
+	/*color:white;*/
 	border-radius: 5px;
 }
 
@@ -75,10 +75,117 @@ was also created by the W3C.
 }
 
 #checkout-error {
-	background-color: red;
-	color:white;
+	background-color: #f76f6f;
 }
 
 #checkout-success {
-	background-color: rgb(129, 234, 167);
+	background-color: #77d197;
+}
+
+
+
+
+
+
+/* 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+THE FOLLOWING DECLARATIONS WERE PREVIOUSLY IN A SEPARATE FILE APPLICABLE ONLY TO run-new-project.php.
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/
+
+/* This may be dispensable */
+/*
+[unselectable] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+*/
+
+#runNewProject {
+	font-family: Arial; /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	font-size: 17px;
+	color: #333333;
+}
+
+/* By default do not display the following divs. They must only be displayed 
+after the user has selected a mode, the source of the data, and the library type */
+#insSeqField,
+#expDataInterface,
+#simDataInterface,
+#readsControl,
+#simSeqFL {
+	display: none;
+}
+
+/* Temporary div that shows the command arguments */
+#command > p {
+	font-family: monospace;
+	font-size: 12px;
+}
+
+/* Styles for divs that act as button wraps */
+.buttons-wrap {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+/*
+Radio buttons and their labels. The radio buttons are hidden and instead their 
+labels appear as buttons to the user. This is a workaround to create css-only mutually
+exclusive button choices.
+*/
+.mx-button input {
+    display: none;
+}
+
+.mx-button {
+    float: left;
+    padding: 10px;
+}
+
+.clear-floats {
+	clear: both;
+}
+
+.mx-button label {
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+    padding: 12px 20px;
+}
+
+.mx-button label:hover {
+    background-color: #ddd;
+    border-color:#848484;
+}
+
+.mx-button input:checked + label {
+    background: #668cff;
+    color: white;
+    border-color:#365d9b;
+}
+
+/* Text and select inputs */
+input[type=text], select {
+	width: 75%;
+	padding: 8px 12px;
+	margin: 8px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+input[type=text]:hover, select:hover {
+	border-color: #737373;
+}
+
+input[type=text]:focus {
+	border: 1px solid #737373;
+	background-color: #f2f2f2;
+}
+
+.simNumericInput {
+	width: 75px;
 }

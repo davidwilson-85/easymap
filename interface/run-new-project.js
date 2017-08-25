@@ -81,19 +81,6 @@ function listInputFiles() {
 	xmlhttp.send();
 }
 
-// Function to communicate html with php via AJAX to trigger a workflow run 
-function runProject() {
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			document.getElementById("commandResponse").innerHTML = this.responseText;
-		}
-	};
-	var arguments = "test-arg";
-	xmlhttp.open("GET", "run-new-project-create-command.php?args=" + arguments, true);
-	xmlhttp.send();
-}
-
 // Trigger required functions when page loads
 allowNewProject();
 listInputFiles()
@@ -113,8 +100,7 @@ window.onload = function() {
 	// Functions that need to be declared after document has completely loaded
 	
 	// Uptdate the command arguments in the screen
-	// This function is called in many other functions after updating the value
-	// of an arguments.
+	// This function is called in many other functions after updating the value of an argument.
 	function updateCmd() {
 			document.getElementById("commandString").innerHTML = cmdArgs;
 	}
@@ -297,7 +283,7 @@ window.onload = function() {
 		///////////////////////////////////////
 	}
 
-	// Check reads selectors (max two files selected per sample) and update command argument(s)
+	// Check reads selectors (max two files selected per sample) and update command arguments
 	function checkProblemReads() {
 		var reads = document.getElementById("readsProblemSelector");
 		var readsList = [];
@@ -309,17 +295,17 @@ window.onload = function() {
 		}
 
 		if (readsList.length == 1) {
-			cmdArgs[8] = readsList; cmdArgs[9] = 'XXX'; cmdArgs[10] = 'XXX'; cmdArgs[11] = 'se';
+			cmdArgs[8] = readsList[0]; cmdArgs[9] = 'n/p'; cmdArgs[10] = 'n/p'; cmdArgs[11] = 'se';
 			updateCmd();
 			// Hide error message
 			document.getElementById("readsProblemWarnMsg").style.display = "none";
 		} else if (readsList.length == 2) {
-			cmdArgs[8] = 'XXX'; cmdArgs[9] = readsList[0]; cmdArgs[10] = readsList[1]; cmdArgs[11] = 'pe';
+			cmdArgs[8] = 'n/p'; cmdArgs[9] = readsList[0]; cmdArgs[10] = readsList[1]; cmdArgs[11] = 'pe';
 			updateCmd();
 			// Hide error message
 			document.getElementById("readsProblemWarnMsg").style.display = "none";
 		} else {
-			cmdArgs[8] = 'XXX'; cmdArgs[9] = 'XXX'; cmdArgs[10] = 'XXX'; cmdArgs[11] = 'XXX';
+			cmdArgs[8] = 'n/p'; cmdArgs[9] = 'n/p'; cmdArgs[10] = 'n/p'; cmdArgs[11] = 'n/p';
 			updateCmd();
 			// Display error message
 			document.getElementById("readsProblemWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
@@ -328,27 +314,27 @@ window.onload = function() {
 	}
 
 	function checkControlReads() {
-		var reads = document.getElementById("readsControlSelector");
-		var readsList = [];
+		var readsC = document.getElementById("readsControlSelector");
+		var readsListC = [];
 		
-		for (var i=0; i<reads.length; i++) {
-			if (reads[i].selected == true) {
-				readsList.push(reads[i].value);
+		for (var i=0; i<readsC.length; i++) {
+			if (readsC[i].selected == true) {
+				readsListC.push(readsC[i].value);
 			}
 		}
 
-		if (readsList.length == 1) {
-			cmdArgs[12] = readsList; cmdArgs[13] = 'XXX'; cmdArgs[14] = 'XXX'; cmdArgs[15] = 'se';
+		if (readsListC.length == 1) {
+			cmdArgs[12] = readsListC[0]; cmdArgs[13] = 'n/p'; cmdArgs[14] = 'n/p'; cmdArgs[15] = 'se';
 			updateCmd();
 			// Hide error message
 			document.getElementById("readsControlWarnMsg").style.display = "none";
-		} else if (readsList.length == 2) {
-			cmdArgs[12] = 'XXX'; cmdArgs[13] = readsList[0]; cmdArgs[14] = readsList[1]; cmdArgs[15] = 'pe';
+		} else if (readsListC.length == 2) {
+			cmdArgs[12] = 'n/p'; cmdArgs[13] = readsListC[0]; cmdArgs[14] = readsListC[1]; cmdArgs[15] = 'pe';
 			updateCmd();
 			// Hide error message
 			document.getElementById("readsControlWarnMsg").style.display = "none";
 		} else {
-			cmdArgs[12] = 'XXX'; cmdArgs[13] = 'XXX'; cmdArgs[14] = 'XXX'; cmdArgs[15] = 'XXX';
+			cmdArgs[12] = 'n/p'; cmdArgs[13] = 'n/p'; cmdArgs[14] = 'n/p'; cmdArgs[15] = 'n/p';
 			updateCmd();
 			// Show error message
 			document.getElementById("readsControlWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
@@ -409,7 +395,8 @@ window.onload = function() {
 
 		// Determine if ann file has been set
 		if (cmdArgs[7] == 'n/p') {
-			var userOptions = true;
+			document.getElementById("annReminderMsg").innerHTML = 'REMINDER: You did not select any gene functional annotation file. While easymap can run without it, this information can help to interpret the final results. To know more about where to find this information and how to format it for easymap, see the documentation';
+			document.getElementById("annReminderMsg").style.display = "block";
 		}
 
 		// If user chose own experimental data, check if problem reads file(s) have been specified
@@ -454,13 +441,28 @@ window.onload = function() {
 			document.getElementById("checkout-error").style.display = "none";
 			document.getElementById("checkout-success").style.display = "block";
 		}
-
-		if (userOptions == true) {
-			document.getElementById("annReminderMsg").innerHTML = 'You did not select any gene functional annotation file. While easymap can run without it, this information can help to interpret the final results.';
-			document.getElementById("annReminderMsg").style.display = "block";
-		}
 	}
-	
+
+	// Function to trigger a new easymap execution and to redirect browser to manage-projects.php 
+	function runProject() {
+		var xhr = new XMLHttpRequest();
+		var url = "run-new-project-create-command.php";
+		xhr.open("POST", url, true);
+		xhr.setRequestHeader("Content-type", "application/json");
+		xhr.onreadystatechange = function () {
+		    if (xhr.readyState === 4 && xhr.status === 200) {
+		        if (this.responseText == 'success') {
+		        	//window.location.assign("manage-projects.php");
+		        } else {
+		        	alert('Error: the server that hosts easymap could not complete your request.');
+		        }
+		    }
+		};
+		var data = JSON.stringify(cmdArgs);
+		xhr.send(data);
+	}
+
+
 	// End of functions *******************************************************************************************************************
 	
 	
@@ -479,7 +481,7 @@ window.onload = function() {
 
 	// Create the command string for the first time (for development purposes only)
 	updateCmd();
-	
+
 	// React to interactions with text inputs
 	// Reset default content when user clicks on input box
 	document.getElementById("form1").projectName.onfocus = resetTextField;
@@ -499,7 +501,6 @@ window.onload = function() {
 	document.getElementById("button3").onclick = buttons_dataSource;
 	document.getElementById("button4").onclick = buttons_dataSource;
 
-	
 	// React to interactions with genome contigs selector
 	document.getElementById("form1").refFileSelector.onblur = checkRefSeqs;
 	
@@ -518,12 +519,15 @@ window.onload = function() {
 	document.getElementById("button17").onclick = buttons_contType;
 
 	//React to interactions with reads selectors
-	document.getElementById("form1").readsProblemSelector.onblur = checkProblemReads;
-	document.getElementById("form1").readsControlSelector.onblur = checkControlReads;
+	document.getElementById("form1").readsProblemSelector.onclick = checkProblemReads;
+	document.getElementById("form1").readsControlSelector.onclick = checkControlReads;
 
 	// React to interactions with backgroundCrossCtype buttons
 	document.getElementById("backgroundCrossCtype").onmouseout = checkBackgroundCrossCtypeIntermediateCheck;
 
-	// Do final input check
+	// React to interactions with button to chek input and go to the gateway to run a new project
 	document.getElementById("checkFormButton").onclick = commandFinalCheck;
+
+	// React to interactions with button to run project
+	document.getElementById("runProjectButton").onclick = runProject;
 }

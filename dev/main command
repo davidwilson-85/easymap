@@ -22,14 +22,17 @@
 [21] $sim_recsel
 [22] $sim_seq
 
+
 './easymap.sh','project_name','workflow ','data_source','ref_seq','ins_seq','gff_file','ann_file','read_s','read_f','read_r','lib_type_sample', 
 'read_s_ctrl','read_f_ctrl','read_r_ctrl','lib_type_ctrl','is_ref_strain','cross_type','snp_analysis_type','control_parental','sim_mut','sim_recsel','sim_seq'
 
 
+./easymap.sh project_name workflow data_source ref_seq ins_seq gff_file ann_file read_s read_f read_r lib_type_sample read_s_ctrl read_f_ctrl read_r_ctrl lib_type_ctrl is_ref_strain cross_type snp_analysis_type control_parental sim_mut sim_recsel sim_seq
 
 
 
 
+./easymap.sh test ins sim 1.insim.fa pbinprok2.fa chr1+4.gff n/p n/p n/p n/p pe n/p n/p n/p n/p n/p n/p n/p n/p 5+ins n/p 6+100+500+1+50
 
 
 
