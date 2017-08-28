@@ -60,7 +60,7 @@ was also created by the W3C.
 .warningMessage {
 	display:none;
 	margin:5px 0;
-	padding:20px;
+	padding:12px 20px;
 	background-color: #f76f6f;
 	/*color:white;*/
 	border-radius: 5px;
@@ -80,6 +80,16 @@ was also created by the W3C.
 
 #checkout-success {
 	background-color: #77d197;
+}
+
+.formInfo {
+	clear: both;
+	margin: 20px 0 15px 0;
+	border-top: 4px solid rgb(130,130,130);
+	padding:12px 20px;
+	border-radius: 0 0 5px 5px;
+	background-color: #77d197;
+	width: 100%;
 }
 
 

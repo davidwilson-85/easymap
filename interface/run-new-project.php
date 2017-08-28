@@ -96,7 +96,7 @@ body {font-size:16px;}
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
 			<p>
-				Give a name to this project (only alphanumeric characters are allowed):<br>
+				Project name (only alphanumeric characters are allowed):<br>
 				<input type="text" name="projectName" value="My project" />
 				<div id="projectNameValidationInfo" class="warningMessage"></div>
 			</p>
@@ -150,10 +150,10 @@ body {font-size:16px;}
 			Gene functional annotation file [OPTIONAL]:<br>
 			<select id="annFileSelector" style="display:block; margin-bottom:22px;"></select>
 			<div id="annFileValidationInfo" class="warningMessage"></div>
-
-			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 		
 			<div id="expDataInterface">
+				<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
+
 				<div id="backgroundCrossCtype">
 					
 					Mutant background: [TO DO: Perform additional checks to validate the design chosen by user]
@@ -217,28 +217,35 @@ body {font-size:16px;}
 					<select multiple id="readsControlSelector" style="display:block; margin-bottom:22px;"></select>
 					<div id="readsControlWarnMsg" class="warningMessage">Please select one file for single-end reads and two files for paired-end reads.</div>
 				</div>
-
-				<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			</div>
 		
 			<div id="simDataInterface">
+				<div class="formInfo" id="formInfoSim">Simulation parameters</div>
+
 				<div id="simMutInterface">
-					Mutagenesis parameters:
-					<input type="text" name="simMut" class="sim" value="nbr,type" />
+					Mutagenesis parameters:<br>
+					<input type="text" name="simMut" class="sim" value='{"numberMutations":"0"}' />
+					<div id="simMutValMsg" class="warningMessage"></div>
 				</div>
 				
 				<div id="simRecselInterface">
-					Recombination and selection parameters:
-					<input type="text" name="simRecsel" class="sim" value="recFrecs,nbrRecChrs" />
+					Recombination and selection parameters:<br>
+					<input type="text" name="simRecselA" class="sim" value='{"contigCausalMut":"1", "posCausalMut":"15486357", "numRecChrs":"250"}' />
+					<div id="simRecselAValMsg" class="warningMessage"></div>
+					<input type="text" name="simRecselB" class="sim" value='{"1":"0,14-1,31-2,33-3,15-4,5-5,2", "2":"0,24-1,42-2,25-3,6-4,1-5,2"}' />
+					<div id="simReqselBValMsg" class="warningMessage"></div>
 				</div>
 		
 				<div id="simSeqInterface">
-					Sequencing parameters:
-					<input type="text" name="simSeq" class="simNumericInput" value="ReadDepth;ReadSizeMean,ReadSizeSD;FragmentSizeMean,FragmentSizeSD,..." />
-				</div>			
+					Sequencing parameters:<br>
+					<input type="text" name="simSeq" class="sim" value='{"lib":"pe", "frSz":"500", "frSd":"100", "rdDepth":"80", "rdSz":"100", "rdSd":"0", "errRt":"1", "gcBias":"75"}' />
+					<div id="simSeqValMsg" class="warningMessage"></div>
+				</div>		
 			</div>
 			
 			<div id="formButtons">
+				<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
+
 				<input type="button" class="button" id="checkFormButton" value="Check input and run project" style="display:block; width:400px;"/>
 				
 				<div class="checkout" id="checkout-error">
@@ -259,7 +266,7 @@ body {font-size:16px;}
 		
 		<br><br><br>
 
-		<p id="commandString"></p>
+		<p id="commandString"</p>
     </div>
   </div>
 <!-- End of page content -->

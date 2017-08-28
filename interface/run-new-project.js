@@ -81,6 +81,16 @@ function listInputFiles() {
 	xmlhttp.send();
 }
 
+// Function to check if a string has a valid JSON format
+function isJsonString(str) {
+	try {
+		JSON.parse(str);
+	} catch (e) {
+		return false;
+	}
+	return true;
+}
+
 // Trigger required functions when page loads
 allowNewProject();
 listInputFiles()
@@ -109,20 +119,20 @@ window.onload = function() {
 	function verifyProjectName(){
 		var text = document.getElementById("form1").projectName.value;
 		if(/[^a-zA-Z0-9]/.test( text) ) {
+			cmdArgs[1] = 'n/p';
 			projectNameValidationInfoMessage = 'Input is not alphanumeric';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "block";
 		} else if (text == '') {
+			cmdArgs[1] = 'n/p';
 			projectNameValidationInfoMessage = 'You must give a name to the project';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "block";
 		} else {
 			cmdArgs[1] = document.getElementById("form1").projectName.value;
-			updateCmd()
-			//projectNameValidationInfoMessage = '';
-			//document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "none";
 		}
+		updateCmd();
 	}
 	
 	// Determine option button selected and define the appropriate command argument
@@ -135,18 +145,28 @@ window.onload = function() {
 		}
 		if (checkedOption == 'button1') {
 			cmdArgs[2] = 'ins';
-			document.getElementById("insSeqField").style.display = "inline";			//////////////////////////
-			document.getElementById("readsControl").style.display = "none";				//////////////////////////
+			document.getElementById("insSeqField").style.display = "block";
+			document.getElementById("readsControl").style.display = "none";
 			document.getElementById("backgroundCrossCtype").style.display = "none";
-			//document.getElementById("simDataIns").style.display = "inline";			//////////////////////////
-			//document.getElementById("simDataSnp").style.display = "none";				//////////////////////////
+			document.getElementById("simRecselInterface").style.display = "none";
+			if (cmdArgs[3] == 'exp') {
+				document.getElementById("expDataInterface").style.display = "block";
+			}
+			if (cmdArgs[3] == 'sim') {
+				document.getElementById("simDataInterface").style.display = "block";
+			}
 		} else {
 			cmdArgs[2] = 'snp';
 			document.getElementById("insSeqField").style.display = "none";
-			document.getElementById("readsControl").style.display = "inline";
+			document.getElementById("readsControl").style.display = "block";
 			document.getElementById("backgroundCrossCtype").style.display = "block";
-			//document.getElementById("simDataIns").style.display = "none";
-			//document.getElementById("simDataSnp").style.display = "inline";
+			document.getElementById("simRecselInterface").style.display = "block";
+			if (cmdArgs[3] == 'exp') {
+				document.getElementById("expDataInterface").style.display = "block";
+			}
+			if (cmdArgs[3] == 'sim') {
+				document.getElementById("simDataInterface").style.display = "block";
+			}
 		}
 		updateCmd();
 		document.getElementById("analysisTypeValidationInfo").style.display = "none";		
@@ -162,12 +182,16 @@ window.onload = function() {
 		}
 		if (checkedOption == 'button3') {
 			cmdArgs[3] = 'exp';
-			document.getElementById("expDataInterface").style.display = "inline";
 			document.getElementById("simDataInterface").style.display = "none";
+			if (cmdArgs[2] != 'n/p') {
+				document.getElementById("expDataInterface").style.display = "block";
+			}
 		} else {
 			cmdArgs[3] = 'sim';
 			document.getElementById("expDataInterface").style.display = "none";
-			document.getElementById("simDataInterface").style.display = "inline";
+			if (cmdArgs[2] != 'n/p') {
+				document.getElementById("simDataInterface").style.display = "block";
+			}
 		}
 		updateCmd();
 		document.getElementById("dataSourceValidationInfo").style.display = "none";
@@ -342,6 +366,127 @@ window.onload = function() {
 		}
 	}
 
+	function verifySimMut() {
+		var simMutInput = document.getElementById("form1").simMut.value;
+		if (isJsonString(simMutInput) == false) {
+			document.getElementById("simMutValMsg").innerHTML = 'The structure of the input is not correct.';
+			document.getElementById("simMutValMsg").style.display = "block";
+			cmdArgs[20] = 'n/p';
+		} else {
+			var simMutInput = JSON.parse(simMutInput);
+			if (/[^0-9]/.test(simMutInput.numberMutations) || simMutInput.numberMutations < 1) {
+				document.getElementById("simMutValMsg").innerHTML = '"numberMutations" must be a positive integer.';
+				document.getElementById("simMutValMsg").style.display = "block";
+				cmdArgs[20] = 'n/p';
+			} else {
+				document.getElementById("simMutValMsg").style.display = "none";
+				cmdArgs[20] = simMutInput.numberMutations;
+			}
+		}
+		updateCmd();
+	}
+
+	function verifySimSeq() {
+		var simSeqInput = document.getElementById("form1").simSeq.value;
+		var simSeqErrors = ["Errors:"]
+		var simSeqErr = false;
+
+		if (isJsonString(simSeqInput) == false) {
+			document.getElementById("simSeqValMsg").innerHTML = 'The structure of the input is not correct.';
+			document.getElementById("simSeqValMsg").style.display = "block";
+			cmdArgs[22] = 'n/p';
+		} else {
+			var simSeqInput = JSON.parse(simSeqInput);
+			
+			if (["se","pe"].indexOf(simSeqInput.lib) === -1) {
+				simSeqErr = true;
+				simSeqErrors.push('"lib" must be equal to "se" (single-and library) or "pe" (paired-end library).');
+			}
+			if (/[^0-9]/.test(simSeqInput.frSz) || simSeqInput.frSz < 50) {
+				simSeqErr = true;
+				simSeqErrors.push('"frSz" must be an integer equal or greater than 50.');
+			}
+			if (/[^0-9]/.test(simSeqInput.frSd) || simSeqInput.frSd < 0 || simSeqInput.frSd > simSeqInput.frSz) {
+				simSeqErr = true;
+				simSeqErrors.push('"frSd" must be an integer in the interval [0-"frSz"].');
+			}
+			if (/[^0-9]/.test(simSeqInput.rdDepth) || simSeqInput.rdDepth < 1) {
+				simSeqErr = true;
+				simSeqErrors.push('"rdDepth" must be a positive integer.');
+			}
+			if (/[^0-9]/.test(simSeqInput.rdSz) || simSeqInput.rdSz < 20 || simSeqInput.rdSz > simSeqInput.frSz) {
+				simSeqErr = true;
+				simSeqErrors.push('"rdSz" must be an integer equal or greater than 20 and smaller or equal to "frSz".');
+			}
+			if (/[^0-9]/.test(simSeqInput.rdSd) || simSeqInput.rdSd < 0 || simSeqInput.rdSd > simSeqInput.rdSz) {
+				simSeqErr = true;
+				simSeqErrors.push('"rdSd" must be an integer in the interval [0-"rdSz"].');
+			}
+			if (/[^0-9]/.test(simSeqInput.errRt) || simSeqInput.errRt < 0 || simSeqInput.errRt > 10) {
+				simSeqErr = true;
+				simSeqErrors.push('"errRt" must be an integer in the interva [0-10].');
+			}
+			if (/[^0-9]/.test(simSeqInput.gcBias) || simSeqInput.gcBias < 0 || simSeqInput.gcBias > 100) {
+				simSeqErr = true;
+				simSeqErrors.push('"gcBias" must be an integer inthe interval [0-100].');
+			}
+
+			if (simSeqErr == true) {
+				cmdArgs[22] = 'n/p';
+				var simSeqErrorsString = simSeqErrors.join("<br>");
+				document.getElementById("simSeqValMsg").innerHTML = simSeqErrorsString;
+				document.getElementById("simSeqValMsg").style.display = "block";
+			} else {
+				document.getElementById("simSeqValMsg").style.display = "none";
+				cmdArgs[22] = simSeqInput.rdDepth + "+" + simSeqInput.rdSz + "," + simSeqInput.rdSd + "+" + simSeqInput.frSz + "," + simSeqInput.frSd + "+" + simSeqInput.errRt + "+" + simSeqInput.gcBias + "+" + simSeqInput.lib;
+			}
+		}
+		updateCmd();
+	}
+
+	function verifySimrecselFieldA() {
+		var simRecselInput = document.getElementById("form1").simRecselA.value;
+		var simRecselErrors = ["Errors:"]
+		var simRecselErr = false;
+
+		if (isJsonString(simRecselInput) == false) {
+			document.getElementById("simRecselAValMsg").innerHTML = 'The structure of the input is not correct.';
+			document.getElementById("simRecselAValMsg").style.display = "block";
+			cmdArgs[21] = 'n/p';
+		} else {
+			var simRecselInput = JSON.parse(simRecselInput);
+			
+			if (/[^0-9]/.test(simRecselInput.contigCausalMut) || simRecselInput.contigCausalMut < 1) {
+				simRecselErr = true;
+				simRecselErrors.push('"contigCausalMut" must be an integer equal or greater than 1.');
+			}
+			if (/[^0-9]/.test(simRecselInput.posCausalMut) || simRecselInput.posCausalMut < 1) {
+				simRecselErr = true;
+				simRecselErrors.push('"posCausalMut" must be an integer equal or greater than 1.');
+			}
+			if (/[^0-9]/.test(simRecselInput.numRecChrs) || simRecselInput.numRecChrs < 1) {
+				simRecselErr = true;
+				simRecselErrors.push('"numRecChrs" must be an integer equal or greater than 1.');
+			}
+
+			if (simRecselErr == true) {
+				cmdArgs[21] = 'n/p';
+				var simRecselErrorsString = simRecselErrors.join("<br>");
+				document.getElementById("simRecselAValMsg").innerHTML = simRecselErrorsString;
+				document.getElementById("simRecselAValMsg").style.display = "block";
+			} else {
+				document.getElementById("simRecselAValMsg").style.display = "none";
+				//cmdArgs[21] = simSeqInput.rdDepth + "+" + simSeqInput.rdSz + "," + simSeqInput.rdSd + "+" + simSeqInput.frSz + "," + simSeqInput.frSd + "+" + simSeqInput.errRt + "+" + simSeqInput.gcBias + "+" + simSeqInput.lib;
+				cmdArgs[21] = 'SUCCESS';
+			}
+		}
+		updateCmd();
+	}
+
+
+
+
+
 	function commandFinalCheck() {
 		var userErrors = false;
 
@@ -434,6 +579,19 @@ window.onload = function() {
 			document.getElementById("readsControlWarnMsg").style.display = "block";
 		}
 
+		// If user chose simulated, check if simMut and simSeq parameters have been set properly
+		if (cmdArgs[3] == 'sim' && cmdArgs[20] == 'n/p') {
+			var userErrors = true;
+			document.getElementById("simMutValMsg").innerHTML = 'The input in this field is not correct.';
+			document.getElementById("simMutValMsg").style.display = "block";
+		}
+
+		if (cmdArgs[3] == 'sim' && cmdArgs[22] == 'n/p') {
+			var userErrors = true;
+			document.getElementById("simSeqValMsg").innerHTML = 'The input in this field is not correct.';
+			document.getElementById("simSeqValMsg").style.display = "block";
+		}
+
 		if (userErrors == true) {
 			document.getElementById("checkout-error").style.display = "block";
 			document.getElementById("checkout-success").style.display = "none";
@@ -452,7 +610,7 @@ window.onload = function() {
 		xhr.onreadystatechange = function () {
 		    if (xhr.readyState === 4 && xhr.status === 200) {
 		        if (this.responseText == 'success') {
-		        	//window.location.assign("manage-projects.php");
+		        	window.location.assign("manage-projects.php");
 		        } else {
 		        	alert('Error: the server that hosts easymap could not complete your request.');
 		        }
@@ -477,7 +635,7 @@ window.onload = function() {
 					'n/p','n/p','n/p','n/p',
 					'n/p','n/p','n/p','n/p',
 					'n/p','n/p','n/p','n/p',
-					'sim_mut','sim_recsel','sim_seq'];
+					'n/p','n/p','n/p'];
 
 	// Create the command string for the first time (for development purposes only)
 	updateCmd();
@@ -485,12 +643,6 @@ window.onload = function() {
 	// React to interactions with text inputs
 	// Reset default content when user clicks on input box
 	document.getElementById("form1").projectName.onfocus = resetTextField;
-	//document.getElementById("form1").simMutNbr.onfocus = resetTextField;
-	//document.getElementById("form1").simSeqRD.onfocus = resetTextField;
-	//document.getElementById("form1").simSeqRL.onfocus = resetTextField;
-	//document.getElementById("form1").simSeqRD.onfocus = resetTextField;
-	//document.getElementById("form1").simSeqBER.onfocus = resetTextField;
-	//document.getElementById("form1").simSeqGBS.onfocus = resetTextField;
 	
 	// Verify input of text fields
 	document.getElementById("form1").projectName.onblur = verifyProjectName;
@@ -521,6 +673,12 @@ window.onload = function() {
 	//React to interactions with reads selectors
 	document.getElementById("form1").readsProblemSelector.onclick = checkProblemReads;
 	document.getElementById("form1").readsControlSelector.onclick = checkControlReads;
+
+	//React to interactions with simulation fields
+	document.getElementById("form1").simMut.onblur = verifySimMut;
+	document.getElementById("form1").simSeq.onblur = verifySimSeq;
+	document.getElementById("form1").simRecselA.onblur = verifySimrecselFieldA;
+	//document.getElementById("form1").simRecselB.onblur = verifySimrecselFieldB;
 
 	// React to interactions with backgroundCrossCtype buttons
 	document.getElementById("backgroundCrossCtype").onmouseout = checkBackgroundCrossCtypeIntermediateCheck;
