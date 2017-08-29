@@ -50,6 +50,7 @@ function listInputFiles() {
 			var fastaFiles = inputFilesresponse[0];
 			var refFiles = document.getElementById('refFileSelector');
 			var insFiles = document.getElementById('insFileSelector');
+			refFiles.options[refFiles.options.length] = new Option('Select a file', 'n/p');
 			insFiles.options[insFiles.options.length] = new Option('Select a file', 'n/p');
 			for (i = 0; i < fastaFiles.length; i++) {
 				refFiles.options[refFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
@@ -386,6 +387,82 @@ window.onload = function() {
 		updateCmd();
 	}
 
+	function verifySimrecselFieldA() {
+		var simRecselInputA = document.getElementById("form1").simRecselA.value;
+		var simRecselErrors = ["Errors:"]
+		var simRecselErr = false;
+
+		if (isJsonString(simRecselInputA) == false) {
+			document.getElementById("simRecselAValMsg").innerHTML = 'The structure of the input is not correct.';
+			document.getElementById("simRecselAValMsg").style.display = "block";
+			return false;
+		} else {
+			var simRecselInputA = JSON.parse(simRecselInputA);
+			
+			if (/[^0-9]/.test(simRecselInputA.contigCausalMut) || simRecselInputA.contigCausalMut < 1) {
+				simRecselErr = true;
+				simRecselErrors.push('"contigCausalMut" must be an integer equal or greater than 1.');
+			}
+			if (/[^0-9]/.test(simRecselInputA.posCausalMut) || simRecselInputA.posCausalMut < 1) {
+				simRecselErr = true;
+				simRecselErrors.push('"posCausalMut" must be an integer equal or greater than 1.');
+			}
+			if (/[^0-9]/.test(simRecselInputA.numRecChrs) || simRecselInputA.numRecChrs < 1) {
+				simRecselErr = true;
+				simRecselErrors.push('"numRecChrs" must be an integer equal or greater than 1.');
+			}
+
+			if (simRecselErr == true) {
+				document.getElementById("simRecselAValMsg").innerHTML = simRecselErrors.join("<br>");
+				document.getElementById("simRecselAValMsg").style.display = "block";
+				return false;
+			} else {
+				document.getElementById("simRecselAValMsg").style.display = "none";
+				return true;
+			}
+		}
+	}
+
+	function verifySimrecselFieldB() {
+		var simRecselInputB = document.getElementById("form1").simRecselB.value;
+		var simRecselErrors = ["Errors:"]
+		var simRecselErr = false;
+
+		if (isJsonString(simRecselInputB) == false) {
+			document.getElementById("simReqselBValMsg").innerHTML = 'The structure of the input is not correct.';
+			document.getElementById("simReqselBValMsg").style.display = "block";
+			return false;
+		} else {
+			var simRecselInputB = JSON.parse(simRecselInputB);
+
+			for (var key in simRecselInputB) {				
+				var recFreqs = simRecselInputB[key];
+				var ArrRecFreqs = recFreqs.split("-");
+				if (ArrRecFreqs.length < 2) {
+					simRecselErr = true;
+					simRecselErrors.push('The recombination frequencies of contig ' + key + ' have an incorrect format.');
+				} else {
+					// check every element against the pattern nbr,nbr
+					for (i = 0; i < ArrRecFreqs.length; i++) {
+						if (!/^\d{1,2}\,\d{1,2}$/.test(ArrRecFreqs[i])) {
+							simRecselErr = true;
+							simRecselErrors.push('The following parameter has a wrong format: ' + ArrRecFreqs[i] + '.');
+						}
+					}
+				}
+			}
+
+			if (simRecselErr == true) {
+				document.getElementById("simReqselBValMsg").innerHTML = simRecselErrors.join("<br>");
+				document.getElementById("simReqselBValMsg").style.display = "block";
+				return false;
+			} else {
+				document.getElementById("simReqselBValMsg").style.display = "none";
+				return true;
+			}
+		}
+	}
+
 	function verifySimSeq() {
 		var simSeqInput = document.getElementById("form1").simSeq.value;
 		var simSeqErrors = ["Errors:"]
@@ -428,7 +505,7 @@ window.onload = function() {
 			}
 			if (/[^0-9]/.test(simSeqInput.gcBias) || simSeqInput.gcBias < 0 || simSeqInput.gcBias > 100) {
 				simSeqErr = true;
-				simSeqErrors.push('"gcBias" must be an integer inthe interval [0-100].');
+				simSeqErrors.push('"gcBias" must be an integer in the interval [0-100].');
 			}
 
 			if (simSeqErr == true) {
@@ -444,55 +521,15 @@ window.onload = function() {
 		updateCmd();
 	}
 
-	function verifySimrecselFieldA() {
-		var simRecselInput = document.getElementById("form1").simRecselA.value;
-		var simRecselErrors = ["Errors:"]
-		var simRecselErr = false;
-
-		if (isJsonString(simRecselInput) == false) {
-			document.getElementById("simRecselAValMsg").innerHTML = 'The structure of the input is not correct.';
-			document.getElementById("simRecselAValMsg").style.display = "block";
-			cmdArgs[21] = 'n/p';
-		} else {
-			var simRecselInput = JSON.parse(simRecselInput);
-			
-			if (/[^0-9]/.test(simRecselInput.contigCausalMut) || simRecselInput.contigCausalMut < 1) {
-				simRecselErr = true;
-				simRecselErrors.push('"contigCausalMut" must be an integer equal or greater than 1.');
-			}
-			if (/[^0-9]/.test(simRecselInput.posCausalMut) || simRecselInput.posCausalMut < 1) {
-				simRecselErr = true;
-				simRecselErrors.push('"posCausalMut" must be an integer equal or greater than 1.');
-			}
-			if (/[^0-9]/.test(simRecselInput.numRecChrs) || simRecselInput.numRecChrs < 1) {
-				simRecselErr = true;
-				simRecselErrors.push('"numRecChrs" must be an integer equal or greater than 1.');
-			}
-
-			if (simRecselErr == true) {
-				cmdArgs[21] = 'n/p';
-				var simRecselErrorsString = simRecselErrors.join("<br>");
-				document.getElementById("simRecselAValMsg").innerHTML = simRecselErrorsString;
-				document.getElementById("simRecselAValMsg").style.display = "block";
-			} else {
-				document.getElementById("simRecselAValMsg").style.display = "none";
-				//cmdArgs[21] = simSeqInput.rdDepth + "+" + simSeqInput.rdSz + "," + simSeqInput.rdSd + "+" + simSeqInput.frSz + "," + simSeqInput.frSd + "+" + simSeqInput.errRt + "+" + simSeqInput.gcBias + "+" + simSeqInput.lib;
-				cmdArgs[21] = 'SUCCESS';
-			}
-		}
-		updateCmd();
-	}
-
-
-
-
-
+	// All intermediate checks require the user to interact with the different form fields. However, the user 
+	// could skip some elements by mistake. Therefore, I force the user to click in a button that executes the 
+	// following function, which checks the result of all form fields.
 	function commandFinalCheck() {
 		var userErrors = false;
 
 		// Check that project name has been set
 		if (cmdArgs[1] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			projectNameValidationInfoMessage = 'You must give a name to the project.';
 			document.getElementById("projectNameValidationInfo").innerHTML = projectNameValidationInfoMessage;
 			document.getElementById("projectNameValidationInfo").style.display = "block";
@@ -500,7 +537,7 @@ window.onload = function() {
 
 		// Check that mapping by sequencing strategy has been set
 		if (cmdArgs[2] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			analysisTypeValidationInfoMessage = 'You must choose a mapping by sequencing strategy.';
 			document.getElementById("analysisTypeValidationInfo").innerHTML = analysisTypeValidationInfoMessage;
 			document.getElementById("analysisTypeValidationInfo").style.display = "block";
@@ -508,7 +545,7 @@ window.onload = function() {
 
 		// Check that data source has been set
 		if (cmdArgs[3] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			dataSourceValidationInfoMessage = 'You must choose a data source.';
 			document.getElementById("dataSourceValidationInfo").innerHTML = dataSourceValidationInfoMessage;
 			document.getElementById("dataSourceValidationInfo").style.display = "block";
@@ -516,7 +553,7 @@ window.onload = function() {
 
 		// Check that reference sequence has been set
 		if (cmdArgs[4] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			refSeqValidationInfoMessage = 'You must select one or more reference sequence files.';
 			document.getElementById("refSeqValidationInfo").innerHTML = refSeqValidationInfoMessage;
 			document.getElementById("refSeqValidationInfo").style.display = "block";
@@ -524,7 +561,7 @@ window.onload = function() {
 
 		// If user chose tagged sequence mapping, check that an insertion sequence file has been selected
 		if (cmdArgs[2] == 'ins' && cmdArgs[5] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			insFileValidationInfoMessage = 'You must select an insertion sequence file.';
 			document.getElementById("insFileValidationInfo").innerHTML = insFileValidationInfoMessage;
 			document.getElementById("insFileValidationInfo").style.display = "block";
@@ -532,7 +569,7 @@ window.onload = function() {
 
 		// Check that gff file has been set
 		if (cmdArgs[6] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			gffFileValidationInfoMessage = 'You must select a GFF file that matches the names the reference sequence(s) selected.';
 			document.getElementById("gffFileValidationInfo").innerHTML = gffFileValidationInfoMessage;
 			document.getElementById("gffFileValidationInfo").style.display = "block";
@@ -546,51 +583,73 @@ window.onload = function() {
 
 		// If user chose own experimental data, check if problem reads file(s) have been specified
 		if (cmdArgs[3] == 'exp' && cmdArgs[11] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			readsProblemValidationInfoMessage = 'You must select your problem reads (one file for single-end reads, and two files for paired-end reads).';
 			document.getElementById("readsProblemWarnMsg").innerHTML = readsProblemValidationInfoMessage;
 			document.getElementById("readsProblemWarnMsg").style.display = "block";
 		}
 
-		// If user chose own experimental data and MbS analysis, check if all two-way selectors were clicked on
-		if (cmdArgs[3] == 'exp' && cmdArgs[2] == 'snp') {
+		// If user chose MbS analysis, check if all two-way selectors were clicked on
+		if (cmdArgs[2] == 'snp') {
 			if (cmdArgs[16] == 'n/p') {
-				var userErrors = true;
+				userErrors = true;
 				document.getElementById("mutBackgroundValidationInfo").innerHTML = 'You must select a mutant background.';
 				document.getElementById("mutBackgroundValidationInfo").style.display = "block";
 			}
 			if (cmdArgs[17] == 'n/p') {
-				var userErrors = true;
+				userErrors = true;
 				document.getElementById("crossTypeValidationInfo").innerHTML = 'You must select the mapping cross performed.';
 				document.getElementById("crossTypeValidationInfo").style.display = "block";
 			}
 			if (cmdArgs[18] == 'n/p') {
-				var userErrors = true;
+				userErrors = true;
 				document.getElementById("contTypeValidationInfo").innerHTML = 'You must select the origin of the control reads.';
 				document.getElementById("contTypeValidationInfo").style.display = "block";
 			}
 		}
 
 		// If user chose own experimental data and MbS analysis, check if control reads file(s) have been specified
-		if (cmdArgs[3] == 'exp' && cmdArgs[2] == 'snp' && cmdArgs[15] == 'n/p') {
-			var userErrors = true;
+		if (cmdArgs[2] == 'snp' && cmdArgs[3] == 'exp' && cmdArgs[15] == 'n/p') {
+			userErrors = true;
 			readsControlValidationInfoMessage = 'You must select your control reads (one file for single-end reads, and two files for paired-end reads).';
 			document.getElementById("readsControlWarnMsg").innerHTML = readsControlValidationInfoMessage;
 			document.getElementById("readsControlWarnMsg").style.display = "block";
 		}
 
-		// If user chose simulated, check if simMut and simSeq parameters have been set properly
+		// If user chose simulated data, check if simMut and simSeq parameters have been set properly
 		if (cmdArgs[3] == 'sim' && cmdArgs[20] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			document.getElementById("simMutValMsg").innerHTML = 'The input in this field is not correct.';
 			document.getElementById("simMutValMsg").style.display = "block";
 		}
 
 		if (cmdArgs[3] == 'sim' && cmdArgs[22] == 'n/p') {
-			var userErrors = true;
+			userErrors = true;
 			document.getElementById("simSeqValMsg").innerHTML = 'The input in this field is not correct.';
 			document.getElementById("simSeqValMsg").style.display = "block";
 		}
+
+		// If user chose MbS simulated data, check simRecsel parameters
+		if (cmdArgs[2] == 'snp' && cmdArgs[3] == 'sim') {
+			if (verifySimrecselFieldA() == true && verifySimrecselFieldB() == true) {
+				var InA = JSON.parse(document.getElementById("form1").simRecselA.value);
+				var InB = JSON.parse(document.getElementById("form1").simRecselB.value);
+				var str2 = Object.keys(InB).map(function(k){return InB[k]}).join("/");
+				var str1 = InA.contigCausalMut + '+' + InA.posCausalMut + '+' + InA.numRecChrs;
+				cmdArgs[21] = str2 + '+' + str1;
+				updateCmd();
+			}
+			if (verifySimrecselFieldA() == false) {
+				userErrors = true;
+				document.getElementById("simRecselAValMsg").innerHTML = 'The input in this field is not correct.';
+				document.getElementById("simRecselAValMsg").style.display = "block";
+			}
+			if (verifySimrecselFieldB() == false) {
+				userErrors = true;			
+				document.getElementById("simReqselBValMsg").innerHTML = 'The input in this field is not correct.';
+				document.getElementById("simReqselBValMsg").style.display = "block";
+			}
+		}	
 
 		if (userErrors == true) {
 			document.getElementById("checkout-error").style.display = "block";
@@ -678,7 +737,7 @@ window.onload = function() {
 	document.getElementById("form1").simMut.onblur = verifySimMut;
 	document.getElementById("form1").simSeq.onblur = verifySimSeq;
 	document.getElementById("form1").simRecselA.onblur = verifySimrecselFieldA;
-	//document.getElementById("form1").simRecselB.onblur = verifySimrecselFieldB;
+	document.getElementById("form1").simRecselB.onblur = verifySimrecselFieldB;
 
 	// React to interactions with backgroundCrossCtype buttons
 	document.getElementById("backgroundCrossCtype").onmouseout = checkBackgroundCrossCtypeIntermediateCheck;
@@ -689,3 +748,6 @@ window.onload = function() {
 	// React to interactions with button to run project
 	document.getElementById("runProjectButton").onclick = runProject;
 }
+
+
+// TO DO: Show and check MbS experimental design when data is simulated!

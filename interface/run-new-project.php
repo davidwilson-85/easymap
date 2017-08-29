@@ -93,7 +93,7 @@ body {font-size:16px;}
 			
 		<form id="form1">
 			
-			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
+			<div class="formInfo" id="formInfoSim">General parameters</div>
 			
 			<p>
 				Project name (only alphanumeric characters are allowed):<br>
@@ -134,7 +134,7 @@ body {font-size:16px;}
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
 			Reference sequence (You can select multiple files by pressing and holding the Ctrl/Cmd key):<br>
-			<select multiple id="refFileSelector" size="5" style="display:block; margin-bottom:22px;"></select>
+			<select id="refFileSelector" style="display:block; margin-bottom:22px;"></select>
 			<div id="refSeqValidationInfo" class="warningMessage"></div>
 			
 			<div id="insSeqField"> <!-- Not displayed by default -->
@@ -150,63 +150,64 @@ body {font-size:16px;}
 			Gene functional annotation file [OPTIONAL]:<br>
 			<select id="annFileSelector" style="display:block; margin-bottom:22px;"></select>
 			<div id="annFileValidationInfo" class="warningMessage"></div>
-		
-			<div id="expDataInterface">
+			
+			<div id="backgroundCrossCtype" style="display:none;"> <!-- Not displayed by default -->
 				<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
-
-				<div id="backgroundCrossCtype">
-					
-					Mutant background: [TO DO: Perform additional checks to validate the design chosen by user]
-					<div class="buttons-wrap">
-						<div class="mx-button">
-							<input type="radio" class="mutBackground" name="mxMB" id="button11" />
-							<label for="button11" unselectable>Reference</label>
-						</div>
-						<div class="mx-button">
-							<input type="radio" class="mutBackground" name="mxMB" id="button12" />
-							<label for="button12" unselectable>Non-reference</label>
-						</div>
-						<div class="clear-floats"></div>
+				
+				Mutant background: [TO DO: Perform additional checks to validate the design chosen by user]
+				<div class="buttons-wrap">
+					<div class="mx-button">
+						<input type="radio" class="mutBackground" name="mxMB" id="button11" />
+						<label for="button11" unselectable>Reference</label>
 					</div>
-
-					<div id="mutBackgroundValidationInfo" class="warningMessage"></div>
-
-					Mapping cross performed:
-					<div class="buttons-wrap">
-						<div class="mx-button">
-							<input type="radio" class="crossType" name="mxCR" id="button13" />
-							<label for="button13" unselectable>Backcross</label>
-						</div>
-						<div class="mx-button">
-							<input type="radio" class="crossType" name="mxCR" id="button14" />
-							<label for="button14" unselectable>Outcross</label>
-						</div>
-						<div class="clear-floats"></div>
+					<div class="mx-button">
+						<input type="radio" class="mutBackground" name="mxMB" id="button12" />
+						<label for="button12" unselectable>Non-reference</label>
 					</div>
-
-					<div id="crossTypeValidationInfo" class="warningMessage"></div>
-
-					Origin of the control reads:
-					<div class="buttons-wrap">
-						<div class="mx-button">
-							<input type="radio" class="contType" name="mxCO" id="button15" />
-							<label for="button15" unselectable>Mutant parental</label>
-						</div>
-						<div class="mx-button">
-							<input type="radio" class="contType" name="mxCO" id="button16" />
-							<label for="button16" unselectable>Polymorphic parental</label>
-						</div>
-						<div class="mx-button">
-							<input type="radio" class="contType" name="mxCO" id="button17" />
-							<label for="button17" unselectable>F2 wild-types</label>
-						</div>
-						<div class="clear-floats"></div>
-					</div>
-
-					<div id="contTypeValidationInfo" class="warningMessage"></div>
-
-					<div id="backgroundCrossCtypeWarnMsg" class="warningMessage">Invalid combination. Easymap does not support this experimental design.</div>
+					<div class="clear-floats"></div>
 				</div>
+
+				<div id="mutBackgroundValidationInfo" class="warningMessage"></div>
+
+				Mapping cross performed:
+				<div class="buttons-wrap">
+					<div class="mx-button">
+						<input type="radio" class="crossType" name="mxCR" id="button13" />
+						<label for="button13" unselectable>Backcross</label>
+					</div>
+					<div class="mx-button">
+						<input type="radio" class="crossType" name="mxCR" id="button14" />
+						<label for="button14" unselectable>Outcross</label>
+					</div>
+					<div class="clear-floats"></div>
+				</div>
+
+				<div id="crossTypeValidationInfo" class="warningMessage"></div>
+
+				Origin of the control reads:
+				<div class="buttons-wrap">
+					<div class="mx-button">
+						<input type="radio" class="contType" name="mxCO" id="button15" />
+						<label for="button15" unselectable>Mutant parental</label>
+					</div>
+					<div class="mx-button">
+						<input type="radio" class="contType" name="mxCO" id="button16" />
+						<label for="button16" unselectable>Polymorphic parental</label>
+					</div>
+					<div class="mx-button">
+						<input type="radio" class="contType" name="mxCO" id="button17" />
+						<label for="button17" unselectable>F2 wild-types</label>
+					</div>
+					<div class="clear-floats"></div>
+				</div>
+
+				<div id="contTypeValidationInfo" class="warningMessage"></div>
+
+				<div id="backgroundCrossCtypeWarnMsg" class="warningMessage">Invalid combination. Easymap does not support this experimental design.</div>
+			</div>
+
+			<div id="expDataInterface">
+				<div class="formInfo" id="formInfoSim">Experimental reads</div>
 
 				Sample reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
 				<select multiple id="readsProblemSelector" style="display:block; margin-bottom:22px;"></select>
@@ -224,21 +225,22 @@ body {font-size:16px;}
 
 				<div id="simMutInterface">
 					Mutagenesis parameters:<br>
-					<input type="text" name="simMut" class="sim" value='{"numberMutations":"0"}' />
+					<input type="text" name="simMut" class="sim" style="display:block;" value='{"numberMutations":"0"}' />
 					<div id="simMutValMsg" class="warningMessage"></div>
 				</div>
 				
 				<div id="simRecselInterface">
 					Recombination and selection parameters:<br>
-					<input type="text" name="simRecselA" class="sim" value='{"contigCausalMut":"1", "posCausalMut":"15486357", "numRecChrs":"250"}' />
+					<input type="text" name="simRecselA" class="sim" style="display:block;" value='{"contigCausalMut":"1", "posCausalMut":"1000000", "numRecChrs":"100"}' />
 					<div id="simRecselAValMsg" class="warningMessage"></div>
-					<input type="text" name="simRecselB" class="sim" value='{"1":"0,14-1,31-2,33-3,15-4,5-5,2", "2":"0,24-1,42-2,25-3,6-4,1-5,2"}' />
+					Contig recombination frequency distributions:<br>
+					<input type="text" name="simRecselB" class="sim" style="display:block;" value='{"1":"0,14-1,31-2,33-3,15-4,5-5,2", "2":"0,24-1,42-2,25-3,6-4,1-5,2"}' />
 					<div id="simReqselBValMsg" class="warningMessage"></div>
 				</div>
 		
 				<div id="simSeqInterface">
 					Sequencing parameters:<br>
-					<input type="text" name="simSeq" class="sim" value='{"lib":"pe", "frSz":"500", "frSd":"100", "rdDepth":"80", "rdSz":"100", "rdSd":"0", "errRt":"1", "gcBias":"75"}' />
+					<input type="text" name="simSeq" class="sim" style="display:block;" value='{"lib":"-", "frSz":"500", "frSd":"100", "rdDepth":"50", "rdSz":"100", "rdSd":"0", "errRt":"1", "gcBias":"50"}' />
 					<div id="simSeqValMsg" class="warningMessage"></div>
 				</div>		
 			</div>
