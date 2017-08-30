@@ -83,7 +83,7 @@ body {font-size:16px;}
     
     <h3>Project name: <span id="projectName"><?php echo $project_name ?></span></h3>
     <p><a href="#" onclick="logInfo()">Refresh log</a></p>
-    <div id="logInfo"></div>
+    <div id="logInfo" style="font-family:monospace; font-size:15px;"></div>
     <p>This page is updated when it is initially loaded, every 50 sec,
     and also by clicking on "Refresh log".</p>
   </div>

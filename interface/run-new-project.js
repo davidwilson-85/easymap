@@ -47,34 +47,57 @@ function listInputFiles() {
 			var inputFilesresponse = JSON.parse(this.responseText);
 
 			// Create interface to select reference sequence contigs and insertion sequence
-			var fastaFiles = inputFilesresponse[0];
+			var fastaBasenames = inputFilesresponse[0];
 			var refFiles = document.getElementById('refFileSelector');
+			if ((fastaBasenames.length < 1)) {
+				refFiles.options[refFiles.options.length] = new Option('There are no files with .fa extension', 'n/p');
+			} else {
+				refFiles.options[refFiles.options.length] = new Option('Select a basename', 'n/p');
+				for (i = 0; i < fastaBasenames.length; i++) {
+					refFiles.options[refFiles.options.length] = new Option(fastaBasenames[i], fastaBasenames[i]);
+				}
+			}
+
+			// Create interface to select insertion sequence
+			var fastaFiles = inputFilesresponse[1];
 			var insFiles = document.getElementById('insFileSelector');
-			refFiles.options[refFiles.options.length] = new Option('Select a file', 'n/p');
-			insFiles.options[insFiles.options.length] = new Option('Select a file', 'n/p');
-			for (i = 0; i < fastaFiles.length; i++) {
-				refFiles.options[refFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
-				insFiles.options[insFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
+			if (fastaFiles.length < 1) {
+				insFiles.options[insFiles.options.length] = new Option('There are no files with .fa extension', 'n/p');
+			} else {
+				insFiles.options[insFiles.options.length] = new Option('Select a file', 'n/p');
+				for (i = 0; i < fastaFiles.length; i++) {
+					insFiles.options[insFiles.options.length] = new Option(fastaFiles[i], fastaFiles[i]);
+				}
 			}
 
 			// Create interface to select GFF and ANN files
-			var otherFiles = inputFilesresponse[2];
+			var otherFiles = inputFilesresponse[3];
 			var gffFiles = document.getElementById('gffFileSelector');
 			var annFiles = document.getElementById('annFileSelector');
-			gffFiles.options[gffFiles.options.length] = new Option('Select a file', 'n/p');
-			annFiles.options[annFiles.options.length] = new Option('Select a file', 'n/p');
-			for (i = 0; i < otherFiles.length; i++) {
-				gffFiles.options[gffFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
-				annFiles.options[annFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
+			if (otherFiles.length < 1) {
+				gffFiles.options[gffFiles.options.length] = new Option('There are no files with the appropriate extension', 'n/p');
+				annFiles.options[annFiles.options.length] = new Option('There are no files with the appropriate extension');
+			} else {
+				gffFiles.options[gffFiles.options.length] = new Option('Select a file', 'n/p');
+				annFiles.options[annFiles.options.length] = new Option('Select a file', 'n/p');
+				for (i = 0; i < otherFiles.length; i++) {
+					gffFiles.options[gffFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
+					annFiles.options[annFiles.options.length] = new Option(otherFiles[i], otherFiles[i]);
+				}
 			}
 
 			// Create interfaces to select fastq files
-			var fastqFiles = inputFilesresponse[1];
+			var fastqFiles = inputFilesresponse[2];
 			var readsProblem = document.getElementById('readsProblemSelector');
 			var readsControl = document.getElementById('readsControlSelector');
-			for (i = 0; i < fastqFiles.length; i++) {
-				readsProblem.options[readsProblem.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
-				readsControl.options[readsControl.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
+			if (fastqFiles.length < 1) {
+				readsProblem.options[readsProblem.options.length] = new Option('There are no files with .fq extension', 'n/p');
+				readsControl.options[readsControl.options.length] = new Option('There are no files with .fq extension', 'n/p');
+			} else {
+				for (i = 0; i < fastqFiles.length; i++) {
+					readsProblem.options[readsProblem.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
+					readsControl.options[readsControl.options.length] = new Option(fastqFiles[i], fastqFiles[i]);
+				}
 			}
 		}
 	};
@@ -113,10 +136,11 @@ window.onload = function() {
 	// Uptdate the command arguments in the screen
 	// This function is called in many other functions after updating the value of an argument.
 	function updateCmd() {
-			document.getElementById("commandString").innerHTML = cmdArgs;
+			console.log(cmdArgs);
+			//document.getElementById("commandString").innerHTML = cmdArgs;
 	}
 	
-	//
+	// Check if project name is suitable for easymap
 	function verifyProjectName(){
 		var text = document.getElementById("form1").projectName.value;
 		if(/[^a-zA-Z0-9]/.test( text) ) {
@@ -133,7 +157,7 @@ window.onload = function() {
 			cmdArgs[1] = document.getElementById("form1").projectName.value;
 			document.getElementById("projectNameValidationInfo").style.display = "none";
 		}
-		updateCmd();
+		//updateCmd();
 	}
 	
 	// Determine option button selected and define the appropriate command argument
@@ -169,7 +193,7 @@ window.onload = function() {
 				document.getElementById("simDataInterface").style.display = "block";
 			}
 		}
-		updateCmd();
+		//updateCmd();
 		document.getElementById("analysisTypeValidationInfo").style.display = "none";		
 	}
 	
@@ -194,10 +218,11 @@ window.onload = function() {
 				document.getElementById("simDataInterface").style.display = "block";
 			}
 		}
-		updateCmd();
+		//updateCmd();
 		document.getElementById("dataSourceValidationInfo").style.display = "none";
 	}
 	
+	/* OLD METHOD TO CHECK MULTIPLE REFERENCE SEQUENCE FILES
 	// Determine all the reference file names selected, add them to array, and then to command argument
 	function checkRefSeqs() {
 		var contigs = document.getElementById("refFileSelector");
@@ -209,12 +234,17 @@ window.onload = function() {
 			}
 		}
 		cmdArgs[4] = contigsList;
-		updateCmd();
+		//updateCmd();
 		document.getElementById("refSeqValidationInfo").style.display = "none";
 	}
+	*/
 
 	// Update command arguments after each user interaction with sinlge selectors
 	function processSingleSelectors() {
+		if (this.id == 'refFileSelector') {
+			cmdArgs[4] = this.value;
+			document.getElementById("refSeqValidationInfo").style.display = "none";
+		}
 		if (this.id == 'insFileSelector') {
 			cmdArgs[5] = this.value;
 			document.getElementById("insFileValidationInfo").style.display = "none";
@@ -226,7 +256,7 @@ window.onload = function() {
 		if (this.id == 'annFileSelector') {
 			cmdArgs[7] = this.value;
 		}
-		updateCmd();
+		//updateCmd();
 		document.getElementById("annReminderMsg").style.display = "none";	
 	}
 
@@ -243,7 +273,7 @@ window.onload = function() {
 		} else {
 			cmdArgs[16] = 'noref';
 		}
-		updateCmd();
+		//updateCmd();
 		document.getElementById("mutBackgroundValidationInfo").style.display = "none";
 	}
 
@@ -260,7 +290,7 @@ window.onload = function() {
 		} else {
 			cmdArgs[17] = 'oc';
 		}
-		updateCmd();
+		//updateCmd();
 		document.getElementById("crossTypeValidationInfo").style.display = "none";
 	}
 
@@ -282,7 +312,7 @@ window.onload = function() {
 			cmdArgs[18] = 'f2wt';
 			cmdArgs[19] = 'n/p';
 		}
-		updateCmd();
+		//updateCmd();
 		document.getElementById("contTypeValidationInfo").style.display = "none";
 	}
 
@@ -321,17 +351,17 @@ window.onload = function() {
 
 		if (readsList.length == 1) {
 			cmdArgs[8] = readsList[0]; cmdArgs[9] = 'n/p'; cmdArgs[10] = 'n/p'; cmdArgs[11] = 'se';
-			updateCmd();
+			//updateCmd();
 			// Hide error message
 			document.getElementById("readsProblemWarnMsg").style.display = "none";
 		} else if (readsList.length == 2) {
 			cmdArgs[8] = 'n/p'; cmdArgs[9] = readsList[0]; cmdArgs[10] = readsList[1]; cmdArgs[11] = 'pe';
-			updateCmd();
+			//updateCmd();
 			// Hide error message
 			document.getElementById("readsProblemWarnMsg").style.display = "none";
 		} else {
 			cmdArgs[8] = 'n/p'; cmdArgs[9] = 'n/p'; cmdArgs[10] = 'n/p'; cmdArgs[11] = 'n/p';
-			updateCmd();
+			//updateCmd();
 			// Display error message
 			document.getElementById("readsProblemWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
 			document.getElementById("readsProblemWarnMsg").style.display = "block";
@@ -350,17 +380,17 @@ window.onload = function() {
 
 		if (readsListC.length == 1) {
 			cmdArgs[12] = readsListC[0]; cmdArgs[13] = 'n/p'; cmdArgs[14] = 'n/p'; cmdArgs[15] = 'se';
-			updateCmd();
+			//updateCmd();
 			// Hide error message
 			document.getElementById("readsControlWarnMsg").style.display = "none";
 		} else if (readsListC.length == 2) {
 			cmdArgs[12] = 'n/p'; cmdArgs[13] = readsListC[0]; cmdArgs[14] = readsListC[1]; cmdArgs[15] = 'pe';
-			updateCmd();
+			//updateCmd();
 			// Hide error message
 			document.getElementById("readsControlWarnMsg").style.display = "none";
 		} else {
 			cmdArgs[12] = 'n/p'; cmdArgs[13] = 'n/p'; cmdArgs[14] = 'n/p'; cmdArgs[15] = 'n/p';
-			updateCmd();
+			//updateCmd();
 			// Show error message
 			document.getElementById("readsControlWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
 			document.getElementById("readsControlWarnMsg").style.display = "block";
@@ -381,10 +411,14 @@ window.onload = function() {
 				cmdArgs[20] = 'n/p';
 			} else {
 				document.getElementById("simMutValMsg").style.display = "none";
-				cmdArgs[20] = simMutInput.numberMutations;
+				if (cmdArgs[2] == 'ins') {
+					cmdArgs[20] = simMutInput.numberMutations + "+li";
+				} else {
+					cmdArgs[20] = simMutInput.numberMutations + "+e";
+				}
 			}
 		}
-		updateCmd();
+		//updateCmd();
 	}
 
 	function verifySimrecselFieldA() {
@@ -471,7 +505,7 @@ window.onload = function() {
 		if (isJsonString(simSeqInput) == false) {
 			document.getElementById("simSeqValMsg").innerHTML = 'The structure of the input is not correct.';
 			document.getElementById("simSeqValMsg").style.display = "block";
-			cmdArgs[22] = 'n/p';
+			cmdArgs[22] = 'n/p'; cmdArgs[11] = 'n/p'; cmdArgs[15] = 'n/p';
 		} else {
 			var simSeqInput = JSON.parse(simSeqInput);
 			
@@ -509,16 +543,17 @@ window.onload = function() {
 			}
 
 			if (simSeqErr == true) {
-				cmdArgs[22] = 'n/p';
+				cmdArgs[22] = 'n/p'; cmdArgs[11] = 'n/p'; cmdArgs[15] = 'n/p';
 				var simSeqErrorsString = simSeqErrors.join("<br>");
 				document.getElementById("simSeqValMsg").innerHTML = simSeqErrorsString;
 				document.getElementById("simSeqValMsg").style.display = "block";
 			} else {
 				document.getElementById("simSeqValMsg").style.display = "none";
-				cmdArgs[22] = simSeqInput.rdDepth + "+" + simSeqInput.rdSz + "," + simSeqInput.rdSd + "+" + simSeqInput.frSz + "," + simSeqInput.frSd + "+" + simSeqInput.errRt + "+" + simSeqInput.gcBias + "+" + simSeqInput.lib;
+				cmdArgs[22] = simSeqInput.rdDepth + "+" + simSeqInput.rdSz + "," + simSeqInput.rdSd + "+" + simSeqInput.frSz + "," + simSeqInput.frSd + "+" + simSeqInput.errRt + "+" + simSeqInput.gcBias;
+				cmdArgs[11] = simSeqInput.lib; cmdArgs[15] = simSeqInput.lib;
 			}
 		}
-		updateCmd();
+		//updateCmd();
 	}
 
 	// All intermediate checks require the user to interact with the different form fields. However, the user 
@@ -637,7 +672,7 @@ window.onload = function() {
 				var str2 = Object.keys(InB).map(function(k){return InB[k]}).join("/");
 				var str1 = InA.contigCausalMut + '+' + InA.posCausalMut + '+' + InA.numRecChrs;
 				cmdArgs[21] = str2 + '+' + str1;
-				updateCmd();
+				//updateCmd();
 			}
 			if (verifySimrecselFieldA() == false) {
 				userErrors = true;
@@ -663,22 +698,41 @@ window.onload = function() {
 	// Function to trigger a new easymap execution and to redirect browser to manage-projects.php 
 	function runProject() {
 		var xhr = new XMLHttpRequest();
-		var url = "run-new-project-create-command.php";
-		xhr.open("POST", url, true);
+		xhr.open("POST", "run-new-project-create-command.php", true);
 		xhr.setRequestHeader("Content-type", "application/json");
+		xhr.send(JSON.stringify(cmdArgs));
+		/* Maby desirable: A way to check if the request was processed correctly by php
 		xhr.onreadystatechange = function () {
 		    if (xhr.readyState === 4 && xhr.status === 200) {
 		        if (this.responseText == 'success') {
-		        	window.location.assign("manage-projects.php");
+		        	//
 		        } else {
 		        	alert('Error: the server that hosts easymap could not complete your request.');
 		        }
 		    }
 		};
-		var data = JSON.stringify(cmdArgs);
-		xhr.send(data);
+		*/
+		window.location.assign("manage-projects.php");
 	}
 
+	/* OLD WAY OF RUNNING NEW PROJECT
+	<a href="manage-projects.htm" class="button" onclick="runProject()">Run workflow</a>
+
+	function runProject() {
+		//alert('Button pressed');
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("commandResponse").innerHTML = this.responseText;
+			}
+		};
+		
+		var arguments = "test-arg";
+		
+		xmlhttp.open("GET", "run-new-project.php?args=" + arguments, true);
+		xmlhttp.send();
+	}
+	*/
 
 	// End of functions *******************************************************************************************************************
 	
@@ -697,7 +751,7 @@ window.onload = function() {
 					'n/p','n/p','n/p'];
 
 	// Create the command string for the first time (for development purposes only)
-	updateCmd();
+	//updateCmd();
 
 	// React to interactions with text inputs
 	// Reset default content when user clicks on input box
@@ -711,11 +765,9 @@ window.onload = function() {
 	document.getElementById("button2").onclick = buttons_analysisType;
 	document.getElementById("button3").onclick = buttons_dataSource;
 	document.getElementById("button4").onclick = buttons_dataSource;
-
-	// React to interactions with genome contigs selector
-	document.getElementById("form1").refFileSelector.onblur = checkRefSeqs;
 	
-	// React to single selectors (insSeq, gffFile, annFile...)
+	// React to single selectors (refSeq, insFile, gffFile, annFile...)
+	document.getElementById("form1").refFileSelector.onblur = processSingleSelectors;
 	document.getElementById("form1").insFileSelector.onblur = processSingleSelectors;
 	document.getElementById("form1").gffFileSelector.onblur = processSingleSelectors;
 	document.getElementById("form1").annFileSelector.onblur = processSingleSelectors;

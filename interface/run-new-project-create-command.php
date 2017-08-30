@@ -16,18 +16,18 @@ header("Content-Type: application/json");
 $cmdArray = json_decode(file_get_contents("php://input"));
 
 // Elaborate the command string
-$refSeqsString = implode("+", $cmdArray[4]);
-$cmdArray[4] = $refSeqsString;
+//$refSeqsString = implode("+", $cmdArray[4]);
+//$cmdArray[4] = $refSeqsString;
 $cmdString = implode(" ", $cmdArray);
 
 // Run workflow
 shell_exec('cd ..; '. $cmdString);
 
 // Only for development
-$file = fopen('file.txt', 'w');
-fwrite($file, $cmdString);
-fclose($file);
+//$file = fopen('file.txt', 'w');
+//fwrite($file, $cmdString);
+//fclose($file);
 
-echo 'success';
+//echo 'success';
 
 ?>

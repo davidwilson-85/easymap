@@ -133,7 +133,7 @@ body {font-size:16px;}
 
 			<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 			
-			Reference sequence (You can select multiple files by pressing and holding the Ctrl/Cmd key):<br>
+			Reference sequence:<br>
 			<select id="refFileSelector" style="display:block; margin-bottom:22px;"></select>
 			<div id="refSeqValidationInfo" class="warningMessage"></div>
 			
@@ -265,10 +265,6 @@ body {font-size:16px;}
 			</div>
 		
 		</form>
-		
-		<br><br><br>
-
-		<p id="commandString"</p>
     </div>
   </div>
 <!-- End of page content -->
