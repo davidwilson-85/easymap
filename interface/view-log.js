@@ -23,10 +23,11 @@ window.onload = function() {
 	readLog(projectName)
 
 	// Call function readLog() every few seconds
-	setInterval(readLog, 50000); // Second argument is the interval in milliseconds
+	//setInterval(readLog, 50000); 
 
 
-
-
+	setInterval(function() {
+		readLog(projectName);
+	}, 50000 );
 
 }
