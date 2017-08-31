@@ -77,7 +77,7 @@ body {font-size:16px;}
   <div class="w3-container" style="margin-top:75px">
     <h1 class="w3-xxxlarge w3-text-red"><b>Manage projects</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <h3>Current projects:</h3>
+    <h3>Current projects in disk (most recent above):</h3>
     <p><a href="" onclick="projectsInfo()">Refresh table</a></p>
     <div id="projectsInfo">
     	<!-- Here goes dynamic content with projects info and tools to manipulate projects -->

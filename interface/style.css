@@ -20,6 +20,7 @@ was also created by the W3C.
 	font-family: "Poppins", sans-serif;
 	font-weight:400;
 	font-size: 15px;
+	cursor:pointer;
 }
 
 .button:hover {
@@ -46,16 +47,17 @@ was also created by the W3C.
 	width: 33%;
 }
 
-#left { width: 45%; }
-#center { width: 15%; }
-#right { width: 20%; }
+.left { width: 45%; }
+.center { width: 15%; }
+.right { width: 20%; }
 
-#files-separator {
+.files-separator {
 	clear: both;
-	margin: 7px 0;
+	margin: 20px 0 7px 0;
+	border: 1px solid rgb(200,200,200);
 }
 
-/* Styles for the warning messages to user */
+/* Styles for the messages to user */
 
 .warningMessage {
 	display:none;
@@ -63,6 +65,14 @@ was also created by the W3C.
 	padding:12px 20px;
 	background-color: #f76f6f;
 	/*color:white;*/
+	border-radius: 5px;
+}
+
+.emptyResult {
+	display:block;
+	margin:30px 0;
+	padding:60px 40px;
+	background-color: #77d197;
 	border-radius: 5px;
 }
 

@@ -20,19 +20,25 @@ function filesInfo() {
 	xmlhttp.send();
 }
 
+function ShowRemoveFile(fileName) {
+	document.getElementById("rmFile_" + fileName).style.display = "block";
+}
+
+function HideRemoveFile(fileName) {
+	document.getElementById("rmFile_" + fileName).style.display = "none";
+}
+
 // Function to communicate html with php via AJAX to remove a project from disk 
 function removeFile(fileName) {
-	if (confirm('Are you sure you want to permanently remove this file from disk?')) {
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				// Update files info on screen
-				filesInfo()
-			}
-		};
-		xmlhttp.open("GET", "manage-input-files-removeFile.php?f="+fileName, true);
-		xmlhttp.send();
-	}
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			// Update files info on screen
+			filesInfo()
+		}
+	};
+	xmlhttp.open("GET", "manage-input-files-removeFile.php?f="+fileName, true);
+	xmlhttp.send();
 }
 
 /*
