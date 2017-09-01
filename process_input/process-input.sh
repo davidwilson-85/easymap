@@ -305,10 +305,10 @@ elif [ $match == 1 ]; then
 		echo $(date)": Contigs match check between FASTA and GFF3 inputs failed. FASTA input, GFF3 input, or both are empty. Please provide new files." >> $my_log_file
 		exit_code=1
 elif [ $match == 2 ]; then
-		echo $(date)": Contigs match check between FASTA and GFF3 inputs failed. The contig names in the FASTA are not in GFF3. Please provide new files." >> $my_log_file
+		echo $(date)": Contigs match check between FASTA and GFF3 inputs failed. One or more contig names in the FASTA file are not in the GFF3 file. Please provide new files." >> $my_log_file
 		exit_code=1
 elif [ $match == 3 ]; then
-		echo $(date)": Contigs match check between FASTA and GFF3 inputs failed. Some contig names in the GFF3 are not in FASTA. The process will proceed, please mind the existance of such differences." >> $my_log_file	
+		echo $(date)": Contigs match check between FASTA and GFF3 inputs. Warning: some contig names in the GFF3 file are not in the FASTA file. The execution will continue. Please provide new files if considered necessary." >> $my_log_file	
 fi
 
 echo $exit_code

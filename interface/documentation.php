@@ -36,16 +36,18 @@ if ($password == $reference_password) {
 <title>Easymap</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link rel="stylesheet" href="w3c.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-<script type="text/javascript" src="manage-projects.js"></script>
+
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
 body {font-size:16px;}
 .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
 .w3-half img:hover{opacity:1}
 </style>
+
 <body>
 
 <!-- Sidebar/menu -->
@@ -75,17 +77,19 @@ body {font-size:16px;}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <div class="w3-container" style="margin-top:75px">
-    <h1 class="w3-xxxlarge w3-text-red"><b>Manage projects</b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b>Documentation</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <h3>Current projects in disk (most recent above):</h3>
-    <p><a href="" onclick="projectsInfo()">Refresh table</a></p>
-    <div id="projectsInfo">
-    	<!-- Here goes dynamic content with projects info and tools to manipulate projects -->
+    <h3>...</h3>
+    
+    <!-- here goes content -->
+    <div>
+    	<iframe src="../documentation/easymap-documentation.pdf" width="100%" height="750px">
+    		This browser does not support PDFs. Please download the PDF to view it:
+    		<a href="../documentation/easymap-documentation.pdf">Download PDF</a>
+		</iframe>
     </div>
-    <p>This page is updated when it is initially loaded, every 50 sec,
-    by interacting with the table, and also by clicking on "Refresh table".</p>
+
   </div>
-  
 <!-- End of page content -->
 </div>
 
@@ -118,7 +122,6 @@ function onClick(element) {
 </html>
 
 <?php
-// Start of code for dealing with password
+// Code for dealing with password
 }
-// End of code for dealing with password
 ?>

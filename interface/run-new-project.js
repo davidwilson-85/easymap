@@ -670,7 +670,7 @@ window.onload = function() {
 				var InA = JSON.parse(document.getElementById("form1").simRecselA.value);
 				var InB = JSON.parse(document.getElementById("form1").simRecselB.value);
 				var str2 = Object.keys(InB).map(function(k){return InB[k]}).join("/");
-				var str1 = InA.contigCausalMut + '+' + InA.posCausalMut + '+' + InA.numRecChrs;
+				var str1 = InA.contigCausalMut + ',' + InA.posCausalMut + '+r+' + InA.numRecChrs;
 				cmdArgs[21] = str2 + '+' + str1;
 				//updateCmd();
 			}
