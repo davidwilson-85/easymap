@@ -1,6 +1,5 @@
 <?php
-/**
- * upload.php
+/*
  *
  * Copyright 2013, Moxiecode Systems AB
  * Released under GPL License.
@@ -146,8 +145,6 @@ if ($isChunked) {
 //////////////////////////////////////////////////////////////////////
 // End of my code
 //////////////////////////////////////////////////////////////////////
-
-
 
 // Return Success JSON-RPC response
 die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');

@@ -10,8 +10,9 @@
 [ -d user_data ] || mkdir user_data
 [ -d user_projects ] || mkdir user_projects
 
-# Allow server users like www-data (Apache user) work with data in directory user_projects
-sudo chmod -R 777 user_projects
+# Allow server users like www-data (Apache user) to execute programs, to work with 
+# data in "user_data" and "user_projects", and to read configuration in "config/config" 
+sudo chmod 777 . --recursive
 
 ################################################################################
 

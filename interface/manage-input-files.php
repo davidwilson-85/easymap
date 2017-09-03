@@ -2,8 +2,12 @@
 // Start of code for dealing with password
 
 session_start();
-$reference_password = $_SESSION['reference_password'];
+if (!isset($_SESSION['reference_password'])) {
+	header("Location: index.php");
+	exit();
+}
 
+$reference_password = $_SESSION['reference_password'];
 if (isset($_POST['password'])) {
 	$_SESSION['password'] = $_POST['password'];
 	$password = $_SESSION['password'];
@@ -24,7 +28,6 @@ if ($password != $reference_password) {
 			</body>
 		</html>
 	';
-
 }
 
 if ($password == $reference_password) {
