@@ -2,8 +2,12 @@
 // Start of code for dealing with password
 
 session_start();
-$reference_password = $_SESSION['reference_password'];
+if (!isset($_SESSION['reference_password'])) {
+	header("Location: index.php");
+	exit();
+}
 
+$reference_password = $_SESSION['reference_password'];
 if (isset($_POST['password'])) {
 	$_SESSION['password'] = $_POST['password'];
 	$password = $_SESSION['password'];
@@ -24,7 +28,6 @@ if ($password != $reference_password) {
 			</body>
 		</html>
 	';
-
 }
 
 if ($password == $reference_password) {
@@ -79,7 +82,6 @@ body {font-size:16px;}
   <div class="w3-container" style="margin-top:75px">
     <h1 class="w3-xxxlarge w3-text-red"><b>Documentation</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <h3>...</h3>
     
     <!-- here goes content -->
     <div>
