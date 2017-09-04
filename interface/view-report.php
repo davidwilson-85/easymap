@@ -87,15 +87,15 @@ body {font-size:16px;}
 		<?php
 
 		//$project_name = $_GET['p'];
-		//$location = '../user_projects/'. $project_name .'/3_workflow_output/report.html';
-		$location = '../graphic_output/template_report/template-report.htm';
+		$feed = '../user_projects/'. $project_name .'/3_workflow_output/rfeed.html';
+		//$location = '../graphic_output/template_report/template-report.j';
 
 		// Read HTML file with report as a text file and line by line
 		// Send each line to HTML via AJAX
 
-		$myfile = fopen($location, "r") or die("Unable to open file!");
-		echo fread($myfile,filesize($location));
-		fclose($myfile);
+		$file = fopen($feed, "r") or die("Unable to open report file.");
+		echo fread($file,filesize($feed));
+		fclose($file);
 
 		?>
   

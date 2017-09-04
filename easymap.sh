@@ -140,22 +140,20 @@ if ! [ -d $f0 ]; then
 	exit
 fi
 
-
 ############################################################
 # Start easymap
-
 
 echo $(date)": Execution of project {" $project_name "} started." > $my_log_file
 echo "" >> $my_log_file
 
-echo "Program:												" $0 >> $my_log_file
-echo "Project name:										" $1 >> $my_log_file
-echo "Workflow:											" $2 >> $my_log_file
-echo "Data source:										" $3 >> $my_log_file
-echo "Reference sequence:								" $4 >> $my_log_file
-echo "Insertion sequence:								" $5 >> $my_log_file
-echo "GFF file:											" $6 >> $my_log_file
-echo "Annotation file:									" $7 >> $my_log_file
+echo "Program:										" $0 >> $my_log_file
+echo "Project name:									" $timestamp"_"$1 >> $my_log_file
+echo "Workflow:										" $2 >> $my_log_file
+echo "Data source:									" $3 >> $my_log_file
+echo "Reference sequence:							" $4 >> $my_log_file
+echo "Insertion sequence:							" $5 >> $my_log_file
+echo "GFF file:										" $6 >> $my_log_file
+echo "Annotation file:								" $7 >> $my_log_file
 echo "Single-end reads (problem sample):			" $8 >> $my_log_file
 echo "Forward reads (problem sample):				" $9 >> $my_log_file
 echo "Reverse reads (problem sample):				" ${10} >> $my_log_file
@@ -164,10 +162,10 @@ echo "Single-end reads (control sample):			" ${12} >> $my_log_file
 echo "Forward reads (control sample):				" ${13} >> $my_log_file
 echo "Reverse reads (control sample):				" ${14} >> $my_log_file
 echo "Library type (control sample):				" ${15} >> $my_log_file
-echo "Mutant strain [ref/noref]:						" ${16} >> $my_log_file
-echo "Type of cross [bc/oc]:							" ${17} >> $my_log_file
+echo "Mutant strain [ref/noref]:					" ${16} >> $my_log_file
+echo "Type of cross [bc/oc]:						" ${17} >> $my_log_file
 echo "SNP analysis type [par/f2wt]:					" ${18} >> $my_log_file
-echo "Parental used as control [mut/nomut/np]:	" ${19} >> $my_log_file
+echo "Parental used as control [mut/nomut/np]:		" ${19} >> $my_log_file
 echo "Simulator (sim-mut.py) command:				" ${20} >> $my_log_file
 echo "Simulator (sim-recsel.py) command:			" ${21} >> $my_log_file
 echo "Simulator (sim-seq.py) command:				" ${22} >> $my_log_file
