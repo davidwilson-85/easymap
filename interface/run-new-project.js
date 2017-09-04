@@ -115,6 +115,12 @@ function isJsonString(str) {
 	return true;
 }
 
+// Function to determine if an array has duplicated values
+// Used to know if the user has chosen common read files for the problem and control samples
+function HasDuplicates(array) {
+    return (new Set(array)).size !== array.length;
+}
+
 // Trigger required functions when page loads
 allowNewProject();
 listInputFiles()
@@ -363,9 +369,9 @@ window.onload = function() {
 			cmdArgs[8] = 'n/p'; cmdArgs[9] = 'n/p'; cmdArgs[10] = 'n/p'; cmdArgs[11] = 'n/p';
 			//updateCmd();
 			// Display error message
-			document.getElementById("readsProblemWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
 			document.getElementById("readsProblemWarnMsg").style.display = "block";
 		}
+		document.getElementById("readsProblemWarnMsg2").style.display = "none";
 	}
 
 	function checkControlReads() {
@@ -392,9 +398,9 @@ window.onload = function() {
 			cmdArgs[12] = 'n/p'; cmdArgs[13] = 'n/p'; cmdArgs[14] = 'n/p'; cmdArgs[15] = 'n/p';
 			//updateCmd();
 			// Show error message
-			document.getElementById("readsControlWarnMsg").innerHTML = "Please select one file for single-end reads and two files for paired-end reads.";
 			document.getElementById("readsControlWarnMsg").style.display = "block";
 		}
+		document.getElementById("readsControlWarnMsg2").style.display = "none";
 	}
 
 	function verifySimMut() {
@@ -616,14 +622,6 @@ window.onload = function() {
 			document.getElementById("annReminderMsg").style.display = "block";
 		}
 
-		// If user chose own experimental data, check if problem reads file(s) have been specified
-		if (cmdArgs[3] == 'exp' && cmdArgs[11] == 'n/p') {
-			userErrors = true;
-			readsProblemValidationInfoMessage = 'You must select your problem reads (one file for single-end reads, and two files for paired-end reads).';
-			document.getElementById("readsProblemWarnMsg").innerHTML = readsProblemValidationInfoMessage;
-			document.getElementById("readsProblemWarnMsg").style.display = "block";
-		}
-
 		// If user chose MbS analysis, check if all two-way selectors were clicked on
 		if (cmdArgs[2] == 'snp') {
 			if (cmdArgs[16] == 'n/p') {
@@ -643,12 +641,32 @@ window.onload = function() {
 			}
 		}
 
+		// If user chose own experimental data, check if problem reads file(s) have been specified
+		if (cmdArgs[3] == 'exp' && cmdArgs[11] == 'n/p') {
+			userErrors = true;
+			document.getElementById("readsProblemWarnMsg").style.display = "block";
+		}
+
 		// If user chose own experimental data and MbS analysis, check if control reads file(s) have been specified
 		if (cmdArgs[2] == 'snp' && cmdArgs[3] == 'exp' && cmdArgs[15] == 'n/p') {
 			userErrors = true;
-			readsControlValidationInfoMessage = 'You must select your control reads (one file for single-end reads, and two files for paired-end reads).';
-			document.getElementById("readsControlWarnMsg").innerHTML = readsControlValidationInfoMessage;
 			document.getElementById("readsControlWarnMsg").style.display = "block";
+		}
+
+		// Check if user has selected, by mistake, one or more common files as the problem and control reads
+		if (cmdArgs[2] == 'snp' && cmdArgs[3] == 'exp') {
+			var AllReadArgs = [cmdArgs[8], cmdArgs[9], cmdArgs[10], cmdArgs[12], cmdArgs[13], cmdArgs[14]];
+			var AllReads = AllReadArgs.filter(function(Read) {
+			  return Read != 'n/p';
+			});
+			if (HasDuplicates(AllReads)) {
+				userErrors = true;
+				document.getElementById("readsProblemWarnMsg2").style.display = "block";
+				document.getElementById("readsControlWarnMsg2").style.display = "block";
+			} else {
+				document.getElementById("readsProblemWarnMsg2").style.display = "none";
+				document.getElementById("readsControlWarnMsg2").style.display = "none";
+			}
 		}
 
 		// If user chose simulated data, check if simMut and simSeq parameters have been set properly
@@ -692,7 +710,7 @@ window.onload = function() {
 		} else {
 			document.getElementById("checkout-error").style.display = "none";
 			document.getElementById("checkout-success").style.display = "block";
-		}
+		}		
 	}
 
 	// Function to trigger a new easymap execution and to redirect browser to manage-projects.php 
@@ -701,7 +719,7 @@ window.onload = function() {
 		xhr.open("POST", "run-new-project-create-command.php", true);
 		xhr.setRequestHeader("Content-type", "application/json");
 		xhr.send(JSON.stringify(cmdArgs));
-		/* Maby desirable: A way to check if the request was processed correctly by php
+		/* Maybe desirable: A way to check if the request was processed correctly by php
 		xhr.onreadystatechange = function () {
 		    if (xhr.readyState === 4 && xhr.status === 200) {
 		        if (this.responseText == 'success') {

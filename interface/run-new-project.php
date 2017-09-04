@@ -212,14 +212,16 @@ body {font-size:16px;}
 			<div id="expDataInterface">
 				<div class="formInfo" id="formInfoSim">Experimental reads</div>
 
-				Sample reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
+				Problem reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
 				<select multiple id="readsProblemSelector" style="display:block; margin-bottom:22px;"></select>
-				<div id="readsProblemWarnMsg" class="warningMessage"></div>
+				<div id="readsProblemWarnMsg" class="warningMessage">Please select one file for single-end reads and two files for paired-end reads.</div>
+				<div id="readsProblemWarnMsg2" class="warningMessage">The problem and control read files must be different.</div>
 				
 				<div id="readsControl">
 					Control reads (if your reads are paired-end, select both files while holding the Ctrl/Cmd key):<br>
 					<select multiple id="readsControlSelector" style="display:block; margin-bottom:22px;"></select>
 					<div id="readsControlWarnMsg" class="warningMessage">Please select one file for single-end reads and two files for paired-end reads.</div>
+					<div id="readsControlWarnMsg2" class="warningMessage">The problem and control read files must be different.</div>
 				</div>
 			</div>
 		
