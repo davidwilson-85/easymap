@@ -12,15 +12,14 @@ must have permission to read and write in the appropriate folders.
 // (https://stackoverflow.com/questions/15273570/continue-processing-php-after-sending-http-response)
 
 //ignore_user_abort(true);
-//set_time_limit(0);
-ob_start();
+//ob_start();
 // do initial processing here
 //echo $response; // send the response
 header("HTTP/1.1 200 OK");
 header('Connection: close');
 //header('Content-Length: '.ob_get_length());
-ob_end_flush();
-ob_flush();
+//ob_end_flush();
+//ob_flush();
 flush();
 
 // Now handle user request
