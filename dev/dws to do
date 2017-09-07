@@ -1,8 +1,6 @@
 -try interface in aws and chrome, explorer, firefox-win, safari,
 
--resumen mes
-
--run-new-project.js: validar que las lecturas control no sean iguales a las problema
+-Only allow acces from HTTP server to folder easymap/interface. Do not allow access to any other folder.
 
 
 

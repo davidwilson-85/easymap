@@ -698,7 +698,7 @@ window.onload = function() {
 				document.getElementById("simRecselAValMsg").style.display = "block";
 			}
 			if (verifySimrecselFieldB() == false) {
-				userErrors = true;			
+				userErrors = true;
 				document.getElementById("simReqselBValMsg").innerHTML = 'The input in this field is not correct.';
 				document.getElementById("simReqselBValMsg").style.display = "block";
 			}
@@ -730,7 +730,7 @@ window.onload = function() {
 		    }
 		};
 		*/
-		window.location.assign("manage-projects.php");
+		//window.location.assign("manage-projects.php");
 	}
 
 	/* OLD WAY OF RUNNING NEW PROJECT
