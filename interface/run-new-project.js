@@ -125,21 +125,27 @@ function HasDuplicates(array) {
 allowNewProject();
 listInputFiles()
 
+function resetTextField() {
+	this.value = "";
+}
+
+function HideCheckoutBoxes() {
+	var CheckoutBoxes = document.getElementsByClassName("checkout");
+	for (var i=0; i<CheckoutBoxes.length; i++) {
+		CheckoutBoxes[i].style.display = "none";
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // THIS SECTION DEALS WITH THE DYNAMIC FORMATTING OF THE FORM AND WITH FIELDS VALIDATION
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-function resetTextField() {
-	this.value = "";
-}
 	
 window.onload = function() {
 	
 	// Functions that need to be declared after document has completely loaded
 	
-	// Uptdate the command arguments in the screen
+	// Uptdate the command arguments in the screen. For development purposes.
 	// This function is called in many other functions after updating the value of an argument.
 	function updateCmd() {
 			console.log(cmdArgs);
@@ -148,6 +154,8 @@ window.onload = function() {
 	
 	// Check if project name is suitable for easymap
 	function verifyProjectName(){
+		HideCheckoutBoxes();
+
 		var text = document.getElementById("form1").projectName.value;
 		if(/[^a-zA-Z0-9]/.test( text) ) {
 			cmdArgs[1] = 'n/p';
@@ -168,6 +176,8 @@ window.onload = function() {
 	
 	// Determine option button selected and define the appropriate command argument
 	function buttons_analysisType() {
+		HideCheckoutBoxes();
+
 		var options = document.getElementsByClassName("analysisType");
 		for (var i=0; i<options.length; i++) {
 			if (options[i].checked == true) {
@@ -205,6 +215,8 @@ window.onload = function() {
 	
 	// Determine option button selected and define the appropriate command argument
 	function buttons_dataSource() {
+		HideCheckoutBoxes();
+
 		var options = document.getElementsByClassName("dataSource");
 		for (var i=0; i<options.length; i++) {
 			if (options[i].checked == true) {
@@ -247,6 +259,8 @@ window.onload = function() {
 
 	// Update command arguments after each user interaction with sinlge selectors
 	function processSingleSelectors() {
+		HideCheckoutBoxes();
+
 		if (this.id == 'refFileSelector') {
 			cmdArgs[4] = this.value;
 			document.getElementById("refSeqValidationInfo").style.display = "none";
@@ -268,6 +282,8 @@ window.onload = function() {
 
 	// Mutant background: determine option button selected and define the appropriate command argument
 	function buttons_mutBackground() {
+		HideCheckoutBoxes();
+
 		var options = document.getElementsByClassName("mutBackground");
 		for (var i=0; i<options.length; i++) {
 			if (options[i].checked == true) {
@@ -285,6 +301,8 @@ window.onload = function() {
 
 	// Mapping cross preformed: determine option button selected and define the appropriate command argument
 	function buttons_crossType() {
+		HideCheckoutBoxes();
+
 		var options = document.getElementsByClassName("crossType");
 		for (var i=0; i<options.length; i++) {
 			if (options[i].checked == true) {
@@ -302,6 +320,8 @@ window.onload = function() {
 
 	// Origin of the control reads: determine option button selected and define the appropriate command argument
 	function buttons_contType() {
+		HideCheckoutBoxes();
+
 		var options = document.getElementsByClassName("contType");
 		for (var i=0; i<options.length; i++) {
 			if (options[i].checked == true) {
@@ -324,6 +344,8 @@ window.onload = function() {
 
 	// Check if combination of mutat background, cross performed, and origin of control reads, is supported
 	function checkBackgroundCrossCtypeIntermediateCheck() {
+		HideCheckoutBoxes();
+
 		if (cmdArgs[16] == "ref" && cmdArgs[17] == "oc") {
 			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "block";
 		} else {
@@ -346,6 +368,8 @@ window.onload = function() {
 
 	// Check reads selectors (max two files selected per sample) and update command arguments
 	function checkProblemReads() {
+		HideCheckoutBoxes();
+
 		var reads = document.getElementById("readsProblemSelector");
 		var readsList = [];
 		
@@ -375,6 +399,8 @@ window.onload = function() {
 	}
 
 	function checkControlReads() {
+		HideCheckoutBoxes();
+
 		var readsC = document.getElementById("readsControlSelector");
 		var readsListC = [];
 		
@@ -404,6 +430,8 @@ window.onload = function() {
 	}
 
 	function verifySimMut() {
+		HideCheckoutBoxes();
+
 		var simMutInput = document.getElementById("form1").simMut.value;
 		if (isJsonString(simMutInput) == false) {
 			document.getElementById("simMutValMsg").innerHTML = 'The structure of the input is not correct.';
@@ -428,6 +456,8 @@ window.onload = function() {
 	}
 
 	function verifySimrecselFieldA() {
+		HideCheckoutBoxes();
+
 		var simRecselInputA = document.getElementById("form1").simRecselA.value;
 		var simRecselErrors = ["Errors:"]
 		var simRecselErr = false;
@@ -464,6 +494,8 @@ window.onload = function() {
 	}
 
 	function verifySimrecselFieldB() {
+		HideCheckoutBoxes();
+
 		var simRecselInputB = document.getElementById("form1").simRecselB.value;
 		var simRecselErrors = ["Errors:"]
 		var simRecselErr = false;
@@ -504,6 +536,8 @@ window.onload = function() {
 	}
 
 	function verifySimSeq() {
+		HideCheckoutBoxes();
+		
 		var simSeqInput = document.getElementById("form1").simSeq.value;
 		var simSeqErrors = ["Errors:"]
 		var simSeqErr = false;

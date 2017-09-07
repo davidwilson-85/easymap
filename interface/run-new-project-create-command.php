@@ -16,10 +16,10 @@ must have permission to read and write in the appropriate folders.
 // do initial processing here
 //echo $response; // send the response
 header("HTTP/1.1 200 OK");
-header('Connection: close');
+//header('Connection: close');
 //header('Content-Length: '.ob_get_length());
-//ob_end_flush();
-//ob_flush();
+ob_end_flush();
+ob_flush();
 flush();
 
 // Now handle user request
