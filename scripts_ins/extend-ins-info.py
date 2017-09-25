@@ -7,7 +7,6 @@ parser.add_argument('--project-name', action="store", dest='project_name', requi
 args = parser.parse_args()
 project = args.project_name
 
-
 # Input files: fasta genome and insertions_output.txt
 fp = open(project + '/1_intermediate_files/gnm_ref_merged/genome.fa', 'r')
 input_file = open(project + '/3_workflow_output/insertions_output.txt', 'r')
@@ -89,7 +88,6 @@ for line in fi:
 			purged_sequence = '-'
 
 		ins_extr.append([chromosome, position, end, purged_sequence])
-
 
 final_lines = list()
 for line in input_file:

@@ -41,7 +41,7 @@ rm -rf ./user_projects/*/1_intermediate_files/sim_data/
 exit 
 
 #Insertions
-./easymap -P TFM -w ins -rs at -d sim -g complete.gff -sm 6+li -i pbinprok2.fa -ss 40+100,0+500,100+1+50+pe
+./easymap -P BBI -w ins -rs mid -d sim -g complete.gff -sm 6+li -i pbinprok2.fa -ss 20+100,0+500,100+1+50+pe
 rm -rf ./user_projects/*/1_intermediate_files
 
 ./easymap -P TFM -w ins -rs at -d sim -g complete.gff -sm 7+li -i pbinprok2.fa -ss 40+100,0+500,100+1+50+pe

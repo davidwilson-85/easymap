@@ -99,8 +99,11 @@ with open(input_log, 'r') as f1:
 			data_source = str(sp[-1])
 
 		if line.startswith('Simulator (sim-recsel.py) command:'):
-			sp = line.split('+')
-			selected_position = str(sp[-3])
+			try:
+				sp = line.split('+')
+				selected_position = str(sp[-3])
+			except:
+				selected_position = "n/p"
 
 		if line.startswith('Type of cross [bc/oc]:'):
 			sp = line.split()

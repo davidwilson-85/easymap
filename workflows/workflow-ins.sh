@@ -1,12 +1,5 @@
 #!/bin/bash
 
-
-
-#						yeheeeeeee
-
-
-
-
 # This is the command sent by 'master.sh':
 # ./workflow-x.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file
 #
