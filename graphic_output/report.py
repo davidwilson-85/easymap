@@ -574,7 +574,7 @@ if mut_type == 'lin':
 
 	#Link to images 
 	output.write(
-	'		<br><a href="report_images.zip" target="_blank">Click to download all image files</a>' + '\n'
+	'		<br><a href="report_images.zip" target="_blank">Click to download all image files available</a>' + '\n'
 	'		<hr class="easymap">' + '\n'
 	)
 

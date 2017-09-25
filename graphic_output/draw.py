@@ -153,7 +153,7 @@ def fa_vs_pos():
 				cr_start_im = int(cr_start/scaling_factor_x) + 70
 				cr_end_im = int(cr_end/scaling_factor_x) + 70
 
-				draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(249, 222, 252) )
+				draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(255, 252, 232) )
 
 
 		# af_candidates: framing the candidate region
@@ -531,7 +531,7 @@ def candidates_zoom():
 def legend():
 
 	wide = 250
-	high = 290
+	high = 310
 
 	im = Image.new("RGB", (wide, high), (255,255,255))
 	draw = ImageDraw.Draw(im)
@@ -566,15 +566,17 @@ def legend():
 	draw.line((w+38, h+180) + (w+44, h+180), fill=(255, 0, 255), width=2)
 	draw.text((w+60, h+172), 'AF difference', font=fnt2, fill=(0,0,0,255))
 
-	draw.line((w+38, h+210) + (w+44, h+210), fill=(249, 222, 252), width=8)
-	draw.text((w+60, h+202), 'Candidate region', font=fnt2, fill=(0,0,0,255))
-	draw.rectangle( [w+38, h+214, w+44, h+206], fill=None, outline=(0,0,0) )
+	draw.line((w+37, h+210) + (w+45, h+210), fill=(255, 0, 0), width=2)
+	draw.line((w+40, h+210) + (w+42, h+210), fill=(255, 255, 255), width=2)
+	draw.text((w+60, h+202), 'Selected position', font=fnt2, fill=(0,0,0,255))
 
-	draw.line((w+37, h+240) + (w+45, h+240), fill=(255, 0, 0), width=2)
-	draw.line((w+40, h+240) + (w+42, h+240), fill=(255, 255, 255), width=2)
+	draw.line((w+38, h+240) + (w+44, h+240), fill=(249, 222, 252), width=8)
+	draw.text((w+60, h+232), 'Candidate region', font=fnt2, fill=(0,0,0,255))
+	draw.rectangle( [w+38, h+244, w+44, h+236], fill=None, outline=(0,0,0) )
 
-	draw.text((w+60, h+232), 'Selected position', font=fnt2, fill=(0,0,0,255))
-
+	draw.line((w+38, h+270) + (w+44, h+270), fill=(255, 252, 232), width=8)
+	draw.text((w+60, h+262), 'Selected chromosome', font=fnt2, fill=(0,0,0,255))
+	draw.rectangle( [w+38, h+274, w+44, h+266], fill=None, outline=(0,0,0) )
 
 	im.save(project + '/3_workflow_output/legend.png')
 
