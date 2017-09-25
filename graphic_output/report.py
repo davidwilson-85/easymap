@@ -196,7 +196,7 @@ output.write(
 '			height: 5px;' + '\n'
 		
 '		}	' + '\n'
-'		.img { width: 100%; }' + '\n'
+'		.img { width: auto; max-width:100% }' + '\n'
 '		.result1 { max-width: 864px; }' + '\n'
 '		.result2 { max-width: 1000px; }' + '\n'
 
@@ -369,14 +369,14 @@ if data_source == 'exp':
 		if reads_type == 'pe':
 			output.write(
 	'		<b>Paired end reads quality assessment<br></b>' + '\n'
-	'		<center> <img src="paired-end-problem-forward-reads-qual-stats.png" width="500"><img src="paired-end-problem-reverse-reads-qual-stats.png" width="500"></center> ' + '\n'
+	'		<center> <img class="img" src="paired-end-problem-forward-reads-qual-stats.png" width="500"><img class="img" src="paired-end-problem-reverse-reads-qual-stats.png" width="500"></center> ' + '\n'
 
 			)
 
 		if reads_type == 'se':
 			output.write(
 	'		<b>Single end reads quality assessment<br></b>' + '\n'
-	'		<center><img src="single-end-problem-reads-qual-stats.png" width="500"></center> ' + '\n'
+	'		<center><img class="img" src="single-end-problem-reads-qual-stats.png" width="500"></center> ' + '\n'
 
 			)
 
@@ -385,36 +385,48 @@ if data_source == 'exp':
 		if reads_type == 'pe':
 			output.write(
 	'		<b>Problem paired end reads quality assessment<br></b>' + '\n'
-	'		<center> <img src="'+'/qual1.png" width="500" > <img src="qual2.png" width="500" > </center> ' + '\n'
+	'		<center> <img class="img" src="'+'/qual1.png" width="500" > <img class="img" src="qual2.png" width="500" > </center> ' + '\n'
 
 			)
 
 		if reads_type == 'se':
 			output.write(
 	'		<b>Problem single end reads quality assessment<br></b>' + '\n'
-	'		<center> <img src="single-end-problem-reads-qual-stats.png" width="500" > </center> ' + '\n'
+	'		<center> <img class="img" src="single-end-problem-reads-qual-stats.png" width="500" > </center> ' + '\n'
 
 			)
 
 		if reads_type_control == 'pe':
 			output.write(
 	'		<b>Control paired end reads quality assessment<br></b>' + '\n'
-	'		<center> <img src="qual1.png" width="500" > <img src="qual2.png" width="500" > </center> ' + '\n'
+	'		<center> <img class="img" src="qual1.png" width="500" > <img class="img" src="qual2.png" width="500" > </center> ' + '\n'
 
 			)
 
 		if reads_type_control == 'se':
 			output.write(
 	'		<b>Control single end reads quality assessment<br></b>' + '\n'
-	'		<center> <img src="single-end-control-reads-qual-stats.png" width="500" > </center> ' + '\n'
+	'		<center> <img class="img" src="single-end-control-reads-qual-stats.png" width="500" > </center> ' + '\n'
 
 			)
 
-output.write(
-'		<b>Problem sample and control sample read depth distribution<br></b>' + '\n'
-'		<center> <img src="frequence_depth_alignment_distribution_sample.png" width="500" > <img src="frequence_depth_alignment_distribution_control.png" width="500" > </center> ' + '\n'
-'		<hr class="easymap">' + '\n'
-	)
+#Read depth distribution graphics
+if mut_type == 'snp': 
+	output.write(
+	'		<b>Problem and control samples read depth distribution<br></b>' + '\n'
+	'		<p>Problem sample<br></p>' + '\n'
+	'		<center> <img class="img" src="frequence_depth_alignment_distribution_sample.png" > </center> ' + '\n'
+	'		<p>Control sample<br></p>' + '\n'
+	'		<center> <img class="img" src="frequence_depth_alignment_distribution_control.png" > </center> ' + '\n'
+	'		<hr class="easymap">' + '\n'
+		)
+
+if mut_type == 'lin': 
+	output.write(
+	'		<b>Problem sample read depth distribution<br></b>' + '\n'
+	'		<center> <img class="img" src="frequence_depth_alignment_distribution_sample.png" > </center> ' + '\n'
+	'		<hr class="easymap">' + '\n'
+		)
 
 
 #__________________________________LIN cartographic report________________________________________________________________
@@ -422,7 +434,7 @@ if mut_type == 'lin':
 	#Genome overview
 	output.write(
 	'		<h2>Genomic overview</h2>' + '\n'
-	'		<center> <img src="'+'/insertions_overview.png" align="middle" >  </center>' + '\n'
+	'		<center> <img class="img" src="'+'/insertions_overview.png" align="middle" >  </center>' + '\n'
 	)
 
 	#Table
@@ -500,7 +512,7 @@ if mut_type == 'lin':
 				output.write(
 				'		<hr class="easymap">' + '\n'
 				'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
-				'		<center> <img src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
+				'		<center> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
 				)
 
 		for f in sorted(files):
@@ -512,7 +524,7 @@ if mut_type == 'lin':
 
 						output.write(
 						'		<h3>' + gene + '</h3>' + '\n'
-						'		<center> <img src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
+						'		<center> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
 						'		<table id="t">' + '\n'
 						'		<col width="300">' + '\n'
 						'		<col width="700">' + '\n'
@@ -578,7 +590,7 @@ if mut_type == 'snp':
 	for f in sorted(files):
 		if 'img_2_mapping' in str(f):
 			output.write(
-			'		<left> <img src="' +  str(f)  + ' " align="middle" > </left>' + '\n'
+			'		<left> <img class="img" src="' +  str(f)  + ' " align="middle" > </left>' + '\n'
 			)
 
 	#Candidates
@@ -597,13 +609,13 @@ if mut_type == 'snp':
 	for f in sorted(files):
 		if 'img_2_candidates_'+selected_chromosome in str(f).lower() and 'zoom' not in str(f):
 			output.write(
-			'		<left> <img src="'  +  str(f)  + ' " align="middle" > </left>' + '\n'
+			'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" > </left>' + '\n'
 			)
 	#Candidates zoom
 	for f in sorted(files):
 		if 'img_2_candidates' in str(f) and 'zoom' in str(f):
 			output.write(
-			'		<left> <img src="'  +  str(f)  + ' " align="middle" > </left>' + '\n'
+			'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" > </left>' + '\n'
 			)
 			
 
@@ -612,7 +624,7 @@ if mut_type == 'snp':
 	#ReplacementImage = 'onerror="this.src=\'./legend.png'"'
 	output.write(
 	'		<h3>Legend</h3>' + '\n'
-	'		<left> <img src="legend.png" align="middle" >  </left>' + '\n'
+	'		<left> <img class="img" src="legend.png" align="middle" >  </left>' + '\n'
 	)
 
 
@@ -698,7 +710,7 @@ if mut_type == 'snp':
 			if 'gene_plot_snp' in str(f) and gene_name in str(f) and var[2] in str(f):
 				output.write(
 				'		<h3>ID ' + str(var[0]) + ': ' + gene_name + '</h3>' + '\n'
-				'		<left> <img src="'  +  str(f)  + ' " align="middle" >  </left>' + '\n'
+				'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </left>' + '\n'
 				'		<table id="t">' + '\n'
 				'		<col width="300">' + '\n'
 				'		<col width="700">' + '\n'
@@ -773,7 +785,7 @@ output.close()
 # have been replaced. report.html is intended to be viewed by someone using the command-line interface. rfeed.html
 # is used to feed view-report.php in the web-interface with the correct path to resources (images, files, links) 
 
-htmlFile2 = open('../user_projects/' + project_name + '/3_workflow_output/rfeed.html', 'w')
+htmlFile2 = open('user_projects/' + project_name + '/3_workflow_output/rfeed.html', 'w')
 
 with open(output_html, 'r') as htmlFile1:
 		for line in htmlFile1:
@@ -784,11 +796,6 @@ with open(output_html, 'r') as htmlFile1:
 htmlFile2.close()
 
 
-
-print project_name
-
-
 # TO DO:
 # -Show RD graphs in report
 # -Validate HTML
-# -Move all the CSS code to style.css
