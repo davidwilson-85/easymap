@@ -421,6 +421,8 @@ def candidates_zoom():
 			if int(reg_min) < 0 : reg_min = '0'
 			
 			reg_max = sp[3]
+			reg_max_real = reg_max
+
 			if int(reg_max) > chromosome_length : reg_max = chromosome_length
 
 
@@ -455,7 +457,7 @@ def candidates_zoom():
 
 	
 	#Peak line
-	peak = (((int(reg_max) + int(reg_min_real))/2) - int(reg_min))/scaling_factor_x + 70
+	peak = (((int(reg_max_real) + int(reg_min_real))/2) - int(reg_min))/scaling_factor_x + 70
 
 	if 	(((int(reg_max) + int(reg_min_real))/2) - int(reg_min)) < 0: peak = 70
 
