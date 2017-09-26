@@ -426,6 +426,89 @@ echo $(date) ': Graphic output created.' >> $my_log_file
 
 
 
+#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
+
+# 1. We create a reduced version of the genome and index it with bowtie-build
+
+{
+	head -10000 $f1/$my_gs > $f1/genome_mini.fa 
+	$location/bowtie2/bowtie2-build $f1/genome_mini.fa $f1/$my_ix3 1> $f2/bowtie2-build_std6.txt 2> $f2/bowtie2-build_std7.txt
+	
+} || {
+	echo $(date)': bowtie2-build on insertion sequence returned an error. See log files.' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+echo $(date)': bowtie2-build insertion index finished.' >> $my_log_file
+
+# 2. We align all the reads to the mini-genome
+if [ $my_mode == 'pe' ]
+then  
+	{
+		$location/bowtie2/bowtie2 -x $f1/$my_ix3 -1 $my_rf -2 $my_rr -S $f1/alignment5.sam 2> $f2/bowtie2_std6.txt
+	
+	} || {
+		echo $(date)': bowtie2 returned an error. See log files.' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+
+	echo $(date)': bowtie2 paired finished.' >> $my_log_file
+fi
+
+if [ $my_mode == 'se' ] 
+then
+	{
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix3 -U $my_rd -S $f1/alignment5.sam 2> $f2/bowtie2_std6.txt
+	
+	} || {
+		echo $(date)': bowtie2 returned an error. See log files.' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+
+	echo $(date)': bowtie2 unpaired finished.' >> $my_log_file
+fi
+
+# 3. SAM to BAM 
+{
+	$location/samtools1/samtools sort $f1/alignment5.sam  > $f1/alignment5.bam 
+
+} || {
+	echo $(date)': samtools sort returned an error. See log files.' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+
+
+# 4. 
+{
+	python $location/scripts_snp/depth_measures_generation.py -genome $f1/genome_mini.fa -bam $f1/alignment5.bam -out $f1/coverage_alignment1.txt
+
+} || {
+	echo $(date)': Error during obtaining of alignment depth .' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+
+# 5. 
+{
+	python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 
+
+} || {
+	echo $(date)': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
+	exit_code=1
+	echo $exit_code
+	exit
+}
+
+
+
 #Report
 zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 

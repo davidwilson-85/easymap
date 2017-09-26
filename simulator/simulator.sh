@@ -50,6 +50,8 @@ rec_freq_distr=${sim_recsel_array[0]} # Recombination frequency distribution. Pa
 mut_pos=${sim_recsel_array[1]} # This parameter is also used by in sim_mut
 if [[ $mut_pos == *"-"* ]]; then
 	second_site_mutagenesis=true
+else
+	second_site_mutagenesis=false
 fi
 sel_mode=${sim_recsel_array[2]} # I assume that mutation is always recessive and I select the HM individuals.
 

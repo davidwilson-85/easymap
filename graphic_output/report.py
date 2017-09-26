@@ -128,8 +128,8 @@ with open(input_log, 'r') as f1:
 if mut_type == 'snp':
 	#SNP mappint control samples
 	if snp_analysis_type == 'parental' and parental_used_as_control == 'mutant' : control = ' parental of the mutant strain.'
-	if snp_analysis_type == 'parental' and parental_used_as_control == 'wild type' : control = ' wild type parental of the mapping crossing.'
-	if snp_analysis_type == 'wild type F2' : control = ' wild type F2 of the mapping cross.'
+	if snp_analysis_type == 'parental' and parental_used_as_control == 'wild type' : control = ' wild type parental of the mapping population.'
+	if snp_analysis_type == 'wild type F2' : control = ' wild type F2 of the mapping population.'
 
 if data_source == 'sim':
 	with open(input_log, 'r') as f1:
@@ -435,10 +435,12 @@ if mut_type == 'lin':
 #__________________________________LIN cartographic report________________________________________________________________
 if mut_type == 'lin': 
 	#Genome overview
-	output.write(
-	'		<h2>Genomic overview</h2>' + '\n'
-	'		<center> <img class="img" src="'+'/insertions_overview.png" align="middle" >  </center>' + '\n'
-	)
+	for f in sorted(files): 
+			if 'insertions_overview' in str(f):
+				output.write(
+				'		<h2>Genomic overview</h2>' + '\n'
+				'		<center> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
+				)
 
 	#Table
 
@@ -504,7 +506,7 @@ if mut_type == 'lin':
 	#Link to variants file
 	output.write(
 	'		<br>' + '\n'
-	'		<br><a href="insertions_output.txt" target="_blank">Click to see full information</a>' + '\n'
+	'		<br><a href="insertions_output.txt" target="_blank">Click to see extended information</a>' + '\n'
 	'		<br><br>' + '\n'
 
 	)
@@ -633,125 +635,144 @@ if mut_type == 'snp':
 
 	#Candidates table:
 	output.write(
-		#Table
-		'		<h3>Candidate region analysis</h3>' + '\n'
+	'		<h3>Candidate region analysis</h3>' + '\n'
+	)
 
-		'		<table id="candidates" border="0" align="center" cellpadding="10">' + '\n'
-		'		  <tr>' + '\n'
-		'		    <th>ID</th>' + '\n'
-		'		    <th>Contig</th>' + '\n'
-		'		    <th>Position</th>' + '\n'
-		'		    <th>AF</th>' + '\n'
-		'		    <th>DTP</th>' + '\n'
-		'		    <th>Nucleotide (Ref/Alt)</th>' + '\n'
-		'		    <th>Gene (gene element)</th>' + '\n'
-		'		    <th>Amino acid (Ref/Alt)</th>' + '\n'
-		'		  </tr>' + '\n'
-		)
-
+	#first we check that there are candidates 
+	n_candidates = 0
 	with open(input_var) as candidates:
-		i=1
-		variants_list=list()
 		for line in candidates:
 			if not line.startswith('@'):
-				sp = line.split('\t')
-				contig = str(sp[1]).strip()
-				position = str(sp[2]).strip()
-				AF = str(sp[8]).strip()
-				DTP = str(sp[9]).strip()
-				nucleotide = str(sp[3]).strip() + ' &rarr; ' + str(sp[4]).strip()
-				alt_nt = str(sp[4]).strip()
-				aminoacid = str(sp[17]).strip() + ' &rarr; ' + str(sp[18]).strip()
-				if aminoacid == '- &rarr; -': aminoacid = '-'
-				primer_f = str(sp[20]).strip()
-				primer_r = str(sp[22]).strip()
-				upstream = str(sp[24]).strip()
-				downstream = str(sp[25]).strip()
-				if str(sp[14]).strip() != '-':
-					gene = str(sp[14]).strip() + ' (' + str(sp[15]).strip() + ')'
-				else:
-					gene = '-'
-				if str(sp[19]).strip() != '-':
-					annotation = str(sp[19]).strip() 
-				else:
-					annotation = ' Functional annotation not available'
+				n_candidates = n_candidates + 1
 
-				variants_list.append([str(i), contig, position, AF, DTP, nucleotide, gene, aminoacid, primer_f, primer_r, upstream, downstream, annotation, alt_nt])
+	#then if the number of candidates is > 0, we write the candidates in a table
 
-				output.write(
-				'		  <tr>' + '\n'
-				'		    <td>'+str(i)+'</th>' + '\n'
-				'		    <td>'+contig+'</th>' + '\n'
-				'		    <td>'+position+'</th>' + '\n'
-				'		    <td>'+AF+'</th>' + '\n'
-				'		    <td>'+DTP+'</th>' + '\n'
-				'		    <td>'+nucleotide+'</th>' + '\n'
-				'		    <td>'+gene+'</th>' + '\n'
-				'		    <td>'+aminoacid+'</th>' + '\n'
-				'		  </tr>' + '\n'
-					)
-
-				i=i+1
-
+	if n_candidates == 0:
 		output.write(
-			'	</table>' + '\n'
+		'		<center> <p>No candidate mutations found<br></p> <center/>' + '\n'
+		)
+
+
+	if n_candidates > 0: 
+		output.write(
+			#Table
+			'		<table id="candidates" border="0" align="center" cellpadding="10">' + '\n'
+			'		  <tr>' + '\n'
+			'		    <th>ID</th>' + '\n'
+			'		    <th>Contig</th>' + '\n'
+			'		    <th>Position</th>' + '\n'
+			'		    <th>AF</th>' + '\n'
+			'		    <th>DTP</th>' + '\n'
+			'		    <th>Nucleotide (Ref/Alt)</th>' + '\n'
+			'		    <th>Gene (gene element)</th>' + '\n'
+			'		    <th>Amino acid (Ref/Alt)</th>' + '\n'
+			'		  </tr>' + '\n'
 			)
 
-	#Link to variants file
+		with open(input_var) as candidates:
+			i=1
+			variants_list=list()
+			for line in candidates:
+				if not line.startswith('@'):
+					sp = line.split('\t')
+					contig = str(sp[1]).strip()
+					position = str(sp[2]).strip()
+					AF = str(sp[8]).strip()
+					DTP = str(sp[9]).strip()
+					nucleotide = str(sp[3]).strip() + ' &rarr; ' + str(sp[4]).strip()
+					alt_nt = str(sp[4]).strip()
+					aminoacid = str(sp[17]).strip() + ' &rarr; ' + str(sp[18]).strip()
+					if aminoacid == '- &rarr; -': aminoacid = '-'
+					primer_f = str(sp[20]).strip()
+					primer_r = str(sp[22]).strip()
+					upstream = str(sp[24]).strip()
+					downstream = str(sp[25]).strip()
+					if str(sp[14]).strip() != '-':
+						gene = str(sp[14]).strip() + ' (' + str(sp[15]).strip() + ')'
+					else:
+						gene = '-'
+					if str(sp[19]).strip() != '-':
+						annotation = str(sp[19]).strip() 
+					else:
+						annotation = ' Functional annotation not available'
+
+					variants_list.append([str(i), contig, position, AF, DTP, nucleotide, gene, aminoacid, primer_f, primer_r, upstream, downstream, annotation, alt_nt])
+
+					output.write(
+					'		  <tr>' + '\n'
+					'		    <td>'+str(i)+'</th>' + '\n'
+					'		    <td>'+contig+'</th>' + '\n'
+					'		    <td>'+position+'</th>' + '\n'
+					'		    <td>'+AF+'</th>' + '\n'
+					'		    <td>'+DTP+'</th>' + '\n'
+					'		    <td>'+nucleotide+'</th>' + '\n'
+					'		    <td>'+gene+'</th>' + '\n'
+					'		    <td>'+aminoacid+'</th>' + '\n'
+					'		  </tr>' + '\n'
+						)
+
+					i=i+1
+
+			output.write(
+				'	</table>' + '\n'
+				'	<br><a href="candidate_variants.txt" target="_blank">Cick to see extended information</a>' + '\n'
+				)
+
 	output.write(
-	'		<br><a href="candidate_variants.txt" target="_blank">Cick to see full information</a>' + '\n'
 	'		<hr class="easymap">' + '\n'
 	)
+
 
 	#Candidate SNPs
-	output.write(
-	'		<h2>Candidate mutations</h2>' + '\n'
-		) 
-	for var in variants_list:
-		gene_name = var[6].split(' (')[0]
-		for f in sorted(files):
-			if 'gene_plot_snp' in str(f) and gene_name in str(f) and var[2] in str(f):
-				output.write(
-				'		<h3>ID ' + str(var[0]) + ': ' + gene_name + '</h3>' + '\n'
-				'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </left>' + '\n'
-				'		<table id="t">' + '\n'
-				'		<col width="300">' + '\n'
-				'		<col width="700">' + '\n'
-				)
-
-				if ann_file != "Not provided":
+	if n_candidates > 0:
+		output.write(
+		'		<h2>Candidate mutations</h2>' + '\n'
+			) 
+		for var in variants_list:
+			gene_name = var[6].split(' (')[0]
+			for f in sorted(files):
+				if 'gene_plot_snp' in str(f) and gene_name in str(f) and var[2] in str(f):
 					output.write(
-					'		<tr>' + '\n'
-					'			<td> <b>Functional annotation:</b></td>' + '\n'
-					'			<td>' + var[12] + '</td>' + '\n'
-					'		</tr>' + '\n'
+					'		<h3>ID ' + str(var[0]) + ': ' + gene_name + '</h3>' + '\n'
+					'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </left>' + '\n'
+					'		<table id="t">' + '\n'
+					'		<col width="300">' + '\n'
+					'		<col width="700">' + '\n'
 					)
 
-				output.write(
-				'		<tr>' + '\n'
-				'			<td> <b>Forward primer:</b></td>' + '\n'
-				'			<td style="font-family:Lucida Console, monospace">' + var[8] + '</td>' + '\n'
-				'		</tr>' + '\n'
+					if ann_file != "Not provided":
+						output.write(
+						'		<tr>' + '\n'
+						'			<td> <b>Functional annotation:</b></td>' + '\n'
+						'			<td>' + var[12] + '</td>' + '\n'
+						'		</tr>' + '\n'
+						)
 
-				'		<tr>' + '\n'
-				'			<td> <b>Reverse primer:</b></td>' + '\n'
-				'			<td style="font-family:Lucida Console, monospace">' + var[9] + '</td>' + '\n'
-				'		</tr>' + '\n'
+					output.write(
+					'		<tr>' + '\n'
+					'			<td> <b>Forward primer:</b></td>' + '\n'
+					'			<td style="font-family:Lucida Console, monospace">' + var[8] + '</td>' + '\n'
+					'		</tr>' + '\n'
 
-				'		<tr>' + '\n'
-				'			<td> <b>Flanking sequences:</b></td>' + '\n'
-				'			<td style="font-family:Lucida Console, monospace">' + var[10][10:] + '<font style="font-family:Lucida Console, monospace" color="red">' + var[13] + '</font>' + var[11][0:40] + '</td>' + '\n'
-				'		</tr>' + '\n'
+					'		<tr>' + '\n'
+					'			<td> <b>Reverse primer:</b></td>' + '\n'
+					'			<td style="font-family:Lucida Console, monospace">' + var[9] + '</td>' + '\n'
+					'		</tr>' + '\n'
 
-				'		</table>' + '\n'
+					'		<tr>' + '\n'
+					'			<td> <b>Flanking sequences:</b></td>' + '\n'
+					'			<td style="font-family:Lucida Console, monospace">' + var[10][10:] + '<font style="font-family:Lucida Console, monospace" color="red">' + var[13] + '</font>' + var[11][0:40] + '</td>' + '\n'
+					'		</tr>' + '\n'
 
-				)
+					'		</table>' + '\n'
 
-	#Link to images 
-	output.write(
-	'		<br><a href="report_images.zip" target="_blank">Click to download all image files</a>' + '\n'
-	'		<hr class="easymap">' + '\n'
-	)
+					)
+
+		#Link to images 
+		output.write(
+		'		<br><a href="report_images.zip" target="_blank">Click to download all image files</a>' + '\n'
+		'		<hr class="easymap">' + '\n'
+		)
 
 output.write('</div>')
 output.close()

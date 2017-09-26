@@ -152,9 +152,7 @@ def fa_vs_pos():
 			if chromosome_candidate == i[0].lower():
 				cr_start_im = int(cr_start/scaling_factor_x) + 70
 				cr_end_im = int(cr_end/scaling_factor_x) + 70
-
-				draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(255, 252, 232) )
-
+				draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(249, 222, 252) )
 
 		# af_candidates: framing the candidate region
 		if args.my_mut == 'af_candidates':
@@ -920,9 +918,8 @@ def insertions_overview_and_histograms():
 			#Candidate position:
 			if cand_pos_r != 'none':
 				draw.line((cand_pos_r-1 , 456) + (cand_pos_r-1 , 753), fill=(147, 147, 147, 0), width=1)		
-			if cand_pos_r == 'none':
+			if cand_pos_l != 'none':
 				draw.line((cand_pos_l-1 , 456) + (cand_pos_l-1 , 753), fill=(147, 147, 147, 0), width=1)
-
 
 			#Axis anotations
 			#x Axis

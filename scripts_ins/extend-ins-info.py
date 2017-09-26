@@ -1,4 +1,7 @@
 #!/usr/bin/python
+# Comando pruebas: 
+#		./scripts_ins/extend-ins-info.py --project-name user_projects/project-ins
+
 
 # This scrip retrieves the flanking sequences of the insertions 
 import argparse
@@ -50,6 +53,7 @@ output_file.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\
 for line in final_lines:
 	output_file.write(line + '\n')
 
+output_file.close()
 
 # _______________________________________________________________________________________--
 
@@ -110,3 +114,5 @@ output_file = open(project + '/3_workflow_output/insertions_output.txt', 'w')
 output_file.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_funct_annot\tf_primer\ttm_f_primer\tinsertion_primer_5\ttm_insertion_primer_5\tinsertion_primer_3\ttm_insertion_primer_3\tr_primer\ttm_r_primer\tupstream\tdownstream\t5_end_ins\t3_end_ins\n')    
 for line in final_lines:
 	output_file.write(line + '\n')
+
+output_file.close()
