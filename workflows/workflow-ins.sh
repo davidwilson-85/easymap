@@ -289,92 +289,103 @@ echo $(date)': ins-to-varanalyzer.py finished.' >> $my_log_file
 }
 echo $(date)': varanalyzer.py finished.' >> $my_log_file
 
+
 #Primers________________________________________________________________________________________________________________________________________________________________
-#Run SAM-FQ
 
-mkdir $f1/primers
+if [ $(wc -l < $f1/varanalyzer_output.txt) -gt 1 ]
+then 
+	echo $(wc -l < $f1/varanalyzer_output.txt) >> $my_log_file
+	#Run SAM-FQ
 
-{
-	python $location/scripts_ins/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f1/varanalyzer_output.txt -sam_out $f1/primers/ 2>> $my_log_file
-	
-} || {
-	echo $(date)': error:ins-primers.py' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
-
-#Run alignment
-primers_dir=$f1/primers
-for i in $primers_dir/*
-do
+	mkdir $f1/primers
 
 	{
-		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2> $f1/bowtie2_std5.txt
-
+		python $location/scripts_ins/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f1/varanalyzer_output.txt -sam_out $f1/primers/ 2>> $my_log_file
+		
 	} || {
-		echo $(date)': error: Bowtie2 - primers' >> $my_log_file
+		echo $(date)': error:ins-primers.py' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-done
 
-echo $(date)': Running primer generation module' >> $my_log_file
-#Consensus sequence generation
-
-#Generation of a variable with the path were the SAM files of each insertion will be held
-
-#Loop through all files in the directory and DO the SAM to BAM conversion and the genereation of consensus sequence from each insertion consensus file. 
-{
-	for i in $primers_dir/*.sam 
+	#Run alignment
+	primers_dir=$f1/primers
+	for i in $primers_dir/*
 	do
-		if test -f "$i" 
-	    then
-			#Check sams
+		if [ -n "$i" ]
+		then
 			{
-				sam_stauts=`python $location/scripts_ins/sam-file-check.py -a $i 2>> $my_log_file`
-				
-				if [ $sam_stauts == 0 ]
-				then
-					{
-						echo $(date)": Correct SAM file." >> $my_log_file
-					}
-				else 
-					{
-						echo $(date)": Sam file empty." >> $my_log_file
-						continue                                                                                                  #<<<<----------------------------------------------------
-					}
-				fi
-				
+				$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2> $f2/bowtie2_std5.txt
+
 			} || {
-				echo $(date) ' : sam-file-check.py failed. See log files.' >> $my_log_file
+				echo $(date)': error: Bowtie2 - primers' >> $my_log_file
 				exit_code=1
 				echo $exit_code
 				exit
 			}
-
-		    #SAM to BAM
-		    substring=${i%.*}
-		    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
-			$location/samtools1/samtools sort $i  > $substring.bam 
-			
-			$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq 2> $f2/samtools-consensus.log
-			
-			#sed -i "s/pbinprok2/$substring/g" ./cns.fq
-			tail -n +2 $f1/cns.fq > $f1/cns.fq.temp && mv $f1/cns.fq.temp $f1/cns.fq
-			echo @"$substring" | cat - $f1/cns.fq > $f1/temp && mv $f1/temp $f1/cns.fq 	
-		    fi
-		    
-		   #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
-			cat $f1/cns.fq >> $f1/all_insertions_cns.fq
+		fi
 	done
-}||{
-	echo $(date) ': Error. The consensus sequence of an insertion flank could not be created.' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
+
+
+	echo $(date)': Running primer generation module' >> $my_log_file
+	#Consensus sequence generation
+
+	#Generation of a variable with the path were the SAM files of each insertion will be held
+
+	#Loop through all files in the directory and DO the SAM to BAM conversion and the genereation of consensus sequence from each insertion consensus file. 
+	{
+		for i in $primers_dir/*.sam 
+		do
+			if test -f "$i" 
+		    then
+				#Check sams
+				{
+					sam_stauts=`python $location/scripts_ins/sam-file-check.py -a $i 2>> $my_log_file`
+					
+					if [ $sam_stauts == 0 ]
+					then
+						{
+							echo $(date)": Correct SAM file." >> $my_log_file
+						}
+					else 
+						{
+							echo $(date)": Sam file empty." >> $my_log_file
+							continue                                                                                                  #<<<<----------------------------------------------------
+						}
+					fi
+					
+				} || {
+					echo $(date) ' : sam-file-check.py failed. See log files.' >> $my_log_file
+					exit_code=1
+					echo $exit_code
+					exit
+				}
+
+			    #SAM to BAM
+			    substring=${i%.*}
+			    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
+				$location/samtools1/samtools sort $i  > $substring.bam 
+				
+				$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq 2> $f2/samtools-consensus.log
+				
+				#sed -i "s/pbinprok2/$substring/g" ./cns.fq
+				tail -n +2 $f1/cns.fq > $f1/cns.fq.temp && mv $f1/cns.fq.temp $f1/cns.fq
+				echo @"$substring" | cat - $f1/cns.fq > $f1/temp && mv $f1/temp $f1/cns.fq 	
+			    fi
+			    
+			   #Concatenate all the fastaq files into one big fq file, which will be given as an input for the primer generation script
+				cat $f1/cns.fq >> $f1/all_insertions_cns.fq
+		done
+	}||{
+		echo $(date) ': Error. The consensus sequence of an insertion flank could not be created.' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+
+fi
+
 
 rm -f $f1/cns.fq
 rm -f $f1/primers_dir/*.bam
@@ -384,7 +395,7 @@ rm -f ./user_data/*.fai
 
 #Primer generation script
 {
-	$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt 2>> $my_log_file
+	$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt -mode $(wc -l < $f1/varanalyzer_output.txt) 2>> $my_log_file
 }|| {
 	echo $(date) ': Error. primer-generation.py failed. ' >> $my_log_file
 	exit_code=1
@@ -394,16 +405,22 @@ rm -f ./user_data/*.fai
 echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
 
 
-# Extend Ins info (adds flanking sequences)
-{
-	$location/scripts_ins/extend-ins-info.py --project-name $project_name 2>> $my_log_file
-}|| {
-	echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
-	exit_code=1
-	echo $exit_code
-	exit
-}
-echo $(date) ': extend-ins-info.py module finished.' >> $my_log_file
+
+if [ $(wc -l < $f1/varanalyzer_output.txt) -gt 1 ]
+then 
+
+	# Extend Ins info (adds flanking sequences)
+	{
+		$location/scripts_ins/extend-ins-info.py --project-name $project_name 2>> $my_log_file
+	}|| {
+		echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
+		exit_code=1
+		echo $exit_code
+		exit
+	}
+	echo $(date) ': extend-ins-info.py module finished.' >> $my_log_file
+
+fi
 
 
 #______________________________________________________________________________________________________________________________________________________________________
@@ -487,7 +504,7 @@ fi
 
 # 4. 
 {
-	python $location/scripts_snp/depth_measures_generation.py -genome $f1/genome_mini.fa -bam $f1/alignment5.bam -out $f1/coverage_alignment1.txt
+	python $location/scripts_snp/depth_measures_generation.py -genome $f1/genome_mini.fa -bam $f1/alignment5.bam -out $f1/coverage_alignment1.txt 2>> $my_log_file
 
 } || {
 	echo $(date)': Error during obtaining of alignment depth .' >> $my_log_file
@@ -498,7 +515,7 @@ fi
 
 # 5. 
 {
-	python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 
+	python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 2>> $my_log_file
 
 } || {
 	echo $(date)': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file

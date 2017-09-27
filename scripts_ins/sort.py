@@ -166,6 +166,7 @@ if args.mode == 'pe':
 		directions = list()
 		max_pos = 0
 		min_pos = float('inf')
+		local = "false"
 
 		for l, line in enumerate(lines):
 			if not line.startswith('@'):
@@ -187,8 +188,13 @@ if args.mode == 'pe':
 						min_pos = int(sp[3])
 					span = max_pos - min_pos
 
+				#4th criterion: there must be at least one local alignment supporting the insertion
+				if int(sp[2]) == insertion and "LOCAL" in str(sp[0].strip()):	
+					local = "true"
+
 		if len(directions) >= 2 or max_RD >= 3 or span > 300:
-			insertions_final.append(insertion)
+			if local == "true":
+				insertions_final.append(insertion)
 
 elif args.mode == 'se': 
 	for insertion in insertions_raw:
@@ -196,6 +202,7 @@ elif args.mode == 'se':
 		directions = list()
 		max_pos = 0
 		min_pos = float('inf')
+		span = None
 
 		for l, line in enumerate(lines):
 			if not line.startswith('@'):

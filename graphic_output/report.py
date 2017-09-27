@@ -236,14 +236,25 @@ output.write(
 output.write(
 
 '		<tr>' + '\n'
-'			<td> <b>Input genome files :</b></td>' + '\n'
+'			<td> <b>Input genome files ID:</b></td>' + '\n'
 '			<td>' + ref_files + '</td>' + '\n'
 '		</tr>' + '\n'
 
 	)
 
 
-#Read files
+#Insertion sequence
+if mut_type == 'lin' : 
+	output.write(
+
+	'		<tr>' + '\n'
+	'			<td> <b>Input insertion file:</b></td>' + '\n'
+	'			<td>' + ins_file + '</td>' + '\n'
+	'		</tr>' + '\n'
+
+		)
+
+#Reads files
 if mut_type == 'lin' and data_source == 'exp': 
 	if reads_type == 'pe':
 		output.write(
@@ -362,25 +373,25 @@ output.write(
 
 
 #Input data quality assessment
+output.write(
+'		<h2>Input data quality assessment</h2>' + '\n'
+	)
 if data_source == 'exp':
-
-	output.write(
-	'		<h2>Input data quality assessment</h2>' + '\n'
-		)
 
 	if mut_type == 'lin': 
 		if reads_type == 'pe':
 			output.write(
 	'		<b>Paired end reads quality assessment<br></b>' + '\n'
-	'		<center> <img class="img" src="paired-end-problem-forward-reads-qual-stats.png" width="500"><img class="img" src="paired-end-problem-reverse-reads-qual-stats.png" width="500"></center> ' + '\n'
-
+	'		<p>Forward reads<br></p>' + '\n'
+	'		<center> <img class="img" src="paired-end-problem-forward-reads-qual-stats.png"></center> ' + '\n'
+	'		<p>Reverse reads<br></p>' + '\n'
+	'		<center><img class="img" src="paired-end-problem-reverse-reads-qual-stats.png"></center> ' + '\n'
 			)
 
 		if reads_type == 'se':
 			output.write(
 	'		<b>Single end reads quality assessment<br></b>' + '\n'
 	'		<center><img class="img" src="single-end-problem-reads-qual-stats.png" width="500"></center> ' + '\n'
-
 			)
 
 
@@ -388,29 +399,31 @@ if data_source == 'exp':
 		if reads_type == 'pe':
 			output.write(
 	'		<b>Problem paired end reads quality assessment<br></b>' + '\n'
-	'		<center> <img class="img" src="'+'/qual1.png" width="500" > <img class="img" src="qual2.png" width="500" > </center> ' + '\n'
-
+	'		<p>Forward reads<br></p>' + '\n'
+	'		<center> <img class="img" src="'+'/qual1.png" > </center> ' + '\n'
+	'		<p>Reverse reads<br></p>' + '\n'
+	'		<center> <img class="img" src="qual2.png"  > </center> ' + '\n'
 			)
 
 		if reads_type == 'se':
 			output.write(
 	'		<b>Problem single end reads quality assessment<br></b>' + '\n'
 	'		<center> <img class="img" src="single-end-problem-reads-qual-stats.png" width="500" > </center> ' + '\n'
-
 			)
 
 		if reads_type_control == 'pe':
 			output.write(
 	'		<b>Control paired end reads quality assessment<br></b>' + '\n'
-	'		<center> <img class="img" src="qual1.png" width="500" > <img class="img" src="qual2.png" width="500" > </center> ' + '\n'
-
+	'		<p>Forward reads<br></p>' + '\n'
+	'		<center> <img class="img" src="'+'/qual1.png" > </center> ' + '\n'
+	'		<p>Reverse reads<br></p>' + '\n'
+	'		<center> <img class="img" src="qual2.png"  > </center> ' + '\n'
 			)
 
 		if reads_type_control == 'se':
 			output.write(
 	'		<b>Control single end reads quality assessment<br></b>' + '\n'
 	'		<center> <img class="img" src="single-end-control-reads-qual-stats.png" width="500" > </center> ' + '\n'
-
 			)
 
 #Read depth distribution graphics
@@ -439,149 +452,168 @@ if mut_type == 'lin':
 			if 'insertions_overview' in str(f):
 				output.write(
 				'		<h2>Genomic overview</h2>' + '\n'
-				'		<center> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
+				'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
 				)
 
-	#Table
 
 	output.write(
-		#Table
+		#Insertions summary
 		'		<h3>Insertions summary</h3>' + '\n'
+		)
 
-		'		<table id="candidates" border="0" align="center" cellpadding="10">' + '\n'
-		'		  <tr>' + '\n'
-		'		    <th>Ins</th>' + '\n'
-		'		    <th>Contig</th>' + '\n'
-		'		    <th>Position</th>' + '\n'
-		'		    <th>Gene (gene element)</th>' + '\n'
-		'		    <th>Wt amino acids</th>' + '\n'
-		'		  </tr>' + '\n'
 
+
+	#first we check that there are insertions 
+	n_candidates = 0
+	with open(input_var) as candidates:
+		for line in candidates:
+			if not line.startswith('@'):
+				n_candidates = n_candidates + 1
+
+	#then if the number of insertions is > 0, we write the candidates in a table
+
+	if n_candidates == 0:
+		output.write(
+		'		<center> <p>No insertions were found<br></p> <center/>' + '\n'
+		)
+
+
+	if n_candidates > 0: 
+		output.write(
+			#Table
+			'		<table id="candidates" border="0" align="center" cellpadding="10">' + '\n'
+			'		  <tr>' + '\n'
+			'		    <th>Ins</th>' + '\n'
+			'		    <th>Contig</th>' + '\n'
+			'		    <th>Position</th>' + '\n'
+			'		    <th>Gene (gene element)</th>' + '\n'
+			'		    <th>Wt amino acids</th>' + '\n'
+			'		  </tr>' + '\n'
+			)
+
+		with open(input_var) as candidates:
+			variants_list=list()
+			for line in candidates:
+				if not line.startswith('@'):
+					sp = line.split('\t')
+					contig = str(sp[1]).strip()
+					position = str(sp[2]).strip()
+					aminoacid = str(sp[11]).strip() 
+					primer_f = str(sp[15]).strip()
+					primer_r = str(sp[21]).strip()
+					primer_5 = str(sp[17]).strip()
+					primer_3 = str(sp[19]).strip()
+					upstream = str(sp[23]).strip()
+					downstream = str(sp[24]).strip()
+					if str(sp[9]).strip() !='-':
+						gene = str(sp[9]).strip() + ' (' + str(sp[10]).strip() + ')'
+					else:
+						gene = '-'
+					if str(sp[14]).strip() != '-':
+						annotation = str(sp[14]).strip()
+					else:
+						annotation = ' Functional annotation not available'
+
+					for i in insertions_pos_list:
+						if int(i[1]) == int(position) and str(i[2]).lower().strip() == contig.lower():
+							ins = str(i[0])
+
+					variants_list.append([ins, contig, position, gene, aminoacid, primer_f, primer_r, primer_5, primer_3, upstream, downstream, annotation])
+
+					output.write(
+					'		  <tr>' + '\n'
+					'		    <td>'+ins+'</th>' + '\n'
+					'		    <td>'+contig+'</th>' + '\n'
+					'		    <td>'+position+'</th>' + '\n'
+					'		    <td>'+gene+'</th>' + '\n'
+					'		    <td>'+aminoacid+'</th>' + '\n'
+					'		  </tr>' + '\n'
+						)
+
+			output.write(
+				'	</table>' + '\n'
+				)
+
+		#Link to variants file
+		output.write(
+		'		<br>' + '\n'
+		'		<br><a href="insertions_output.txt" target="_blank">Click to see extended information</a>' + '\n'
+		'		<br><br>' + '\n'
 
 		)
 
-	with open(input_var) as candidates:
-		variants_list=list()
-		for line in candidates:
-			if not line.startswith('@'):
-				sp = line.split('\t')
-				contig = str(sp[1]).strip()
-				position = str(sp[2]).strip()
-				aminoacid = str(sp[11]).strip() 
-				primer_f = str(sp[15]).strip()
-				primer_r = str(sp[21]).strip()
-				primer_5 = str(sp[17]).strip()
-				primer_3 = str(sp[19]).strip()
-				upstream = str(sp[23]).strip()
-				downstream = str(sp[24]).strip()
-				if str(sp[9]).strip() !='-':
-					gene = str(sp[9]).strip() + ' (' + str(sp[10]).strip() + ')'
-				else:
-					gene = '-'
-				if str(sp[14]).strip() != '-':
-					annotation = str(sp[14]).strip()
-				else:
-					annotation = ' Functional annotation not available'
-
-				for i in insertions_pos_list:
-					if int(i[1]) == int(position) and str(i[2]).lower().strip() == contig.lower():
-						ins = str(i[0])
-
-				variants_list.append([ins, contig, position, gene, aminoacid, primer_f, primer_r, primer_5, primer_3, upstream, downstream, annotation])
-
-				output.write(
-				'		  <tr>' + '\n'
-				'		    <td>'+ins+'</th>' + '\n'
-				'		    <td>'+contig+'</th>' + '\n'
-				'		    <td>'+position+'</th>' + '\n'
-				'		    <td>'+gene+'</th>' + '\n'
-				'		    <td>'+aminoacid+'</th>' + '\n'
-				'		  </tr>' + '\n'
+		#Insertions
+		for ins in insertions_list:
+			for f in sorted(files): 
+				if '_ins_' + ins[0] in str(f):
+					output.write(
+					'		<hr class="easymap">' + '\n'
+					'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
+					'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
 					)
 
-		output.write(
-			'	</table>' + '\n'
-			)
+			for f in sorted(files):
+				if '_lin_' + ins[0] in str(f):
 
-	#Link to variants file
-	output.write(
-	'		<br>' + '\n'
-	'		<br><a href="insertions_output.txt" target="_blank">Click to see extended information</a>' + '\n'
-	'		<br><br>' + '\n'
+					gene = str(f).split('_')[5].split('.')[0]+'.'+str(f).split('_')[5].split('.')[1]
+					for i in variants_list:
+						if gene in str(i[3]):
 
-	)
-	#Insertions
-	for ins in insertions_list:
-		for f in sorted(files): 
-			if '_ins_' + ins[0] in str(f):
-				output.write(
-				'		<hr class="easymap">' + '\n'
-				'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
-				'		<center> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
-				)
-
-		for f in sorted(files):
-			if '_lin_' + ins[0] in str(f):
-
-				gene = str(f).split('_')[5].split('.')[0]+'.'+str(f).split('_')[5].split('.')[1]
-				for i in variants_list:
-					if gene in str(i[3]):
-
-						output.write(
-						'		<h3>' + gene + '</h3>' + '\n'
-						'		<center> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </center>' + '\n'
-						'		<table id="t">' + '\n'
-						'		<col width="300">' + '\n'
-						'		<col width="700">' + '\n'
-						)
-
-						if ann_file != "Not provided": 
 							output.write(
-							'		<tr>' + '\n'
-							'			<td> <b>Functional annotation:</b></td>' + '\n'
-							'			<td>' + str(i[11]) + '</td>' + '\n'
-							'		</tr>' + '\n'
+							'		<h3>' + gene + '</h3>' + '\n'
+							'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
+							'		<table id="t">' + '\n'
+							'		<col width="300">' + '\n'
+							'		<col width="700">' + '\n'
 							)
 
-						output.write(
+							if ann_file != "Not provided": 
+								output.write(
+								'		<tr>' + '\n'
+								'			<td> <b>Functional annotation:</b></td>' + '\n'
+								'			<td>' + str(i[11]) + '</td>' + '\n'
+								'		</tr>' + '\n'
+								)
 
-						'		<tr>' + '\n'
-						'			<td> <b>Forward primer:</b></td>' + '\n'
-						'			<td style="font-family:Lucida Console, monospace">' + str(i[5]) + '</td>' + '\n'
-						'		</tr>' + '\n'
+							output.write(
 
-						'		<tr>' + '\n'
-						'			<td> <b>Reverse primer:</b></td>' + '\n'
-						'			<td style="font-family:Lucida Console, monospace">' + str(i[6]) + '</td>' + '\n'
-						'		</tr>' + '\n'
+							'		<tr>' + '\n'
+							'			<td> <b>Forward primer:</b></td>' + '\n'
+							'			<td style="font-family:Lucida Console, monospace">' + str(i[5]) + '</td>' + '\n'
+							'		</tr>' + '\n'
 
-						'		<tr>' + '\n'
-						'			<td> <b>Insertion 5 primer:</b></td>' + '\n'
-						'			<td style="font-family:Lucida Console, monospace">' + str(i[7]) + '</td>' + '\n'
-						'		</tr>' + '\n'
+							'		<tr>' + '\n'
+							'			<td> <b>Reverse primer:</b></td>' + '\n'
+							'			<td style="font-family:Lucida Console, monospace">' + str(i[6]) + '</td>' + '\n'
+							'		</tr>' + '\n'
 
-						'		<tr>' + '\n'
-						'			<td> <b>Insertion 3 primer:</b></td>' + '\n'
-						'			<td style="font-family:Lucida Console, monospace">' + str(i[8]) + '</td>' + '\n'
-						'		</tr>' + '\n'
+							'		<tr>' + '\n'
+							'			<td> <b>Insertion 5 primer:</b></td>' + '\n'
+							'			<td style="font-family:Lucida Console, monospace">' + str(i[7]) + '</td>' + '\n'
+							'		</tr>' + '\n'
 
-
-						'		<tr>' + '\n'
-						'			<td> <b>Flanking sequences:</b></td>' + '\n'
-						'			<td style="font-family:Lucida Console, monospace">' + str(i[9])[15:] + '<font style="font-family:Lucida Console, monospace" color="red">[INS' + str(ins[0]) + ']</font>' + str(i[10])[0:35] + '</td>' + '\n'
-						'		</tr>' + '\n'
+							'		<tr>' + '\n'
+							'			<td> <b>Insertion 3 primer:</b></td>' + '\n'
+							'			<td style="font-family:Lucida Console, monospace">' + str(i[8]) + '</td>' + '\n'
+							'		</tr>' + '\n'
 
 
-						'		</table>' + '\n'
-						'		<br>' + '\n'
+							'		<tr>' + '\n'
+							'			<td> <b>Flanking sequences:</b></td>' + '\n'
+							'			<td style="font-family:Lucida Console, monospace">' + str(i[9])[15:] + '<font style="font-family:Lucida Console, monospace" color="red">[INS' + str(ins[0]) + ']</font>' + str(i[10])[0:35] + '</td>' + '\n'
+							'		</tr>' + '\n'
 
-						)
 
-	#Link to images 
-	output.write(
-	'		<br><a href="report_images.zip" target="_blank">Click to download all image files available</a>' + '\n'
-	'		<hr class="easymap">' + '\n'
-	)
+							'		</table>' + '\n'
+							'		<br>' + '\n'
+
+							)
+
+		#Link to images 
+		output.write(
+		'		<br><a href="report_images.zip" target="_blank">Click to download all image files available</a>' + '\n'
+		'		<hr class="easymap">' + '\n'
+		)
 
 
 #__________________________________SNP cartographic report________________________________________________________________
@@ -595,7 +627,7 @@ if mut_type == 'snp':
 	for f in sorted(files):
 		if 'img_2_mapping' in str(f):
 			output.write(
-			'		<left> <img class="img" src="' +  str(f)  + ' " align="middle" > </left>' + '\n'
+			'		<left> <img class="img" src="' +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'
 			)
 
 	#Candidates
@@ -614,13 +646,13 @@ if mut_type == 'snp':
 	for f in sorted(files):
 		if 'img_2_candidates_'+selected_chromosome in str(f).lower() and 'zoom' not in str(f):
 			output.write(
-			'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" > </left>' + '\n'
+			'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'
 			)
 	#Candidates zoom
 	for f in sorted(files):
 		if 'img_2_candidates' in str(f) and 'zoom' in str(f):
 			output.write(
-			'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" > </left>' + '\n'
+			'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'
 			)
 			
 
@@ -734,7 +766,7 @@ if mut_type == 'snp':
 				if 'gene_plot_snp' in str(f) and gene_name in str(f) and var[2] in str(f):
 					output.write(
 					'		<h3>ID ' + str(var[0]) + ': ' + gene_name + '</h3>' + '\n'
-					'		<left> <img class="img" src="'  +  str(f)  + ' " align="middle" >  </left>' + '\n'
+					'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </left>' + '\n'
 					'		<table id="t">' + '\n'
 					'		<col width="300">' + '\n'
 					'		<col width="700">' + '\n'
@@ -810,10 +842,11 @@ output.close()
 # is used to feed view-report.php in the web-interface with the correct path to resources (images, files, links) 
 
 htmlFile2 = open('user_projects/' + project_name + '/3_workflow_output/rfeed.html', 'w')
+#htmlFile2 = open('user_projects/project/3_workflow_output/rfeed.html', 'w')
 
 with open(output_html, 'r') as htmlFile1:
 		for line in htmlFile1:
-			 line = line.replace('img src="', 'img src="../user_projects/' + project_name + '/3_workflow_output/')
+			 line = line.replace('<img class="img" src="', '<img class="img" src="../user_projects/' + project_name + '/3_workflow_output/')
 			 line = line.replace('a href="', 'a href="../user_projects/' + project_name + '/3_workflow_output/')
 			 htmlFile2.write(line)
 

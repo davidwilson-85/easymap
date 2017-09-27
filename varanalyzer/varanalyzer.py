@@ -435,6 +435,7 @@ else:
 					ann_info_string = '; '.join(ann_info_fields)
 					if ann_info_string == '': ann_info_string = 'No info in file provided'
 					ann_result = ann_info_string.strip('\n')
+					ann_result = ann_result.replace('\t', "; ")
 
 			# Combine info and append it to 'variants_info3'
 			condensed_info2 = variant_info2[0], variant_info2[1], variant_info2[2], variant_info2[3], variant_info2[4], variant_info2[5], variant_info2[6], variant_info2[7], variant_info2[8], variant_info2[9], variant_info2[10], variant_info2[11], variant_info2[12], variant_info2[13], ann_result
