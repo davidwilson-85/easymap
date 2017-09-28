@@ -563,28 +563,6 @@ if mut_type == 'lin':
 
 		)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		past_ins = None
 		#Insertions
 		for ins in variants_list:
@@ -600,17 +578,6 @@ if mut_type == 'lin':
 						'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
 						'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
 						)
-
-
-
-
-
-
-
-
-
-
-
 
 				for f in sorted(files):
 					if '_lin_' + ins[0] + '_gene' in str(f):
@@ -690,7 +657,7 @@ if mut_type == 'lin':
 						'		<br>' + '\n'
 						)
 						break
-						
+
 				past_ins = ins[0]
 
 		#Link to images 

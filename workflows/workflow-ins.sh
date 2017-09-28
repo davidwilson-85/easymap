@@ -294,7 +294,6 @@ echo $(date)': varanalyzer.py finished.' >> $my_log_file
 
 if [ $(wc -l < $f1/varanalyzer_output.txt) -gt 1 ]
 then 
-	echo $(wc -l < $f1/varanalyzer_output.txt) >> $my_log_file
 	#Run SAM-FQ
 
 	mkdir $f1/primers
