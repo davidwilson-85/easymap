@@ -180,14 +180,21 @@ if mut_type == 'lin':
 
 							ins_localizer_2 = str((sp2[1]).strip().lower() + '-' + str((int(sp2[3]))).strip())
 
-							if ins_localizer_2 == ins_localizer_1_1 or ins_localizer_2 == ins_localizer_1_2 or ins_localizer_2 == ins_localizer_1_3 :
+							if ins_localizer_2 == ins_localizer_1_1:
 								for insertion in insertions_list:
 									if insertion == sp2[2]:
 										sublist = [insertion, str(sp2[3]), sp[1]]
 										if sublist not in insertions_pos_list:
 											insertions_pos_list.append(sublist)
 								break
-
+							
+							elif ins_localizer_2 == ins_localizer_1_2 or ins_localizer_2 == ins_localizer_1_3 :
+								for insertion in insertions_list:
+									if insertion == sp2[2]:
+										sublist = [insertion, str(sp2[3]), sp[1]]
+										if sublist not in insertions_pos_list:
+											insertions_pos_list.append(sublist)
+								break
 #______________________________________________Writting header____________________________________________________
 
 #HTML/CSS stuff
@@ -413,9 +420,9 @@ if data_source == 'exp':
 			output.write(
 	'		<b>Problem paired end reads quality assessment<br></b>' + '\n'
 	'		<p>Forward reads<br></p>' + '\n'
-	'		<center> <img class="img" src="'+'/qual1.png" > </center> ' + '\n'
+	'		<center> <img class="img" src="'+'paired-end-problem-forward-reads-qual-stats.png" > </center> ' + '\n'
 	'		<p>Reverse reads<br></p>' + '\n'
-	'		<center> <img class="img" src="qual2.png"  > </center> ' + '\n'
+	'		<center> <img class="img" src="paired-end-problem-reverse-reads-qual-stats.png"  > </center> ' + '\n'
 			)
 
 		if reads_type == 'se':
@@ -428,9 +435,9 @@ if data_source == 'exp':
 			output.write(
 	'		<b>Control paired end reads quality assessment<br></b>' + '\n'
 	'		<p>Forward reads<br></p>' + '\n'
-	'		<center> <img class="img" src="'+'/qual1.png" > </center> ' + '\n'
+	'		<center> <img class="img" src="'+'paired-end-problem-forward-reads-qual-stats.png" > </center> ' + '\n'
 	'		<p>Reverse reads<br></p>' + '\n'
-	'		<center> <img class="img" src="qual2.png"  > </center> ' + '\n'
+	'		<center> <img class="img" src="paired-end-problem-reverse-reads-qual-stats.png"  > </center> ' + '\n'
 			)
 
 		if reads_type_control == 'se':
@@ -559,7 +566,8 @@ if mut_type == 'lin':
 		#Insertions
 		for ins in insertions_list:
 			for f in sorted(files): 
-				if '_ins_' + ins[0] in str(f):
+				if ('_ins_' + ins[0] + '.png') in str(f):
+
 					output.write(
 					'		<hr class="easymap">' + '\n'
 					'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
@@ -567,7 +575,7 @@ if mut_type == 'lin':
 					)
 
 			for f in sorted(files):
-				if '_lin_' + ins[0] in str(f):
+				if '_lin_' + ins[0] + '_gene' in str(f):
 
 					gene = str(f).split('_')[5].split('.')[0]+'.'+str(f).split('_')[5].split('.')[1]
 					for i in variants_list:

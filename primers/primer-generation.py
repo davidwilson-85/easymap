@@ -10,7 +10,7 @@ parser.add_argument('-fasta', action = "store", dest = "genome", required = "Tru
 parser.add_argument('-fq', action = "store", dest = "fq_lim")
 parser.add_argument('-out', action = "store", dest = "output", required = "True")
 parser.add_argument('-mode', action = "store", dest = "mode", required = "True")  # The argument "mode" is used to determine if there are no insertions found during the tagged-sequence analysis, 
-																					# in which case this script generates an empty output file required for the workflow. 
+																				  # in which case this script generates an empty output file required for the workflow. 
 
 
 args = parser.parse_args()

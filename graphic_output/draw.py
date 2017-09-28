@@ -1443,9 +1443,13 @@ def gene_plot():
 				aach = 'yes'
 				draw.text((int(snp_pos - int(0.092*wide)), int(0.75*height)), (
 					str(p[4][0])+ ' (' + str(p[4][2]) +')' +  '        '  +
-					str(p[4][1])), font=fnt4, fill=(0,0,0,255))   
+					str(p[4][1])), font=fnt4, fill=(0,0,0,255))   				
+				str_len = len(str(p[4][2]))
+
 			else:
 				aach = 'no'
+
+
 
 			#Base change
 			draw.text((int(snp_pos - int(0.036*wide)), int(0.67*height)), (
@@ -1466,8 +1470,23 @@ def gene_plot():
 				arrow = Image.open(image_file)
 				arrow = arrow.resize((47, 47), Image.ANTIALIAS)
 				arrow = arrow.crop((12, 17, 47, 34))
-				im.paste(arrow, (int(snp_pos - int(0.019*wide)), int(0.765*height)))
 
+				#We paste the arrow in a different position depending of the number of characters that the aa position has:
+			
+				if str_len == 1:
+					im.paste(arrow, (int(snp_pos - int(0.041*wide)), int(0.765*height)))
+
+				if str_len == 2:
+					im.paste(arrow, (int(snp_pos - int(0.030*wide)), int(0.765*height)))
+
+				if str_len == 3:
+					im.paste(arrow, (int(snp_pos - int(0.019*wide)), int(0.765*height)))
+
+				if str_len == 4:
+					im.paste(arrow, (int(snp_pos - int(0.008*wide)), int(0.765*height)))
+
+				if str_len == 5:
+					im.paste(arrow, (int(snp_pos + int(0.003*wide)), int(0.765*height)))
 
 		#save image, specifying the format with the extension. For SNP images we save them with diferent sizes depending on if theres an aminoacid change or not
 		w, h = im.size
