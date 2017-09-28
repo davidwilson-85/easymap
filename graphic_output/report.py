@@ -162,18 +162,31 @@ if mut_type == 'lin':
 		for line in f:
 			if not line.startswith('@'):
 				sp = line.split()
+
+
+
 				ins_localizer = str(sp[1].strip().lower() + '-' + sp[2].strip())
+				
+				ins_localizer_1_1 = str((sp[1]).strip().lower() + '-' + str((int(sp[2]))).strip())
+				ins_localizer_1_2 = str((sp[1]).strip().lower() + '-' + str((int(sp[2])+1)).strip())
+				ins_localizer_1_3 = str((sp[1]).strip().lower() + '-' + str((int(sp[2])-1)).strip())
+
+
 				with open(infile) as f2:
 					for line in f2:
 						if not line.startswith('@'):
 							sp2 = line.split()
-							ins_localizer_2 = str(sp2[1].strip().lower() + '-' + sp2[3].strip())
-							if ins_localizer == ins_localizer_2:
+
+
+							ins_localizer_2 = str((sp2[1]).strip().lower() + '-' + str((int(sp2[3]))).strip())
+
+							if ins_localizer_2 == ins_localizer_1_1 or ins_localizer_2 == ins_localizer_1_2 or ins_localizer_2 == ins_localizer_1_3 :
 								for insertion in insertions_list:
 									if insertion == sp2[2]:
 										sublist = [insertion, str(sp2[3]), sp[1]]
 										if sublist not in insertions_pos_list:
 											insertions_pos_list.append(sublist)
+								break
 
 #______________________________________________Writting header____________________________________________________
 
@@ -512,11 +525,12 @@ if mut_type == 'lin':
 					if str(sp[14]).strip() != '-':
 						annotation = str(sp[14]).strip()
 					else:
-						annotation = ' Functional annotation not available'
+						annotation = 'Functional annotation not available'
 
 					for i in insertions_pos_list:
-						if int(i[1]) == int(position) and str(i[2]).lower().strip() == contig.lower():
-							ins = str(i[0])
+						if str(i[2]).lower().strip() == contig.lower():
+							if int(i[1]) == int(position) or (int(i[1])+1) == int(position) or (int(i[1])-1) == int(position):
+								ins = str(i[0])
 
 					variants_list.append([ins, contig, position, gene, aminoacid, primer_f, primer_r, primer_5, primer_3, upstream, downstream, annotation])
 
