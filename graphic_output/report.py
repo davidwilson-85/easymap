@@ -563,73 +563,135 @@ if mut_type == 'lin':
 
 		)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		past_ins = None
 		#Insertions
-		for ins in insertions_list:
-			for f in sorted(files): 
-				if ('_ins_' + ins[0] + '.png') in str(f):
+		for ins in variants_list:
+			if past_ins == ins[0]:
+				past_ins = ins[0]
 
-					output.write(
-					'		<hr class="easymap">' + '\n'
-					'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
-					'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
-					)
+			if past_ins != ins[0]:
+				for f in sorted(files): 
+					if ('_ins_' + ins[0] + '.png') in str(f):
 
-			for f in sorted(files):
-				if '_lin_' + ins[0] + '_gene' in str(f):
+						output.write(
+						'		<hr class="easymap">' + '\n'
+						'		<h2> Insertion   ' +  str(ins[0]) +'</h2>' + '\n'
+						'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
+						)
 
-					gene = str(f).split('_')[5].split('.')[0]+'.'+str(f).split('_')[5].split('.')[1]
-					for i in variants_list:
-						if gene in str(i[3]):
 
-							output.write(
-							'		<h3>' + gene + '</h3>' + '\n'
-							'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
-							'		<table id="t">' + '\n'
-							'		<col width="300">' + '\n'
-							'		<col width="700">' + '\n'
-							)
 
-							if ann_file != "Not provided": 
+
+
+
+
+
+
+
+
+
+				for f in sorted(files):
+					if '_lin_' + ins[0] + '_gene' in str(f):
+						gene = str(f).split('_')[5].split('.')[0]+'.'+str(f).split('_')[5].split('.')[1]
+						for i in variants_list:
+							if gene in str(i[3]):
 								output.write(
+								'		<h3>' + gene + '</h3>' + '\n'
+								'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
+								'		<table id="t">' + '\n'
+								'		<col width="300">' + '\n'
+								'		<col width="700">' + '\n'
+
 								'		<tr>' + '\n'
-								'			<td> <b>Functional annotation:</b></td>' + '\n'
-								'			<td>' + str(i[11]) + '</td>' + '\n'
+								'			<td> <b>Insertion position:</b></td>' + '\n'
+								'			<td style="font-family:Lucida Console, monospace">' + str(ins[2]) + ', ' + str(ins[1]) + '</td>' + '\n'
 								'		</tr>' + '\n'
+
 								)
 
-							output.write(
+								if ann_file != "Not provided": 
+									output.write(
+									'		<tr>' + '\n'
+									'			<td> <b>Functional annotation:</b></td>' + '\n'
+									'			<td>' + str(i[11]) + '</td>' + '\n'
+									'		</tr>' + '\n'
+									)
 
-							'		<tr>' + '\n'
-							'			<td> <b>Forward primer:</b></td>' + '\n'
-							'			<td style="font-family:Lucida Console, monospace">' + str(i[5]) + '</td>' + '\n'
-							'		</tr>' + '\n'
+								output.write(
 
-							'		<tr>' + '\n'
-							'			<td> <b>Reverse primer:</b></td>' + '\n'
-							'			<td style="font-family:Lucida Console, monospace">' + str(i[6]) + '</td>' + '\n'
-							'		</tr>' + '\n'
+								'		<tr>' + '\n'
+								'			<td> <b>Forward primer:</b></td>' + '\n'
+								'			<td style="font-family:Lucida Console, monospace">' + str(i[5]) + '</td>' + '\n'
+								'		</tr>' + '\n'
 
-							'		<tr>' + '\n'
-							'			<td> <b>Insertion 5 primer:</b></td>' + '\n'
-							'			<td style="font-family:Lucida Console, monospace">' + str(i[7]) + '</td>' + '\n'
-							'		</tr>' + '\n'
+								'		<tr>' + '\n'
+								'			<td> <b>Reverse primer:</b></td>' + '\n'
+								'			<td style="font-family:Lucida Console, monospace">' + str(i[6]) + '</td>' + '\n'
+								'		</tr>' + '\n'
 
-							'		<tr>' + '\n'
-							'			<td> <b>Insertion 3 primer:</b></td>' + '\n'
-							'			<td style="font-family:Lucida Console, monospace">' + str(i[8]) + '</td>' + '\n'
-							'		</tr>' + '\n'
+								'		<tr>' + '\n'
+								'			<td> <b>Insertion 5 primer:</b></td>' + '\n'
+								'			<td style="font-family:Lucida Console, monospace">' + str(i[7]) + '</td>' + '\n'
+								'		</tr>' + '\n'
 
-
-							'		<tr>' + '\n'
-							'			<td> <b>Flanking sequences:</b></td>' + '\n'
-							'			<td style="font-family:Lucida Console, monospace">' + str(i[9])[15:] + '<font style="font-family:Lucida Console, monospace" color="red">[INS' + str(ins[0]) + ']</font>' + str(i[10])[0:35] + '</td>' + '\n'
-							'		</tr>' + '\n'
+								'		<tr>' + '\n'
+								'			<td> <b>Insertion 3 primer:</b></td>' + '\n'
+								'			<td style="font-family:Lucida Console, monospace">' + str(i[8]) + '</td>' + '\n'
+								'		</tr>' + '\n'
 
 
-							'		</table>' + '\n'
-							'		<br>' + '\n'
+								'		<tr>' + '\n'
+								'			<td> <b>Flanking sequences:</b></td>' + '\n'
+								'			<td style="font-family:Lucida Console, monospace">' + str(i[9])[15:] + '<font style="font-family:Lucida Console, monospace" color="red">[INS' + str(ins[0]) + ']</font>' + str(i[10])[0:35] + '</td>' + '\n'
+								'		</tr>' + '\n'
 
-							)
+
+								'		</table>' + '\n'
+								'		<br>' + '\n'
+								)
+					
+					switch = "no"
+					for f in sorted(files):
+						if '_lin_' + ins[0] + '_gene' in str(f):
+							switch = "yes"
+
+					if switch == "no": 
+						output.write(
+						'		<table id="t">' + '\n'
+						'		<col width="300">' + '\n'
+						'		<col width="700">' + '\n'
+						'		<tr>' + '\n'
+						'			<td> <b>Insertion position:</b></td>' + '\n'
+						'			<td style="font-family:Lucida Console, monospace">' + str(ins[2]) + ', ' + str(ins[1]) + '</td>' + '\n'
+						'		</tr>' + '\n'
+						'		</table>' + '\n'
+						'		<br>' + '\n'
+						)
+						break
+						
+				past_ins = ins[0]
 
 		#Link to images 
 		output.write(
@@ -788,10 +850,27 @@ if mut_type == 'snp':
 				if 'gene_plot_snp' in str(f) and gene_name in str(f) and var[2] in str(f):
 					output.write(
 					'		<h3>ID ' + str(var[0]) + ': ' + gene_name + '</h3>' + '\n'
-					'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </left>' + '\n'
+					'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
 					'		<table id="t">' + '\n'
 					'		<col width="300">' + '\n'
 					'		<col width="700">' + '\n'
+					)
+
+					output.write(
+					'		<tr>' + '\n'
+					'			<td> <b>Mutation position:</b></td>' + '\n'
+					'			<td style="font-family:Lucida Console, monospace">' + var[2] + ', '+ var[1] + '</td>' + '\n'
+					'		</tr>' + '\n'
+
+					'		<tr>' + '\n'
+					'			<td> <b>Allelic frequence:</b></td>' + '\n'
+					'			<td style="font-family:Lucida Console, monospace">' + var[3] + '</td>' + '\n'
+					'		</tr>' + '\n'
+
+					'		<tr>' + '\n'
+					'			<td> <b>Distance to peak (DTP):</b></td>' + '\n'
+					'			<td style="font-family:Lucida Console, monospace">' + var[4] + '</td>' + '\n'
+					'		</tr>' + '\n'
 					)
 
 					if ann_file != "Not provided":
