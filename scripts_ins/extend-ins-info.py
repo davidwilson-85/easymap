@@ -55,6 +55,8 @@ for line in final_lines:
 
 output_file.close()
 
+
+
 # _______________________________________________________________________________________--
 
 # Now we will retrieve the reconstructed sequences of the 5 and 3 prime ends of the insertion 
@@ -80,7 +82,7 @@ for line in fi:
 
 	if line.startswith('+\n'):
 		switch = 'qual'
-
+		purged_sequence = '-'
 		for i, n in enumerate(sequence): 
 			if n.lower() == 'n':
 				continue 
@@ -92,6 +94,7 @@ for line in fi:
 			purged_sequence = '-'
 
 		ins_extr.append([chromosome, position, end, purged_sequence])
+	
 
 final_lines = list()
 for line in input_file:
