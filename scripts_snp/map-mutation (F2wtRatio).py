@@ -107,11 +107,9 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 			 			snps_window.append(AF)
 				elif control == "f2wt":
 					AF = float(SNP[key][-3])/(float(SNP[key][-3])+ float(SNP[key][-4]))
-					if c == 0.7 and AF < c:
-						snps_window.append(AF)
-					elif c == 0.3 and AF> c:							
-			 			snps_window.append(AF)
-
+					AFwt = float(SNP[key][-1])/(float(SNP[key][-2])+ float(SNP[key][-1])) #Two AF are calculated for both F2WT and F2 non-WT
+					snps_window.append(AF)
+					snps_window2.append(AFwt)
 		if len(snps_window) != 0: #if snps have passed the threshold
 			if control == "par":										
 				average_FA = calculation_average(snps_window)
@@ -119,8 +117,10 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 				dictionary_windows[i].append(average_FA)
 			elif control == "f2wt":
 				average_FA = calculation_average(snps_window)
+				average_FA_WT = calculation_average(snps_window2) 
 				dictionary_windows[i] = []
 				dictionary_windows[i].append(average_FA)
+				dictionary_windows[i].append(average_FA_WT)
 		elif len(snps_window) == 0 and modality == "ref" and control == "par" :  #in the modality outcross of mutant in the reference background, it is possible that a window will not contain any SNP. We will suppose a value near 0.
 			average_FA = 0.01	#Not 0 since later on a division will be made
 			dictionary_windows[i] = []
@@ -165,8 +165,13 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 			dictionary[items]= boost
 			result.write("@"+"\t"+str(items)+"\t"+ str(average)+"\t"+ str(boost)+ "\t"+str(chromosome)+ "\n")
 		elif control == "f2wt":
-			parameter = average
-			result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n") 
+			average_mut = window[items][0]
+			average_WT = window[items][1]
+			ratio = float(average_mut) - float(average_WT)
+			if ratio < 0: ratio = 0
+			parameter = ratio
+			dictionary[items] = ratio
+			result.write("@	"+str(items)+ "\t"+ str(ratio) + "\t" + str(chromosome) + "\n")
 
 		if mut1 != "no": #If there is an already known mutation
 			no_ch = mut1.split("-")[0]
@@ -183,13 +188,10 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 				best_parameter = parameter
 
 	if chromosome == best_chromosome: 		
-		if mode == "out":
-			best_dictionary = dictionary
-		if control == "f2wt":
-			best_dictionary = window
+		if mode == "out" or control == "f2wt":
+			best_dictionary= dictionary
 		if mode == "back" and control == "par":
 			best_dictionary = window
-
 	return maximum_position, best_parameter, best_chromosome, best_dictionary
 
 def final_processing_A(result, interval_width):       #is the one used in the oc
@@ -273,7 +275,7 @@ if mode == "back":
 if mode == "out":
 	final_processing = function_used[1]
 if control == "f2wt":
-	final_processing = function_used[0]
+	final_processing = function_used[1]
 
 #Call of the function chromosome by chromosome, the final result comes from the chromosome with the higher parameters
 z = 0

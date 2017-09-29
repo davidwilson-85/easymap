@@ -56,7 +56,6 @@ for line in final_lines:
 output_file.close()
 
 
-
 # _______________________________________________________________________________________--
 
 # Now we will retrieve the reconstructed sequences of the 5 and 3 prime ends of the insertion 

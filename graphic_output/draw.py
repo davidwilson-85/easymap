@@ -189,17 +189,14 @@ def fa_vs_pos():
 					draw.line((cr_middle, h) + (cr_middle, h+5), fill=(255, 0, 0, 0), width=1)
 					h = h + 10
 				
-
-
 		#snps
-
 		r, g, b = 31, 120, 180
 		if args.my_mut == 'af_control':
 			r, g, b = 245, 120, 44
 
 		for l, line in enumerate(lines):
 			sp = line.split()
-			if i[0].lower() == sp[0].lower():
+			if i[0].lower() == sp[0].lower() :
 				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
 				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
 				pos_img = int(int(sp[1])/scaling_factor_x) + 70
@@ -212,7 +209,12 @@ def fa_vs_pos():
 					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(245, 120, 44))
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(245, 120, 44)) 
+					#f2wt snps
+					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
+					pos_img = int(int(sp[1])/scaling_factor_x) + 70
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(31, 120, 180))
 
 
 		my_cross = str(args.my_cross)

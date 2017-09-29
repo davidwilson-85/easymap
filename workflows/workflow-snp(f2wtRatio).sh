@@ -388,7 +388,7 @@ function cr_analysis {
 	}
 	echo $(date)': Graphic output created.' >> $my_log_file
 
-	# python ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison_drawn.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 150 -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -cross bc -snp_analysis_type par  
+	# python ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison_drawn.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 150 -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname project  -cross bc -snp_analysis_type par  
 
 	# (6) Create graphic output
 	{
@@ -569,7 +569,7 @@ then
 
 	# (3) Run af-comparison: Intersection of filtered control SNPs with problem reads: outputs VA file with 4 columns of allele absolute frequence
 	{
-		python $location/scripts_snp/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs 2>> $my_log_file -step 1
+		python $location/scripts_snp/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs 2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of af_comparison.py .' >> $my_log_file
@@ -582,7 +582,7 @@ then
 	# (4) Run mapping analysis
 	my_analysis_mode=back
 	{
-		python $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 100000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type par  2>> $my_log_file
+		python $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 100000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -591,19 +591,6 @@ then
 		exit
 	}
 	echo $(date)': Mutation mapping module finished.' >> $my_log_file
-
-
-	# BYPASS
-	{
-		python $location/scripts_snp/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs 2>> $my_log_file -step 2
-
-	} || {
-		echo $(date)': Error during execution of af_comparison.py .' >> $my_log_file
-		exit_code=1
-		echo $exit_code
-		exit
-	}
-	echo $(date)': Allelic frequence comparison finished.' >> $my_log_file
 
 	# (4) Candidate region analysis function
 	cr_analysis F2_control_comparison.va 0.1

@@ -6,7 +6,6 @@ parser.add_argument('-f2_mut', action="store", dest = 'input_mut')
 parser.add_argument('-f2_wt', action="store", dest = 'input_wt')
 parser.add_argument('-out', action="store", dest = 'output')
 parser.add_argument('-f_input', action="store", dest = 'f_input')
-parser.add_argument('-step', action="store", dest = 'step')
 
 args = parser.parse_args()
 
@@ -23,9 +22,6 @@ f2 = open(input2, 'r')
 wt_lines = f2.readlines()	
 
 f_input = args.f_input
-
-step = int(args.step)
-
 
 
 #Output
@@ -75,12 +71,4 @@ for chr in ch:
 	intersection = [x for x in list_wt if x in set_2]
 
 	for i in intersection:
-		if step == 1: 
-			f3.write( str(chr) + '\t' + str(i) + '\t' + str(dic_mut[i][0]) +'\t' +  str(dic_mut[i][1]) +'\t' +  str(dic_mut[i][2]) + '\t' + str(dic_wt[i][3]) +'\t' +  str(dic_wt[i][4]) + '\t' + str(dic_mut[i][3]) + '\t' + str(dic_mut[i][4]) + '\n')
-		if step == 2: 
-			f3.write( str(chr) + '\t' + str(i) + '\t' + str(dic_mut[i][0]) +'\t' +  str(dic_mut[i][1]) +'\t' +  str(dic_mut[i][2]) + '\t'  + str(dic_mut[i][3]) + '\t' + str(dic_mut[i][4]) + '\t' + str(dic_wt[i][3]) +'\t' +  str(dic_wt[i][4]) + '\n')
-
-
-
-
-f3.close()
+		f3.write( str(chr) + '\t' + str(i) + '\t' + str(dic_mut[i][0]) +'\t' +  str(dic_mut[i][1]) +'\t' +  str(dic_mut[i][2]) + '\t' + str(dic_mut[i][3]) + '\t' + str(dic_mut[i][4]) + '\t' + str(dic_wt[i][3]) +'\t' +  str(dic_wt[i][4]) + '\n')
