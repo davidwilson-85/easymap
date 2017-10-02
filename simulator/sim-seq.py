@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # 
 # 
 # This program simulates a massively parallel sequencer. It accepts either a single DNA sequence

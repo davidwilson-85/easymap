@@ -1,4 +1,3 @@
-#!/usr/bin/python
 
 # Multiple fasta files can be provided (one per contig). The program asks for the folder that
 # contains the fasta inputs. The same happens with fastq files (f and r / sample 1 and sample2)

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 
 '''
 This program reads a fasta file with one or more contigs and calculates

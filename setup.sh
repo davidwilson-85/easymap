@@ -46,7 +46,7 @@ sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblc
 #sudo yum (for other distros)
 
 # Install Pillow
-sudo python ./graphic_output/Pillow-4.2.1/setup.py install
+sudo python2 ./graphic_output/Pillow-4.2.1/setup.py install
 
 # In Ubuntu AMI (python-minimal installed), setup.py needs the package setuptools, which
 # is not found and a receive an error.

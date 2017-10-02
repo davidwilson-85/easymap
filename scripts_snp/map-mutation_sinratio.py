@@ -1,4 +1,3 @@
-#!/usr/bin/python
 #Map-snp.py is a script written in python as a part of Easymap software. It is used in mapping by sequencing of SNP. 
 #The script can take as input different situations: Parental as a control--> backcross and outcross; in a reference background or not
 #WTF2 as control--> backcross, in reference background or not.

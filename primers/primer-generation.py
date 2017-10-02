@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import math
 import argparse
 from string import maketrans

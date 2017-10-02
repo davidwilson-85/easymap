@@ -125,7 +125,7 @@ if [ $my_mode == 'pe' ]
 then  
 	#Execute filter1
 	{
-		python $location/scripts_ins/filter1.py -a $f1/alignment1.sam -b $f1/output_F1.fq 2>> $my_log_file
+		python2 $location/scripts_ins/filter1.py -a $f1/alignment1.sam -b $f1/output_F1.fq 2>> $my_log_file
 	
 	} || {
 		echo $(date)': error: filter1.py' >> $my_log_file
@@ -184,7 +184,7 @@ fi
 
 #Execute filter2
 {
-	python $location/scripts_ins/filter2.py -a $f1/alignment3.sam -b $f1/output_F2.fq 2>> $my_log_file
+	python2 $location/scripts_ins/filter2.py -a $f1/alignment3.sam -b $f1/output_F2.fq 2>> $my_log_file
 
 } || {
 	echo $(date)': error: filter2.py' >> $my_log_file
@@ -214,7 +214,7 @@ echo $(date)': bowtie2 finished.' >> $my_log_file
 if [ $my_mode == 'pe' ]
 then  
 	{
-		python $location/scripts_ins/paired-analysis.py -a $f1/alignment2.sam -b $f1/output_analysis.txt -c $f1/$my_gs 2>> $my_log_file
+		python2 $location/scripts_ins/paired-analysis.py -a $f1/alignment2.sam -b $f1/output_analysis.txt -c $f1/$my_gs 2>> $my_log_file
 
 	} || {
 		echo $(date)': error: paired-analysis.py' >> $my_log_file
@@ -225,7 +225,7 @@ then
 	echo $(date)': Paired reads analysis finished.' >> $my_log_file
 
 	{
-		python $location/scripts_ins/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode 2>> $my_log_file
+		python2 $location/scripts_ins/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode 2>> $my_log_file
 
 	} || {
 		echo $(date)': error: local-analysis.py' >> $my_log_file
@@ -239,7 +239,7 @@ fi
 if [ $my_mode == 'se' ]
 then  
 	{
-		python $location/scripts_ins/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode 2>> $my_log_file
+		python2 $location/scripts_ins/local-analysis.py -a $f1/alignment4.sam -b $f1/output_analysis.txt -c $f1/$my_gs -m $my_mode 2>> $my_log_file
 
 	} || {
 		echo $(date)': error: local-analysis.py' >> $my_log_file
@@ -253,7 +253,7 @@ fi
 
 #Sort insertions
 {
-	python $location/scripts_ins/sort.py -a $f1/output_analysis.txt -b $f1/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -m $my_mode 2>> $my_log_file
+	python2 $location/scripts_ins/sort.py -a $f1/output_analysis.txt -b $f1/$my_gs -c $f1/output_ordered.csv -d $f3/sorted_insertions.txt -m $my_mode 2>> $my_log_file
 	
 } || {
 	echo $(date)': error: sort.py' >> $my_log_file
@@ -266,7 +266,7 @@ echo $(date)': Insertions sorted.' >> $my_log_file
 
 #ma-input.py
 {
-	python $location/scripts_ins/ins-to-varanalyzer.py -a $f3/sorted_insertions.txt -b $f1/ins-to-varanalyzer.txt 2>> $my_log_file
+	python2 $location/scripts_ins/ins-to-varanalyzer.py -a $f3/sorted_insertions.txt -b $f1/ins-to-varanalyzer.txt 2>> $my_log_file
 	
 } || {
 	echo $(date)': error: ins-to-varanalyzer.py' >> $my_log_file
@@ -279,7 +279,7 @@ echo $(date)': ins-to-varanalyzer.py finished.' >> $my_log_file
 
 #varanalyzer
 {
-	python $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann 2>> $my_log_file
+	python2 $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann 2>> $my_log_file
 	
 } || {
 	echo $(date)': error: varanalyzer.py' >> $my_log_file
@@ -299,7 +299,7 @@ then
 	mkdir $f1/primers
 
 	{
-		python $location/scripts_ins/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f1/varanalyzer_output.txt -sam_out $f1/primers/ 2>> $my_log_file
+		python2 $location/scripts_ins/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f1/varanalyzer_output.txt -sam_out $f1/primers/ 2>> $my_log_file
 		
 	} || {
 		echo $(date)': error:ins-primers.py' >> $my_log_file
@@ -340,7 +340,7 @@ then
 		    then
 				#Check sams
 				{
-					sam_stauts=`python $location/scripts_ins/sam-file-check.py -a $i 2>> $my_log_file`
+					sam_stauts=`python2 $location/scripts_ins/sam-file-check.py -a $i 2>> $my_log_file`
 					
 					if [ $sam_stauts == 0 ]
 					then
@@ -394,7 +394,7 @@ rm -f ./user_data/*.fai
 
 #Primer generation script
 {
-	$location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt -mode $(wc -l < $f1/varanalyzer_output.txt) 2>> $my_log_file
+	python2 $location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt -mode $(wc -l < $f1/varanalyzer_output.txt) 2>> $my_log_file
 }|| {
 	echo $(date) ': Error. primer-generation.py failed. ' >> $my_log_file
 	exit_code=1
@@ -410,7 +410,7 @@ then
 
 	# Extend Ins info (adds flanking sequences)
 	{
-		$location/scripts_ins/extend-ins-info.py --project-name $project_name 2>> $my_log_file
+		python2 $location/scripts_ins/extend-ins-info.py --project-name $project_name 2>> $my_log_file
 	}|| {
 		echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
 		exit_code=1
@@ -425,12 +425,12 @@ fi
 #______________________________________________________________________________________________________________________________________________________________________
 
 
-# for tests: python ./graphic_output/graphic-output.py -my_mut lin -a ./user_projects/project/3_workflow_output/sorted_insertions.txt -b ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100  -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -ins_pos ./user_projects/project/1_intermediate_files/ins-to-varanalyzer.txt
+# for tests: python2 ./graphic_output/graphic-output.py -my_mut lin -a ./user_projects/project/3_workflow_output/sorted_insertions.txt -b ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100  -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -ins_pos ./user_projects/project/1_intermediate_files/ins-to-varanalyzer.txt
 
 
 #Graphic output
 {
-	python $location/graphic_output/graphic-output.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -m $my_mode	-gff $f0/$my_gff  -iva $f1/varanalyzer_output.txt -rrl $my_rrl -pname $project_name -ins_pos $f1/ins-to-varanalyzer.txt 2>> $my_log_file
+	python2 $location/graphic_output/graphic-output.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -m $my_mode	-gff $f0/$my_gff  -iva $f1/varanalyzer_output.txt -rrl $my_rrl -pname $project_name -ins_pos $f1/ins-to-varanalyzer.txt 2>> $my_log_file
 	
 } || {
 	echo $(date)': error:graphic-output.py' >> $my_log_file
@@ -503,7 +503,7 @@ fi
 
 # 4. 
 {
-	python $location/scripts_snp/depth_measures_generation.py -genome $f1/genome_mini.fa -bam $f1/alignment5.bam -out $f1/coverage_alignment1.txt 2>> $my_log_file
+	python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/genome_mini.fa -bam $f1/alignment5.bam -out $f1/coverage_alignment1.txt 2>> $my_log_file
 
 } || {
 	echo $(date)': Error during obtaining of alignment depth .' >> $my_log_file
@@ -514,7 +514,7 @@ fi
 
 # 5. 
 {
-	python $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 2>> $my_log_file
+	python2 $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 2>> $my_log_file
 
 } || {
 	echo $(date)': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
@@ -529,7 +529,7 @@ fi
 zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 
 {
-	python $location/graphic_output/report.py -variants $f3/insertions_output.txt -log $my_log_file -output_html $f3/report.html -project $project_name  -mut_type lin -files_dir $f3 2>> $my_log_file
+	python2 $location/graphic_output/report.py -variants $f3/insertions_output.txt -log $my_log_file -output_html $f3/report.html -project $project_name  -mut_type lin -files_dir $f3 2>> $my_log_file
 
 } || {
 	echo $(date)': error:report.py' >> $my_log_file

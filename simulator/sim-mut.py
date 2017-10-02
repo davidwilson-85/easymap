@@ -1,4 +1,3 @@
-#!/usr/bin/python
 #
 #
 # This program simulates a mutagenesis. It takes a DNA sequence and introduces mutations.

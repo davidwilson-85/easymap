@@ -1,4 +1,3 @@
-#!/usr/bin/python
 
 #python ./graphic_output/report.py -variants ./user_projects/project/3_workflow_output/candidate_variants.txt -log ./user_projects/project/2_logs/log.log -output_html ./user_projects/project/3_workflow_output/report.html -project user_projects/project  -mut_type snp -files_dir ./user_projects/project/3_workflow_output/
 #python ./graphic_output/report.py -variants ./user_projects/project/3_workflow_output/insertions_output.txt -log ./user_projects/project/2_logs/log.log -output_html ./user_projects/project/3_workflow_output/report.html -project user_projects/project  -mut_type lin -files_dir ./user_projects/project/3_workflow_output/

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import subprocess
 import argparse
 parser = argparse.ArgumentParser()

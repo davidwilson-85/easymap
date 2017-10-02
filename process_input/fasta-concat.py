@@ -1,4 +1,3 @@
-#!/usr/bin/python
 
 #
 # This script receives a list of fasta files, reads the content of each one

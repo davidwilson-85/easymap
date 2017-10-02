@@ -90,7 +90,7 @@ ref_seqs_merged_file=$project_name/$f1/gnm_ref_merged/genome.fa
 
 # Check fasta input(s)
 
-fa=`python process_input/verify-input.py -gnm $ref_seq  2>> $my_log_file`
+fa=`python2 process_input/verify-input.py -gnm $ref_seq  2>> $my_log_file`
 
 if [ $fa == 0 ]; then
 	echo $(date)": Genome fasta input check passed." >> $my_log_file
@@ -106,7 +106,7 @@ fi
 
 # Concatenate fasta input and store in a single file
 {
-	python process_input/fasta-concat.py -gnm $ref_seq -out_dir $ref_seqs_merged_dir 2>> $my_log_file
+	python2 process_input/fasta-concat.py -gnm $ref_seq -out_dir $ref_seqs_merged_dir 2>> $my_log_file
 } || {
 	echo echo $(date)": Processing of fasta genome input failed: fasta-concat.py could not concatenate fasta files into one file." >> $my_log_file
 	exit_code=1
@@ -117,7 +117,7 @@ echo $(date)": Processing of fasta genome input completed." >> $my_log_file
 # Do this only if analyzing insertions
 
 if [ $analysis_type == 'ins' ]; then
-	fa=`python process_input/verify-input.py -ins $ins_seq  2>> $my_log_file`
+	fa=`python2 process_input/verify-input.py -ins $ins_seq  2>> $my_log_file`
 	
 	if [ $fa == 0 ]; then
 		echo $(date)": Insertion fasta input check passed." >> $my_log_file
@@ -133,7 +133,7 @@ fi
 if [ $data_source == 'exp' ]; then
 	if [ $lib_type_sample == 'se' ]; then
 		
-		fq=`python process_input/verify-input.py -fq $read_s 2>> $my_log_file` 
+		fq=`python2 process_input/verify-input.py -fq $read_s 2>> $my_log_file` 
 		
 		if [ $fq == 0 ]; then
 			echo $(date)": Single-end fastq input (problem reads) passed." >> $my_log_file
@@ -142,7 +142,7 @@ if [ $data_source == 'exp' ]; then
 			exit_code=1
 		fi
 
-		fq_qual=`python ./graphic_output/fastq-stats.py -fasq $read_s -out $project_name/$f3/single-end-problem-reads-qual-stats.png 2>> $my_log_file` 
+		fq_qual=`python2 ./graphic_output/fastq-stats.py -fasq $read_s -out $project_name/$f3/single-end-problem-reads-qual-stats.png 2>> $my_log_file` 
 		
 		if [ $fq_qual == 0 ]; then
 			echo $(date)": Single-end fastq quality (problem reads) encoding is Phred +33. Passed." >> $my_log_file
@@ -153,7 +153,7 @@ if [ $data_source == 'exp' ]; then
 	fi
 
 	if [ $lib_type_sample == 'pe' ]; then
-		fq_for=`python process_input/verify-input.py -fq $read_f` 2>> $my_log_file
+		fq_for=`python2 process_input/verify-input.py -fq $read_f` 2>> $my_log_file
 		
 		if [ $fq_for == 0 ]; then
 			echo $(date)": Paired-end forward fastq (problem reads) input passed." >> $my_log_file
@@ -162,7 +162,7 @@ if [ $data_source == 'exp' ]; then
 			exit_code=1
 		fi
 
-		fq_rev=`python process_input/verify-input.py -fq $read_r` 2>> $my_log_file
+		fq_rev=`python2 process_input/verify-input.py -fq $read_r` 2>> $my_log_file
 		
 		if [ $fq_rev == 0 ]; then
 			echo $(date)": Paired-end reverse fastq (problem reads) input passed." >> $my_log_file
@@ -171,7 +171,7 @@ if [ $data_source == 'exp' ]; then
 			exit_code=1
 		fi
 
-		fq_qual_for=`python ./graphic_output/fastq-stats.py -fasq $read_f -out $project_name/$f3/paired-end-problem-forward-reads-qual-stats.png 2>> $my_log_file` 
+		fq_qual_for=`python2 ./graphic_output/fastq-stats.py -fasq $read_f -out $project_name/$f3/paired-end-problem-forward-reads-qual-stats.png 2>> $my_log_file` 
 
 		if [ $fq_qual_for == 0 ]; then
 			echo $(date)": Paired-end forward fastq quality (problem reads) encoding is Phred +33. Passed." >> $my_log_file
@@ -180,7 +180,7 @@ if [ $data_source == 'exp' ]; then
 			exit_code=1
 		fi
 
-		fq_qual_rev=`python ./graphic_output/fastq-stats.py -fasq $read_r -out $project_name/$f3/paired-end-problem-reverse-reads-qual-stats.png 2>> $my_log_file` 
+		fq_qual_rev=`python2 ./graphic_output/fastq-stats.py -fasq $read_r -out $project_name/$f3/paired-end-problem-reverse-reads-qual-stats.png 2>> $my_log_file` 
 		
 		if [ $fq_qual_rev == 0 ]; then
 			echo $(date)": Paired-end reverse fastq quality (problem reads) encoding is Phred +33. Passed." >> $my_log_file
@@ -195,7 +195,7 @@ if [ $data_source == 'exp' ]; then
 	if [ $analysis_type == 'snp' ]; then
 		if [ $lib_type_sample == 'se' ]; then
 			
-			fq=`python process_input/verify-input.py -fq $read_s_ctrl 2>> $my_log_file` 
+			fq=`python2 process_input/verify-input.py -fq $read_s_ctrl 2>> $my_log_file` 
 			
 			if [ $fq == 0 ]; then
 				echo $(date)": Single-end fastq input (control reads) passed." >> $my_log_file
@@ -205,7 +205,7 @@ if [ $data_source == 'exp' ]; then
 			fi
 
 			{
-				fq_qual=`python ./graphic_output/fastq-stats.py -fasq $read_s_ctrl -out $project_name/$f3/single-end-control-reads-qual-stats.png 2>> $my_log_file` 
+				fq_qual=`python2 ./graphic_output/fastq-stats.py -fasq $read_s_ctrl -out $project_name/$f3/single-end-control-reads-qual-stats.png 2>> $my_log_file` 
 				
 				if [ $fq_qual == 0 ]; then
 					echo $(date)": Single-end fastq quality (control reads) encoding is Phred +33. Passed." >> $my_log_file
@@ -220,7 +220,7 @@ if [ $data_source == 'exp' ]; then
 		fi
 
 		if [ $lib_type_sample == 'pe' ]; then
-			fq_for=`python process_input/verify-input.py -fq $read_f_ctrl 2>> $my_log_file` 
+			fq_for=`python2 process_input/verify-input.py -fq $read_f_ctrl 2>> $my_log_file` 
 			
 			if [ $fq_for == 0 ]; then
 				echo $(date)": Paired-end forward fastq input (control reads) passed." >> $my_log_file
@@ -229,7 +229,7 @@ if [ $data_source == 'exp' ]; then
 				exit_code=1
 			fi
 
-			fq_rev=`python process_input/verify-input.py -fq $read_r_ctrl 2>> $my_log_file` 
+			fq_rev=`python2 process_input/verify-input.py -fq $read_r_ctrl 2>> $my_log_file` 
 			
 			if [ $fq_rev == 0 ]; then
 				echo $(date)": Paired-end reverse fastq input (control reads) passed." >> $my_log_file
@@ -239,7 +239,7 @@ if [ $data_source == 'exp' ]; then
 			fi
 
 			{
-				fq_qual_for=`python ./graphic_output/fastq-stats.py -fasq $read_f_ctrl -out $project_name/$f3/paired-end-control-forward-reads-qual-stats.png 2>> $my_log_file` 
+				fq_qual_for=`python2 ./graphic_output/fastq-stats.py -fasq $read_f_ctrl -out $project_name/$f3/paired-end-control-forward-reads-qual-stats.png 2>> $my_log_file` 
 
 				if [ $fq_qual_for == 0 ]; then
 					echo $(date)": Paired-end forward fastq quality (control reads) encoding is Phred +33. Passed." >> $my_log_file
@@ -253,7 +253,7 @@ if [ $data_source == 'exp' ]; then
 			}
 
 			{
-				fq_qual_rev=`python ./graphic_output/fastq-stats.py -fasq $read_r_ctrl -out $project_name/$f3/paired-end-control-reverse-reads-qual-stats.png 2>> $my_log_file` 
+				fq_qual_rev=`python2 ./graphic_output/fastq-stats.py -fasq $read_r_ctrl -out $project_name/$f3/paired-end-control-reverse-reads-qual-stats.png 2>> $my_log_file` 
 				
 				if [ $fq_qual_rev == 0 ]; then
 					echo $(date)": Paired-end reverse fastq quality (control reads) encoding is Phred +33. Passed." >> $my_log_file
@@ -272,7 +272,7 @@ fi
 
 
 # Check gff input
-gff=`python process_input/verify-input.py -gff $gff_file 2>> $my_log_file` 
+gff=`python2 process_input/verify-input.py -gff $gff_file 2>> $my_log_file` 
 
 if [ $gff == 0 ]; then
 	echo $(date)": GFF3 input check passed." >> $my_log_file
@@ -285,7 +285,7 @@ fi
 # Check gene funtional annotation input
 # Do this only if user has provided file (it's optional)
 #if [ $ann_option != 'n/p' ]; then
-#	ann=`python process_input/verify-input.py -ann $ann_file 2>> $my_log_file` 
+#	ann=`python2 process_input/verify-input.py -ann $ann_file 2>> $my_log_file` 
 #	echo 'Checking gene functional annotation input...' >> $my_log_file
 #	if [ $ann == 0 ]; then
 #		echo $(date)": Gene annotation file check passed." >> $my_log_file
@@ -297,7 +297,7 @@ fi
 
 
 # Check contigs match between fasta and gff3 files
-match=`python process_input/verify-input.py -fa_match $ref_seqs_merged_file -gff_match $gff_file 2>> $my_log_file` 
+match=`python2 process_input/verify-input.py -fa_match $ref_seqs_merged_file -gff_match $gff_file 2>> $my_log_file` 
 
 if [ $match == 0 ]; then
 		echo $(date)": Contigs match check between FASTA and GFF3 inputs passed." >> $my_log_file

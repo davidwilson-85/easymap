@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # 
 # 
 # This program simulates the F2 offspring of a cross between two different isogenic lines and the

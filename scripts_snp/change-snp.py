@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #Aim:  Using the variants file generated from the parental control (in case you are dealing with an outcross in a reference background and you have sequenced the polimorfic parental as a control.) and
 #      using the gnm_ref file, the variants located in the control will be replaced in the reference genome.
 

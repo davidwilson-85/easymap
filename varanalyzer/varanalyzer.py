@@ -1,4 +1,3 @@
-#!/usr/bin/python
 #
 # This program accepts a list of variants (two modes available: SNPs [snp] / large insertions [lim])
 # and returns their putative effect on genes and proteins. For that it needs a gff file and a fasta file

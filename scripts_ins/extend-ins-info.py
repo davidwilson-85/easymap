@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Comando pruebas: 
 #		./scripts_ins/extend-ins-info.py --project-name user_projects/project-ins
 

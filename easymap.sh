@@ -174,6 +174,8 @@ echo "" >> $my_log_file
 echo "######################################################" >> $my_log_file
 echo $(date)": Project data directories created." >> $my_log_file
 
+
+
 ############################################################
 # Overwrite read_s, read_f and read_r
 # 'problem': F2 recessive phenotype (mutant phenotype in recessive mutations)
