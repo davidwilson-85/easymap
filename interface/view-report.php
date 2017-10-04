@@ -79,28 +79,24 @@ body {font-size:16px;}
   <div class="w3-container" style="margin-top:75px">
     <h1 class="w3-xxxlarge w3-text-red"><b>Manage projects > View report</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    
-    <?php
-    	$project_name = $_GET['p'];
-    ?>
-    
-    <h3>Project name: <span id="projectName"><?php echo $project_name ?></span></h3>
+        
     <div id="reportInfo">
     
-		<?php
+  		<?php
 
-		//$project_name = $_GET['p'];
-		$feed = '../user_projects/'. $project_name .'/3_workflow_output/rfeed.html';
-		//$location = '../graphic_output/template_report/template-report.j';
+      $project_name = $_GET['p'];
+  		//$project_name = $_GET['p'];
+  		$feed = '../user_projects/'. $project_name .'/3_workflow_output/rfeed.html';
+  		//$location = '../graphic_output/template_report/template-report.j';
 
-		// Read HTML file with report as a text file and line by line
-		// Send each line to HTML via AJAX
+  		// Read HTML file with report as a text file and line by line
+  		// Send each line to HTML via AJAX
 
-		$file = fopen($feed, "r") or die("Unable to open report file.");
-		echo fread($file,filesize($feed));
-		fclose($file);
+  		$file = fopen($feed, "r") or die("Unable to open report file.");
+  		echo fread($file,filesize($feed));
+  		fclose($file);
 
-		?>
+  		?>
   
     </div>
     

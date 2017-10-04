@@ -42,12 +42,12 @@
 # out:		constant
 #
 # sim-seq.py
-# if:			constant
+# if:		constant
 # out:		constant
-# mod:		$2
-# rd:			${22}[0]
-# rl:			${22}[1]
-# fl:			${22}[2]
+# mod:		${11} or ${15}
+# rd:		${22}[0]
+# rl:		${22}[1]
+# fl:		${22}[2]
 # ber:		${22}[3]
 # gbs:		${22}[4]
 #

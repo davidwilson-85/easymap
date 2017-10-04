@@ -397,7 +397,7 @@ if data_source == "sim":
 					try: int(params[3])
 					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 4th parameter. Use an integer.")  
 					try: int(params[4])
-					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 5th parameter. Use an integer." )
+					except: error = 1; problems.append("Argument -ss/--sim-seq: invalid choice in the 5th parameter. Use an integer.")
 
 					options = ("se","pe")
 					params[5] = params[5].lower()

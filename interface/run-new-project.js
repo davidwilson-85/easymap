@@ -5,7 +5,7 @@ easymap.htm --> ajax.js --> fire-wf.php --> easymap.sh --> log.log --> read_log.
 */
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// THIS SECTION DEALS WITH GENERAL FUNCTIONALITY OF THE PAGE, SUSH AS CHECKING CONFIG FILE OR TRIGGERING A PROJECT
+// THIS SECTION DEALS WITH GENERAL FUNCTIONALITY OF THE PAGE, SUCH AS CHECKING CONFIG FILE OR TRIGGERING A PROJECT
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Function to communicate html with php via AJAX to check if user_projects directory
@@ -589,7 +589,7 @@ window.onload = function() {
 				document.getElementById("simSeqValMsg").style.display = "block";
 			} else {
 				document.getElementById("simSeqValMsg").style.display = "none";
-				cmdArgs[22] = simSeqInput.rdDepth + "+" + simSeqInput.rdSz + "," + simSeqInput.rdSd + "+" + simSeqInput.frSz + "," + simSeqInput.frSd + "+" + simSeqInput.errRt + "+" + simSeqInput.gcBias;
+				cmdArgs[22] = simSeqInput.rdDepth + "+" + simSeqInput.rdSz + "," + simSeqInput.rdSd + "+" + simSeqInput.frSz + "," + simSeqInput.frSd + "+" + simSeqInput.errRt + "+" + simSeqInput.gcBias + "+" + simSeqInput.lib;
 				cmdArgs[11] = simSeqInput.lib; cmdArgs[15] = simSeqInput.lib;
 			}
 		}
