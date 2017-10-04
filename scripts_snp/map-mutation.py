@@ -171,7 +171,7 @@ def chromosomal_position(size,space, SNP, ch, chromosomal_lenght, mode, modality
 def threshold_step(windows, mini_average, maxi_average):
 	refined_dic = {}
 	for window in windows:					
-		FA = windows[window][0]
+		FA = windows[window]
 		if FA > mini_average and FA <= maxi_average:
 			refined_dic[window] = windows[window]
 	return refined_dic
