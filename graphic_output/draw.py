@@ -1,10 +1,13 @@
+# This script contains the functions used for drawing the programs output images. The functions are called from graphic-output.py when they are needed. 
+
+
 import argparse, math
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from StringIO import StringIO
 
 #Common arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('-my_mut', action="store", dest = 'my_mut')		#snp or lin
+parser.add_argument('-my_mut', action="store", dest = 'my_mut')			#snp or lin
 parser.add_argument('-m', action="store", dest = 'mode', default = 'P')
 parser.add_argument('-pname', action="store", dest='project_name')
 parser.add_argument('-cross', action="store", dest='my_cross')
@@ -101,11 +104,10 @@ def fa_vs_pos():
 		if int(i) > max_contig_len:
 			max_contig_len = int(i)
 
-
 	#FA vs POS graphs 
 	for i in fastalist:
-		
-		wide=int(880*float(i[1])/max_contig_len) + 120								 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
+		if int(i[1]) > 1000000: wide=int(880*float(i[1])/max_contig_len) + 120					#<-------------------------------------------------------------------------------- SET IMAGE SIZE
+		elif int(i[1]) <= 1000000: wide=500
 		height=500
 		im = Image.new("RGB", (wide, int(height)), (255,255,255))
 		draw = ImageDraw.Draw(im)
@@ -116,17 +118,14 @@ def fa_vs_pos():
 		r = red(int(i[1]))
 
 		if 'Mb' in r:
-			#max_graph_x = int(math.ceil(int(i[1])/1000000.0))*1000000
-			max_graph_x = int(i[1]) + 10000 													#<---------------------------  +10000 para que los puntos no toquen el eje;; AJUSTAR
+			max_graph_x = int(i[1]) + 10000
 
 		elif 'kb' in r: 
-			max_graph_x = i[1]
+			max_graph_x = int(i[1])
 
 		#Scaling factors
-		scaling_factor_x = (max_graph_x)/(wide - 120)							#nts/pixel        
-		scaling_factor_y = (1.001/(63/100.0*height))								#fa/pixels
-
-
+		scaling_factor_x = (max_graph_x)/(wide - 120) 								#nts/pixel        
+		scaling_factor_y = (1.001/(63/100.0*height))  								#af/pixels
 
 		#Candidate region 
 		if args.my_mut == 'snp':
@@ -218,8 +217,8 @@ def fa_vs_pos():
 
 
 		my_cross = str(args.my_cross)
+
 		#Boost / mm 																						
-		
 		if args.my_mut == 'snp':
 
 			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
@@ -306,18 +305,28 @@ def fa_vs_pos():
 		
 		#Axis rulers_____________________
 		#X Axis
-		mbs = int(0/scaling_factor_x) + 68
-		x_tag = 0
-		while mbs in range(68, wide-50):
-			draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
-			if len(str(x_tag)) == 1:
-				draw.text(((mbs - 4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-			elif len(str(x_tag)) == 2: 
-				draw.text(((mbs - 8), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-			
-			mbs = mbs + 1000000/scaling_factor_x
-			x_tag = x_tag + 1
 
+		if int(i[1]) > 1000000:
+			mbs = int(0/scaling_factor_x) + 68
+			x_tag = 0
+			while mbs in range(68, wide-50):
+				draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+				if len(str(x_tag)) == 1:
+					draw.text(((mbs - 4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
+				elif len(str(x_tag)) == 2: 
+					draw.text(((mbs - 8), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
+				
+				mbs = mbs + 1000000/scaling_factor_x +1
+				x_tag = x_tag + 1
+
+		elif int(i[1]) <= 1000000:
+			mbs = int(0/scaling_factor_x) + 68
+			x_tag = 0
+			while mbs in range(68, wide-50):
+				draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+				draw.text(((mbs - 4*len(str(x_tag))), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
+				mbs = mbs + 100000/scaling_factor_x +1
+				x_tag = x_tag + 100000
 
 		#Y axis
 		fa_img_0 = int(80/100.0*height) - int(0/scaling_factor_y) - 1		
@@ -543,12 +552,12 @@ def legend():
 	width = wide - 10
 
 	#legend box
-
 	draw.line((w, h) + (width, h), fill=256, width=1)
 	draw.line((w, h) + (w, length), fill=256, width=1)
 	draw.line((width, length) + (width, h), fill=256, width=1)
 	draw.line((w, length) + (width, length), fill=256, width=1)
 
+	#legend items
 	draw.text((w+20, h+20), 'Legend:', font=fnt2, fill=(0,0,0,255))
 	
 	draw.ellipse((w+40-2, h+60-2, w+40+2, h+60+2), fill=(31, 120, 180))
@@ -620,10 +629,10 @@ def insertions_overview_and_histograms():
 
 	#read fasta file to determine number of contigs
 	for i, line in enumerate(flines):
-		if line.startswith('>'): #fasta sequences start with '>'
-			sp = line.split(' ')  #because some names have whitespaces and extra info that is not written to sam file
-			cont = sp[0].strip()  #strip() is to remove the '\r\n' hidden chars
-			cont = cont[1:]       #to remove the first char of string (>)
+		if line.startswith('>'): 		#fasta sequences start with '>'
+			sp = line.split(' ')  		#because some names have whitespaces and extra info that is not written to sam file
+			cont = sp[0].strip()  		#strip() is to remove the '\r\n' hidden chars
+			cont = cont[1:]       		#to remove the first char of string (>)
 			if cont not in contigs:
 				contigs.append(cont)
 				innerlist = list()
@@ -635,11 +644,10 @@ def insertions_overview_and_histograms():
 	for c in superlist: 
 		num_contigs+=1
 	contigs_image_length = 65 * num_contigs + 60
-
 	im = Image.new("RGB", (1000, contigs_image_length+120), (255,255,255))
 
-
 	contig_source = args.input_f
+
 	# Function to parse fasta file (based on one of the Biopython IOs)
 	def read_fasta(fp):
 		name, seq = None, []
@@ -651,7 +659,6 @@ def insertions_overview_and_histograms():
 			else:
 				seq.append(line)
 		if name: yield (name, ''.join(seq))
-
 
 	# Read contig fasta file
 	with open(contig_source) as fp:
@@ -679,15 +686,13 @@ def insertions_overview_and_histograms():
 
 	contigs_scaling_factor = mb_max*1000000 / 850.0
 
-	#translate real chromosome lengths into image i and f coordinates
+	#translate real chromosome lengths into image coordinates
 	contig_counter = 1
 	contig_xi_coord = 100
 
 	for c in superlist:
-
 		contig_xf_coord = int(contig_xi_coord + c[1]/contigs_scaling_factor)
-		contig_y_coord = ((contigs_image_length / num_contigs) * contig_counter) 
-
+		contig_y_coord = ((contigs_image_length / num_contigs) * contig_counter)
 		contig_counter +=1
 		c.append(contig_y_coord)
 		c.append(contig_xi_coord)
@@ -703,19 +708,17 @@ def insertions_overview_and_histograms():
 				insertion_pos = int(sp[2])
 				if contig == c[0].strip().lower() and insertion_pos not in positions_list:
 					positions_list.append(insertion_pos)
-
 		c.append(positions_list)
 
 	#initialize draw
 	draw = ImageDraw.Draw(im)
+
 	#get fonts from foler 'fonts'
 	fnt3 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
-
 	tab = 50
 	number = 1
 
 	#Drawing the chromosomes:
-
 	for c in superlist:
 		previous_pos_x = 0
 		previous_chr = 'none'
@@ -751,8 +754,6 @@ def insertions_overview_and_histograms():
 		im.paste(cap_left, (c[3], c[2]-6))
 		im.paste(cap_right, (c[4], c[2]-6))
 
-
-
 	#Axis
 	draw.line((100, contigs_image_length + 50) + (950, contigs_image_length + 50), fill=256, width=1)
 
@@ -775,9 +776,7 @@ def insertions_overview_and_histograms():
 	#_________________________________________________________Local and paired analysis graphs________________________________________________________________	
 	#_________________________________________________________________________________________________________________________________________________________
 	if args.mode == 'pe':
-		#_____________________________________________________________________________________________________________________________________________________
 		insertions = list()
-
 		for i, line in enumerate(lines):
 			if not line.startswith('@'):	
 				sp = line.split('\t')
@@ -835,13 +834,11 @@ def insertions_overview_and_histograms():
 			draw.line((120, 455) + (900, 455), fill=256, width=1) 								#-x axis local
 			draw.line((900, 455) + (900, 754), fill=256, width=1)   							#-y axis local
 
-
 			draw.text(((450), (795)), ('Nucleotide'), font=fnt3, fill=(0,0,0,255))
 			draw.text(((140), (155)), ('Flanking unpaired alignments'), font=fnt3, fill=(0,0,0,255))
 			draw.text(((140), (460)), ('Flanking local alignments'), font=fnt3, fill=(0,0,0,255))
 
 			#Y axis label
-
 			txt=Image.new('L', (500, 50))
 			d = ImageDraw.Draw(txt)
 			d.text( (0, 0), "Read depth (x)",  font=fnt3, fill=255)
@@ -853,7 +850,6 @@ def insertions_overview_and_histograms():
 			scaling_factor_x = nucleotides/780.0
 			scaling_factor_y_paired = rd_max_paired/280.0
 			scaling_factor_y_local = rd_max_local/280.0
-
 
 			#LOCAL/PAIRED GRAPHICS
 			for i, line in enumerate(lines):
@@ -913,7 +909,6 @@ def insertions_overview_and_histograms():
 								cr = [int(sp[0].strip('@#')), int(sp[1].strip())]
 								cr_min = min(cr)
 								cr_max = max(cr)
-								#draw.text(((120), (840)), ('Your candidate region is (' + str(cr_min) + ', ' + str(cr_max) + '), The most likely position por the insertion is ' + str('potato') + '.'), font=fnt3, fill=(0,0,0,255))
 								draw.line((((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[0].strip('@#'))/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(147, 147, 147, 0), width=1)
 								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(147, 147, 147, 0), width=1)
 
@@ -934,11 +929,11 @@ def insertions_overview_and_histograms():
 				w, h = draw.textsize(str(ruler))
 				draw.text((x_p - w/2 - 5, 766), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 				ruler = ruler + 200
-				x_p = int(x_p + (200/scaling_factor_x)) #Ruler with 200 nts separations
+				x_p = int(x_p + (200/scaling_factor_x))			#Ruler with 200 nts separations
 			
 			while x_p_2 in range(120, 900):
 				draw.line((x_p_2, 755) + (x_p_2, 758), fill=256, width=1)
-				x_p_2 = int(x_p_2 + (200/scaling_factor_x)) #Ruler with 100 nts separations
+				x_p_2 = int(x_p_2 + (200/scaling_factor_x))		#Ruler with 100 nts separations
 
 			#y Axis - paired
 			if rd_max_paired > 20:
@@ -997,7 +992,7 @@ def insertions_overview_and_histograms():
 					y_p = int(y_p - (1/scaling_factor_y_local))
 
 
-			#Legend paired________________________________________________________________________________________				<---------------------------------------------
+			#Legend paired________________________________________________________________________________________
 			#w and h can be used to re-position the legend in the figure
 			w = 690
 			h = 160
@@ -1017,7 +1012,7 @@ def insertions_overview_and_histograms():
 			draw.text((w+45, h+72), 'Candidate region', font=fnt3, fill=(0,0,0,255))
 			draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
 
-			#Legend local________________________________________________________________________________________				<---------------------------------------------
+			#Legend local________________________________________________________________________________________
 			#w and h can be used to re-position the legend in the figure
 			w = 690
 			h = 465
@@ -1044,7 +1039,6 @@ def insertions_overview_and_histograms():
 	#_________________________________________________________________________________________________________________________________________________________
 	if args.mode == 'se':
 		insertions = list()
-
 		for i, line in enumerate(lines):
 			if not line.startswith('@'):	
 				sp = line.split('\t')
@@ -1090,9 +1084,7 @@ def insertions_overview_and_histograms():
 			draw.line((120, 150) + (900, 150), fill=256, width=1) 								#-x axis 
 			draw.line((900, 150) + (900, 450), fill=256, width=1)   							#-y axis 
 
-				
 			draw.text(((450), (500)), ('Nucleotide'), font=fnt3, fill=(0,0,0,255))
-			#draw.text(((20), (120)), ('RD'), font=fnt3, fill=(0,0,0,255))
 
 			#Y axis label
 			txt=Image.new('L', (150, 30))
@@ -1125,7 +1117,6 @@ def insertions_overview_and_histograms():
 						img_y_position_l = int(raw_y_position/scaling_factor_y_local)
 						img_relative_y_position = 450 - img_y_position_l 
 
-
 						#draw
 						if sp[5].strip() == 'RIGHT_RD':
 							draw.line((img_relative_x_position, 449) + (img_relative_x_position, img_relative_y_position), fill=(64, 159, 65, 100), width=3)
@@ -1145,7 +1136,6 @@ def insertions_overview_and_histograms():
 			if cand_pos_r == 'none':
 				draw.line((cand_pos_l-1 , 449) + (cand_pos_l-1 , 151), fill=(147, 147, 147, 0), width=1)
 			
-
 			#Axis anotations
 			#x Axis
 			x_p = 120 + int(25/scaling_factor_x)
@@ -1154,18 +1144,15 @@ def insertions_overview_and_histograms():
 			ruler = region_min + 25
 		
 			while x_p in range(120, 900):
-				
 				draw.line((x_p, 450) + (x_p, 457), fill=256, width=1)
 				w, h = draw.textsize(str(ruler))
 				draw.text((x_p - w/2 - 5, 460), (str(ruler)), font=fnt3, fill=(0,0,0,255))  
 				ruler = ruler + 50
-				x_p = int(x_p + (50/scaling_factor_x)) #Ruler with x nts separations
-
+				x_p = int(x_p + (50/scaling_factor_x)) #Ruler with 50 nts separations
 
 			while x_p_2 in range(120, 900):
-
 				draw.line((x_p_2, 450) + (x_p_2, 455), fill=256, width=1)
-				x_p_2 = int(x_p_2 + (50/scaling_factor_x)) #Ruler with x nts separations
+				x_p_2 = int(x_p_2 + (50/scaling_factor_x)) #Ruler with 25 nts separations
 
 			#y Axis 
 			if rd_max_local > 8:
@@ -1185,7 +1172,6 @@ def insertions_overview_and_histograms():
 					draw.text((90, y_p-8), ( str(counter)), font=fnt3, fill=(0,0,0,255))
 					counter = counter + 1
 					y_p = int(y_p - (1/scaling_factor_y_local))
-
 
 			#Legend local________________________________________________________________________________________				<---------------------------------------------
 			#w and h can be used to re-position the legend in the figure
@@ -1207,7 +1193,6 @@ def insertions_overview_and_histograms():
 			draw.text((w+45, h+72), 'Predicted position', font=fnt3, fill=(0,0,0,255))
 			draw.line((w+10, h+72+8) + (w+35, h+72+8), fill=(147, 147, 147), width=1)
 
-			
 			#save image, specifying the format with the extension
 			w, h = im.size
 			im.crop((0, 100, w, h-50)).save(project + '/3_workflow_output/img_1_ins_' + str(e) + '.png')
@@ -1226,7 +1211,7 @@ def gene_plot():
 		f1 = open(input, 'r')
 		lines = f1.readlines()	
 
-	#Output varanalyzer
+	#Input varanalyzer
 	input = args.input_va
 	f3 = open(input, 'r')
 	lines_va = f3.readlines()	
@@ -1253,8 +1238,6 @@ def gene_plot():
 	#We create an 'intermediate list', which will contain the information necesary for the gene plot gathered from the output file of the varanalyzer module, the 
 	#sorted_insertions.txt file and the genome feature file. Intermediate list format:
 	#	['Chr', 'insertion/snp position', 'insertion number / -', 'gene name', [ref-aa, alt-aa, pos-aa, ref-base, alt-base, strand], [list of gene features: 'type', 'start', 'end'], [list of positions(required for calculations)]]
-
-
 	intermediate_list = list()
 	for i, line in enumerate(lines_va):
 		if not line.startswith('@'):
@@ -1268,7 +1251,6 @@ def gene_plot():
 				refalt = [sp[12].strip(), sp[13].strip(), sp[11].strip(), sp[3].strip(), sp[4].strip(), sp[8].strip()]
 				temp_list.append(refalt)
 				intermediate_list.append(temp_list)
-
 
 	if args.my_mut == 'lin':
 		for p in intermediate_list: 
@@ -1292,7 +1274,6 @@ def gene_plot():
 					features.append(feature)
 		p.append(features)
 		p.append(positions)
-			
 
 	for p in intermediate_list:
 		p[5].append(['rr', int(args.rrl)])
@@ -1301,18 +1282,16 @@ def gene_plot():
 		if p[4][5].strip() == '-':
 			p[6].append(max(p[6]) +  int(args.rrl))
 
+	#Drawing the genes:
 	for p in intermediate_list:
-
-		wide=1000 #<-------------------------------------------------------------------------------- SET IMAGE SIZE
+		wide=1000 																							#<-------------------------------------------------------------------------------- SET IMAGE SIZE
 		height=(35/100.0)*wide
 		im = Image.new("RGB", (wide, int(height)), (255,255,255))
 		draw = ImageDraw.Draw(im)
 		gene_max_raw = max(p[6])
 		gene_min_raw = min(p[6])
 		gene_length = gene_max_raw - gene_min_raw
-
 		gene_px_length = float((0.7)*wide)
-
 		gene_scaling_factor = gene_length/gene_px_length  #bp/pixel
 
 		#Fonts
@@ -1320,11 +1299,10 @@ def gene_plot():
 		fnt3 = ImageFont.truetype('fonts/arial.ttf', int(0.024*wide))
 		fnt4 = ImageFont.truetype('fonts/arial.ttf', int(0.02*wide))
 
-
 		#Gene name
 		draw.text((int(0.05*wide), int(0.03*wide)), (str(p[3])), font=fnt3, fill=(0,0,0,255))
 
-		#Gene line
+		#Gene baseline
 		if p[4][5] == '+':
 			draw.line((int(0.15*wide) + int(int(args.rrl)/gene_scaling_factor), int(180/350.0*height)) + (int(0.15*wide) + gene_px_length, int(180/350.0*height)), fill=(14, 54, 119), width=int(0.004*wide))
 		if p[4][5] == '-':
@@ -1369,7 +1347,6 @@ def gene_plot():
 					draw.line((fin, int(170/350.0*height)) + (fin, int(190/350.0*height)), fill=(0, 4, 71, 0), width=2)
 		
 		for e in p[5]:
-
 			if 'utr' in (e[0].strip()).lower() and 'five' in (e[0].strip()).lower():																		# Backup UTR drawing
 				inicio = int((int(e[1]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
 				fin = int((int(e[2]) - gene_min_raw)/gene_scaling_factor)  + int(0.15*wide) 
@@ -1447,11 +1424,8 @@ def gene_plot():
 					str(p[4][0])+ ' (' + str(p[4][2]) +')' +  '        '  +
 					str(p[4][1])), font=fnt4, fill=(0,0,0,255))   				
 				str_len = len(str(p[4][2]))
-
 			else:
 				aach = 'no'
-
-
 
 			#Base change
 			draw.text((int(snp_pos - int(0.036*wide)), int(0.67*height)), (
@@ -1474,21 +1448,11 @@ def gene_plot():
 				arrow = arrow.crop((12, 17, 47, 34))
 
 				#We paste the arrow in a different position depending of the number of characters that the aa position has:
-			
-				if str_len == 1:
-					im.paste(arrow, (int(snp_pos - int(0.041*wide)), int(0.765*height)))
-
-				if str_len == 2:
-					im.paste(arrow, (int(snp_pos - int(0.030*wide)), int(0.765*height)))
-
-				if str_len == 3:
-					im.paste(arrow, (int(snp_pos - int(0.019*wide)), int(0.765*height)))
-
-				if str_len == 4:
-					im.paste(arrow, (int(snp_pos - int(0.008*wide)), int(0.765*height)))
-
-				if str_len == 5:
-					im.paste(arrow, (int(snp_pos + int(0.003*wide)), int(0.765*height)))
+				if str_len == 1: im.paste(arrow, (int(snp_pos - int(0.041*wide)), int(0.765*height)))
+				if str_len == 2: im.paste(arrow, (int(snp_pos - int(0.030*wide)), int(0.765*height)))
+				if str_len == 3: im.paste(arrow, (int(snp_pos - int(0.019*wide)), int(0.765*height)))
+				if str_len == 4: im.paste(arrow, (int(snp_pos - int(0.008*wide)), int(0.765*height)))
+				if str_len == 5: im.paste(arrow, (int(snp_pos + int(0.003*wide)), int(0.765*height)))
 
 		#save image, specifying the format with the extension. For SNP images we save them with diferent sizes depending on if theres an aminoacid change or not
 		w, h = im.size
@@ -1500,23 +1464,3 @@ def gene_plot():
 		
 		if args.my_mut == 'snp' and aach == 'yes':
 			im.crop((70, 100, w-20, h-40)).save(project + '/3_workflow_output/gene_plot_' + str(args.my_mut) + '_' + str(p[1]) + '_gene_' + str(p[3])+ '.png')
-
-
-
-	'''
-
-	#Flanking sequences
-
-	fp = open(project + '/1_intermediate_files/gnm_ref_merged/genome.fa', 'r')
-
-	adjacent_sequences = list()					 		#['Chr', 'insertion position', 'insertion number', '20 pbs upstream ', '20 pbs downstream']
-	for p in intermediate_list:
-		fastalist = list()
-		for name_contig, seq_contig in read_fasta(fp):
-			if name_contig.lower() == '>'+p[0].strip():
-				upstream =  seq_contig[int(p[1])-20:int(p[1])]
-				downstream =  seq_contig[int(p[1]):int(p[1])+20]
-				print upstream + '[ins]' + downstream
-				p.append(upstream)
-				p.append(downstream)
-	'''

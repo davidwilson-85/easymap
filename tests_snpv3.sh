@@ -1,5 +1,19 @@
 
+echo Schn-back___________________________________________________________________________________________
+./easymap -n BCschn -w snp -P BC.fg.reads1.fq,BC.fg.reads2.fq -C BC.bg.reads1.fq,BC.bg.reads2.fq -r insim -g complete.gff -mb ref -cr bc -co par_mut  -a TAIR10_gene_info.txt
+rm -rf ./user_projects/*/1_intermediate_files/*.sam
 
+echo Schn-out____________________________________________________________________________________________
+./easymap -n OCschn -w snp -P OC.fg.reads1.fq,OC.fg.reads2.fq -C OC.bg.reads1.fq,OC.bg.reads2.fq -r insim -g complete.gff -mb ref -cr oc -co par_nomut  -a TAIR10_gene_info.txt
+
+
+
+
+
+
+
+
+exit
 
 
 echo CASO 1___________________________________________________________________________________________
@@ -22,11 +36,6 @@ echo CASO 6_____________________________________________________________________
 
 echo CASO 7___________________________________________________________________________________________
 ./easymap -n caso7 -w snp -sim -r insim -g complete.gff -mb noref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 25+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
-
-
-
-
-
 
 
 

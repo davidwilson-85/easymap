@@ -1,10 +1,11 @@
+# This script formats information from VCF files to simpler VA files
+
 import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action="store", dest = 'input')
 parser.add_argument('-b', action="store", dest = 'output')
 args = parser.parse_args()
-
 
 #Input file 
 input = args.input

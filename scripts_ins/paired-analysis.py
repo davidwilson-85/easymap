@@ -1,8 +1,6 @@
 #This module will process the information in the .sam file to obtain the read depth per nucleotide aligned. 
 
-
 import argparse
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action="store", dest = 'input')
 parser.add_argument('-b', action="store", dest = 'output')

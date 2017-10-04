@@ -1,22 +1,17 @@
 #!/usr/bin/python3
 
 
-import platform
-print(platform.python_version())
-
-
-execfile('./sn2.py')
 
 
 
-'''
-file = open("./file.txt", 'r')
+file = open("./dev/complete.gff", 'r')
 
 
-target = "hola"
 
+lista = list()
 
 for line in file:
-	if target in line:
-		print "hola"
-'''
+	sp = line.split()
+	if sp[0].strip() not in lista:
+		lista.append(sp[0].strip())
+print lista

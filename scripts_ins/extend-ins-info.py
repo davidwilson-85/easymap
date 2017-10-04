@@ -1,8 +1,8 @@
 # Comando pruebas: 
 #		./scripts_ins/extend-ins-info.py --project-name user_projects/project-ins
 
+# This scrip retrieves the upstream and downstream sequences of each insertion site and the reconstructed sequences of the 5 and 3 prime ends of the insertion and adds the information to the insertions_output.txt file.
 
-# This scrip retrieves the flanking sequences of the insertions 
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--project-name', action="store", dest='project_name', required=True)
@@ -55,7 +55,7 @@ for line in final_lines:
 output_file.close()
 
 
-# _______________________________________________________________________________________--
+# _______________________________________________________________________________________
 
 # Now we will retrieve the reconstructed sequences of the 5 and 3 prime ends of the insertion 
 

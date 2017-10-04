@@ -1,11 +1,10 @@
-
+# This script formats the SNP information for varanalyzer
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action="store", dest='input')
 parser.add_argument('-b', action="store", dest='output')
 
 args = parser.parse_args()
-
 
 #input
 f1 = open(args.input, 'r')
@@ -14,7 +13,6 @@ lines = f1.readlines()
 #output
 f2 = open(args.output, 'w')
 f2.write('#data\tcontig\tpos\tref\talt\tqual\tref_count\talt_count\taf\n')
-
 
 for line in lines:
 	sp = line.split()

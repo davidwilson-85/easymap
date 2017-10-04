@@ -556,7 +556,7 @@ then
 
 	# (2) Run VA filter: eliminate SNPs with FA > 0.7 from control reads
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_max 0.7 2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_max 0.5 2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -671,8 +671,6 @@ then
 	# (1) Get control VA file
 	get_control_va
 
-
-
 	# (2) Run vcf filter to get SNPs with af > 0.75
 	{
 		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_min 0.75  2>> $my_log_file
@@ -706,8 +704,6 @@ then
 	# (4) Get problem VA file
 	get_problem_va
 
-	
-	
 	#draw snps
 	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 

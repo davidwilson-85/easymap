@@ -343,7 +343,7 @@ if data_source == 'sim':
 		output.write(
 '		<tr>' + '\n'
 '			<td> <b>Selected causal mutation (simulation)</b></td>' + '\n'
-'			<td>' + selected_position.split(',')[1] + '</td>' + '\n'
+'			<td>' + selected_position.split(',')[1] + ', Contig ' + selected_position.split(',')[0] + '</td>' + '\n'
 '		</tr>' + '\n'
 '		<tr>' + '\n'
 '			<td> <b>Number of mutations (simulation)</b></td>' + '\n'
@@ -673,6 +673,7 @@ if mut_type == 'snp':
 	#Mapping
 	output.write(
 	'		<h2>Mapping analysis overview</h2>' + '\n'
+	'		<p>All input contigs are displayed, with all the polymorphisms used for mapping the causal mutation and their linear description (SMA, boost values or AF difference between mapping populations). The candidate region determined by the annallysis is highlited.</p>' + '\n'
 		) 
 	for f in sorted(files):
 		if 'img_2_mapping' in str(f):
@@ -689,7 +690,11 @@ if mut_type == 'snp':
 			selected_chromosome = str(sp[3]).strip()
 
 	output.write(
-	'		<h3>Candidate polymorphisms overview</h3>' + '\n'
+	'		<h2>Candidate polymorphisms overview</h2>' + '\n'
+
+	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations and representing the selected chromosomal position as a dashed line. Aditionally, theres a zoom-in the window containing the candidate polymorphisms including only typical EMS changes. </p>' + '\n'
+
+
 		) 
 
 	#Candidates 
@@ -717,7 +722,8 @@ if mut_type == 'snp':
 
 	#Candidates table:
 	output.write(
-	'		<h3>Candidate region analysis</h3>' + '\n'
+	'		<hr class="easymap">' + '\n'
+	'		<h2>Candidate region analysis</h2>' + '\n'
 	)
 
 	#first we check that there are candidates 
@@ -809,6 +815,9 @@ if mut_type == 'snp':
 	if n_candidates > 0:
 		output.write(
 		'		<h2>Candidate mutations</h2>' + '\n'
+		'		<p>This section contains a list of the candidate mutations affecting gene open reading frames.</p>' + '\n'
+
+
 			) 
 		for var in variants_list:
 			gene_name = var[6].split(' (')[0]

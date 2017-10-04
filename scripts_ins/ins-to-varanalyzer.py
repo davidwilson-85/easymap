@@ -1,3 +1,4 @@
+# This script formats the information gathered from the mapping annalysis so that it can be processed by varanalyzer. For each insertion, the script picks the most probable insertion site by checking the RD values.
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -5,9 +6,6 @@ parser.add_argument('-a', action="store", dest='input')
 parser.add_argument('-b', action="store", dest='output')
 
 args = parser.parse_args()
-
-
-
 
 #input
 f1 = open(args.input, 'r')

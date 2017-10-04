@@ -1,6 +1,5 @@
-########################################################
-#First we sort the data in the output_analysis.txt file#
-########################################################
+# This script sorts the information data outputed by the mapping analysis into insertion clusters (assigns each nucleotide to an insertion number). Then, the clusters are filtered to eliminate false positives. Finally, the script determines a candidate region that contains each insertion. 
+
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action="store", dest = 'input')#Input 'output_analysis.txt'
@@ -145,7 +144,7 @@ f2.close()
 
 ###################################################################################################################################################################
 #																																								  #
-#															Filter insertions and rewrite sorted_insertions.txt			(ONLY FILTERING PAIRED DATA)			  #
+#															Filter insertions and rewrite sorted_insertions.txt													  #
 #																																								  #
 ###################################################################################################################################################################
 

@@ -1,7 +1,5 @@
 #This module will process the information in the .sam file to obtain the absolute frequency of aligments ending per nucleotide during local aligments. 
-
 import argparse
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action="store", dest = 'input')
 parser.add_argument('-b', action="store", dest = 'output')
@@ -13,7 +11,6 @@ args = parser.parse_args()
 input = args.input
 f1 = open(input, 'r')
 lines = f1.readlines()	
-
 
 #fasta input
 fasta_input = str(args.finput)
@@ -27,7 +24,6 @@ if args.mode == 'pe':
 elif args.mode == 'se': 
 	output = args.output
 	f2 = open(output, 'w')
-
 
 #create a list with all the genome contigs
 contigs = []
@@ -109,11 +105,8 @@ for c in contigs: 									 #a reads alignment finishes in each nucleotide, sepa
 						for n in range(p, pf + 1):
 							rd_left.append(n)
 						
-
 					elif x2 == '1':
 						pass
-
-
 
 	#Key count										 #The "key count" is the transformation of the information in the lists (d2_1 and d2_2) in dictionaries
 	#TOTAL DICTIONARY								 #acumulating the read depth of each nucleotide
@@ -143,7 +136,6 @@ for c in contigs: 									 #a reads alignment finishes in each nucleotide, sepa
 		except KeyError:
 			di_rd_total[i] = 1
 
-
 	#LEFF AND RIGHT DICTIONARIES
 	for i in d2_1:
 		try: 
@@ -170,7 +162,6 @@ for c in contigs: 									 #a reads alignment finishes in each nucleotide, sepa
 			di_rd_right[i] =  1 + di_rd_right[i]
 		except KeyError:
 			di_rd_right[i] = 1
-
 
 	#Writting in the output file
 	for key,value in sorted(di_left.items(), key=lambda i: int(i[0])):

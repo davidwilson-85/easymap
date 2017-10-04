@@ -59,7 +59,8 @@ for chr in ch:
 	for i, line in enumerate(mut_lines):
 		if not line.startswith('#'):
 			sp = line.split('\t')
-			if chr == sp[0]:
+			AF = float(float(sp[6])/(float(sp[6]) + float(sp[5])))
+			if chr == sp[0] and AF > 0.85:
 				dic_mut[sp[1]] = [sp[2], sp[3], sp[4], sp[5], sp[6].strip('\n')]
 				list_mut.append(sp[1])
 

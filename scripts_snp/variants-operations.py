@@ -1,29 +1,22 @@
+# This script performs different operations with polymorphism data contained in VA files
 import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action="store", dest = 'input1')
 parser.add_argument('-b', action="store", dest = 'input2')
 parser.add_argument('-c', action="store", dest = 'output')
-parser.add_argument('-mode', action="store", dest = 'mode', default='N', choices=['I','A','B', 'U', 'N'])
+parser.add_argument('-mode', action="store", dest = 'mode', default='N', choices=['I','A','B', 'U', 'N']) #['I','A','B', 'U', 'N']) (Intersection, vcf1 - vcf2, vcf2 - vcf1, union, None)
 parser.add_argument('-primary', action="store", dest = 'primary', default=1, choices=['1','2']) #1: info from input -a ; 2: info from input -b 
 args = parser.parse_args()
-
-#-------Temporal parameters--------------------------------------------------------------------------------
-#mode = 'I' #['I','A','B', 'U', 'N']) (Intersection, vcf1 - vcf2, vcf2 - vcf1, union, None)
-#primary = 1 #1/2
-#----------------------------------------------------------------------------------------------------------
 
 mode = args.mode
 primary = int(args.primary)
 
-
-
-#Conjuntos de datos A (VCF1) y B (VCF2)
+#Datasets A (VCF1) and B (VCF2)
 #Input 1  
 input1 = args.input1
 f1 = open(input1, 'r')
 lines1 = f1.readlines()	
-
 
 #Input 2 
 input2 = args.input2
@@ -47,7 +40,6 @@ if mode == 'N':
 
 if mode == 'I':
 	if primary == 1:
-		#----------------------------------------------------------------------------------------------------------
 		vcf1 = list() #List of vcf1 positions
 		vcf2 = list() #List of vcf2 positions
 
@@ -70,7 +62,6 @@ if mode == 'I':
 					f3.write(line)
 
 	elif primary == 2:
-		#----------------------------------------------------------------------------------------------------------
 		vcf1 = list() #List of vcf1 positions
 		vcf2 = list() #List of vcf2 positions
 
@@ -92,11 +83,8 @@ if mode == 'I':
 				if (sp[0].strip()+'-'+sp[1].strip()) in intersection:
 					f3.write(line)
 
-
-
 elif mode == 'U':
 	if primary == 1:
-		#----------------------------------------------------------------------------------------------------------
 		vcf1 = list() #List of vcf1 positions
 		vcf2 = list() #List of vcf2 positions
 
@@ -112,13 +100,11 @@ elif mode == 'U':
 			
 		union = list(set(vcf1) | set(vcf2))
 
-
 		for i, line in enumerate(lines1):
 			if not line.startswith('#'):
 				sp = line.split('\t')
 				if (sp[0].strip()+'-'+sp[1].strip()) in union:
 					f3.write(line)
-
 
 		input3 = 'op_output.vcf'
 		f3 = open(input3, 'r')
@@ -142,7 +128,6 @@ elif mode == 'U':
 					f3.write(line)
 
 	elif primary == 2:			
-		#----------------------------------------------------------------------------------------------------------
 		vcf1 = list() #List of vcf1 positions
 		vcf2 = list() #List of vcf2 positions
 
@@ -158,13 +143,11 @@ elif mode == 'U':
 			
 		union = list(set(vcf1) | set(vcf2))
 
-
 		for i, line in enumerate(lines2):
 			if not line.startswith('#'):
 				sp = line.split('\t')
 				if (sp[0].strip()+'-'+sp[1].strip()) in union:
 					f3.write(line)
-
 
 		input3 = 'op_output.vcf'
 		f3 = open(input3, 'r')
@@ -187,11 +170,7 @@ elif mode == 'U':
 				if (sp[0].strip()+'-'+sp[1].strip()) in R:
 					f3.write(line)
 
-
-
 elif mode == 'A':
-	#----------------------------------------------------------------------------------------------------------
-	#A: Restamos a F1 los de F2
 	vcf1 = list() 
 	vcf2 = list() 
 	#We add the positions of f1 to a list 
@@ -208,18 +187,13 @@ elif mode == 'A':
 		
 	A = list(set(vcf1).difference(vcf2))
 
-
 	for i, line in enumerate(lines1):
 		if not line.startswith('#'):
 			sp = line.split('\t')
 			if (sp[0].strip()+'-'+sp[1].strip()) in A:
 				f3.write(line)
-
-
 			
 elif mode == 'B':			
-	#----------------------------------------------------------------------------------------------------------
-	#B: Restamos a F2 los de F1
 	vcf1 = list() 
 	vcf2 = list() 
 	#We add the positions of f1 to a list 
@@ -236,15 +210,8 @@ elif mode == 'B':
 		
 	B = list(set(vcf2).difference(vcf1))
 
-
 	for i, line in enumerate(lines2):
 		if not line.startswith('#'):
 			sp = line.split('\t')
 			if (sp[0].strip()+'-'+sp[1].strip()) in B:
 				f3.write(line)
-
-			
-	#----------------------------------------------------------------------------------------------------------
-
-
-	

@@ -1,0 +1,16 @@
+Mapping analysis overview
+All input contigs are displayed, with all the polymorphisms used for mapping the causal mutation and their linear description (SMA, boost values or AF difference between mapping populations). The candidate region determined by the annallysis is highlited.
+
+Candidate polymorphisms overview
+The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations. Aditionally, theres a zoom-in the window containing the candidate polymorphisms including only typical EMS changes. 
+
+Candidate mutations
+This section contains a list of the candidate mutations affecting gene open reading frames. 
+
+
+
+
+
+Genomic overview
+All input contigs are represented to scale. The position of all detected insertions is marked with a red triangle. 
+

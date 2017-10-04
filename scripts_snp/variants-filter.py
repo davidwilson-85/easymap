@@ -1,3 +1,9 @@
+# This script is used to filter polymorphism data in VA files according to a number of criteria determined by arguments from the workflow. 
+# The STEP argument is used to distinguish different types of filtering that are needed during the analysis
+#	STEP = 1: Normal argument-driven filtering
+#	STEP = 2: Candidate region filtering
+#	STEP = 3: Initial filtering, eliminates indels from the first VA files
+
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -18,7 +24,6 @@ parser.add_argument('-cand_reg_file', action="store", dest = 'cand_reg_file')
 
 args = parser.parse_args()
 
-
 #Input 
 input = args.input
 f1 = open(input, 'r')
@@ -28,13 +33,7 @@ lines = f1.readlines()
 output = args.output
 f2 = open(output, 'w')
 
-
-#El argumento STEP se utiliza para regular la clase de filtrado segun el paso del analisis que se este realizando:
-#	STEP = 1 : Filtrado normal, con ninguno o varios argumentos 
-#	STEP = 2 : Fitrado con los datos de la region candidato
-#	STEP = 3 : Filtro inicial para quitar de la lista de SNPs las inserciones y delecciones
 step = args.step
-
 
 
 #_________________________________CANDIDATE REGION FILTER___________________________________________________________________________________
@@ -49,6 +48,7 @@ elif step == '2':
 			args.chr = sp[1].strip('>')
 			args.pos_min = int(sp[2].strip())
 			args.pos_max = int(sp[3].strip())
+			
 #__________________________________________________________________________________________________________________________________________
 
 def limits():
