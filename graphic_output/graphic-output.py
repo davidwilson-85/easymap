@@ -23,7 +23,7 @@ parser.add_argument('-ins_pos', action="store", dest = 'ins_pos')
 
 #SHARED VARIABLES
 parser.add_argument('-iva', action="store", dest = 'input_va')	 		#Output de varanalyzer
-parser.add_argument('-rrl', achttp://bioinfo.mpipz.mpg.de/shoremap/examples.htmltion="store", dest = 'rrl') 				#Regulatory region lenght
+parser.add_argument('-rrl', action="store", dest = 'rrl') 				#Regulatory region lenght
 parser.add_argument('-pname', action="store", dest='project_name')
 
 args = parser.parse_args()
