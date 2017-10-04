@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # This is the command sent by 'master.sh':
 # ./workflow-x.sh $my_log_file $project_name $workflow $data_source $lib_type $ins_seq $read_s $read_f $read_r $gff_file $ann_file
 #
@@ -22,14 +23,14 @@
 # read_r			>	$9
 # gff_file			>	${10}
 # ann_file			>	${11}
-# read_s_par			>	${12}
-# read_f_par			>	${13}
-# read_r_par			>	${14}
-#cross_type			>	${15} 
-#is_ref_strain		>	${16} 
-# parental_reads_provided			>	${17}
-# [21] $snp_analysis_type [par/f2wt]	>  ${18}
-# lib_type_control			>	${19}
+# read_s_par							>	${12}
+# read_f_par							>	${13}
+# read_r_par							>	${14}
+# cross_type							>	${15} 
+# is_ref_strain							>	${16} 
+# parental_reads_provided				>	${17}
+# snp_analysis_type [par/f2wt]			>	${18}
+# lib_type_control						>	${19}
 
 
 # Set 'exit_code' (flag variable) to 0
@@ -424,7 +425,7 @@ function cr_analysis {
 ##################################################################################################################################################################################
 #																																												 #
 #																																												 #
-#																			DEPTH ALIGMENT ANALYSIS FUNCTION																	 #
+#																			DEPTH ALIGNMENT ANALYSIS FUNCTION																	 #
 #																																												 #
 #																																												 #
 ##################################################################################################################################################################################
@@ -522,7 +523,7 @@ then
 	# (3) Run mapping analysis
 	my_analysis_mode=back
 	{
-		python2 $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 100000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 100000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -556,7 +557,7 @@ then
 
 	# (2) Run VA filter: eliminate SNPs with FA > 0.7 from control reads
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_max 0.5 2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_max 0.7 2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -582,7 +583,7 @@ then
 	# (4) Run mapping analysis
 	my_analysis_mode=back
 	{
-		python2 $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 100000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type par  2>> $my_log_file
+		python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 100000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type par  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -643,7 +644,7 @@ then
 	# (3) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python2 $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 
 	} || {
@@ -670,6 +671,8 @@ if [ $my_mutbackgroud == ref ] && [ $my_pseq == nomut ] && [ $my_cross == oc ]  
 then
 	# (1) Get control VA file
 	get_control_va
+
+
 
 	# (2) Run vcf filter to get SNPs with af > 0.75
 	{
@@ -704,6 +707,8 @@ then
 	# (4) Get problem VA file
 	get_problem_va
 
+	
+	
 	#draw snps
 	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
@@ -723,7 +728,7 @@ then
 	# (6) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python2 $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality noref -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -787,7 +792,7 @@ then
 	# (3) Run mapping analysis
 	my_analysis_mode=out
 	{
-		python2 $location/scripts_snp/map-mutation.py -fichero $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
+		python2 $location/scripts_snp/map-mutation.py -file $f1/F2_control_comparison_mapping.va -fasta $f1/$my_gs -mode $my_analysis_mode -window_size 250000 -window_space 25000 -output $f1/map_info.txt -control_modality $my_mutbackgroud -interval_width 4000000 -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of map-mutation.py .' >> $my_log_file
@@ -820,7 +825,4 @@ fi
 
 depth_alignment
 
-
 echo $exit_code
-
-#HTML file creation

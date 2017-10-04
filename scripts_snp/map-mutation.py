@@ -19,7 +19,7 @@
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('-fichero', action="store", dest = 'input', required = "True")
+parser.add_argument('-file', action="store", dest = 'input', required = "True")
 parser.add_argument('-output', action="store", dest = 'output', required = "True")
 parser.add_argument('-window_size', action="store", dest = 'size', required = "True")
 parser.add_argument('-window_space', action="store", dest = 'space', required = "True")
@@ -28,7 +28,7 @@ parser.add_argument('-mode', action="store", dest = 'mode', required = "True")
 parser.add_argument('-interval_width', action="store", dest = 'interval_width', required = "True") 
 parser.add_argument('-control_modality', action="store", dest = 'modality') #ref = parental in reference background; noref = parental not in reference background
 parser.add_argument('-snp_analysis_type', action='store', dest = 'control', required = "True") #Depending on which control is being used: par, f2wt
-parser.add_argument('-known_mutation', action="store",default = 'n/p', dest = 'mut1' )  #NUEVO
+parser.add_argument('-known_mutation', action="store", default = 'n/p', dest = 'mut1')
 
 
 args = parser.parse_args()
@@ -75,8 +75,9 @@ def getinfo(chro, inpu):
 def calculation_average(li):
 	average_list = sum(li)/len(li)
 	return average_list
+
 #From the dictionary generated in getinfo, knowing the chromosome and its lenght, the function generates windows according to the parameters size and space between them.
-def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality, control): 
+def chromosomal_position(size,space, SNP, ch, chromosomal_lenght, mode, modality, control): 
 	#Depending on whether we are dealing with ref or noref outcross the SNPs are filtered according to an AF.
 	if modality == "ref":
 		c = 0.7 
@@ -85,33 +86,33 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 	windowsize = float(size)
 	windowspace = float(space)
 	i = 0 	#is the value in the middle of the windows and the one will be used in order to identify a concrete window																							 
-	chromosomal_size = float(chromosomal_lenght) 										
-	dictionary_windows = {} 													
-	a = 0 																								
+	chromosomal_size = float(chromosomal_lenght)
+	dictionary_windows = {}
+	a = 0
 	b = 0 
-	while i < chromosomal_size:      								
+	while i < chromosomal_size:
 		a = i - windowsize/2
 		b = i + windowsize/2
 		snps_window = []
-		snps_window2=[]
+		snps_window2 = []
 		for key in SNP:	
-			s = float(key)											
-		 	if s >= a and s <b:		 
+			s = float(key)
+		 	if s >= a and s < b:
 				if control == "par":	#If the control used is parental, only one AF is calculated and no AF filter is used
-					AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1]))	
+					AF =float(SNP[key][-1])/(float(SNP[key][-2])+float(SNP[key][-1]))
 					if c == 0.7 and AF < c:
 						snps_window.append(AF)
-					elif c == 0.3 and AF> c:							
+					elif c == 0.3 and AF > c:
 			 			snps_window.append(AF)
 				elif control == "f2wt":
 					AF = float(SNP[key][-3])/(float(SNP[key][-3])+ float(SNP[key][-4]))
 					if c == 0.7 and AF < c:
 						snps_window.append(AF)
-					elif c == 0.3 and AF> c:							
+					elif c == 0.3 and AF > c:
 			 			snps_window.append(AF)
 
 		if len(snps_window) != 0: #if snps have passed the threshold
-			if control == "par":										
+			if control == "par":
 				average_FA = calculation_average(snps_window)
 				dictionary_windows[i] = []
 				dictionary_windows[i].append(average_FA)
@@ -122,17 +123,57 @@ def chromosomal_position(size,space, SNP,ch, chromosomal_lenght, mode, modality,
 		elif len(snps_window) == 0 and modality == "ref" and control == "par" :  #in the modality outcross of mutant in the reference background, it is possible that a window will not contain any SNP. We will suppose a value near 0.
 			average_FA = 0.01	#Not 0 since later on a division will be made
 			dictionary_windows[i] = []
-			dictionary_windows[i].append(average_FA)                       
+			dictionary_windows[i].append(average_FA)
 		i += windowspace
-	return dictionary_windows		
 
-#This is a threshold step that will remove windows which do not overpass certain values, which will be chosen depending on the mode. This is meant to make the process faster.
+	# DWS: here code to smoothen AF values. Data is stored in dictionary, which is unsorted, so I have to move data
+	# temporarily to list and then reconstruct dictionary.
+
+	# DWS: temporal list with the mean AF of each genomic window
+	tmp_averages_list1 = []
+	# DWS: temporal list with the mean AF of each genomic window after smoothening by calculating averages of three consecutive windows
+	tmp_averages_list2 = []
+	
+	# Extract the AFs from a dictionary and place them in odered list
+	for key,value in sorted(dictionary_windows.items(), key=lambda i: int(i[0])):
+		tmp_averages_list1.append(value[0])
+
+	nbrSamplingPoints = len(tmp_averages_list1)
+
+	for i,n in enumerate(tmp_averages_list1):
+		if i == 0:
+			average = (tmp_averages_list1[i] + tmp_averages_list1[i+1])/2
+		elif i == nbrSamplingPoints - 1:
+			average = (tmp_averages_list1[i-1] + tmp_averages_list1[i])/2
+		else:
+			average = (tmp_averages_list1[i-1] + tmp_averages_list1[i] + tmp_averages_list1[i+1])/3
+
+		tmp_averages_list2.append(average)
+
+	i = 0
+	for key,value in sorted(dictionary_windows.items(), key=lambda i: int(i[0])):
+		#dictionary_windows[key].append(tmp_averages_list2[i])
+		dictionary_windows[key] = tmp_averages_list2[i]
+		i += 1
+
+	# If the alternative line in the previous loop is used, the resulting dictionary contains:
+	#	key: chromosome coordinate of the centre of the window
+	#	value: list with two values:
+	#		0: mean AF of the window
+	#		1: smoothened mean AF of the window (by averaging the mean AFs of three windows)
+	#
+	# Downstream, use the preferable AF mean depending on type of analysis
+
+	return dictionary_windows
+	
+
+#This is a threshold step that will remove windows which do not pass certain values, which will be chosen depending on the mode. To make the processing faster.
 def threshold_step(windows, mini_average, maxi_average):
 	refined_dic = {}
 	for window in windows:					
-		FA= windows[window][0]
+		FA = windows[window][0]
 		if FA > mini_average and FA <= maxi_average:
-			refined_dic[window]= windows[window]
+			refined_dic[window] = windows[window]
 	return refined_dic
 
 #This function is just to get a list of window positions which are in order due to the fact dictionaries are not sorted.	
@@ -144,28 +185,31 @@ def union_points(windows):
 	return position
 
 
-
 #Data function is different for a backcross or an outcross. This function stores the windows and their attributes boost and average in a file.
 #It also saves different values that will be used later for further processiong of the data, as the chromosome with the higher attribute, its value or the dictionary of positions of that chromosome
-def data_analysis(window, position, chromosome, maximum_position, best_parameter, best_chromosome,best_dictionary, size, mode, control,mut1):  
-	result= open(output ,"a")
-	dictionary ={} 
-	for items in position:			
-		average = window[items][0]
+def data_analysis(window, position, chromosome, maximum_position, best_parameter, best_chromosome, best_dictionary, size, mode, control, mut1):  
+	result = open(output ,"a")
+	dictionary = {}
+	for items in position:
 		items = int(items)
-		if mode =="back" and control == "par" :
+		average = window[items]
+		if mode == "back" and control == "par" :
 			parameter = average
 			result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n")   
 		elif mode =="out" and control == "par":
-			try: boost = 1/abs(1-(1/max(average, 1-average)))
-			except: boost = 0
+			try:
+				boost = 1/abs(1-(1/max(average, 1-average)))
+			except:
+				boost = 0
 			parameter = boost
-			dictionary[items]= boost
+			dictionary[items] = boost
 			result.write("@"+"\t"+str(items)+"\t"+ str(average)+"\t"+ str(boost)+ "\t"+str(chromosome)+ "\n")
 		elif control == "f2wt":
 			parameter = average
 			result.write("@"+"\t"+str(items) + "\t"+ str(average) +"\t"+str(chromosome)+ "\n") 
 
+		
+		# It seems that these lines were intended to deal with data from second site mutagenesis experiments
 		if mut1 != "no": #If there is an already known mutation
 			no_ch = mut1.split("-")[0]
 			no_pos = int(mut1.split("-")[1])
@@ -179,6 +223,7 @@ def data_analysis(window, position, chromosome, maximum_position, best_parameter
 				maximum_position.append(items + size/2)
 				best_chromosome = chromosome
 				best_parameter = parameter
+		
 
 	if chromosome == best_chromosome: 		
 		if mode == "out":
@@ -219,33 +264,31 @@ def final_processing_A(result, interval_width):       #is the one used in the oc
 	for windos in possible_windows:
 		windos = str(windos)
 		escribir = "*"+ "\t"+result[2] +"\t" + str(int(windos)-size/2)+ "\t" + str(int(windos)+size/2)+"\t" + str(result[3][int(windos)]) + "\n"
-		r.write(escribir)  
+		r.write(escribir)
 
 
 def final_processing_B(result,interval_width):
-	#Creation of a conservative bigger window which will contain different windows with an average bigger than a threshold.
 	great_positions = []
 	for windows in result[-1]:
-		average = result[-1][windows][0]
+		average = result[-1][windows]
 		if average == result[1]:
 			great_positions.append(windows)
 	peak_value = calculation_average(great_positions)
 	min_i = int(peak_value - interval_width/2) 
 	maxi_d = int(peak_value + interval_width/2)
 	candidate_list = []
-	for window in result[-1]:
-		if float(result[-1][window][0]) >= 0.9:
-			if window >= min_i and window <= maxi_d:
-				candidate_list.append(window)			
-	candidate_list = sorted(candidate_list)
-	r= open(output ,"a")
+	#for window in result[-1]:
+	#	if float(result[-1][window][0]) >= 0.9:
+	#		if window >= min_i and window <= maxi_d:
+	#			candidate_list.append(window)			
+	#candidate_list = sorted(candidate_list)
+	r = open(output ,"a")
 	r.write("!"+"\t"+str(result[0][0])+"\t"+str(result[0][1]) + "\t"+ str(result[1])+"\t"+str(result[2]) + "\n") 
 	r.write("?"+"\t"+str(result[2]) +"\t"+ str(min_i)+"\t"+ str(maxi_d) +"\n")
-	for widos in candidate_list:
-		r.write("*"+"\t"+str(result[2]) +"\t" + str(int(widos)-size/2) +"\t"+ str(int(widos)+size/2)+"\t" + str(result[-1][widos][0])+ "\n")
+	#for widos in candidate_list:
+	#	r.write("*"+"\t"+str(result[2]) +"\t" + str(int(widos)-size/2) +"\t"+ str(int(widos)+size/2)+"\t" + str(result[-1][widos][0])+ "\n")
 
 
-#This function enables to obtain data regarding chromosomes and lenght of the,
 def read_fasta(fp):
 	name, seq = None, []
 	for line in fp:
@@ -263,7 +306,7 @@ with open(fasta_input) as fp:
 	for name_contig, seq_contig in read_fasta(fp):
 		ch[name_contig[1:len(name_contig)]] = len(seq_contig)
 
-#The calling of the different functions depends on whether we are working in an outcross or backcross
+#Calling of the different functions depends on whether we are working in an outcross or backcross
 
 function_used = [final_processing_B, final_processing_A]
 if mode == "back":
@@ -278,8 +321,10 @@ z = 0
 
 for chromosome in ch:  
 	inpu = args.input	
-	genome = getinfo(chromosome,inpu)		
-	windows = chromosomal_position(size, space, genome,chromosome, ch[chromosome], mode, modality, control) 
+	genome = getinfo(chromosome,inpu)
+
+	windows = chromosomal_position(size, space, genome, chromosome, ch[chromosome], mode, modality, control)
+
 	if mode == "out" and control == "par" :
 		if modality == "noref":
 			mini_average = 0.4
@@ -287,10 +332,12 @@ for chromosome in ch:
 		elif modality == "ref":
 			mini_average= 0
 			maxi_average= 0.6    
-		windows= threshold_step(windows, mini_average, maxi_average) 
-	x_value= union_points(windows)
+		windows = threshold_step(windows, mini_average, maxi_average)
+
+	x_value = union_points(windows)
+
 	if z == 0:
-		result_data = data_analysis(windows, x_value, chromosome, "n/p", "n/p", "n/p", "n/p", size, mode, control,mut1)
+		result_data = data_analysis(windows, x_value, chromosome, "n/p", "n/p", "n/p", "n/p", size, mode, control, mut1)
 		best = result_data[1]
 		maximum_position = result_data[0]
 		best_chromosome = result_data[2]
