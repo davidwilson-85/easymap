@@ -10,9 +10,6 @@
 [ -d user_data ] || mkdir user_data
 [ -d user_projects ] || mkdir user_projects
 
-# Allow server users like www-data (Apache user) to execute programs, to work with 
-# data in "user_data" and "user_projects", and to read configuration in "config/config" 
-sudo chmod 777 . --recursive
 
 ################################################################################
 
@@ -56,14 +53,14 @@ sudo python2 ./graphic_output/Pillow-4.2.1/setup.py install
 
 
 # Make files executable and give logged user execution permissions (.sh, .py, binaries)
-
+sudo chmod 744 . --recursive
 
 
 ################################################################################
 
 # The following commands install Apache and PHP.
 # Not needed if Apache and PHP already installed in machine
-# AWS EC2 AMIs already come with Apache nad PHP by default
+# Some AWS EC2 AMIs already come with Apache and PHP by default
 # or can be set when creating the AMI
 
 # Update apt
@@ -72,7 +69,7 @@ sudo python2 ./graphic_output/Pillow-4.2.1/setup.py install
 # Install Apache
 #sudo apt-get install apache2
 
-# Install PHP including componenet for Apache
+# Install PHP including component for Apache
 #sudo apt-get install php libapache2-mod-php
 
 # Check PHP installation
@@ -82,3 +79,7 @@ sudo python2 ./graphic_output/Pillow-4.2.1/setup.py install
 #sudo service apache2 restart
 
 ################################################################################
+
+# Allow server users like www-data (Apache user) to execute programs, to work with 
+# data in "user_data" and "user_projects", and to read configuration in "config/config" 
+sudo chmod 777 . --recursive
