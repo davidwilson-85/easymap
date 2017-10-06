@@ -65,7 +65,7 @@ body {font-size:16px;}
 </nav>
 
 <!-- Top menu on small screens -->
-<header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+<header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding no-print">
   <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
   <span>Easymap</span>
 </header>
@@ -77,8 +77,8 @@ body {font-size:16px;}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <div class="w3-container" style="margin-top:75px">
-    <h1 class="w3-xxxlarge w3-text-red"><b>Manage projects > View report</b></h1>
-    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <h1 class="w3-xxxlarge w3-text-red no-print"><b>Manage projects > View report</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round no-print">
         
     <div id="reportInfo">
     
