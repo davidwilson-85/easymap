@@ -52,12 +52,25 @@ cd ../..
 
 ################################################################################
 
-
-
 # Make files executable and give logged user execution permissions (.sh, .py, binaries)
 sudo chmod 744 . --recursive
 
 
+
+
+exit
+
+
+
+
+
+
+
+
+
+################################################################################
+################################################################################
+################################################################################
 ################################################################################
 
 # The following commands install Apache and PHP.
@@ -85,3 +98,13 @@ sudo chmod 744 . --recursive
 # Allow server users like www-data (Apache user) to execute programs, to work with 
 # data in "user_data" and "user_projects", and to read configuration in "config/config" 
 sudo chmod 777 . --recursive
+
+# Make .python-eggs directory executable by any user (includes www-data or any other server)
+# [Explanation: When Easymap is executed from the web interface, Pillow's .egg files are extracted in a 
+# folder named .python-eggs inside the www-data root directory (/var/www). For this, you need to give 
+# www-data user write permission to that folder]
+[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
+sudo chmod 777 /var/www/.python-eggs
+
+# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
+# export PYTHON_EGG_CACHE=/tmp
