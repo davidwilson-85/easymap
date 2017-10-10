@@ -1,15 +1,34 @@
 #!/bin/bash
 
-# This script automates some of the steps required to perform after cloning from GitHub
-# repository in order to make easymap ready for execution.
-
 ################################################################################
+#
+# This script automates some the steps required after cloning or downloading
+# in order to make easymap ready for execution.
+#
+################################################################################
+
+
+# Two options [ cli | server ]
+# server: does all the regular installation steps plus others required to 
+# deal with server particularities
+
+# Deal with argument provided by user
+if ! [ $1 ]; then
+	echo 'Please provide an argument specifying the type of installation: "cli" or "server". Example: "./install.sh server"'
+	exit
+fi
+
+if ! [ $1 == server ] && ! [ $1 == cli ]
+then
+	echo 'Please choose between "cli" and "server". Example: "./install.sh server"'
+	exit
+fi
+
 
 # Create some folders not present in GitHub repo (e.g. 'user_data' and 'user_projects')
 
 [ -d user_data ] || mkdir user_data
 [ -d user_projects ] || mkdir user_projects
-
 
 ################################################################################
 
@@ -52,13 +71,8 @@ cd ../..
 
 ################################################################################
 
-# Make files executable and give logged user execution permissions (.sh, .py, binaries)
-sudo chmod 744 . --recursive
-
-
-
-
-exit
+# Grant full permissions to logged in user and its group
+sudo chmod 774 . --recursive
 
 
 
@@ -89,17 +103,38 @@ exit
 #sudo service apache2 restart
 
 ################################################################################
+#
+# The following commands make possible to use Easymap from both the terminal of the logged in user
+# and by a server (all examples with Apache2 - www-data user)
+#
+################################################################################
 
-# Allow server users like www-data (Apache user) to execute programs, to work with 
-# data in "user_data" and "user_projects", and to read configuration in "config/config" 
-sudo chmod 777 . --recursive
+if [ $1 == server ]
+then
 
-# Make .python-eggs directory executable by any user (includes www-data or any other server)
-# [Explanation: When Easymap is executed from the web interface, Pillow's .egg files are extracted in a 
-# folder named .python-eggs inside the www-data root directory (/var/www). For this, you need to give 
-# www-data user write permission to that folder]
-[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
-sudo chmod 777 /var/www/.python-eggs
+	# Change ownership of easymap folder (recursively) to server user (www-data)
+	sudo chown -R www-data:www-data .
 
-# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
-# export PYTHON_EGG_CACHE=/tmp
+	# Add logged in user to server group (www-data)
+	user="$(id -u -n)"
+	sudo useradd -G www-data $user
+
+	# (Alternative: create a new group, add desired users, and then make that group owner of
+	# the easymap directory and all its subdirectories)
+
+	# Grant full permissions to www-data group members
+	sudo chmod 774 . --recursive
+
+	# Make .python-eggs directory executable by any user (includes www-data or any other server)
+	# [Explanation: When Easymap is executed from the web interface, Pillow's .egg files are extracted in 
+	# folder .python-eggs inside the www-data root directory (/var/www). For this, you need to give 
+	# www-data user write permission to that folder]
+	[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
+	sudo chmod 774 /var/www/.python-eggs
+
+	# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
+	# export PYTHON_EGG_CACHE=/tmp
+
+fi
+
+
