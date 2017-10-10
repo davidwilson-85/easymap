@@ -197,6 +197,10 @@ function get_problem_va {
 	}
 	echo $(date)': First VCF filtering step of F2 data finished.' >> $my_log_file
 
+	#Intermediate files cleanup
+	rm -f $f1/*.sam
+	rm -f $f1/*.vcf
+
 }
 
 
@@ -294,6 +298,10 @@ function get_control_va {
 		exit
 	}
 	echo $(date)': First VCF filtering step of control data finished.' >> $my_log_file
+
+	#Intermediate files cleanup
+	rm -f $f1/*.sam
+	rm -f $f1/*.vcf
 
 }
 
@@ -469,7 +477,7 @@ function depth_alignment {
 		exit
 	}
 	{
-	python2 $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt -out $f3/frequence_depth_alignment_distribution_control.png  2>> $my_log_file
+	python2 $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1P.txt -out $f3/frequence_depth_alignment_distribution_control.png  2>> $my_log_file
 	} || {
 		echo $(date)': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
 		exit_code=1
@@ -824,5 +832,10 @@ then
 fi
 
 depth_alignment
+
+
+#Intermediate files cleanup
+rm -f $f1/*.bam
+rm -f $f1/*.bai
 
 echo $exit_code

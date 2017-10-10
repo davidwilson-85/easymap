@@ -126,6 +126,7 @@ then
 	#Execute filter1
 	{
 		python2 $location/scripts_ins/filter1.py -a $f1/alignment1.sam -b $f1/output_F1.fq 2>> $my_log_file
+		rm -f $f1/alignment1.sam
 	
 	} || {
 		echo $(date)': error: filter1.py' >> $my_log_file
@@ -185,6 +186,7 @@ fi
 #Execute filter2
 {
 	python2 $location/scripts_ins/filter2.py -a $f1/alignment3.sam -b $f1/output_F2.fq 2>> $my_log_file
+	rm -f $f1/alignment3.sam
 
 } || {
 	echo $(date)': error: filter2.py' >> $my_log_file
@@ -215,6 +217,7 @@ if [ $my_mode == 'pe' ]
 then  
 	{
 		python2 $location/scripts_ins/paired-analysis.py -a $f1/alignment2.sam -b $f1/output_analysis.txt -c $f1/$my_gs 2>> $my_log_file
+		rm -f $f1/alignment2.sam 
 
 	} || {
 		echo $(date)': error: paired-analysis.py' >> $my_log_file
@@ -249,7 +252,6 @@ then
 	}
 	echo $(date)': Local reads analysis finished.' >> $my_log_file
 fi
-
 
 #Sort insertions
 {
@@ -300,7 +302,8 @@ then
 
 	{
 		python2 $location/scripts_ins/ins-primers.py -sam_in $f1/alignment4.sam -var_in $f1/varanalyzer_output.txt -sam_out $f1/primers/ 2>> $my_log_file
-		
+		rm -f $f1/alignment4.sam
+
 	} || {
 		echo $(date)': error:ins-primers.py' >> $my_log_file
 		exit_code=1
@@ -377,7 +380,7 @@ then
 				cat $f1/cns.fq >> $f1/all_insertions_cns.fq
 		done
 	}||{
-		echo $(date) ': Error. The consensus sequence of an insertion flank could not be created.' >> $my_log_file
+		echo $(date)': Error. The consensus sequence of an insertion flank could not be created.' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
@@ -396,12 +399,12 @@ rm -f ./user_data/*.fai
 {
 	python2 $location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -fq $f1/all_insertions_cns.fq  -out $f3/insertions_output.txt -mode $(wc -l < $f1/varanalyzer_output.txt) 2>> $my_log_file
 }|| {
-	echo $(date) ': Error. primer-generation.py failed. ' >> $my_log_file
+	echo $(date)': Error. primer-generation.py failed. ' >> $my_log_file
 	exit_code=1
 	echo $exit_code
 	exit
 }
-echo $(date) ': Primer-generation.py module finished.' >> $my_log_file
+echo $(date)': Primer-generation.py module finished.' >> $my_log_file
 
 
 
@@ -412,12 +415,12 @@ then
 	{
 		python2 $location/scripts_ins/extend-ins-info.py --project-name $project_name 2>> $my_log_file
 	}|| {
-		echo $(date) ': Error. extend-ins-info.py failed. ' >> $my_log_file
+		echo $(date)': Error. extend-ins-info.py failed. ' >> $my_log_file
 		exit_code=1
 		echo $exit_code
 		exit
 	}
-	echo $(date) ': extend-ins-info.py module finished.' >> $my_log_file
+	echo $(date)': extend-ins-info.py module finished.' >> $my_log_file
 
 fi
 
@@ -438,7 +441,7 @@ fi
 	echo $exit_code
 	exit
 }
-echo $(date) ': Graphic output created.' >> $my_log_file
+echo $(date)': Graphic output created.' >> $my_log_file
 
 
 
@@ -492,6 +495,7 @@ fi
 # 3. SAM to BAM 
 {
 	$location/samtools1/samtools sort $f1/alignment5.sam  > $f1/alignment5.bam 
+	rm -f $f1/alignment5.sam
 
 } || {
 	echo $(date)': samtools sort returned an error. See log files.' >> $my_log_file
@@ -504,6 +508,8 @@ fi
 # 4. 
 {
 	python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/genome_mini.fa -bam $f1/alignment5.bam -out $f1/coverage_alignment1.txt 2>> $my_log_file
+	rm -f $f1/alignment5.bam
+	rm -f $f1/alignment5.bai
 
 } || {
 	echo $(date)': Error during obtaining of alignment depth .' >> $my_log_file
@@ -524,7 +530,6 @@ fi
 }
 
 
-
 #Report
 zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 
@@ -537,7 +542,7 @@ zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 	echo $exit_code
 	exit
 }
-echo $(date) ': Report file created.' >> $my_log_file
+echo $(date)': Report file created.' >> $my_log_file
 
 
 echo $exit_code
