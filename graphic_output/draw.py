@@ -354,7 +354,8 @@ def fa_vs_pos():
 		im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,150),  w)
 
 		#X axis label
-		x_title = str(i[0]) + ' (Mb)'
+		if int(i[1]) > 1000000: x_title = str(i[0]) + ' (Mb)'
+		if int(i[1]) <= 1000000: x_title = str(i[0]) + ' (bp)'
 		w, h = draw.textsize(str(x_title))
 		draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
 
