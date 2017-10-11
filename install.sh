@@ -117,7 +117,7 @@ then
 
 	# Add logged in user to server group (www-data)
 	user="$(id -u -n)"
-	sudo useradd -G www-data $user
+	sudo usermod -a -G www-data $user
 
 	# (Alternative: create a new group, add desired users, and then make that group owner of
 	# the easymap directory and all its subdirectories)
@@ -130,6 +130,7 @@ then
 	# folder .python-eggs inside the www-data root directory (/var/www). For this, you need to give 
 	# www-data user write permission to that folder]
 	[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
+	sudo chown -R www-data:www-data /var/www/.python-eggs
 	sudo chmod 774 /var/www/.python-eggs
 
 	# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
