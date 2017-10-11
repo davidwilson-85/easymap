@@ -109,7 +109,7 @@ function get_problem_va {
 	then
 		#Run bowtie2 unpaired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
@@ -125,7 +125,7 @@ function get_problem_va {
 	then
 		#Run bowtie2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
@@ -138,7 +138,7 @@ function get_problem_va {
 
 	#SAM to BAM
 	{
-		$location/samtools1/samtools sort $f1/alignment1.sam > $f1/alignment1.bam 2> $f2/sam-to-bam_std2.txt
+		$location/samtools1/samtools sort $f1/alignment1.sam > $f1/alignment1.bam 2> $f2/sam-to-bam_problem-sample_std2.txt
 		
 		rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.sam
 
@@ -153,10 +153,9 @@ function get_problem_va {
 
 
 	#Variant calling
-
 	{
 
-		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_std.txt
+		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_problem-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_problem-sample_std.txt
 		# -B: Disables probabilistic realignment for the computation of base alignment quality (BAQ). Applying this argument reduces the number of false negatives during the variant calling
 		# -t DP,ADF,ADR: output VCF file contains the specified optional columns: read depth (DP), allelic depths on the forward strand (ADF), allelic depths on the reverse strand (ADR)
 		# -uf: uncompressed vcf output / fasta imput genome file
@@ -218,7 +217,7 @@ function get_control_va {
 	then
 		#Run bowtie2 unpaired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
@@ -234,7 +233,7 @@ function get_control_va {
 	then
 		#Run bowtie2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
@@ -247,7 +246,7 @@ function get_control_va {
 
 	#SAM to BAM
 	{
-		$location/samtools1/samtools sort $f1/alignment1P.sam > $f1/alignment1P.bam 2> $f2/sam-to-bam_std2.txt
+		$location/samtools1/samtools sort $f1/alignment1P.sam > $f1/alignment1P.bam 2> $f2/sam-to-bam_control-sample_std2.txt
 
 		rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.sam
 
@@ -263,7 +262,7 @@ function get_control_va {
 	#Variant calling
 	{
 
-		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_std.txt
+		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_control-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_control-sample_std.txt
 
 	} || {
 		echo $(date)': Error during variant-calling of control data' >> $my_log_file

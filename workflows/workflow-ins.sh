@@ -68,7 +68,7 @@ export location="$PWD"
 
 #Execute bowtie2-build on insertion and genome sequence 
 {
-	$location/bowtie2/bowtie2-build $f0/$my_is $f1/$my_ix2 1> $f2/bowtie2-build_std1.txt 2> $f2/bowtie2-build_std2.txt
+	$location/bowtie2/bowtie2-build $f0/$my_is $f1/$my_ix2 1> $f2/bowtie2-build_ins_std1.txt 2> $f2/bowtie2-build_ins_std2.txt
 	
 } || {
 	echo $(date)': bowtie2-build on insertion sequence returned an error. See log files.' >> $my_log_file
@@ -79,7 +79,7 @@ export location="$PWD"
 echo $(date)': bowtie2-build insertion index finished.' >> $my_log_file
 
 {
-	$location/bowtie2/bowtie2-build $f1/$my_gs $f1/$my_ix 1> $f2/bowtie2-build2_std3.txt 2> $f2/bowtie2-build2_std4.txt
+	$location/bowtie2/bowtie2-build $f1/$my_gs $f1/$my_ix 1> $f2/bowtie2-build2_gnm_std1.txt 2> $f2/bowtie2-build2_gnm_std2.txt
 	
 } || {
 	echo $(date)': bowtie2-build on genome sequence returned an error. See log files.' >> $my_log_file
@@ -94,7 +94,7 @@ echo $(date)': bowtie2-build genome index finished.' >> $my_log_file
 if [ $my_mode == 'pe' ]
 then  
 	{
-		$location/bowtie2/bowtie2 -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_ins_std2.txt
 	
 	} || {
 		echo $(date)': bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
@@ -109,7 +109,7 @@ fi
 if [ $my_mode == 'se' ] 
 then
 	{
-		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_std2.txt
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_ins_std2.txt
 	
 	} || {
 		echo $(date)': bowtie2 on the insertion sequence returned an error. See log files.' >> $my_log_file
@@ -139,7 +139,7 @@ then
 
 	#Execute bowtie2 to align filtered reads to genome sequence
 	{
-		$location/bowtie2/bowtie2 -x $f1/$my_ix -U $f1/output_F1.fq -S $f1/alignment2.sam 2> $f2/bowtie2_std4.txt
+		$location/bowtie2/bowtie2 -x $f1/$my_ix -U $f1/output_F1.fq -S $f1/alignment2.sam 2> $f2/bowtie2_gnm_std2.txt
 	
 	} || {
 		echo  $(date)': bowtie2 on the genome sequence returned an error. See log files.' >> $my_log_file
@@ -155,7 +155,7 @@ if [ $my_mode == 'pe' ]
 then  
 	#Execute bowtie2 to make a local aligment of the reads with the insertion
 	{
-		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
+		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -1 $my_rf -2 $my_rr -S $f1/alignment3.sam 2> $f2/bowtie2_local_ins_std2.txt
 	
 	} || {
 		echo $(date)': bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file
@@ -171,7 +171,7 @@ if [ $my_mode == 'se' ]
 then  	
 	#Execute bowtie2 to make a local aligment of the reads with the insertion
 	{
-		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -U $my_rd -S $f1/alignment3.sam 2> $f2/bowtie2_local_std1.txt
+		$location/bowtie2/bowtie2 --local -x $f1/$my_ix2 -U $my_rd -S $f1/alignment3.sam 2> $f2/bowtie2_local_ins_std2.txt
 	
 	} || {
 		echo $(date)': bowtie2 local alignment to the insertion sequence returned an error. See log files.' >> $my_log_file
@@ -199,7 +199,7 @@ echo $(date)': Second filter finished.' >> $my_log_file
 
 #Execute bowtie2 to align filtered reads to genome sequence
 {
-	$location/bowtie2/bowtie2 --local -x $f1/$my_ix -U $f1/output_F2.fq -S $f1/alignment4.sam 2> $f2/bowtie2_local_std2.txt
+	$location/bowtie2/bowtie2 --local -x $f1/$my_ix -U $f1/output_F2.fq -S $f1/alignment4.sam 2> $f2/bowtie2_local_gnm_std2.txt
 
 } || {
 	echo $(date)': bowtie2 local alignment to the genome sequence returned an error. See log files.' >> $my_log_file
@@ -318,7 +318,7 @@ then
 		if [ -n "$i" ]
 		then
 			{
-				$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2> $f2/bowtie2_std5.txt
+				$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix2 -U $i -S ${i%.*}.sam 2>> $f2/bowtie2_primers_std2.txt
 
 			} || {
 				echo $(date)': error: Bowtie2 - primers' >> $my_log_file
@@ -430,7 +430,6 @@ fi
 
 # for tests: python2 ./graphic_output/graphic-output.py -my_mut lin -a ./user_projects/project/3_workflow_output/sorted_insertions.txt -b ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100  -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -ins_pos ./user_projects/project/1_intermediate_files/ins-to-varanalyzer.txt
 
-
 #Graphic output
 {
 	python2 $location/graphic_output/graphic-output.py -my_mut $my_mut -a $f3/sorted_insertions.txt -b $f1/$my_gs -m $my_mode	-gff $f0/$my_gff  -iva $f1/varanalyzer_output.txt -rrl $my_rrl -pname $project_name -ins_pos $f1/ins-to-varanalyzer.txt 2>> $my_log_file
@@ -451,7 +450,7 @@ echo $(date)': Graphic output created.' >> $my_log_file
 
 {
 	head -10000 $f1/$my_gs > $f1/genome_mini.fa 
-	$location/bowtie2/bowtie2-build $f1/genome_mini.fa $f1/$my_ix3 1> $f2/bowtie2-build_std6.txt 2> $f2/bowtie2-build_std7.txt
+	$location/bowtie2/bowtie2-build $f1/genome_mini.fa $f1/$my_ix3 1> $f2/bowtie2-build_mini-gnm_std1.txt 2> $f2/bowtie2-build_mini-genome_std2.txt
 	
 } || {
 	echo $(date)': bowtie2-build on insertion sequence returned an error. See log files.' >> $my_log_file
@@ -465,7 +464,7 @@ echo $(date)': bowtie2-build insertion index finished.' >> $my_log_file
 if [ $my_mode == 'pe' ]
 then  
 	{
-		$location/bowtie2/bowtie2 -x $f1/$my_ix3 -1 $my_rf -2 $my_rr -S $f1/alignment5.sam 2> $f2/bowtie2_std6.txt
+		$location/bowtie2/bowtie2 -x $f1/$my_ix3 -1 $my_rf -2 $my_rr -S $f1/alignment5.sam 2> $f2/bowtie2_mini-gnm_std2.txt
 	
 	} || {
 		echo $(date)': bowtie2 returned an error. See log files.' >> $my_log_file
@@ -480,7 +479,7 @@ fi
 if [ $my_mode == 'se' ] 
 then
 	{
-		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix3 -U $my_rd -S $f1/alignment5.sam 2> $f2/bowtie2_std6.txt
+		$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix3 -U $my_rd -S $f1/alignment5.sam 2> $f2/bowtie2_mini-gnm_std2.txt
 	
 	} || {
 		echo $(date)': bowtie2 returned an error. See log files.' >> $my_log_file
@@ -544,6 +543,4 @@ zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 }
 echo $(date)': Report file created.' >> $my_log_file
 
-
 echo $exit_code
-
