@@ -131,7 +131,7 @@ then
 	# www-data user write permission to that folder]
 	[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
 	sudo chown -R www-data:www-data /var/www/.python-eggs
-	sudo chmod 774 /var/www/.python-eggs
+	sudo chmod -R 770 /var/www/.python-eggs
 
 	# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
 	# export PYTHON_EGG_CACHE=/tmp
