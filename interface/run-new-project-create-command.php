@@ -37,7 +37,8 @@ $cmdArray = json_decode(file_get_contents("php://input"));
 $cmdString = implode(" ", $cmdArray);
 
 // Run workflow
-shell_exec('cd ..; '. $cmdString);
+// Add another argument that equals to "server" at the end of the command
+shell_exec('cd ..; '. $cmdString .' server');
 
 // Only for development
 //$file = fopen('file.txt', 'w');

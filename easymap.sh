@@ -25,6 +25,7 @@
 # [20] $sim_mut											.                      nbr+mod
 # [21] $sim_recsel										.                      rfd+pos+mod+nre
 # [22] $sim_seq											.                      rd+rl+fl+ber+gbs
+# [23] server
 
 # sim-mut.py
 # nbr:		${20}[0]
@@ -88,9 +89,15 @@ control_parental=${19}
 sim_mut=${20}
 sim_recsel=${21}
 sim_seq=${22}
+env=${23}
 
 ############################################################
 # Several necessary checking/preparation steps before actually running easymap
+
+# If easymap is being executed from server, set path for Python unzipped eggs in easymap/tmp dir
+if [ $env == 'server' ]; then
+	export PYTHON_EGG_CACHE=./tmp
+fi
 
 # Declare a flag variable that will be used as exit code, and set it to 0 (no error)
 exit_code=0
@@ -111,7 +118,7 @@ mkdir $project_name/$f2
 mkdir $project_name/$f3
 
 # Change permisssion so www-data can read and write in all folders of the project
-chmod -R 777 $project_name
+#chmod -R 777 $project_name
 
 # Deprecated
 # Delete intermediate and final files from previous executions, For that, check whether dirs have any
