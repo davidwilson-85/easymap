@@ -18,7 +18,6 @@ parser.add_argument('-af_min', action="store", dest = 'af_min', default = 0)
 parser.add_argument('-af_max', action="store", dest = 'af_max', default = 2)
 parser.add_argument('-pos_min', action="store", dest = 'pos_min', default = 0)
 parser.add_argument('-pos_max', action="store", dest = 'pos_max', default = 1000000000)
-
 parser.add_argument('-step', action="store", dest = 'step')
 parser.add_argument('-cand_reg_file', action="store", dest = 'cand_reg_file')
 
@@ -32,9 +31,7 @@ lines = f1.readlines()
 #Output
 output = args.output
 f2 = open(output, 'w')
-
 step = args.step
-
 
 #_________________________________CANDIDATE REGION FILTER___________________________________________________________________________________
 if step == '1':

@@ -692,7 +692,7 @@ if mut_type == 'snp':
 	output.write(
 	'		<h2>Candidate polymorphisms overview</h2>' + '\n'
 
-	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations and representing the selected chromosomal position as a dashed line. Aditionally, theres a zoom-in the window containing the candidate polymorphisms including only typical EMS changes. </p>' + '\n'
+	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations and representing the selected chromosomal position as a dashed line. </p>' + '\n'
 
 
 		) 
@@ -707,6 +707,7 @@ if mut_type == 'snp':
 	for f in sorted(files):
 		if 'img_2_candidates' in str(f) and 'zoom' in str(f):
 			output.write(
+			'		<p>Zooming-in the window containing the candidate polymorphisms, including only typical EMS changes. </p>' + '\n'
 			'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'
 			)
 			

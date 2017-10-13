@@ -1,11 +1,47 @@
 
 
 echo INS___________________________________________________________________________________________
-./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 25+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
-rm -rf ./user_projects/*/1_intermediate_files/sim_data/
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
 
-./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 20+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
-rm -rf ./user_projects/*/1_intermediate_files/sim_data/
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
+
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+
 
 
 
@@ -49,16 +85,16 @@ echo CASO 7_____________________________________________________________________
 
 
 echo INS___________________________________________________________________________________________
-./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 5+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+./easymap -n BBI -w ins -r insim -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 5+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/
 
-./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 20+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
+./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 7 -i pbinprok2.fa -ss 7+100,0+500,100+1+50+pe -a TAIR10_gene_info.txt
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/
 
-./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 5+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+./easymap -n BBI -w ins -r insim -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 5+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/
 
-./easymap -n BBI -w ins -r mid -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 15+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+./easymap -n BBI -w ins -r insim -sim -g complete.gff -sm 8 -i pbinprok2.fa -ss 15+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/
 
 

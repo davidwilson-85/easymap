@@ -23,23 +23,18 @@
 # $read_r			>	$9
 # $gff_file			>	${10}
 # $ann_file			>	${11}
-#
 
 
-# Set 'exit_code' (flag variable) to 0
-exit_code=0
-
-# Set location of log file
-my_log_file=$1
-
+#Some initial parameters
 start_time=`date +%s`
-
-my_mut=lin 			#my_mut takes the values 'lin' in this workflow and 'snp' in the snp workflow, for the execution of the graphic output module
+exit_code=0					# Set 'exit_code' (flag variable) to 0
+my_mut=lin 					# my_mut takes the values 'lin' in this workflow and 'snp' in the snp workflow, for the execution of the graphic output module
+my_log_file=$1 				# Set location of log file
 
 #Create input variables
 my_log_file=$1
 project_name=$2
-my_mode=$5 														#[P, S], paired/single  <------------------------------------------------------------------------
+my_mode=$5 														#pe/se (paired/single)
 my_rd=$7											 			#reads (single)
 my_rf=$8 														#forward reads
 my_rr=$9												 		#reverse reads
@@ -48,9 +43,8 @@ my_gs=gnm_ref_merged/genome.fa 									#genome sequence
 my_ix=genome_index 							
 my_ix2=insertion_index 						
 my_gff=${10}													#Genome feature file
-my_ann=${11}													
+my_ann=${11}													#Genome anotation file
 my_rrl=250 														#Regulatory region length
-
 
 #Define the folders in the easymap directory 
 f0=user_data
@@ -65,6 +59,15 @@ echo 'pid workflow '$BASHPID >> $my_status_file
 #Save path to bowtie2-build and bowtie2 in variable BT2
 export location="$PWD" 
 
+
+
+##################################################################################################################################################################################
+#																																												 #
+#																																												 #
+#																	 Mapping analysis 																							 #
+#																																												 #
+#																																												 #
+##################################################################################################################################################################################
 
 #Execute bowtie2-build on insertion and genome sequence 
 {
@@ -121,6 +124,9 @@ then
 	echo $(date)': bowtie2 unpaired finished.' >> $my_log_file
 fi
 
+
+#_______________________________________________________________________Paired-end reads processing___________________________________________________________________________________
+
 if [ $my_mode == 'pe' ]
 then  
 	#Execute filter1
@@ -167,6 +173,8 @@ then
 fi
 
 
+#_______________________________________________________________________Single-end reads processing___________________________________________________________________________________
+
 if [ $my_mode == 'se' ]
 then  	
 	#Execute bowtie2 to make a local aligment of the reads with the insertion
@@ -210,7 +218,7 @@ echo $(date)': Second filter finished.' >> $my_log_file
 echo $(date)': bowtie2 finished.' >> $my_log_file
 
 
-
+#_______________________________________________________________________Mapping analysis___________________________________________________________________________________
 
 #Count read depth and find candidate region
 if [ $my_mode == 'pe' ]
@@ -292,7 +300,7 @@ echo $(date)': ins-to-varanalyzer.py finished.' >> $my_log_file
 echo $(date)': varanalyzer.py finished.' >> $my_log_file
 
 
-#Primers________________________________________________________________________________________________________________________________________________________________
+#_______________________________________________________________________Primer generation module___________________________________________________________________________________
 
 if [ $(wc -l < $f1/varanalyzer_output.txt) -gt 1 ]
 then 
@@ -332,9 +340,7 @@ then
 
 	echo $(date)': Running primer generation module' >> $my_log_file
 	#Consensus sequence generation
-
 	#Generation of a variable with the path were the SAM files of each insertion will be held
-
 	#Loop through all files in the directory and DO the SAM to BAM conversion and the genereation of consensus sequence from each insertion consensus file. 
 	{
 		for i in $primers_dir/*.sam 
@@ -348,7 +354,7 @@ then
 					if [ $sam_stauts == 0 ]
 					then
 						{
-							echo $(date)": Correct SAM file." >> $my_log_file
+							:
 						}
 					else 
 						{
@@ -388,12 +394,10 @@ then
 
 fi
 
-
 rm -f $f1/cns.fq
 rm -f $f1/primers_dir/*.bam
 rm -f $location/temp
 rm -f ./user_data/*.fai
-##sed -i "s/n//g" all_insertions_cns.fq
 
 #Primer generation script
 {
@@ -405,7 +409,6 @@ rm -f ./user_data/*.fai
 	exit
 }
 echo $(date)': Primer-generation.py module finished.' >> $my_log_file
-
 
 
 if [ $(wc -l < $f1/varanalyzer_output.txt) -gt 1 ]
@@ -425,8 +428,7 @@ then
 fi
 
 
-#______________________________________________________________________________________________________________________________________________________________________
-
+#_______________________________________________________________________Output generation___________________________________________________________________________________
 
 # for tests: python2 ./graphic_output/graphic-output.py -my_mut lin -a ./user_projects/project/3_workflow_output/sorted_insertions.txt -b ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 100  -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -ins_pos ./user_projects/project/1_intermediate_files/ins-to-varanalyzer.txt
 
@@ -442,11 +444,8 @@ fi
 }
 echo $(date)': Graphic output created.' >> $my_log_file
 
-
-
-#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
-
-# 1. We create a reduced version of the genome and index it with bowtie-build
+#Depth Alignment Graph
+# (1) We create a reduced version of the genome and index it with bowtie-build
 
 {
 	head -10000 $f1/$my_gs > $f1/genome_mini.fa 
@@ -460,7 +459,7 @@ echo $(date)': Graphic output created.' >> $my_log_file
 }
 echo $(date)': bowtie2-build insertion index finished.' >> $my_log_file
 
-# 2. We align all the reads to the mini-genome
+# (2) We align all the reads to the mini-genome
 if [ $my_mode == 'pe' ]
 then  
 	{
@@ -491,7 +490,7 @@ then
 	echo $(date)': bowtie2 unpaired finished.' >> $my_log_file
 fi
 
-# 3. SAM to BAM 
+# (3) SAM to BAM 
 {
 	$location/samtools1/samtools sort $f1/alignment5.sam  > $f1/alignment5.bam 
 	rm -f $f1/alignment5.sam
@@ -504,7 +503,7 @@ fi
 }
 
 
-# 4. 
+# (4) depth_measures_generation.py
 {
 	python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/genome_mini.fa -bam $f1/alignment5.bam -out $f1/coverage_alignment1.txt 2>> $my_log_file
 	rm -f $f1/alignment5.bam
@@ -517,9 +516,9 @@ fi
 	exit
 }
 
-# 5. 
+# (5) graphic-alignment.py
 {
-	python2 $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 2>> $my_log_file
+	python2 $location/graphic_output/graphic-alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 2>> $my_log_file
 
 } || {
 	echo $(date)': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
@@ -529,7 +528,7 @@ fi
 }
 
 
-#Report
+#Report generation
 zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
 
 {

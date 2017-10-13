@@ -1,3 +1,62 @@
+
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 30+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 30+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 30+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 30+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 30+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 20+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 20+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 20+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 20+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 20+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 50+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 50+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 50+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 50+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+echo CASO 3___________________________________________________________________________________________
+./easymap -n minicaso3 -w snp -sim -r insim -g complete.gff -mb ref -cr oc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 50+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
+
+
+
+
+
+
+
+
+exit
+
+
+
+
 echo CASO 1___________________________________________________________________________________________
 ./easymap -n minicaso1 -w snp -sim -r insim -g complete.gff -mb ref -cr bc -co par_mut -sm 90 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,30000+100 -ss 30+100,0+500,100+1+50+se -a TAIR10_gene_info.txt
 rm -rf ./user_projects/*/1_intermediate_files/sim_data/

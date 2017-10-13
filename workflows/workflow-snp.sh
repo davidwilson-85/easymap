@@ -33,15 +33,11 @@
 # lib_type_control						>	${19}
 
 
-# Set 'exit_code' (flag variable) to 0
-exit_code=0
-
-# Set location of log file
-my_log_file=$1
-
-
-start_time=`date +%s`
-
+#Some initial parameters
+start_time=`date +%s`	
+exit_code=0 				# Set 'exit_code' (flag variable) to 0
+my_log_file=$1 				# Set location of log file
+export location="$PWD" 			#Save path to bowtie2-build and bowtie2 in variable BT2
 
 #Create input variables
 my_log_file=$1
@@ -61,13 +57,10 @@ my_ann=${11}
 my_rrl=250 														#Regulatory region length
 my_log_file=$1
 my_mut=snp  													#my_mut takes the values 'snp' in this workflow and 'lin' in the large insertions workflow, for the execution of the graphic output module
-
 my_cross=${15}													#oc / bc : f2 obtained by outcross or backcross 									
 my_mutbackgroud=${16}											#ref / noref : genetic background of the mutation									
 my_pseq=${17}													#mut / nomut : sequenced parental provided is the mutagenized one or the other		
-
 snp_analysis_type=${18}
-
 
 #Define the folders in the easymap directory 
 f0=user_data
@@ -79,9 +72,14 @@ f3=$project_name/3_workflow_output
 my_status_file=$f2/status
 echo 'pid workflow '$BASHPID >> $my_status_file
 
-#Save path to bowtie2-build and bowtie2 in variable BT2
-export location="$PWD" 
 
+##################################################################################################################################################################################
+#																																												 #
+#																																												 #
+#																	F2 FQ PROCESSING FUNCTION																					 #
+#																																												 #
+#																																												 #
+##################################################################################################################################################################################
 
 #Run bowtie2-build on genome sequence 
 {
@@ -94,15 +92,6 @@ export location="$PWD"
 	exit
 }
 echo $(date)': Bowtie2-build finished.' >> $my_log_file
-
-
-##################################################################################################################################################################################
-#																																												 #
-#																																												 #
-#																	F2 FQ PROCESSING FUNCTION																					 #
-#																																												 #
-#																																												 #
-##################################################################################################################################################################################
 
 function get_problem_va {  
 	if [ $my_sample_mode == se ] 
@@ -119,7 +108,6 @@ function get_problem_va {
 		}
 		echo $(date)': Bowtie2 finished the alignment of F2 reads to genome.' >> $my_log_file
 	fi
-
 
 	if [ $my_sample_mode == pe ] 
 	then
@@ -139,9 +127,7 @@ function get_problem_va {
 	#SAM to BAM
 	{
 		$location/samtools1/samtools sort $f1/alignment1.sam > $f1/alignment1.bam 2> $f2/sam-to-bam_problem-sample_std2.txt
-		
 		rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.sam
-
 
 	} || {
 		echo 'Error transforming SAM to BAM.' >> $my_log_file
@@ -151,16 +137,16 @@ function get_problem_va {
 	}
 	echo $(date)': SAM to BAM finished.' >> $my_log_file
 
-
 	#Variant calling
 	{
 
-		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_problem-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_problem-sample_std.txt
+		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -C50 -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_problem-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_problem-sample_std.txt
 		# -B: Disables probabilistic realignment for the computation of base alignment quality (BAQ). Applying this argument reduces the number of false negatives during the variant calling
 		# -t DP,ADF,ADR: output VCF file contains the specified optional columns: read depth (DP), allelic depths on the forward strand (ADF), allelic depths on the reverse strand (ADR)
 		# -uf: uncompressed vcf output / fasta imput genome file
 		# -mv: include only polymorphic sites in output
 		# -Ov: uncompressed VCF output file 
+		# -C50: reduce the effect of reads with excessive mismatches. This aims to fix overestimated mapping quality
 
 	} || {
 		echo $(date)': Error during variant-calling of F2 data.' >> $my_log_file
@@ -169,7 +155,6 @@ function get_problem_va {
 		exit
 	}
 	echo $(date)': F2 data variant calling finished.' >> $my_log_file
-
 
 	#Groom vcf
 	{
@@ -183,10 +168,9 @@ function get_problem_va {
 	}
 	echo $(date)': VCF grooming of F2 data finished.' >> $my_log_file
 
-
 	#Run vcf filter
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 15 -qual_min 20  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 15 -qual_min 30  2>> $my_log_file
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -211,8 +195,7 @@ function get_problem_va {
 #																																												 #
 ##################################################################################################################################################################################
 
-function get_control_va {  
-
+function get_control_va { 
 	if [ $my_control_mode == se ] 
 	then
 		#Run bowtie2 unpaired to align raw F2 reads to genome 
@@ -227,7 +210,6 @@ function get_control_va {
 		}
 		echo $(date)': Bowtie2 finished the alignment of control reads to genome.' >> $my_log_file
 	fi
-
 
 	if [ $my_control_mode == pe ] 
 	then
@@ -258,11 +240,10 @@ function get_control_va {
 	}
 	echo $(date)': SAM to BAM finished' >> $my_log_file
 
-
 	#Variant calling
 	{
 
-		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -uf $f1/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_control-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_control-sample_std.txt
+		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -C50 -uf $f1/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_control-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_control-sample_std.txt
 
 	} || {
 		echo $(date)': Error during variant-calling of control data' >> $my_log_file
@@ -271,7 +252,6 @@ function get_control_va {
 		exit
 	}
 	echo $(date)': Control data variant calling finished' >> $my_log_file
-
 
 	#Groom vcf
 	{
@@ -285,10 +265,9 @@ function get_control_va {
 	}
 	echo $(date)': VCF grooming of control data finished.' >> $my_log_file
 
-
 	#Run vcf filter
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 15 -qual_min 20  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 15 -qual_min 30  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -315,7 +294,7 @@ function get_control_va {
 
 function cr_analysis {
 
-	# (1) Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
+	# Run vcf filter, selecting snps in the candidate region defined by map-mutation.py, with an alelic frequence > 0.8 and corresponding to EMS mutations
 	{
 		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_control_comparison.va -b $f1/final_variants.va -step 2 -cand_reg_file $f1/map_info.txt -af_min 0.8 -mut_type EMS  2>> $my_log_file
 
@@ -327,8 +306,7 @@ function cr_analysis {
 	}
 	echo $(date)': Second VCF filtering step finished.' >> $my_log_file
 
-	# (2) Create input for varanalyzer and run varanalyzer.py
-	#	- snp-to-varanalyzer.py
+	# Create input for varanalyzer and run varanalyzer.py
 	{
 		python2 $location/scripts_snp/snp-to-varanalyzer.py -a $f1/final_variants.va -b $f1/snp-to-varanalyzer.txt  2>> $my_log_file
 		
@@ -339,7 +317,7 @@ function cr_analysis {
 		exit
 	}
 	echo $(date)': Input for varanalyzer finished.' >> $my_log_file
-	#	- varanalyzer
+	# Varanalyzer
 	{
 		python2 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann  2>> $my_log_file
 
@@ -351,7 +329,7 @@ function cr_analysis {
 	}
 	echo $(date)': Varanalyzer finished.' >> $my_log_file
 
-	# (3) Run primer generation script
+	# Run primer generation script
 	{
 		python2 $location/primers/primer-generation.py -file $f1/varanalyzer_output.txt -fasta $f1/$my_gs -out $f1/primer_generation_output.txt  -mode 2   2>> $my_log_file
 	}|| {
@@ -359,7 +337,7 @@ function cr_analysis {
 	}
 	echo $(date)': primer-generation.py finished.' >> $my_log_file
 	
-	# (4) Run extend-snp-variants-info                                              --project-name $project_name
+	# Run extend-snp-variants-info                                              --project-name $project_name
 	result_extend_snp_info=`python2 $location/scripts_snp/extend-snp-variants-info.py  --variants $f1/primer_generation_output.txt --snp-info $f1/snp-to-varanalyzer.txt --project-name $project_name --map-info $f1/map_info.txt --output-file $f3/candidate_variants.txt 2>> $my_log_file`
 	
 	if [ $result_extend_snp_info == 'success' ]; then
@@ -371,7 +349,7 @@ function cr_analysis {
 		exit
 	fi
 	
-	# (5) Filter SNPs to draw
+	# Filter SNPs to draw
 	af_min=$2
 	{
 		python2 $location/scripts_snp/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $af_min   2>> $my_log_file
@@ -397,10 +375,8 @@ function cr_analysis {
 	echo $(date)': Graphic output created.' >> $my_log_file
 
 	# python2 ./graphic_output/graphic-output.py -my_mut snp -asnp ./user_projects/project/1_intermediate_files/F2_control_comparison_drawn.va -bsnp ./user_projects/project/1_intermediate_files/gnm_ref_merged/genome.fa -rrl 150 -iva ./user_projects/project/1_intermediate_files/varanalyzer_output.txt -gff ./user_data/complete.gff -pname user_projects/project  -cross bc -snp_analysis_type par  
-
 	# (6) Create graphic output
 	{
-
 		python2 $location/graphic_output/graphic-output.py -my_mut $my_mut -asnp $f1/F2_control_comparison_drawn.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $project_name/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $project_name  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 		
 	} || {
@@ -415,9 +391,7 @@ function cr_analysis {
 	#Some arrangements
 	cp $location/fonts/legend.png $f3/legend.png
 	zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
-	
 	{
-		
 		python2 $location/graphic_output/report.py -files_dir $f3 -variants $f3/candidate_variants.txt -log $f2/log.log -output_html $f3/report.html -project $project_name -mut_type $my_mut  2>> $my_log_file
 		
 	} || {
@@ -440,12 +414,9 @@ function cr_analysis {
 
 function depth_alignment {
 
-	#_______________________________________________________________________Depth Alignment Graph___________________________________________________________________________________
 	{
-	python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt  2>> $my_log_file
-
-	################################QUITAR LUEGO
-	rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.bam
+		python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1.bam -out $f1/coverage_alignment1.txt  2>> $my_log_file
+		rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1.bam
 
 	} || {
 		echo $(date)': Error during obtaining of alignment depth .' >> $my_log_file
@@ -455,7 +426,8 @@ function depth_alignment {
 	}
 
 	{
-	python2 $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png  2>> $my_log_file
+		python2 $location/graphic_output/graphic-alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png  2>> $my_log_file
+
 	} || {
 		echo $(date)': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
 		exit_code=1
@@ -463,11 +435,9 @@ function depth_alignment {
 		exit
 	}
 
-
 	{
-	python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt  2>> $my_log_file
-	################################QUITAR LUEGO
-	rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.bam
+		python2 $location/scripts_snp/depth_measures_generation.py -genome $f1/$my_gs -bam $f1/alignment1P.bam -out $f1/coverage_alignment1P.txt  2>> $my_log_file
+		rm -rf ./user_projects/$project_name/1_intermediate_files/alignment1P.bam
 
 	} || {
 		echo $(date)': Error during obtaining of alignment depth .' >> $my_log_file
@@ -475,8 +445,9 @@ function depth_alignment {
 		echo $exit_code
 		exit
 	}
+
 	{
-	python2 $location/graphic_output/Graphic_alignment.py -coverages $f1/coverage_alignment1P.txt -out $f3/frequence_depth_alignment_distribution_control.png  2>> $my_log_file
+		python2 $location/graphic_output/graphic-alignment.py -coverages $f1/coverage_alignment1P.txt -out $f3/frequence_depth_alignment_distribution_control.png  2>> $my_log_file
 	} || {
 		echo $(date)': Error during Graphic_alignment execution in control alignment.' >> $my_log_file
 		exit_code=1
@@ -484,7 +455,6 @@ function depth_alignment {
 		exit
 	}
 
-	#############TAKE A LOOK ON HOW MANY READS ARE NEEDED AND HOW TO DO THE SELECTION
 }
 
 
@@ -515,9 +485,6 @@ then
 	my_operation_mode=A
 	{
 		python2 $location/scripts_snp/variants-operations.py -a $f1/F2_filtered.va -b $f1/control_filtered.va -c $f1/F2_control_comparison.va -mode $my_operation_mode -primary 1  2>> $my_log_file
-		#draw snps
-		#python2 $location/graphic_output/graphic-output.py -my_mut af_candidates -asnp $f1/F2_control_comparison.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  
-
 
 	} || {
 		echo $(date)': Error during first execution of variants-operations.py .' >> $my_log_file
@@ -574,7 +541,6 @@ then
 	}
 	echo $(date)': First VCF filtering step of control data finished.' >> $my_log_file
 
-
 	# (3) Run af-comparison: Intersection of filtered control SNPs with problem reads: outputs VA file with 4 columns of allele absolute frequence
 	{
 		python2 $location/scripts_snp/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs 2>> $my_log_file -step 1
@@ -600,8 +566,7 @@ then
 	}
 	echo $(date)': Mutation mapping module finished.' >> $my_log_file
 
-
-	# BYPASS
+	# (5) Re-write F2_control_comparison.va
 	{
 		python2 $location/scripts_snp/af-comparison.py -f2_mut $f1/F2_filtered.va -f2_wt $f1/control_filtered2.va -out $f1/F2_control_comparison.va -f_input $f1/$my_gs 2>> $my_log_file -step 2
 
@@ -613,7 +578,7 @@ then
 	}
 	echo $(date)': Allelic frequence comparison finished.' >> $my_log_file
 
-	# (4) Candidate region analysis function
+	# (6) Candidate region analysis funtion
 	cr_analysis F2_control_comparison.va 0.1
 
 fi
@@ -679,8 +644,6 @@ then
 	# (1) Get control VA file
 	get_control_va
 
-
-
 	# (2) Run vcf filter to get SNPs with af > 0.75
 	{
 		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_min 0.75  2>> $my_log_file
@@ -714,8 +677,6 @@ then
 	# (4) Get problem VA file
 	get_problem_va
 
-	
-	
 	#draw snps
 	python2 $location/graphic_output/graphic-output.py -my_mut af_sample -asnp $f1/F2_filtered.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 
@@ -745,7 +706,6 @@ then
 	}
 	echo $(date)': Mutation mapping module finished.' >> $my_log_file
 
-
 	# (7) Run VA operations: Remove control SNPs from problem file 
 	my_operation_mode=A
 	{
@@ -761,7 +721,7 @@ then
 	}
 	echo $(date)': VCF operations finished.' >> $my_log_file
 
-	# (4) Candidate region analysis function
+	# (8) Candidate region analysis function
 	cr_analysis F2_control_comparison_mapping.va 0.1
 
 fi
@@ -825,13 +785,13 @@ then
 	}
 	echo $(date)': VCF operations finished.' >> $my_log_file
 
-	# (4) Candidate region analysis function
+	# (5) Candidate region analysis function
 	cr_analysis F2_control_comparison_mapping.va 0.1
 
 fi
 
+#RD graphics
 depth_alignment
-
 
 #Intermediate files cleanup
 rm -f $f1/*.bam
