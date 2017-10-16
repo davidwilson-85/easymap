@@ -36,10 +36,11 @@ fi
 
 # Install libraries libncurses5-dev and libncursesw5-dev if not already installed
 sudo apt-get install libncurses5-dev libncursesw5-dev
+# zlib1g-dev htslib/bgzf.h:34:18: fatal error: zlib.h: No such file or directory
 #sudo yum (for other distros)
 
 cd bcftools-1.3.1 
-make clean 
+make clean
 make
 
 cd ../bowtie2 
@@ -57,9 +58,17 @@ cd ..
 # Install Pillow (PIL fork easier to maintain and actively developed)
 # http://pillow.readthedocs.io/en/3.1.x/installation.html
 
-sudo apt install python-pip    # take this command out of this file
-pip install Pillow
+#sudo apt-get install python-pip    # this can be outdated and cause many problems downstream
 
+# Get and install pip (https://pip.pypa.io/en/stable/installing/)
+sudo wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py
+
+# Intall Pillow
+sudo pip install Pillow
+
+# If necessary to uninstall Pillow, use this command
+#sudo pip uninstall Pillow
 
 ################################################################################
 
