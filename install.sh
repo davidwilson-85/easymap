@@ -58,7 +58,7 @@ cd ..
 # http://pillow.readthedocs.io/en/3.1.x/installation.html
 
 # Install several libraries that are Pillow dependencies
-sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+#sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
 #sudo yum (for other distros)
 
 # Install Pillow
@@ -135,6 +135,7 @@ then
 	
 	# Pillow's will be unziped in ./tmp at runtime if Easymap is being run from web interface (www-data user)
 	# This directory must be owned by user and have 700 permissions
+	
 	sudo chmod -R 700 ./tmp
 
 	# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
