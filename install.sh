@@ -38,19 +38,19 @@ fi
 # sudo apt-get install libncurses5-dev libncursesw5-dev
 #sudo yum (for other distros)
 
-cd bcftools-1.3.1 
-make clean 
+#cd bcftools-1.3.1 
+#make clean 
+#make
+
+#cd ../bowtie2 
+#make clean
 make
 
-cd ../bowtie2 
-make clean
-make
+#cd ../samtools1 
+#make clean
+#make
 
-cd ../samtools1 
-make clean
-make
-
-cd ..
+#cd ..
 
 ################################################################################
 

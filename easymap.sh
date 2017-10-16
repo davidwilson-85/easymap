@@ -176,6 +176,7 @@ echo "Parental used as control [mut/nomut/np]:		" ${19} >> $my_log_file
 echo "Simulator (sim-mut.py) command:				" ${20} >> $my_log_file
 echo "Simulator (sim-recsel.py) command:			" ${21} >> $my_log_file
 echo "Simulator (sim-seq.py) command:				" ${22} >> $my_log_file
+echo "Environment:									" ${23} >> $my_log_file
 
 echo "" >> $my_log_file
 echo "######################################################" >> $my_log_file
