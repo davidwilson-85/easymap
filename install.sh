@@ -112,18 +112,15 @@ sudo chmod 770 . --recursive
 if [ $1 == server ]
 then
 
+	# Create tmp directory to host Python unzipped eggs
+	mkdir ./tmp 
+
 	# Change ownership of easymap folder (recursively) to server user (www-data)
 	sudo chown -R www-data:www-data .
 
 	# Add logged in user to server group (www-data)
 	user="$(id -u -n)"
 	sudo usermod -a -G www-data $user
-
-	# (Alternative: create a new group, add desired users, and then make that group owner of
-	# the easymap directory and all its subdirectories)
-
-	# Grant full permissions to www-data group members
-	#sudo chmod 770 . --recursive
 
 	# Make .python-eggs directory executable by any user (includes www-data or any other server)
 	# [Explanation: When Easymap is executed from the web interface, Pillow's .egg files are extracted in 
