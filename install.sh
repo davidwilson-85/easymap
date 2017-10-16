@@ -114,8 +114,11 @@ if [ $1 == server ]
 then
 
 	# Create tmp directory to host Python unzipped eggs
-	mkdir ./tmp 
-
+	#mkdir ./tmp
+	# Pillow's will be unziped in ./tmp at runtime if Easymap is being run from web interface (www-data user)
+	# This directory must be owned by user and have 700 permissions
+	#sudo chmod -R 700 ./tmp
+	
 	# Change ownership of easymap folder (recursively) to server user (www-data)
 	sudo chown -R www-data:www-data .
 
@@ -130,14 +133,6 @@ then
 	#[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
 	#sudo chown -R www-data:www-data /var/www/.python-eggs
 	#sudo chmod -R 740 /var/www/.python-eggs
-	
-	# Pillow's will be unziped in ./tmp at runtime if Easymap is being run from web interface (www-data user)
-	# This directory must be owned by user and have 700 permissions
-	
-	sudo chmod -R 700 ./tmp
-
-	# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
-	# export PYTHON_EGG_CACHE=/tmp
 
 fi
 
