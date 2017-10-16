@@ -57,9 +57,17 @@ cd ..
 # Install Pillow (PIL fork easier to maintain and actively developed)
 # http://pillow.readthedocs.io/en/3.1.x/installation.html
 
-sudo apt install python-pip    # take this command out of this file
-pip install Pillow
+# Install several libraries that are Pillow dependencies
+sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+#sudo yum (for other distros)
 
+# Install Pillow
+cd graphic_output/Pillow-4.2.1
+sudo python2 setup.py install
+cd ../..
+
+# In Ubuntu AMI (python-minimal installed), setup.py needs the package setuptools, which
+# is not found and a receive an error.
 
 ################################################################################
 
