@@ -35,22 +35,22 @@ fi
 # Compile bcftools, bowtie and samtools
 
 # Install libraries libncurses5-dev and libncursesw5-dev if not already installed
-# sudo apt-get install libncurses5-dev libncursesw5-dev
+sudo apt-get install libncurses5-dev libncursesw5-dev
 #sudo yum (for other distros)
 
-#cd bcftools-1.3.1 
-#make clean 
-#make
-
-#cd ../bowtie2 
-#make clean
+cd bcftools-1.3.1 
+make clean 
 make
 
-#cd ../samtools1 
-#make clean
-#make
+cd ../bowtie2 
+make clean
+make
 
-#cd ..
+cd ../samtools1 
+make clean
+make
+
+cd ..
 
 ################################################################################
 
@@ -58,7 +58,7 @@ make
 # http://pillow.readthedocs.io/en/3.1.x/installation.html
 
 # Install several libraries that are Pillow dependencies
-#sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
 #sudo yum (for other distros)
 
 # Install Pillow
