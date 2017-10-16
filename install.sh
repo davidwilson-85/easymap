@@ -35,7 +35,7 @@ fi
 # Compile bcftools, bowtie and samtools
 
 # Install libraries libncurses5-dev and libncursesw5-dev if not already installed
-sudo apt-get install libncurses5-dev libncursesw5-dev
+# sudo apt-get install libncurses5-dev libncursesw5-dev
 #sudo yum (for other distros)
 
 cd bcftools-1.3.1 

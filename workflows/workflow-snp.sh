@@ -98,7 +98,7 @@ function get_problem_va {
 	then
 		#Run bowtie2 unpaired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive  -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt # --mp 3,2
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
@@ -113,7 +113,7 @@ function get_problem_va {
 	then
 		#Run bowtie2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive -X 1000  -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
@@ -170,7 +170,7 @@ function get_problem_va {
 
 	#Run vcf filter
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 15 -qual_min 30  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 15 -qual_min 30 -mut_type EMS  2>> $my_log_file
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -200,7 +200,7 @@ function get_control_va {
 	then
 		#Run bowtie2 unpaired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive --mp 3,2 -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive  -x $f1/$my_ix -U $my_p_rd -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
@@ -215,7 +215,7 @@ function get_control_va {
 	then
 		#Run bowtie2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive -X 1000 --mp 3,2 -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive -X 1000  -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
@@ -267,7 +267,7 @@ function get_control_va {
 
 	#Run vcf filter
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 15 -qual_min 30  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 15 -qual_min 30 -mut_type EMS  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
