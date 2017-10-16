@@ -58,7 +58,7 @@ cd ..
 # http://pillow.readthedocs.io/en/3.1.x/installation.html
 
 # Install several libraries that are Pillow dependencies
-#sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
 #sudo yum (for other distros)
 
 # Install Pillow
@@ -72,7 +72,7 @@ cd ../..
 ################################################################################
 
 # Grant full permissions to logged in user and its group
-sudo chmod 774 . --recursive
+sudo chmod 770 . --recursive
 
 
 
@@ -123,15 +123,19 @@ then
 	# the easymap directory and all its subdirectories)
 
 	# Grant full permissions to www-data group members
-	sudo chmod 774 . --recursive
+	#sudo chmod 770 . --recursive
 
 	# Make .python-eggs directory executable by any user (includes www-data or any other server)
 	# [Explanation: When Easymap is executed from the web interface, Pillow's .egg files are extracted in 
 	# folder .python-eggs inside the www-data root directory (/var/www). For this, you need to give 
 	# www-data user write permission to that folder]
-	[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
-	sudo chown -R www-data:www-data /var/www/.python-eggs
-	sudo chmod -R 740 /var/www/.python-eggs
+	#[ -d /var/www/.python-eggs ] || mkdir /var/www/.python-eggs
+	#sudo chown -R www-data:www-data /var/www/.python-eggs
+	#sudo chmod -R 740 /var/www/.python-eggs
+	
+	# Pillow's will be unziped in ./tmp at runtime if Easymap is being run from web interface (www-data user)
+	# This directory must be owned by user and have 700 permissions
+	sudo chmod -R 700 ./tmp
 
 	# An alternative would be to set .python-eggs directory to /tmp (writable by all users):
 	# export PYTHON_EGG_CACHE=/tmp

@@ -349,9 +349,9 @@ then
 		    then
 				#Check sams
 				{
-					sam_stauts=`python2 $location/scripts_ins/sam-file-check.py -a $i 2>> $my_log_file`
+					sam_status=`python2 $location/scripts_ins/sam-file-check.py -a $i 2>> $my_log_file`
 					
-					if [ $sam_stauts == 0 ]
+					if [ $sam_status == 0 ]
 					then
 						{
 							:
