@@ -59,6 +59,8 @@
 # 3rd: Some of the 2nd level arguments are in turn composed of a string of values separated by
 #      the ',' character.
 
+############################################################
+# Activate Python virtual environment
 source src/virtualenv-15.1.0/easymap-env/bin/activate
 
 ############################################################
@@ -90,15 +92,15 @@ control_parental=${19}
 sim_mut=${20}
 sim_recsel=${21}
 sim_seq=${22}
-env=${23}
+env=${23}     # Possibly deprecated
 
 ############################################################
 # Several necessary checking/preparation steps before actually running easymap
 
 # If easymap is being executed from server, set path for Python unzipped eggs in easymap/tmp dir
-if [ $env == 'server' ]; then
-	export PYTHON_EGG_CACHE=./tmp
-fi
+#if [ $env == 'server' ]; then
+#	export PYTHON_EGG_CACHE=./tmp
+#fi
 
 # Declare a flag variable that will be used as exit code, and set it to 0 (no error)
 exit_code=0

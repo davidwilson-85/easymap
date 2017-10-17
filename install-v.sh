@@ -50,11 +50,6 @@ fi
 
 # Compile bcftools, bowtie and samtools
 
-# Install libraries libncurses5-dev and libncursesw5-dev if not already installed
-sudo apt-get install libncurses5-dev libncursesw5-dev zlib1g-dev libssl-dev
-# zlib1g-dev htslib/bgzf.h:34:18: fatal error: zlib.h: No such file or directory
-#sudo yum (for other distros)
-
 cd bcftools-1.3.1 
 make clean
 make
@@ -72,14 +67,14 @@ cd ..
 ################################################################################
 
 # Get Python-2.7.12
-mkdir src
+[ -d src ] || mkdir src
 cd src
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar -zxvf Python-2.7.12.tgz
 
 # Install Python-2.7.12
 cd Python-2.7.12
-mkdir .localpython
+[ -d .localpython ] || mkdir .localpython
 ./configure --prefix=$PWD/.localpython
 make
 make install
@@ -96,41 +91,17 @@ cd virtualenv-15.1.0/
 # Create virtual environment "easymap-env"
 ../Python-2.7.12/.localpython/bin/python virtualenv.py easymap-env -p ../Python-2.7.12/.localpython/bin/python
 
-#source dwsenv/bin/activate
+#source easymap-env/bin/activate
 
 # Install Pillow with pip
 easymap-env/bin/pip install Pillow
 
 
-
-
-
-
-
-################################################################################
-################################################################################
-################################################################################
 ################################################################################
 
-# The following commands install Apache and PHP.
-# Not needed if Apache and PHP already installed in machine
-# Some AWS EC2 AMIs already come with Apache and PHP by default
-# or can be set when creating the AMI
+# Grant full permissions to logged in user and its group
+sudo chmod 770 . --recursive
 
-# Update apt
-#sudo apt-get update
-
-# Install Apache
-#sudo apt-get install apache2
-
-# Install PHP including component for Apache
-#sudo apt-get install php libapache2-mod-php
-
-# Check PHP installation
-#php --version
-
-# Restart apache
-#sudo service apache2 restart
 
 ################################################################################
 #
