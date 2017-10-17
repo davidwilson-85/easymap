@@ -289,7 +289,7 @@ echo $(date)': ins-to-varanalyzer.py finished.' >> $my_log_file
 
 #varanalyzer
 {
-	python2 $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann 2>> $my_log_file
+	python2 $location/varanalyzer/varanalyzer.py -itp lim -con $f1/$my_gs -gff $f0/$my_gff -var $f1/ins-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann -out $f1/varanalyzer_output.txt 2>> $my_log_file
 	
 } || {
 	echo $(date)': error: varanalyzer.py' >> $my_log_file
