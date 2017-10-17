@@ -169,8 +169,11 @@ function get_problem_va {
 	echo $(date)': VCF grooming of F2 data finished.' >> $my_log_file
 
 	#Run vcf filter
+	if [ $my_cross == bc ]; then mut_type=EMS ; fi
+	if [ $my_cross == oc ]; then mut_type=all ; fi
+
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 15 -qual_min 30 -mut_type EMS  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min 15 -qual_min 30 -mut_type $mut_type  2>> $my_log_file
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -266,8 +269,9 @@ function get_control_va {
 	echo $(date)': VCF grooming of control data finished.' >> $my_log_file
 
 	#Run vcf filter
+
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 15 -qual_min 30 -mut_type EMS  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 15 -qual_min 30  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -306,10 +310,11 @@ function cr_analysis {
 	}
 	echo $(date)': Second VCF filtering step finished.' >> $my_log_file
 
-	# Create input for varanalyzer and run varanalyzer.py
+	# Create input for varanalyzer and run varanalyzer.py (one file for the candidate region and one for the whole genome)
 	{
 		python2 $location/scripts_snp/snp-to-varanalyzer.py -a $f1/final_variants.va -b $f1/snp-to-varanalyzer.txt  2>> $my_log_file
-		
+		python2 $location/scripts_snp/snp-to-varanalyzer.py -a $f1/F2_control_comparison.va -b $f1/snp-to-varanalyzer_total.txt  2>> $my_log_file
+
 	} || {
 		echo $(date)': Error during execution of snp-to-varanalyzer.py .' >> $my_log_file
 		exit_code=1
@@ -319,7 +324,8 @@ function cr_analysis {
 	echo $(date)': Input for varanalyzer finished.' >> $my_log_file
 	# Varanalyzer
 	{
-		python2 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann  2>> $my_log_file
+		python2 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann -out $f1/varanalyzer_output.txt 2>> $my_log_file
+		python2 $location/varanalyzer/varanalyzer.py -itp snp -con $f1/$my_gs -gff $f0/$my_gff -var $f1/snp-to-varanalyzer.txt -rrl $my_rrl -pname $project_name -ann $f0/$my_ann -out $f1/varanalyzer_output_total.txt  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of varanalyzer.py .' >> $my_log_file

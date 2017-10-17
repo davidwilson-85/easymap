@@ -1,12 +1,7 @@
 
 
-
-
-
-
-
 echo 633___________________________________________________________________________________________
-./easymap -n 633 -w snp -r at -g complete.gff -mb ref -cr bc -co f2wt -a TAIR10_gene_info.txt -C Wachsman_633wt_SRR5029633_1.fq,Wachsman_633wt_SRR5029633_2.fq  -P Wachsman_633mt_SRR5029631_1.fq,Wachsman_633mt_SRR5029631_2.fq
+./easymap -n 633 -w snp -r at -g complete.gff -ed ref_bc_f2wt -a TAIR10_gene_info.txt -C Wachsman_633wt_SRR5029633_1.fq,Wachsman_633wt_SRR5029633_2.fq  -P Wachsman_633mt_SRR5029631_1.fq,Wachsman_633mt_SRR5029631_2.fq
 rm -rf ./user_projects/*/1_intermediate_files/*.sam
 
 

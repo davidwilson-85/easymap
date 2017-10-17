@@ -46,6 +46,7 @@ from string import maketrans
 # Parse command arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-pname', action="store", dest='project_name', required=True)
+parser.add_argument('-out', action="store", dest='output', required=True)
 parser.add_argument('-itp', action="store", dest='input_type', choices=set(('snp','lim')), required=True)
 parser.add_argument('-con', action="store", dest='contigs_source', required=True)
 parser.add_argument('-gff', action="store", dest='gff_source', required=True)
@@ -63,7 +64,7 @@ gff_source = args.gff_source
 variants_source = args.variants_source
 regulatory_region_length = int(args.regulatory_region_length)
 gene_ann_source = args.gene_ann_source
-
+output = args.output
 
 # Function to parse fasta file (based on one of the Biopython IOs)
 def read_fasta(fp):
@@ -384,7 +385,7 @@ del input_mut, input_gff, variants_info
 # Retrieve gene functional annotation and create final output
 
 # Create output file
-output = open(project + '/1_intermediate_files/varanalyzer_output.txt', 'w')
+output = open(output, 'w')
 
 # If no gene annotation file provided, simply print 'variants_info2' to output file.
 if gene_ann_source == 'user_data/n/p':

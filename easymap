@@ -28,12 +28,16 @@ parser.add_argument('--gff-file','-g', action = 'store', default = 'n/p', dest =
 parser.add_argument('--annotation-file', '-a', action = 'store', default = 'n/p', dest = 'ann_file')
 parser.add_argument('--reads-problem', '-P', action = 'store', default = 'n/p', dest = 'reads_sample')
 parser.add_argument('--reads-control','-C', action = 'store', default = 'n/p', dest = 'reads_control')
-parser.add_argument('--mutant-background','-mb', action = 'store', default = 'n/p', dest = 'is_ref_strain', choices = set(('ref','noref')))
-parser.add_argument('--cross-type', '-cr', action = 'store', default = 'n/p', dest = 'cross_type', choices = set(('oc','bc')))
-parser.add_argument('--control-type','-co', action = 'store', default = 'n/p', dest ='control_type', choices = set(('par_mut','par_nomut','f2wt')))
 parser.add_argument('--sim-mut', '-sm', action = 'store',default = 'n/p', dest = 'sim_mut')
 parser.add_argument('--sim-recsel','-sr', action = 'store', default = 'n/p', dest = 'sim_recsel')
 parser.add_argument('--sim-seq', '-ss', action = 'store', default = 'n/p', dest = 'sim_seq')
+#parser.add_argument('--mutant-background','-mb', action = 'store', default = 'n/p', dest = 'is_ref_strain', choices = set(('ref','noref')))
+#parser.add_argument('--cross-type', '-cr', action = 'store', default = 'n/p', dest = 'cross_type', choices = set(('oc','bc')))
+#parser.add_argument('--control-type','-co', action = 'store', default = 'n/p', dest ='control_type', choices = set(('par_mut','par_nomut','f2wt')))
+
+parser.add_argument('--exp-design', '-ed', action = 'store', default = 'n/p', dest = 'exp_design')
+
+
 
 args = parser.parse_args()
 
@@ -76,13 +80,22 @@ ann_file = args.ann_file
 sim_mut = args.sim_mut
 sim_recsel = args.sim_recsel
 sim_seq = args.sim_seq
-control_type = args.control_type
+
+if args.exp_design == "n/p":
+	is_ref_strain = "n/p"
+	cross_type = "n/p"
+	control_type = "n/p"
+
+if args.exp_design != "n/p":
+	is_ref_strain = args.exp_design.split('_')[0]
+	cross_type = args.exp_design.split('_')[1]
+	control_type = args.exp_design.split('_')[2]
+
 if control_type == "n/p":
 	control_parental = "n/p"
 	snp_analysis_type = "n/p"
-cross_type = args.cross_type
+
 reads_control = args.reads_control
-is_ref_strain = args.is_ref_strain
 read_s = "n/p"
 read_f = "n/p"
 read_r = "n/p"
@@ -162,39 +175,47 @@ if ann_file != "n/p":
 if workflow == "snp":
 	if control_type == "n/p":
 		error = 1
-		problems.append("Argument -co/--control-type is required.")
+		problems.append("Argument -ed/--exp_design is required.")
 	else:
 		if control_type == "f2wt": snp_analysis_type = "f2wt"
-		else: snp_analysis_type = control_type.split("_")[0]; control_parental = control_type.split("_")[1]
+
+		else: 
+			if control_type.startswith('parm'):
+				snp_analysis_type = 'par'
+				control_parental = 'mut'
+
+			if control_type.startswith('parn'):
+				snp_analysis_type = 'par'
+				control_parental = 'nomut'
 
 		if snp_analysis_type == "f2wt":
 			if cross_type == "oc":
 				error = 1
-				problems.append("This program does not support the experimental design chosen (-cr/--cross-type = oc and -co/--control-type = f2wt).")
+				problems.append("This program does not support the experimental design chosen.")
 			else:
 				cross_type = "bc"
 				control_parental = "n/p"
 				if data_source == "sim":
 					if is_ref_strain == "n/p":
 						error = 1
-						problems.append("In order to use simulation data of snp with f2wt control line, it is necessary to provide --mutant_background / -mb argument as ref/noref.") #######################################################3
+						problems.append("In order to use simulation data of snp with f2wt control line, it is necessary to provide a mutant_background in the -ed/--exp_design argument.") #######################################################3
 				#else:
 				#	is_ref_strain = "n/p"
 
 		if snp_analysis_type == "par":
-			if cross_type == "n/p": error = 1; problems.append("Argument -cr/--cross-type is required.")
-			if is_ref_strain == "n/p": error = 1; problems.append("Argument -mb/--mutant-background is required.") 
-			if control_parental == "n/p": error = 1; problems.append("Argument -co/--control-type is required.") 
+			if cross_type == "n/p": error = 1; problems.append("Argument -ed/--exp_design  is required.")
+			if is_ref_strain == "n/p": error = 1; problems.append("Argument -ed/--exp_design  is required.") 
+			if control_parental == "n/p": error = 1; problems.append("Argument -ed/--exp_design is required.") 
 			
 			if is_ref_strain == "noref" and cross_type == "oc" and control_parental == "nomut":
 				error = 1
-				problems.append("This program does not support the experimental design specified (-mb/--mutant-background = noref, -cr/--cross-type = oc, -co/--control-type = par_nomut).")
+				problems.append("This program does not support the experimental design specified ( -ed/--exp_design noref_oc_parnomut).")
 			#if cross_type == "bc" and is_ref_strain =="noref":
 			#	error = 1
 			#	problems.append("In order to perform a snp analysis having a parental as a control, a backcross analysis requires to be in the reference background.")
 			if is_ref_strain == "ref" and cross_type == "bc" and control_parental != "mut":
 				error = 1
-				problems.append("The experimental design specified (-mb/--mutant-background = ref, -cr/--cross-type = bc, -co/--control-type = par_mut) is impossible.")
+				problems.append("The experimental design specified (-ed/--exp_design ref_bc_parnomut) is impossible.")
 
 #If the analysis mode is insertions, an insertion sequence must be given
 if workflow == "ins":
