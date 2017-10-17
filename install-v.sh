@@ -51,23 +51,23 @@ fi
 # Compile bcftools, bowtie and samtools
 
 # Install libraries libncurses5-dev and libncursesw5-dev if not already installed
-#sudo apt-get install libncurses5-dev libncursesw5-dev zlib1g-dev libssl-dev
+sudo apt-get install libncurses5-dev libncursesw5-dev zlib1g-dev libssl-dev
 # zlib1g-dev htslib/bgzf.h:34:18: fatal error: zlib.h: No such file or directory
 #sudo yum (for other distros)
 
-#cd bcftools-1.3.1 
-#make clean
-#make
+cd bcftools-1.3.1 
+make clean
+make
 
-#cd ../bowtie2 
-#make clean
-#make
+cd ../bowtie2 
+make clean
+make
 
-#cd ../samtools1 
-#make clean
-#make
+cd ../samtools1 
+make clean
+make
 
-#cd ..
+cd ..
 
 ################################################################################
 
