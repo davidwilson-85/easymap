@@ -59,6 +59,7 @@
 # 3rd: Some of the 2nd level arguments are in turn composed of a string of values separated by
 #      the ',' character.
 
+source src/virtualenv-15.1.0/easymap-env/bin/activate
 
 ############################################################
 # Obtain and store date and time in format with no spaces
