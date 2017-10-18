@@ -137,6 +137,10 @@ if data_source == 'sim':
 				sp = line.split()
 				number_mutations = str(sp[-1].split('+')[0])
 
+			if line.startswith('Simulator (sim-recsel.py) command:'):
+				sp = line.split()
+				rec_chromosomes = str(sp[-1].split('+')[-1])
+
 			if line.startswith('Simulator (sim-seq.py) command:'):
 				sp = line.split()
 				read_depth = str(sp[-1].split('+')[0])
@@ -239,7 +243,7 @@ output.write(
 '<body>' + '\n'
 '	<div id="wrapper">' + '\n'
 '		<hr class="easymap">' + '\n'
-'		<h1>Project: ' +  project_name + '</h1>' + '\n'
+'		<h1>' +  project_name + '</h1>' + '\n'
 '		<hr class="easymap">' + '\n'
 
 )
@@ -330,7 +334,7 @@ if data_source == 'sim':
 	if mut_type == 'lin':
 		output.write(
 '		<tr>' + '\n'
-'			<td> <b>Number of insertions (simulation)</b></td>' + '\n'
+'			<td> <b>Number of insertions (simulation):</b></td>' + '\n'
 '			<td>' + number_mutations + '</td>' + '\n'
 '		</tr>' + '\n'
 '		<tr>' + '\n'
@@ -342,12 +346,16 @@ if data_source == 'sim':
 	elif mut_type == 'snp':
 		output.write(
 '		<tr>' + '\n'
-'			<td> <b>Selected causal mutation (simulation)</b></td>' + '\n'
+'			<td> <b>Selected causal mutation (simulation):</b></td>' + '\n'
 '			<td>' + selected_position.split(',')[1] + ', Contig ' + selected_position.split(',')[0] + '</td>' + '\n'
 '		</tr>' + '\n'
 '		<tr>' + '\n'
-'			<td> <b>Number of mutations (simulation)</b></td>' + '\n'
+'			<td> <b>Number of mutations (simulation):</b></td>' + '\n'
 '			<td>' + number_mutations + '</td>' + '\n'
+'		</tr>' + '\n'
+'		<tr>' + '\n'
+'			<td> <b>Number of recombinant chromosomes (simulation):</b></td>' + '\n'
+'			<td>' + rec_chromosomes + '</td>' + '\n'
 '		</tr>' + '\n'
 '		<tr>' + '\n'
 '			<td> <b>Read depth (simulation):</b></td>' + '\n'
@@ -804,7 +812,7 @@ if mut_type == 'snp':
 
 			output.write(
 				'	</table>' + '\n'
-				'	<br><a href="candidate_variants.txt" target="_blank">Cick to see extended information</a>' + '\n'
+				'	<br><p>Click to see <a href="candidate_variants.txt" target="_blank">extended information  </a>  or  <a href="varanalyzer_output_total.txt" target="_blank"> all variants </a>. </p>' + '\n'
 				)
 
 	output.write(
