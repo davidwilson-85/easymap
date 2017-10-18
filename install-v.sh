@@ -96,6 +96,7 @@ cd virtualenv-15.1.0/
 # Install Pillow with pip
 easymap-env/bin/pip install Pillow
 
+cd ../..
 
 ################################################################################
 
