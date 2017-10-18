@@ -28,7 +28,6 @@ then
 	#Install several programs needed downstream
 	sudo apt-get install wget, tar, zip, git
 
-
 	#If Apache and PHP are not installed, install them
 	sudo apt-get install apache2
 	sudo apt-get install php libapache2-mod-php
@@ -57,5 +56,6 @@ then
 
 	# Install LAMP
 	sudo yum install -y httpd24 php70 mysql56-server php70-mysqlnd
+	sudo sh -c "yum install httpd httpd-devel mysql mysql-server mysql-devel php php-mysql php-common php-gd php-mbstring php-mcrypt php-devel php-xml -y; service mysqld start && mysql_secure_installation && service mysqld restart && service httpd start && chkconfig httpd on && chkconfig mysqld on &&iptables -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT && /etc/init.d/iptables save"
 
 fi
