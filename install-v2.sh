@@ -24,27 +24,10 @@
 ################################################################################
 
 
-# install.sh requires one argument, wich has two options [ cli | server ]
-# server: does all the regular installation steps plus others required to 
-# deal with server particularities
-
-# Deal with argument provided by user
-if ! [ $1 ]; then
-	echo 'Please provide an argument specifying the type of installation: "cli" or "server". Example: "./install.sh server"'
-	exit
-fi
-
-if ! [ $1 == server ] && ! [ $1 == cli ]
-then
-	echo 'Please choose between "cli" and "server". Example: "./install.sh server"'
-	exit
-fi
-
-
 # Create some folders not present in GitHub repo (e.g. 'user_data' and 'user_projects')
 
-[ -d user_data ] || sudo mkdir user_data
-[ -d user_projects ] || sudo mkdir user_projects
+[ -d user_data ] || mkdir user_data
+[ -d user_projects ] || mkdir user_projects
 
 ################################################################################
 
@@ -101,5 +84,5 @@ cd ../..
 ################################################################################
 
 # Change permissions to the easymap folder and subfolders so Easymap can be used both from the
-# web interface (server user -- e.g. www-data) and the command line users
+# web interface (server user -- e.g. www-data) and the command line of any user
 sudo chmod 777 . --recursive
