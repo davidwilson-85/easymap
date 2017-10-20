@@ -178,14 +178,11 @@ designs = ['ref_bc_parmut', 'ref_bc_f2wt', 'ref_oc_parmut', 'ref_oc_parpol', 'no
 if workflow == "snp":
 	if args.exp_design == "n/p":
 		error = 1
-		problems.append("Argument -ed/--exp_design is required.")
+		problems.append("Argument -ed/--exp-design is required.")
 
 	if str(args.exp_design) not in designs: 
-
-		print str(args.exp_design)
-
 		error = 1
-		problems.append("The experimental design provided is not available. Please reffer to the documentation for comprehensive help.")
+		problems.append("Argument -ed/--exp-design: the experimental design provided is not supported.")
 
 	else:
 		if control_type == "f2wt": 

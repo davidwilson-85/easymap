@@ -2,10 +2,10 @@
 #The script can take as input different situations: Parental as a control--> backcross and outcross; in a reference background or not
 #WTF2 as control--> backcross, in reference background or not.
 
-#This script is prepared to be used in Linux
+#This script is prepared to be useed in Linux
 
 ##Arguments:
-	#"file" which is the file that comes as an input.
+	#"fichero" which is the file that comes as an input.
 	#"output" refers to the name of the output file is going to be generated.
 	#"window_size" it is a number which indicates the size of the windows that will be created in order to generate allele frequencies averages (bp)
 	#"window_space" number which indicates the space between the number which is in the middle of a window (bp)
@@ -15,7 +15,7 @@
 	#"control_modality" takes as values ref and noref, meaning if the line sequenced is from the reference background or not.
 	#"snp_analysis_type" It referes to the control used, can be a parental (par) or a F2WT bulk (f2wt)
 
-# Example of use: python map-mutation.py -file name_of_va_file -output name_of_output -window_space 500000 -window_space 250000 -fasta genome_used.fa -mode out -interval_width 1000000 -control_modality noref -snp_analysis_type par
+#Example of use: python map-mutation.py -fichero name_of_va_file -output name_of_output -window_space 500000 -window_space 250000 -fasta genome_used.fa -mode out -interval_width 1000000 -control_modality noref -snp_analysis_type par
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -34,7 +34,7 @@ parser.add_argument('-known_mutation', action="store", default = 'n/p', dest = '
 args = parser.parse_args()
 
 
-# Different parameters are taken from the shell
+#Different parameters are taken from the shell
 
 fasta_input = args.fasta_input
 size = int(args.size)
@@ -54,7 +54,7 @@ result.close()
 if args.mut1 != "n/p": mut1 = args.mut1
 else: mut1 = "no"
 
-# Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored] 
+#Gets all the parameters from a file. Uses arguments chromosome and input file. Creates a dictionary per chromosome. dic[POSITION-SNP]=[list other values stored] 
 def getinfo(chro, inpu):
 	n = 0 			#counter n will be used in order not to take into account the header
 	dicpos = {}
@@ -163,11 +163,6 @@ def chromosomal_position(size,space, SNP, ch, chromosomal_lenght, mode, modality
 	#		1: smoothened mean AF of the window (by averaging the mean AFs of three windows)
 	#
 	# Downstream, use the preferable AF mean depending on type of analysis
-
-	# The following block is only needed for development. Can be commented out without causing any problem.
-	with open(output, 'a') as mi:
-		for i in range(len(tmp_averages_list1)):
-			mi.write("&&\t" + ch + "\t" + str(tmp_averages_list1[i]) + "\t" + str(tmp_averages_list2[i]) + '\n')
 
 	return dictionary_windows
 	
