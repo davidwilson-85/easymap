@@ -1,4 +1,4 @@
-#!ABS_PATH_ENV_PYTHON
+#!/var/www/html/easymap/src/Python-2.7.12/.localpython/bin/python2
 
 # ./easymap -n project_name -w snp -sim -r at -g chr1+4.gff -rs ref -cr bc -co par_mut -sm 600 -sr 0,14-1,31-2,33-3,15-4,5-5,2/0,24-1,42-2,25-3,6-4,1-5,2+1,5860210+100 -ss 25+100,0+500,100+1+50+se
 # ./easymap -n ins-test -w ins -sim -r at2 -i at_chloroplast.fa -g chr1+4.gff -sm 10 -ss 15+100,0+500,100+1+50+pe
@@ -172,22 +172,42 @@ if ann_file != "n/p":
 		problems.append("Argument -a/--annotation-file: the name provided does not match any file in the directory /user_data.")
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
+
+designs = ['ref_bc_parmut', 'ref_bc_f2wt', 'ref_oc_parmut', 'ref_oc_parpol', 'noref_bc_f2wt', 'noref_oc_parmut']
+
 if workflow == "snp":
-	if control_type == "n/p":
+	if args.exp_design == "n/p":
 		error = 1
 		problems.append("Argument -ed/--exp_design is required.")
+
+	if str(args.exp_design) not in designs: 
+
+		print str(args.exp_design)
+
+		error = 1
+		problems.append("The experimental design provided is not available. Please reffer to the documentation for comprehensive help.")
+
 	else:
-		if control_type == "f2wt": snp_analysis_type = "f2wt"
+		if control_type == "f2wt": 
+			snp_analysis_type = "f2wt"
+			control_parental = "n/p"
 
 		else: 
 			if control_type.startswith('parm'):
 				snp_analysis_type = 'par'
 				control_parental = 'mut'
-
-			if control_type.startswith('parn'):
+			if control_type.startswith('parp'):
 				snp_analysis_type = 'par'
 				control_parental = 'nomut'
 
+
+'''
+if workflow == "snp":
+	if control_type == "n/p":
+		error = 1
+		problems.append("Argument -ed/--exp_design is required.")
+	else:
+		
 		if snp_analysis_type == "f2wt":
 			if cross_type == "oc":
 				error = 1
@@ -216,6 +236,8 @@ if workflow == "snp":
 			if is_ref_strain == "ref" and cross_type == "bc" and control_parental != "mut":
 				error = 1
 				problems.append("The experimental design specified (-ed/--exp_design ref_bc_parnomut) is impossible.")
+'''
+
 
 #If the analysis mode is insertions, an insertion sequence must be given
 if workflow == "ins":
@@ -511,7 +533,7 @@ if data_source == "exp":
 			problems.append("The same name was provided to arguments -P/--reads-problem and -C/--reads-control.")
 
 #This code checks the configuration of the program. It calls allow-new-project.py and checks its result.
-proc = subprocess.Popen("ABS_PATH_ENV_PYTHON allow-new-project.py", cwd=r'./config', shell=True, stdout=subprocess.PIPE)
+proc = subprocess.Popen("/var/www/html/easymap/src/Python-2.7.12/.localpython/bin/python2 allow-new-project.py", cwd=r'./config', shell=True, stdout=subprocess.PIPE)
 script_response = proc.stdout.read()
 response = script_response.split(",")
 try:
