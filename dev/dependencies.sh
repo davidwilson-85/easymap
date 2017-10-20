@@ -26,7 +26,7 @@ then
 	sudo apt-get install build-essential libncurses5-dev libncursesw5-dev zlib1g-dev libssl-dev
 
 	#Install several programs needed downstream
-	sudo apt-get install wget, tar, zip, git
+	sudo apt-get install wget tar zip git
 
 	#If Apache and PHP are not installed, install them
 	sudo apt-get install apache2

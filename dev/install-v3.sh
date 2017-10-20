@@ -12,17 +12,12 @@
 # REQUIREMENTS:
 #	
 #	- To use Easymap through the command line
-#		- Python2
-#		- pip >= 9.0.1
+#		- ...
 #
 #	- To use Easymap through the web interface
-#		- Python2
-#		- pip >= 9.0.1
-#		- Web server
-#		- PHP
+#		- Web server that runs PHP
 #
 ################################################################################
-
 
 # Create some folders not present in GitHub repo (e.g. 'user_data' and 'user_projects')
 
@@ -74,9 +69,8 @@ cd virtualenv-15.1.0/
 # Create virtual environment "easymap-env"
 ../Python-2.7.12/.localpython/bin/python virtualenv.py easymap-env -p ../Python-2.7.12/.localpython/bin/python
 
-#source easymap-env/bin/activate
-
 # Install Pillow with pip
+[ -d cache ] || mkdir cache
 easymap-env/bin/pip install Pillow --cache-dir cache
 
 cd ../..
