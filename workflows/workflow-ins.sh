@@ -529,7 +529,11 @@ fi
 
 
 #Report generation
-zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
+{
+	zip $f3/report_images.zip $f3/*.png > $f2/zip.txt
+} || {
+	echo $(date)': Error during zip compression of report images. Please check that the zip program is installed in your system. Continuing anyway.' >> $my_log_file
+}
 
 {
 	python2 $location/graphic_output/report.py -variants $f3/insertions_output.txt -log $my_log_file -output_html $f3/report.html -project $project_name  -mut_type lin -files_dir $f3 2>> $my_log_file

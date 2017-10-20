@@ -396,7 +396,12 @@ function cr_analysis {
 	# (7) Create report
 	#Some arrangements
 	cp $location/fonts/legend.png $f3/legend.png
-	zip $f3/report_images.zip $f3/*.png  > $f2/zip.txt
+	{
+		zip $f3/report_images.zip $f3/*.png > $f2/zip.txt
+	} || {
+		echo $(date)': Error during zip compression of report images. Please check that the zip program is installed in your system. Continuing anyway.' >> $my_log_file
+	}
+
 	{
 		python2 $location/graphic_output/report.py -files_dir $f3 -variants $f3/candidate_variants.txt -log $f2/log.log -output_html $f3/report.html -project $project_name -mut_type $my_mut  2>> $my_log_file
 		
