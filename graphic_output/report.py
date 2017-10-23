@@ -478,16 +478,15 @@ if mut_type == 'lin':
 	for f in sorted(files): 
 			if 'insertions_overview' in str(f):
 				output.write(
-				'		<h2>Genomic overview</h2>' + '\n'
+				'		<h2>Mapping analysis overview</h2>' + '\n'					
+				'		<h3>Genomic overview</h3>' + '\n'
 				'		<center> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" >  </center>' + '\n'
 				)
-
 
 	output.write(
 		#Insertions summary
 		'		<h3>Insertions summary</h3>' + '\n'
 		)
-
 
 
 	#first we check that there are insertions 
@@ -681,7 +680,7 @@ if mut_type == 'snp':
 	#Mapping
 	output.write(
 	'		<h2>Mapping analysis overview</h2>' + '\n'
-	'		<p>All input contigs are displayed, with all the polymorphisms used for mapping the causal mutation and their linear description (SMA, boost values or AF difference between mapping populations). The candidate region determined by the annallysis is highlited.</p>' + '\n'
+	'		<p>All input contigs are displayed, with all the polymorphisms used for mapping the causal mutation and their linear description (SMA, boost values or AF difference between mapping populations). The candidate region determined by the analysis is highlighted.</p>' + '\n'
 		) 
 	for f in sorted(files):
 		if 'img_2_mapping' in str(f):
@@ -698,11 +697,9 @@ if mut_type == 'snp':
 			selected_chromosome = str(sp[3]).strip()
 
 	output.write(
+	'		<hr class="easymap">' + '\n'
 	'		<h2>Candidate polymorphisms overview</h2>' + '\n'
-
 	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations and representing the selected chromosomal position as a dashed line. </p>' + '\n'
-
-
 		) 
 
 	#Candidates 
