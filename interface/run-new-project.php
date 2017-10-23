@@ -15,7 +15,7 @@ if (isset($_POST['password'])) {
 	@$password = $_SESSION['password'];
 }
 
-if ($password != $reference_password) {
+if ($password !== $reference_password) {
 
 	echo '
 		<!DOCTYPE html>
@@ -30,7 +30,7 @@ if ($password != $reference_password) {
 	';
 }
 
-if ($password == $reference_password) {
+if ($password === $reference_password) {
 // End of code for dealing with password
 ?>
 
