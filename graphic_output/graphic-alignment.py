@@ -132,6 +132,8 @@ def draw(dic,sort_positions,out):
 	w, h = im.size
 	im.crop((0, 60, w-0, h-0)).save(out)
 
+	# Print out average RD value 
+	print max(dic, key=dic.get)
 
 
 

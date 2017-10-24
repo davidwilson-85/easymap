@@ -100,6 +100,8 @@ parser.add_argument('--variants', action="store", dest='variants_input', require
 parser.add_argument('--snp-info', action="store", dest='snp_info_input', required=True)
 parser.add_argument('--map-info', action="store", dest='map_info', required=True)
 parser.add_argument('--output-file', action="store", dest='output_file', required=True)
+parser.add_argument('--region', action="store", dest='region', required=True)
+
 args = parser.parse_args()
 
 project = args.project_name
@@ -162,7 +164,10 @@ for line1 in in1_array:
 			quit()
 	
 	# Calculate the distance from the variant position to the selected position
-	dist_to_selected_position = int(line1[2]) - selected_position
+	if str(args.region) == "CR":
+		dist_to_selected_position = int(line1[2]) - selected_position
+	elif str(args.region) == "total":
+		dist_to_selected_position = '-'
 	
 	extended_info = quality, ref_count, alt_count, allele_frequency, str(dist_to_selected_position)
 	line1.append(extended_info)

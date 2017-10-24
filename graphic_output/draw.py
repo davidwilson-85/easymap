@@ -202,9 +202,53 @@ def fa_vs_pos():
 				draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(r, g, b))
 
 		if args.my_snp_analysis_type == 'f2wt' and args.my_mut == 'snp':
+			
+
+			#Filler variants 
+			problem_var = open(project + '/1_intermediate_files/filler_variants.va', 'r')
+			for line in problem_var:
+				sp = line.split()
+				if i[0].lower() == sp[0].lower():
+					#f2 mut
+					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
+					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(237, 194, 168)) 
+					#f2wt snps
+					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
+					pos_img = int(int(sp[1])/scaling_factor_x) + 70
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(167, 190, 206))
+
+
+			'''
+			# Problem variants
+			problem_var = open(project + '/1_intermediate_files/F2_filtered.va', 'r')
+			for line in problem_var:
+				sp = line.split()
+				if i[0].lower() == sp[0].lower():
+					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(167, 190, 206)) 
+
+			#Control variants
+			problem_var = open(project + '/1_intermediate_files/control_filtered.va', 'r')
+			for line in problem_var:
+				sp = line.split()
+				if i[0].lower() == sp[0].lower():
+					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(237, 194, 168)) 
+			'''
+
+
+			#Mapping variants
 			for l, line in enumerate(lines):
 				sp = line.split()
 				if i[0].lower() == sp[0].lower():
+					#f2 mut
 					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
 					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
@@ -217,10 +261,8 @@ def fa_vs_pos():
 
 
 		my_cross = str(args.my_cross)
-
 		#Boost / mm 																						
 		if args.my_mut == 'snp':
-
 			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
 			blines = binput.readlines()
 

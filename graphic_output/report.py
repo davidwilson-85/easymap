@@ -699,7 +699,7 @@ if mut_type == 'snp':
 	output.write(
 	'		<hr class="easymap">' + '\n'
 	'		<h2>Candidate polymorphisms overview</h2>' + '\n'
-	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations and representing the selected chromosomal position as a dashed line. </p>' + '\n'
+	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations and representing the selected position as a dashed line. </p>' + '\n'
 		) 
 
 	#Candidates 
@@ -809,7 +809,7 @@ if mut_type == 'snp':
 
 			output.write(
 				'	</table>' + '\n'
-				'	<br><p>Click to see <a href="candidate_variants.txt" target="_blank">extended information  </a>  or  <a href="varanalyzer_output_total.txt" target="_blank"> all variants </a>. </p>' + '\n'
+				'	<br><p>Click to see <a href="candidate_variants.txt" target="_blank">extended information</a>  or  <a href="candidate_variants_total.txt" target="_blank"> all variants</a>. </p>' + '\n'
 				)
 
 	output.write(

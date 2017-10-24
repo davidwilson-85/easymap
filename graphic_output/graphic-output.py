@@ -1,6 +1,5 @@
 # This script calls on functions from draw.py to draw the images required for each annalysis
 
-
 #from __future__ import division
 import argparse
 from draw import fa_vs_pos, insertions_overview_and_histograms, gene_plot, legend, candidates_zoom
