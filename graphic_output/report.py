@@ -744,6 +744,8 @@ if mut_type == 'snp':
 	if n_candidates == 0:
 		output.write(
 		'		<center> <p>No candidate mutations found<br></p> <center/>' + '\n'
+		'		<br><p>Click to see a list of<a href="candidate_variants_total.txt" target="_blank"> all variants</a>. </p>' + '\n'
+		
 		)
 
 
