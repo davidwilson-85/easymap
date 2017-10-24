@@ -699,7 +699,7 @@ if mut_type == 'snp':
 	output.write(
 	'		<hr class="easymap">' + '\n'
 	'		<h2>Candidate polymorphisms overview</h2>' + '\n'
-	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate mutations and representing the selected position as a dashed line. </p>' + '\n'
+	'		<p>The chromosome containing the candidate region is displayed along with the total polymorphisms in the problem sample, highlighting the window that contains the candidate variants and representing the selected position as a dashed line. </p>' + '\n'
 		) 
 
 	#Candidates 
@@ -743,7 +743,7 @@ if mut_type == 'snp':
 
 	if n_candidates == 0:
 		output.write(
-		'		<center> <p>No candidate mutations found<br></p> <center/>' + '\n'
+		'		<center> <p>No candidate variants found<br></p> <center/>' + '\n'
 		'		<br><p>Click to see a list of<a href="candidate_variants_total.txt" target="_blank"> all variants</a>. </p>' + '\n'
 		
 		)
@@ -822,7 +822,7 @@ if mut_type == 'snp':
 	#Candidate SNPs
 	if n_candidates > 0:
 		output.write(
-		'		<h2>Candidate mutations</h2>' + '\n'
+		'		<h2>Candidate variants</h2>' + '\n'
 		'		<p>This section contains a list of the candidate mutations affecting gene open reading frames.</p>' + '\n'
 
 
@@ -841,7 +841,7 @@ if mut_type == 'snp':
 
 					output.write(
 					'		<tr>' + '\n'
-					'			<td> <b>Mutation position:</b></td>' + '\n'
+					'			<td> <b>Position:</b></td>' + '\n'
 					'			<td style="font-family:Lucida Console, monospace">' + var[2] + ', '+ var[1] + '</td>' + '\n'
 					'		</tr>' + '\n'
 
