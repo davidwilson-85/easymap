@@ -518,7 +518,7 @@ fi
 
 # (5) graphic-alignment.py
 {
-	python2 $location/graphic_output/graphic-alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 2>> $my_log_file
+	av_rd=`python2 $location/graphic_output/graphic-alignment.py -coverages $f1/coverage_alignment1.txt   -out $f3/frequence_depth_alignment_distribution_sample.png 2>> $my_log_file `
 
 } || {
 	echo $(date)': Error during Graphic_alignment execution in sample alignment.' >> $my_log_file
