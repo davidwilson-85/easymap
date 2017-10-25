@@ -764,7 +764,7 @@ window.onload = function() {
 		    }
 		};
 		*/
-		//window.location.assign("manage-projects.php");
+		window.location.assign("manage-projects.php");
 	}
 
 	/* OLD WAY OF RUNNING NEW PROJECT
