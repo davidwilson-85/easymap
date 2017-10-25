@@ -637,14 +637,14 @@ if mut_type == 'lin':
 
 								'		<tr>' + '\n'
 								'			<td> <b>Flanking sequences:</b></td>' + '\n'
-								'			<td style="font-family:Lucida Console, monospace">' + str(i[9])[15:] + '<font style="font-family:Lucida Console, monospace" color="red">[INS' + str(ins[0]) + ']</font>' + str(i[10])[0:35] + '</td>' + '\n'
+								'			<td style="font-family:Lucida Console, monospace">' + str(i[9])[15:] + '<font style="font-family:Lucida Console, monospace" color="red">[Ins' + str(ins[0]) + ']</font>' + str(i[10])[0:35] + '</td>' + '\n'
 								'		</tr>' + '\n'
 
 
 								'		</table>' + '\n'
 								'		<br>' + '\n'
 								)
-					
+
 					switch = "no"
 					for f in sorted(files):
 						if '_lin_' + ins[0] + '_gene' in str(f):
@@ -668,7 +668,7 @@ if mut_type == 'lin':
 
 		#Link to images 
 		output.write(
-		'		<br><a href="report_images.zip" target="_blank">Click to download all image files available</a>' + '\n'
+		'		<br><a href="report_images.zip" target="_blank">Click to download all image files</a>' + '\n'
 		'		<hr class="easymap">' + '\n'
 		)
 
