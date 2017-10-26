@@ -956,10 +956,12 @@ def insertions_overview_and_histograms():
 								draw.line((((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 448) + ((120 +int(sp[1].strip())/scaling_factor_x - int(region_min/scaling_factor_x)) , 151)), fill=(147, 147, 147, 0), width=1)
 
 			#Candidate position:
-			if cand_pos_r != 'none':
+			if cand_pos_r != 'none' and cand_pos_l == 'none':
 				draw.line((cand_pos_r-1 , 456) + (cand_pos_r-1 , 753), fill=(147, 147, 147, 0), width=1)		
-			if cand_pos_l != 'none':
+			if cand_pos_l != 'none' and cand_pos_r == 'none':
 				draw.line((cand_pos_l-1 , 456) + (cand_pos_l-1 , 753), fill=(147, 147, 147, 0), width=1)
+			if cand_pos_r != 'none' and cand_pos_l != 'none':
+				draw.line((cand_pos_r-1 , 456) + (cand_pos_r-1 , 753), fill=(147, 147, 147, 0), width=1)	
 
 			#Axis anotations
 			#x Axis
@@ -1174,11 +1176,13 @@ def insertions_overview_and_histograms():
 								img_relative_y_position_2_l = img_relative_y_position
 
 			#Candidate position
-			if cand_pos_r != 'none':
+			if cand_pos_r != 'none' and cand_pos_l == 'none':
 				draw.line((cand_pos_r-1 , 449) + (cand_pos_r-1 , 151), fill=(147, 147, 147, 0), width=1)		
-			if cand_pos_r == 'none':
+			if cand_pos_l != 'none' and cand_pos_r == 'none':
 				draw.line((cand_pos_l-1 , 449) + (cand_pos_l-1 , 151), fill=(147, 147, 147, 0), width=1)
-			
+			if cand_pos_r != 'none' and cand_pos_l != 'none':
+				draw.line((cand_pos_r-1 , 449) + (cand_pos_r-1 , 151), fill=(147, 147, 147, 0), width=1)
+
 			#Axis anotations
 			#x Axis
 			x_p = 120 + int(25/scaling_factor_x)
