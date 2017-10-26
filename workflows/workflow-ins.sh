@@ -30,15 +30,21 @@ start_time=`date +%s`
 exit_code=0					# Set 'exit_code' (flag variable) to 0
 my_mut=lin 					# my_mut takes the values 'lin' in this workflow and 'snp' in the snp workflow, for the execution of the graphic output module
 my_log_file=$1 				# Set location of log file
+project_name=$2
+
+#Define the folders in the easymap directory 
+f0=user_data
+f1=$project_name/1_intermediate_files
+f2=$project_name/2_logs
+f3=$project_name/3_workflow_output
 
 #Create input variables
 my_log_file=$1
-project_name=$2
 my_mode=$5 														#pe/se (paired/single)
 my_rd=$7											 			#reads (single)
 my_rf=$8 														#forward reads
 my_rr=$9												 		#reverse reads
-my_is=$6		 												#insertion sequence
+my_is=clean-ins.fa		 									#insertion sequence
 my_gs=gnm_ref_merged/genome.fa 									#genome sequence
 my_ix=genome_index 							
 my_ix2=insertion_index 						
@@ -46,11 +52,6 @@ my_gff=${10}													#Genome feature file
 my_ann=${11}													#Genome anotation file
 my_rrl=250 														#Regulatory region length
 
-#Define the folders in the easymap directory 
-f0=user_data
-f1=$project_name/1_intermediate_files
-f2=$project_name/2_logs
-f3=$project_name/3_workflow_output
 
 # Write PID to status file
 my_status_file=$f2/status
@@ -71,7 +72,7 @@ export location="$PWD"
 
 #Execute bowtie2-build on insertion and genome sequence 
 {
-	$location/bowtie2/bowtie2-build $f0/$my_is $f1/$my_ix2 1> $f2/bowtie2-build_ins_std1.txt 2> $f2/bowtie2-build_ins_std2.txt
+	$location/bowtie2/bowtie2-build $f1/$my_is $f1/$my_ix2 1> $f2/bowtie2-build_ins_std1.txt 2> $f2/bowtie2-build_ins_std2.txt
 	
 } || {
 	echo $(date)': bowtie2-build on insertion sequence returned an error. See log files.' >> $my_log_file
@@ -375,7 +376,7 @@ then
 			    #Check whether the number of lines that are not starting with @ to be > 0, if it is, do the rest: we might have a program to do this
 				$location/samtools1/samtools sort $i  > $substring.bam 
 				
-				$location/samtools1/samtools mpileup -uf $f0/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq 2> $f2/samtools-consensus.log
+				$location/samtools1/samtools mpileup -uf $f1/$my_is $substring.bam 2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/bcftools call -c  2> $f2/samtools-consensus.log | $location/bcftools-1.3.1/vcfutils.pl vcf2fq > $f1/cns.fq 2> $f2/samtools-consensus.log
 				
 				#sed -i "s/pbinprok2/$substring/g" ./cns.fq
 				tail -n +2 $f1/cns.fq > $f1/cns.fq.temp && mv $f1/cns.fq.temp $f1/cns.fq
