@@ -683,7 +683,7 @@ if mut_type == 'snp':
 	'		<p>All input contigs are displayed, with all the polymorphisms used for mapping the causal mutation and their linear description (SMA, boost values or AF difference between mapping populations). The candidate region determined by the analysis is highlighted.</p>' + '\n'
 		) 
 	for f in sorted(files):
-		if 'img_2_mapping' in str(f):
+		if 'mapping' in str(f):
 			output.write(
 			'		<left> <img class="img" src="' +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'
 			)
@@ -692,7 +692,7 @@ if mut_type == 'snp':
 	#selected chromosome:
 
 	for f in sorted(files):
-		if 'img_2_candidates' in str(f) and 'zoom' in str(f):
+		if 'candidates' in str(f) and 'zoom' in str(f):
 			sp = str(f).split('_')
 			selected_chromosome = str(sp[3]).strip()
 
@@ -704,13 +704,13 @@ if mut_type == 'snp':
 
 	#Candidates 
 	for f in sorted(files):
-		if 'img_2_candidates_'+selected_chromosome in str(f).lower() and 'zoom' not in str(f):
+		if 'candidates_'+selected_chromosome in str(f).lower() and 'zoom' not in str(f):
 			output.write(
 			'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'
 			)
 	#Candidates zoom
 	for f in sorted(files):
-		if 'img_2_candidates' in str(f) and 'zoom' in str(f):
+		if 'candidates' in str(f) and 'zoom' in str(f):
 			output.write(
 			'		<p>Zooming-in the window containing the candidate polymorphisms, including only typical EMS changes. </p>' + '\n'
 			'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'

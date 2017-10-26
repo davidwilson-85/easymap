@@ -405,16 +405,16 @@ def fa_vs_pos():
 		#Crop and save image, specifying the format with the extension
 		w, h = im.size
 		if args.my_mut == 'snp':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_mapping_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/mapping_' + str(i[0]) + '.png')
 
 		if args.my_mut == 'af_control':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_control_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/control_' + str(i[0]) + '.png')
 
 		if args.my_mut == 'af_sample':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_problem_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/problem_' + str(i[0]) + '.png')
 
 		if args.my_mut == 'af_candidates':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_candidates_' + str(i[0]) + '.png')
+			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/candidates_' + str(i[0]) + '.png')
 
 
 #############################################################################################################
@@ -570,7 +570,7 @@ def candidates_zoom():
 	#Crop and save image, specifying the format with the extension
 	w, h = im.size
 	if args.my_mut == 'snp':
-		im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/img_2_candidates_' + chromosome + '_zoom.png')
+		im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/candidates_' + chromosome + '_zoom.png')
 
 
 #############################################################################################################
