@@ -442,9 +442,9 @@ if data_source == 'exp':
 			output.write(
 	'		<b>Control paired end reads quality assessment<br></b>' + '\n'
 	'		<p>Forward reads<br></p>' + '\n'
-	'		<center> <img class="img" src="'+'paired-end-problem-forward-reads-qual-stats.png" > </center> ' + '\n'
+	'		<center> <img class="img" src="'+'paired-end-control-forward-reads-qual-stats.png" > </center> ' + '\n'
 	'		<p>Reverse reads<br></p>' + '\n'
-	'		<center> <img class="img" src="paired-end-problem-reverse-reads-qual-stats.png"  > </center> ' + '\n'
+	'		<center> <img class="img" src="paired-end-control-reverse-reads-qual-stats.png"  > </center> ' + '\n'
 			)
 
 		if reads_type_control == 'se':
