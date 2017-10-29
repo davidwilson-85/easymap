@@ -113,7 +113,6 @@ def dna_to_prot(dna_seq):
 			break
 		start += 3
 	prot_seq = ''.join(prot_seq)
-	print prot_seq
 	return prot_seq
 
 
@@ -215,8 +214,6 @@ with open(gff_source) as input_gff:
 # Analyze variants that are marked as interrupting a mRNA or putative regulatory region
 variants_info2 = []
 for variant_info in variants_info:
-	
-	print variant_info
 
 	if variant_info[5] == 'tu':
 		
