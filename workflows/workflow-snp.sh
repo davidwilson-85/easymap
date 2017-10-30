@@ -179,7 +179,7 @@ function get_problem_va {
 	if [ $av_rd -le 25 ]; then dp_min=10 ; fi
 
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min $dp_min -qual_min 30 -mut_type $mut_type  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min $dp_min -qual_min 50 -mut_type $mut_type  2>> $my_log_file
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -224,7 +224,7 @@ function get_control_va {
 	then
 		#Run bowtie2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive -X 1000  -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive --mp 3,2  -X 1000  -x $f1/$my_ix -1 $my_p_rf -2 $my_p_rr -S $f1/alignment1P.sam 2> $f2/bowtie2_control-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of control reads. See log files.' >> $my_log_file
@@ -252,7 +252,7 @@ function get_control_va {
 	#Variant calling
 	{
 
-		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -C50 -uf $f1/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_control-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_control-sample_std.txt
+		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR  -uf $f1/$my_gs $f1/alignment1P.bam 2> $f2/mpileup_control-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_p_variants.vcf 2> $f2/call_control-sample_std.txt
 
 	} || {
 		echo $(date)': Error during variant-calling of control data' >> $my_log_file
@@ -283,7 +283,7 @@ function get_control_va {
 	if [ $av_rd -le 25 ]; then dp_min=10 ; fi
 
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min $dp_min -qual_min 30  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 10 -qual_min 20  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file

@@ -694,7 +694,7 @@ if mut_type == 'snp':
 	for f in sorted(files):
 		if 'candidates' in str(f) and 'zoom' in str(f):
 			sp = str(f).split('_')
-			selected_chromosome = str(sp[3]).strip()
+			selected_chromosome = str(sp[1]).strip()
 
 	output.write(
 	'		<hr class="easymap">' + '\n'
