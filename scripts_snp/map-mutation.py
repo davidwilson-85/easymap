@@ -141,60 +141,58 @@ def chromosomal_position(size,space, SNP, ch, chromosomal_lenght, mode, modality
 
 	# Use only one of the following blocks, depending on the size of the AF averages that want to be performed.
 
-	'''
-	# Average the mean AF values of 3 windows
-	for i,n in enumerate(tmp_averages_list1):
-		if i == 0:
-			average = (tmp_averages_list1[i] + tmp_averages_list1[i+1])/2
-		elif i == nbrSamplingPoints - 1:
-			average = (tmp_averages_list1[i-1] + tmp_averages_list1[i])/2
-		else:
-			average = (tmp_averages_list1[i-1] + tmp_averages_list1[i] + tmp_averages_list1[i+1])/3
+	if len(tmp_averages_list1) == 3 or len(tmp_averages_list1) == 4:
+		# Average from the mean AF values of 3 windows
+		for i,n in enumerate(tmp_averages_list1):
+			if i == 0:
+				average = (tmp_averages_list1[i] + tmp_averages_list1[i+1])/2
+			elif i == nbrSamplingPoints - 1:
+				average = (tmp_averages_list1[i-1] + tmp_averages_list1[i])/2
+			else:
+				average = (tmp_averages_list1[i-1] + tmp_averages_list1[i] + tmp_averages_list1[i+1])/3
+		
+			tmp_averages_list2.append(average)
 	
-		tmp_averages_list2.append(average)
-	'''
+	elif len(tmp_averages_list1) == 5 or len(tmp_averages_list1) == 6:
+		# Weighted average from the mean AF values of 5 windows
+		for i,n in enumerate(tmp_averages_list1):
+			if i == 0:
+				average = (0.5*tmp_averages_list1[i] + 0.3*tmp_averages_list1[i+1] + 0.2*tmp_averages_list1[i+2])
+			elif i == nbrSamplingPoints - 1:
+				average = (0.2*tmp_averages_list1[i-2] + 0.3*tmp_averages_list1[i-1] + 0.5*tmp_averages_list1[i])
+			elif i == 1:
+				average = (0.3*tmp_averages_list1[i-1] + 0.4*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.1*tmp_averages_list1[i+2])
+			elif i == nbrSamplingPoints - 2:
+				average = (0.1*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.4*tmp_averages_list1[i] + 0.3*tmp_averages_list1[i+1])
+			else:
+				average = (0.15*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.3*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2])
 
-	'''
-	# Weighted average the mean AF values of 5 windows
-	for i,n in enumerate(tmp_averages_list1):
-		if i == 0:
-			average = (0.6*tmp_averages_list1[i] + 0.4*tmp_averages_list1[i+1])
-		elif i == nbrSamplingPoints - 1:
-			average = (0.4*tmp_averages_list1[i-1] + 0.6*tmp_averages_list1[i])
-		elif i == 1:
-			average = (0.3*tmp_averages_list1[i-1] + 0.4*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.1*tmp_averages_list1[i+2])
-		elif i == nbrSamplingPoints - 2:
-			average = (0.1*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.4*tmp_averages_list1[i] + 0.3*tmp_averages_list1[i+1])
-		else:
-			average = (0.15*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.3*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2])
+			tmp_averages_list2.append(average)
+	
+	elif len(tmp_averages_list1) >= 7:
+		# Weighted average fromthe mean AF values of 7 windows
+		for i,n in enumerate(tmp_averages_list1):
+			
+			if i == 0:
+				average = (0.4*tmp_averages_list1[i] + 0.3*tmp_averages_list1[i+1] + 0.2*tmp_averages_list1[i+2] + 0.1*tmp_averages_list1[i+3])
+			elif i == nbrSamplingPoints - 1:
+				average = (0.1*tmp_averages_list1[i-3] + 0.2*tmp_averages_list1[i-2] + 0.3*tmp_averages_list1[i-1] + 0.4*tmp_averages_list1[i])
+			elif i == 1:
+				average = (0.2*tmp_averages_list1[i-1] + 0.3*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2] + 0.15*tmp_averages_list1[i+3])
+			elif i == nbrSamplingPoints - 2:
+				average = (0.15*tmp_averages_list1[i-3] + 0.15*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.3*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1])
+			elif i == 2:
+				average = (0.1*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.25*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2] + 0.1*tmp_averages_list1[i+3])
+			elif i == nbrSamplingPoints - 3:
+				average = (0.1*tmp_averages_list1[i-3] + 0.15*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.25*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.1*tmp_averages_list1[i+2])
+			else:
+				average = (0.1*tmp_averages_list1[i-3] + 0.15*tmp_averages_list1[i-2] + 0.15*tmp_averages_list1[i-1] + 0.2*tmp_averages_list1[i] + 0.15*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2] + 0.1*tmp_averages_list1[i+3])
 
-		tmp_averages_list2.append(average)
-	'''
+			tmp_averages_list2.append(average)
 
-	#'''
-	# Weighted average the mean AF values of 7 windows
-	for i,n in enumerate(tmp_averages_list1):
-		
-		if i == 0:
-			average = (0.5*tmp_averages_list1[i] + 0.3*tmp_averages_list1[i+1] + 0.2*tmp_averages_list1[i+2])
-		elif i == nbrSamplingPoints - 1:
-			average = (0.2*tmp_averages_list1[i-2] + 0.3*tmp_averages_list1[i-1] + 0.5*tmp_averages_list1[i])
-		
-		elif i == 1:
-			average = (0.2*tmp_averages_list1[i-1] + 0.3*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2] + 0.15*tmp_averages_list1[i+3])
-		elif i == nbrSamplingPoints - 2:
-			average = (0.15*tmp_averages_list1[i-3] + 0.15*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.3*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1])
-		
-		elif i == 2:
-			average = (0.1*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.25*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2] + 0.1*tmp_averages_list1[i+3])
-		elif i == nbrSamplingPoints - 3:
-			average = (0.1*tmp_averages_list1[i-3] + 0.15*tmp_averages_list1[i-2] + 0.2*tmp_averages_list1[i-1] + 0.25*tmp_averages_list1[i] + 0.2*tmp_averages_list1[i+1] + 0.1*tmp_averages_list1[i+2])
-
-		else:
-			average = (0.1*tmp_averages_list1[i-3] + 0.15*tmp_averages_list1[i-2] + 0.15*tmp_averages_list1[i-1] + 0.2*tmp_averages_list1[i] + 0.15*tmp_averages_list1[i+1] + 0.15*tmp_averages_list1[i+2] + 0.1*tmp_averages_list1[i+3])
-
-		tmp_averages_list2.append(average)
-	#'''
+	else:
+		tmp_averages_list2 = tmp_averages_list1;
+	
 
 
 	# Add the mean AF values back to the dictionary where I extracted them originally
