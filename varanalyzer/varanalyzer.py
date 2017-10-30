@@ -103,10 +103,14 @@ def dna_to_prot(dna_seq):
 	start = 0
 	while start + 2 < len(dna_seq):
 		codon = dna_seq[start:start+3]
-		if genetic_code[codon] == "STOP":
-			prot_seq.append('STOP')
+		try:
+			if genetic_code[codon] == "STOP":
+				prot_seq.append('STOP')
+				break
+			prot_seq.append(genetic_code[codon])
+		except KeyError: # To prevent non ATGC nts cause the script to throw an error and stop
+			prot_seq.append('_UNKNOWCODON')
 			break
-		prot_seq.append(genetic_code[codon])
 		start += 3
 	prot_seq = ''.join(prot_seq)
 	return prot_seq
@@ -210,7 +214,7 @@ with open(gff_source) as input_gff:
 # Analyze variants that are marked as interrupting a mRNA or putative regulatory region
 variants_info2 = []
 for variant_info in variants_info:
-	
+
 	if variant_info[5] == 'tu':
 		
 		# Check if mutation position lies in 'UTRs' (untranslated regions) or introns
