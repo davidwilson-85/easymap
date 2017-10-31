@@ -31,15 +31,16 @@
 # parental_reads_provided				>	${17}
 # snp_analysis_type [par/f2wt]			>	${18}
 # lib_type_control						>	${19}
+# stringency							>	${20}
 
 
-#Some initial parameters
+# Some initial parameters
 start_time=`date +%s`	
 exit_code=0 				# Set 'exit_code' (flag variable) to 0
 my_log_file=$1 				# Set location of log file
 export location="$PWD" 			#Save path to bowtie2-build and bowtie2 in variable BT2
 
-#Create input variables
+# Create input variables
 my_log_file=$1
 project_name=$2
 my_sample_mode=$5 												#[pe, se], paired/single  
@@ -61,8 +62,20 @@ my_cross=${15}													#oc / bc : f2 obtained by outcross or backcross
 my_mutbackgroud=${16}											#ref / noref : genetic background of the mutation									
 my_pseq=${17}													#mut / nomut : sequenced parental provided is the mutagenized one or the other		
 snp_analysis_type=${18}
+stringency=${20}
 
-#Define the folders in the easymap directory 
+# Set internal variables according to the SNP validation stringency chosen by the user
+if [ $stringency == high_stringency ]; then
+	problemSample_bowtie_mp="--mp 6,2"
+	problemSample_mpileup_C="-C50"
+	problemSample_snpQualityTheshold="50"
+else
+	problemSample_bowtie_mp="--mp 3,2"
+	problemSample_mpileup_C=""
+	problemSample_snpQualityTheshold="30"
+fi
+
+# Define the folders in the easymap directory 
 f0=user_data
 f1=$project_name/1_intermediate_files
 f2=$project_name/2_logs

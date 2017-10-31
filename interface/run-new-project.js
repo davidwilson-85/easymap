@@ -429,6 +429,14 @@ window.onload = function() {
 		document.getElementById("readsControlWarnMsg2").style.display = "none";
 	}
 
+	function checkStringency() {
+		if (this.checked) {
+			cmdArgs[23] = 'low_stringency';
+		} else {
+			cmdArgs[23] = 'high_stringency';
+		}
+	}
+
 	function verifySimMut() {
 		HideCheckoutBoxes();
 
@@ -800,7 +808,7 @@ window.onload = function() {
 					'n/p','n/p','n/p','n/p',
 					'n/p','n/p','n/p','n/p',
 					'n/p','n/p','n/p','n/p',
-					'n/p','n/p','n/p'];
+					'n/p','n/p','n/p','n/p'];
 
 	// Create the command string for the first time (for development purposes only)
 	//updateCmd();
@@ -846,7 +854,10 @@ window.onload = function() {
 	// React to interactions with backgroundCrossCtype buttons
 	document.getElementById("backgroundCrossCtype").onmouseout = checkBackgroundCrossCtypeIntermediateCheck;
 
-	// React to interactions with button to chek input and go to the gateway to run a new project
+	// React to interactions with stringency button
+	document.getElementById("stringency").onclick = checkStringency;
+
+	// React to interactions with button to check input and go to the gateway to run a new project
 	document.getElementById("checkFormButton").onclick = commandFinalCheck;
 
 	// React to interactions with button to run project
@@ -854,4 +865,3 @@ window.onload = function() {
 }
 
 
-// TO DO: Show and check MbS experimental design when data is simulated!

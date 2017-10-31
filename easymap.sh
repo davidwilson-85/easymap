@@ -25,7 +25,7 @@
 # [20] $sim_mut											.                      nbr+mod
 # [21] $sim_recsel										.                      rfd+pos+mod+nre
 # [22] $sim_seq											.                      rd+rl+fl+ber+gbs
-# [23] server
+# [23] $stringency
 
 # sim-mut.py
 # nbr:		${20}[0]
@@ -92,7 +92,7 @@ control_parental=${19}
 sim_mut=${20}
 sim_recsel=${21}
 sim_seq=${22}
-env=${23}     # Possibly deprecated
+stringency=${23}
 
 ############################################################
 # Several necessary checking/preparation steps before actually running easymap
@@ -179,7 +179,7 @@ echo "Parental used as control [mut/nomut/np]:		" ${19} >> $my_log_file
 echo "Simulator (sim-mut.py) command:				" ${20} >> $my_log_file
 echo "Simulator (sim-recsel.py) command:			" ${21} >> $my_log_file
 echo "Simulator (sim-seq.py) command:				" ${22} >> $my_log_file
-echo "Environment:									" ${23} >> $my_log_file
+echo "Stringency (default:high_stringency):			" ${23} >> $my_log_file
 
 echo "" >> $my_log_file
 echo "######################################################" >> $my_log_file
@@ -271,7 +271,7 @@ if [ $workflow == 'ins' ]; then
 fi
 
 if [ $workflow == 'snp' ]; then
-	workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_ctrl $read_f_ctrl $read_r_ctrl $cross_type $is_ref_strain $control_parental $snp_analysis_type $lib_type_ctrl` 
+	workflow_result=`./workflows/workflow-snp.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file $read_s_ctrl $read_f_ctrl $read_r_ctrl $cross_type $is_ref_strain $control_parental $snp_analysis_type $lib_type_ctrl $stringency`
 
 	if [ $workflow_result == 0 ]; then
 		echo $(date)": Analysis workflow finished correctly." >> $my_log_file

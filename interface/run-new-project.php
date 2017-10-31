@@ -207,6 +207,19 @@ body {font-size:16px;}
 				<div id="contTypeValidationInfo" class="warningMessage"></div>
 
 				<div id="backgroundCrossCtypeWarnMsg" class="warningMessage">Invalid combination. Easymap does not support this experimental design.</div>
+			
+				<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
+
+				Use low stringency during SNP analyses?
+
+				<div id="checkBoxStringency">
+					<input type="checkbox" class="switch_1" id="stringency">
+				</div>
+
+				By defaul, Easymap only considers SNPs that pass several quality checks. However, in some read datasets that are not optimal, 
+				performing more lenient checks can help to identify a candidate interval and the causal mutation. If you analyze your reads and
+				obtain very few SNPs or believe that the causal mutation could have been disarded, select this option and run the program again.
+
 			</div>
 
 			<div id="expDataInterface">
