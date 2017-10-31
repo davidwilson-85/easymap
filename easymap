@@ -34,10 +34,7 @@ parser.add_argument('--sim-seq', '-ss', action = 'store', default = 'n/p', dest 
 #parser.add_argument('--mutant-background','-mb', action = 'store', default = 'n/p', dest = 'is_ref_strain', choices = set(('ref','noref')))
 #parser.add_argument('--cross-type', '-cr', action = 'store', default = 'n/p', dest = 'cross_type', choices = set(('oc','bc')))
 #parser.add_argument('--control-type','-co', action = 'store', default = 'n/p', dest ='control_type', choices = set(('par_mut','par_nomut','f2wt')))
-
 parser.add_argument('--exp-design', '-ed', action = 'store', default = 'n/p', dest = 'exp_design')
-
-
 
 args = parser.parse_args()
 
@@ -47,25 +44,39 @@ if args.usage:
 	print "Please see section 'easymap commad line arguments' in the documentation."
 	quit()
 
+# Process the general arguments
+
 if args.project_name == "n/p":
 	project_name = "unnamed_project"
-else: project_name = args.project_name
+else:
+	project_name = args.project_name
+
+problems = []
+error = 0
 
 if args.workflow == "n/p":
-	print "ERROR: Argument -w/--workflow is required. " + generic_help_message
-	quit()
-else: workflow = args.workflow
-
-if args.gff_file == "n/p":
-	print "ERROR: Argument -g/--gff-file is required. " + generic_help_message
-	quit()
+	error = 1
+	problems.append("Argument -w/--workflow is required.")
 
 if args.ref_seq == "n/p":
-	print "ERROR: Argument -r/--reference-sequence is required. " + generic_help_message
+	error = 1
+	problems.append("Argument -r/--reference-sequence is required.")
+
+if args.gff_file == "n/p":
+	error = 1
+	problems.append("Argument -g/--gff-file is required.")
+
+if error == 1: 
+	print "=======================================================\nCOMMAND ERROR. Please fix the following issues:"
+	for items in problems:
+		print "-" + items
+	print generic_help_message
+	print "======================================================="
 	quit()
 
+# Process other arguments
+
 workflow = args.workflow
-gff_file = args.gff_file
 
 # Fill the vaiable data_source with 'sim' or 'exp' depending on whether the user used or not the --simulate/-sim flag
 if args.simulate:
@@ -75,8 +86,9 @@ else:
 
 ref_seq = args.ref_seq
 ins_seq = args.ins_seq
-reads_sample = args.reads_sample
+gff_file = args.gff_file
 ann_file = args.ann_file
+reads_sample = args.reads_sample
 sim_mut = args.sim_mut
 sim_recsel = args.sim_recsel
 sim_seq = args.sim_seq
