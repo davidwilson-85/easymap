@@ -755,6 +755,10 @@ window.onload = function() {
 		}		
 	}
 
+	function goToManageProjects() {
+		window.location.assign("manage-projects.php");
+	}
+
 	// Function to trigger a new easymap execution and to redirect browser to manage-projects.php 
 	function runProject() {
 		var xhr = new XMLHttpRequest();
@@ -772,7 +776,8 @@ window.onload = function() {
 		    }
 		};
 		*/
-		window.location.assign("manage-projects.php");
+
+		goToManageProjects();		
 	}
 
 	/* OLD WAY OF RUNNING NEW PROJECT

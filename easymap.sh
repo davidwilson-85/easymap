@@ -258,8 +258,6 @@ fi
 if [ $workflow == 'ins' ]; then
 	workflow_result=`./workflows/workflow-ins.sh $my_log_file $project_name $workflow $data_source $lib_type_sample $ins_seq $read_s $read_f $read_r $gff_file $ann_file`
 
-	echo $workflow_result  >> $my_log_file
-
 	if [ $workflow_result == 0 ]; then
 		echo $(date)": Analysis workflow finished correctly." >> $my_log_file
 	else 

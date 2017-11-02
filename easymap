@@ -553,7 +553,7 @@ if args.stringency:
 else:
 	stringency = "high_stringency"
 
-#This code checks the configuration of the program. It calls allow-new-project.py and checks its result.
+# This code checks the configuration of the program. It calls allow-new-project.py and checks its result.
 proc = subprocess.Popen("/var/www/html/easymap/src/Python-2.7.12/.localpython/bin/python2 allow-new-project.py", cwd=r'./config', shell=True, stdout=subprocess.PIPE)
 script_response = proc.stdout.read()
 response = script_response.split(",")
