@@ -47,9 +47,10 @@ was also created by the W3C.
 	width: 33%;
 }
 
-.left { width: 45%; }
-.center { width: 15%; }
-.right { width: 20%; }
+.left { width: 55%; }
+.center { width: 8%; }
+.right1 { width: 12%; }
+.right2 { width: 15%; }
 
 .files-separator {
 	clear: both;

@@ -34,10 +34,10 @@ if (empty($user_input_files)) {
 				<div class="files-item center">
 					<h4>'. $file_size .'</h4>
 				</div>
-				<div class="files-item right">
-					<a href="manage-input-files-retrieve-header.php?f='. $user_input_file .'" target="_blank" class="button">Preview</a>
+				<div class="files-item right1">
+					<a href="manage-input-files-retrieve-header.php?f='. $user_input_file .'" target="_blank" class="button" style="width: 100px">Preview</a>
 				</div>
-				<div class="files-item right">
+				<div class="files-item right2">
 					<form>
 						<input style="margin: 3 0 7px 0" type="button" class="button" onclick="ShowRemoveFile(\''. $user_input_file .'\')" value="Remove from disk" />
 					</form>
