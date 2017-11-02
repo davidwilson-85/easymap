@@ -216,9 +216,10 @@ body {font-size:16px;}
 					<input type="checkbox" class="switch_1" id="stringency">
 				</div>
 
-				By defaul, Easymap only considers SNPs that pass several quality checks. However, in some read datasets that are not optimal, 
-				performing more lenient checks can help to identify a candidate interval and the causal mutation. If you analyze your reads and
-				obtain very few SNPs or believe that the causal mutation could have been disarded, select this option and run the program again.
+				By default, Easymap only considers SNPs that pass certain quality checks. However, in some read datasets that are not optimal, 
+				performing more lenient filtering can help to identify a candidate interval and the causal mutation. If you analyze your reads
+				in the default mode and obtain very few SNPs or believe that the causal mutation could have been discarded, turn on this option
+				and run the program again.
 
 			</div>
 

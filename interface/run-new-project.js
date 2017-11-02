@@ -342,28 +342,34 @@ window.onload = function() {
 		document.getElementById("contTypeValidationInfo").style.display = "none";
 	}
 
-	// Check if combination of mutat background, cross performed, and origin of control reads, is supported
+	// Check if combination of mutant background, cross performed, and origin of control reads, is supported
 	function checkBackgroundCrossCtypeIntermediateCheck() {
 		HideCheckoutBoxes();
 
-		if (cmdArgs[16] == "ref" && cmdArgs[17] == "oc") {
-			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "block";
-		} else {
-			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "none";
-		}
+		var experimentalDesign = cmdArgs[16] + '_' + cmdArgs[17] + '_' + cmdArgs[18] + '_' + cmdArgs[19];
 
-		// More checks needed
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
-		///////////////////////////////////////
+		var allowedExperimentalDesigns = [
+			'ref_bc_par_mut',
+			'ref_bc_f2wt_n/p',
+			'ref_oc_par_mut',
+			'ref_oc_par_nomut',
+			'noref_bc_f2wt_n/p',
+			'noref_oc_par_mut',
+			'ref_bc_n/p_n/p', 'ref_oc_n/p_n/p', 'ref_n/p_n/p_n/p',
+			'noref_bc_n/p_n/p', 'noref_oc_n/p_n/p', 'noref_n/p_n/p_n/p',
+			'n/p_n/p_n/p_n/p'
+		];
+
+		console.log(allowedExperimentalDesigns);
+		console.log(experimentalDesign);
+
+		//var found = allowedExperimentalDesigns.includes(experimentalDesign);
+
+		if (allowedExperimentalDesigns.includes(experimentalDesign)) {
+			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "none";
+		} else {
+			document.getElementById("backgroundCrossCtypeWarnMsg").style.display = "block";
+		}
 	}
 
 	// Check reads selectors (max two files selected per sample) and update command arguments
@@ -744,7 +750,12 @@ window.onload = function() {
 				document.getElementById("simReqselBValMsg").innerHTML = 'The input in this field is not correct.';
 				document.getElementById("simReqselBValMsg").style.display = "block";
 			}
-		}	
+		}
+
+		// In snp mode, check argument 23 (stringency). If user did not interact with the switch, select the default value 'high_stringency'
+		if (cmdArgs[2] == 'snp' && cmdArgs[23] == 'n/p') {
+			cmdArgs[23] = 'high_stringency';
+		}
 
 		if (userErrors == true) {
 			document.getElementById("checkout-error").style.display = "block";
@@ -857,7 +868,7 @@ window.onload = function() {
 	document.getElementById("form1").simRecselB.onblur = verifySimrecselFieldB;
 
 	// React to interactions with backgroundCrossCtype buttons
-	document.getElementById("backgroundCrossCtype").onmouseout = checkBackgroundCrossCtypeIntermediateCheck;
+	document.getElementById("backgroundCrossCtype").onclick = checkBackgroundCrossCtypeIntermediateCheck;
 
 	// React to interactions with stringency button
 	document.getElementById("stringency").onclick = checkStringency;

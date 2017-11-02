@@ -191,14 +191,14 @@ if ann_file != "n/p":
 
 #In the analysis mode of snp, cross_type, is_ref_strain and control_parental are required parameters
 
-designs = ['ref_bc_parmut', 'ref_bc_f2wt', 'ref_oc_parmut', 'ref_oc_parpol', 'noref_bc_f2wt', 'noref_oc_parmut']
+SNPexperimentalDesignsAllowed = ['ref_bc_parmut', 'ref_bc_f2wt', 'ref_oc_parmut', 'ref_oc_parpol', 'noref_bc_f2wt', 'noref_oc_parmut', 'n/p']
 
 if workflow == "snp":
 	if args.exp_design == "n/p":
 		error = 1
 		problems.append("Argument -ed/--exp-design is required.")
 
-	if str(args.exp_design) not in designs: 
+	if str(args.exp_design) not in SNPexperimentalDesignsAllowed: 
 		error = 1
 		problems.append("Argument -ed/--exp-design: the experimental design provided is not supported.")
 
@@ -299,12 +299,12 @@ if data_source == "sim":
 	
 		# Process user input
 		if workflow == "snp":
-			if sim_mut == "n/p" : error = 1; problems.append("Argument -sm/--sim-mut is required.")
-			if sim_recsel == "n/p": error = 1; problems.append("Argument -sr/--sim-recsel is required.") 
-			if sim_seq == "n/p": error = 1; problems.append("Argument -ss/--sim-seq is required.") 
+			if sim_mut == "n/p" : error = 1; problems.append("Argument -sim/--simulate-data requires argument -sm/--sim-mut.")
+			if sim_recsel == "n/p": error = 1; problems.append("Argument -sim/--simulate-data requires argument -sr/--sim-recsel.") 
+			if sim_seq == "n/p": error = 1; problems.append("Argument -sim/--simulate-data requires argument -ss/--sim-seq.") 
 		else:
-			if sim_mut == "n/p": error = 1; problems.append("Argument -sm/--sim-mut is required.")
-			if sim_seq == "n/p": error = 1; problems.append("Argument -ss/--sim-seq is required.")
+			if sim_mut == "n/p": error = 1; problems.append("Argument -sim/--simulate-data requires argument -sm/--sim-mut.")
+			if sim_seq == "n/p": error = 1; problems.append("Argument -sim/--simulate-data requires argument -ss/--sim-seq.")
 		
 		#Check sim_mut ex: 40+e 
 		if sim_mut != "n/p":
@@ -548,10 +548,13 @@ if data_source == "exp":
 			problems.append("The same name was provided to arguments -P/--reads-problem and -C/--reads-control.")
 
 # Deal with the --low-stringency parameter
-if args.stringency:
-	stringency = "low_stringency"
+if workflow == "snp":
+	if args.stringency:
+		stringency = "low_stringency"
+	else:
+		stringency = "high_stringency"
 else:
-	stringency = "high_stringency"
+	stringency = "n/p"
 
 # This code checks the configuration of the program. It calls allow-new-project.py and checks its result.
 proc = subprocess.Popen("/var/www/html/easymap/src/Python-2.7.12/.localpython/bin/python2 allow-new-project.py", cwd=r'./config', shell=True, stdout=subprocess.PIPE)
