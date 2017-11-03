@@ -157,7 +157,7 @@ body {font-size:16px;}
 			<div id="backgroundCrossCtype" style="display:none;"> <!-- Not displayed by default -->
 				<hr style="width: 100%; border: 2px solid rgb(150,150,150)" class="w3-round">
 				
-				Mutant background: [TO DO: Perform additional checks to validate the design chosen by user]
+				Mutant background:
 				<div class="buttons-wrap">
 					<div class="mx-button">
 						<input type="radio" class="mutBackground" name="mxMB" id="button11" />
