@@ -78,7 +78,7 @@ body {font-size:16px;}
 
   <div class="w3-container" style="margin-top:75px">
     <h1 class="w3-xxxlarge w3-text-red no-print"><b>Manage projects > View report</b></h1>
-    <hr style="width:50px;border:5px solid red" class="w3-round no-print">
+    <br><br>
         
     <div id="reportInfo">
     
