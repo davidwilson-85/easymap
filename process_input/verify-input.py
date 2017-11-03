@@ -100,7 +100,6 @@ if gff_source != None:
 	gff_result = 0 # 0:pass ; 1:error
 	if os.stat(gff_source).st_size == 0:
 		gff_result = 1
-		print "size"
 	else:
 		i = 0 # Counter to move to the tenth line in the file that does not start with "#"
 		gff_contents = open(gff_source, 'r')
@@ -112,17 +111,14 @@ if gff_source != None:
 						y = int(fields[3]) # This raises an exception if the variable inside int() is not an integer
 					except:
 						gff_result = 1
-						print "fields 3 bad"
 						break
 					try:
 						y = int(fields[4])
 					except:
 						gff_result = 1
-						print "fields 4 bad"
 						break
 					if fields[6].strip() != '+' and fields[6].strip() != '-' and fields[6].strip() != '0':
 						gff_result = 1
-						print "fields 6 bad"
 				if index == 11:
 					break
 				i += 1
