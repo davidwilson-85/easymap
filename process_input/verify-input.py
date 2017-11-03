@@ -100,27 +100,35 @@ if gff_source != None:
 	gff_result = 0 # 0:pass ; 1:error
 	if os.stat(gff_source).st_size == 0:
 		gff_result = 1
+		print "size"
 	else:
+		i = 0 # Counter to move to the tenth line in the file that does not start with "#"
 		gff_contents = open(gff_source, 'r')
 		for index, line in enumerate(gff_contents):
-			if index == 10:
-				fields = line.split('\t')
-				try:
-					y = int(fields[3]) # This raises an exception if the variable inside int() is not an integer
-				except:
-					gff_result = 1
+			if not line.startswith("#"):
+				if i == 10:
+					fields = line.split('\t')
+					try:
+						y = int(fields[3]) # This raises an exception if the variable inside int() is not an integer
+					except:
+						gff_result = 1
+						print "fields 3 bad"
+						break
+					try:
+						y = int(fields[4])
+					except:
+						gff_result = 1
+						print "fields 4 bad"
+						break
+					if fields[6].strip() != '+' and fields[6].strip() != '-' and fields[6].strip() != '0':
+						gff_result = 1
+						print "fields 6 bad"
+				if index == 11:
 					break
-				try:
-					y = int(fields[4])
-				except:
-					gff_result = 1
-					break
-				if fields[6].strip() != '+' and fields[6].strip() != '-':
-					gff_result = 1
-			if index == 11:
-				break
+				i += 1
 		gff_contents.close()
 	print gff_result
+
 
 # The format of the annotation file is flexible, so this block is nowadays not called by process-input.sh
 # If ann argument provided, check functional annotation file file
