@@ -96,12 +96,31 @@ run_result=`./easymap -n setup -w snp -sim -r check -g check.gff -ed ref_bc_parm
 
 # Cleanup
 rm -rf user_data/check.gff
-rm -rf user_data/1.check.gff 
+rm -rf user_data/1.check.fa 
 rm -rf user_projects/*
 
 if [ "$run_result" == "Easymap analysis properly completed." ]; then
-	echo "Easymap installation susccesfuly completed" 
+	echo " "
+	echo " "
+	echo "###################################################################################"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "#                   Easymap installation susccesfuly completed                    #"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "###################################################################################"
+	echo " "
+	echo " "
 else 
-	echo "Easymap installation failed" 
-	exit
+	echo " "
+	echo " "
+	echo "###################################################################################"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "#                          Easymap installation failed                            #"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "###################################################################################"
+	echo " "
+	echo " "
 fi
