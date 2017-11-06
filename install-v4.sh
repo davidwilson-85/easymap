@@ -85,3 +85,23 @@ sudo chmod 777 . --recursive
 # In file easymap, set absolute path to the Python binaries of the virtual environment
 # Rest of Pyhton scripts don't need this because are executed after easymap.sh activates the virtual environment
 sed -i -e "s~ABS_PATH_ENV_PYTHON~${PWD}/src/Python-2.7.12/.localpython/bin/python2~g" easymap
+
+
+
+# Finally we check if Easymap functions properly by running a small project: 
+cp fonts/1.check.fa user_data/
+cp fonts/check.gff user_data/
+
+run_result=`./easymap -n setup -w snp -sim -r check -g complete.gff -ed ref_bc_parmut  -sm 50 -sr 0,24-1,42-2,25-3,6-4,1-5,2+1,400000+100 -ss 30+100,0+500,100+1+50+se`
+
+# Cleanup
+rm -rf user_data/check.gff
+rm -rf user_data/1.check.gff 
+rm -rf user_projects/*
+
+if [ $run_result == "Easymap analysis properly completed." ]; then
+	echo "Easymap installation susccesfuly comlpeted" 
+else 
+	echo "Easymap installation failed" 
+	exit
+fi
