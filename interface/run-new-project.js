@@ -360,9 +360,6 @@ window.onload = function() {
 			'n/p_n/p_n/p_n/p'
 		];
 
-		console.log(allowedExperimentalDesigns);
-		console.log(experimentalDesign);
-
 		//var found = allowedExperimentalDesigns.includes(experimentalDesign);
 
 		if (allowedExperimentalDesigns.includes(experimentalDesign)) {
