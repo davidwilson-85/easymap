@@ -100,8 +100,23 @@ rm -rf user_data/1.check.gff
 rm -rf user_projects/*
 
 if [ "$run_result" == "Easymap analysis properly completed." ]; then
-	echo "Easymap installation susccesfuly completed" 
+	echo " "
+	echo " "
+	echo "###################################################################################"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "#                   Easymap installation susccesfuly completed                    #"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "###################################################################################"
 else 
-	echo "Easymap installation failed" 
-	exit
+	echo " "
+	echo " "
+	echo "###################################################################################"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "#                          Easymap installation failed                            #"
+	echo "#                                                                                 #"
+	echo "#                                                                                 #"
+	echo "###################################################################################"
 fi
