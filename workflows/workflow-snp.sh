@@ -415,9 +415,8 @@ function cr_analysis {
 	fi
 	
 	# Filter SNPs to draw
-	af_min=$2
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $af_min   2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/$1 -b $f1/F2_control_comparison_drawn.va -step 1 -af_min $2   2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during third execution of variants-filter.py . ' >> $my_log_file
@@ -875,5 +874,7 @@ fi
 #Intermediate files cleanup
 rm -f $f1/*.bam
 rm -f $f1/*.bai
+if [ -d "$f1/sim_data" ]; then rm -Rf $f1/sim_data/; fi
+
 
 echo $exit_code
