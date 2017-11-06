@@ -283,6 +283,4 @@ fi
 echo $(date)": Execution of project {" $project_name "} finished." >> $my_log_file
 echo 'status:finished' >> $my_status_file
 
-echo "======================================================="
 echo "Easymap analysis properly completed."
-echo "======================================================="
