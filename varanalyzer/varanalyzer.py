@@ -153,7 +153,7 @@ with open(gff_source) as input_gff:
 		if not line_gff.startswith("#"):
 			fields_gff = line_gff.split('\t')
 			if fields_gff[2].lower() == 'mrna':
-				useful_gff_info = fields_gff[2].lower(), fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[6], fields_gff[8][3:14].upper()
+				useful_gff_info = fields_gff[2].lower(), fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[6], fields_gff[8].split(';')[0][3:]
 				gff_array1.append(useful_gff_info)
 
 # Check whether each mutation position lies within a mRNA sequence or a putative regulatory region of the template gff file
@@ -206,10 +206,11 @@ del mut_array, gff_array1
 gff_array2 = []
 with open(gff_source) as input_gff:
 	for line_gff in input_gff:
-		fields_gff = line_gff.split('\t')
-		if fields_gff[2].lower() == 'cds' or fields_gff[2].lower() == 'exon' or fields_gff[2].lower() == 'five_prime_utr' or fields_gff[2].lower() == 'three_prime_utr':
-			useful_gff_info = fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[2].lower(), fields_gff[8][7:18].upper()
-			gff_array2.append(useful_gff_info)
+		if not line_gff.startswith("#"):
+			fields_gff = line_gff.split('\t')
+			if fields_gff[2].lower() == 'cds' or fields_gff[2].lower() == 'exon' or fields_gff[2].lower() == 'five_prime_utr' or fields_gff[2].lower() == 'three_prime_utr':
+				useful_gff_info = fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[2].lower(), fields_gff[8][7:18].upper()
+				gff_array2.append(useful_gff_info)
 
 # Analyze variants that are marked as interrupting a mRNA or putative regulatory region
 variants_info2 = []
