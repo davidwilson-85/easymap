@@ -96,7 +96,7 @@ run_result=`./easymap -n setup -w snp -sim -r check -g check.gff -ed ref_bc_parm
 
 # Cleanup
 rm -rf user_data/check.gff
-rm -rf user_data/1.check.gff 
+rm -rf user_data/1.check.fa 
 rm -rf user_projects/*
 
 if [ "$run_result" == "Easymap analysis properly completed." ]; then
@@ -109,6 +109,8 @@ if [ "$run_result" == "Easymap analysis properly completed." ]; then
 	echo "#                                                                                 #"
 	echo "#                                                                                 #"
 	echo "###################################################################################"
+	echo " "
+	echo " "
 else 
 	echo " "
 	echo " "
@@ -119,4 +121,6 @@ else
 	echo "#                                                                                 #"
 	echo "#                                                                                 #"
 	echo "###################################################################################"
+	echo " "
+	echo " "
 fi
