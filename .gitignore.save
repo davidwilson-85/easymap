@@ -1,0 +1,12 @@
+.DS_Store
+config/config
+user_projects
+user_data
+graphic_output/draw.pyc
+interface/tmp_upload_files
+src
+
+bowtie2
+graphic_output/Pillow-4.2.1
+bcftools-1.3.1
+samtools1

@@ -192,7 +192,7 @@ function get_problem_va {
 	if [ $av_rd -le 25 ]; then dp_min=10 ; fi
 
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -dp_min $dp_min -qual_min 50 -mut_type $mut_type  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -fasta $f1/$my_gs -dp_min $dp_min -qual_min 50 -mut_type $mut_type  2>> $my_log_file
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
@@ -296,7 +296,7 @@ function get_control_va {
 	if [ $av_rd -le 25 ]; then dp_min=10 ; fi
 
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -dp_min 10 -qual_min 20  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_raw.va -b $f1/control_filtered.va -step 3 -fasta $f1/$my_gs -dp_min 10 -qual_min 20  2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -559,7 +559,7 @@ then
 
 	# (2) Run VA filter: eliminate SNPs with FA > 0.5 from control reads
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_max 0.5 2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -fasta $f1/$my_gs -af_max 0.5 2>> $my_log_file
 
 	} || {
 		echo $(date)': Error during execution of variants-filter.py with control data.' >> $my_log_file
@@ -707,7 +707,7 @@ then
 
 	# (2) Run vcf filter to get SNPs with af > 0.75
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -af_min 0.75  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/control_filtered.va -b $f1/control_filtered2.va -step 3 -fasta $f1/$my_gs -af_min 0.75  2>> $my_log_file
 		#draw snps
 		python2 $location/graphic_output/graphic-output.py -my_mut af_control -asnp $f1/control_filtered2.va -bsnp $f1/$my_gs -rrl $my_rrl -iva $2/1_intermediate_files/varanalyzer_output.txt -gff $f0/$my_gff -pname $2  -cross $my_cross -snp_analysis_type $snp_analysis_type  2>> $my_log_file
 

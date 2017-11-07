@@ -2,13 +2,14 @@
 # The STEP argument is used to distinguish different types of filtering that are needed during the analysis
 #	STEP = 1: Normal argument-driven filtering
 #	STEP = 2: Candidate region filtering
-#	STEP = 3: Initial filtering, eliminates indels from the first VA files
+#	STEP = 3: Initial filtering + eliminates indels from the first VA files + eliminates variants from contigs shorter than 1 MB
 
 import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action="store", dest = 'input')
 parser.add_argument('-b', action="store", dest = 'output')
+parser.add_argument('-fasta', action="store", dest = 'fasta')
 parser.add_argument('-chr', action="store", dest = 'chr', default = '*', nargs='+')
 parser.add_argument('-mut_type', action="store", dest = 'mut_type', default = 'all') # / EMS
 parser.add_argument('-qual_min', action="store", dest = 'qual_min', default = 0)
@@ -91,24 +92,57 @@ if step == '1' or step == '2':
 				limits()
 				if selector == 1: 
 					f2.write(line)	
+	f2.close()
 
 if step == '3':
+	# Function to parse fasta file (based on one of the Biopython IOs)
+	def read_fasta(fp):
+		name, seq = None, []
+		for line in fp:
+			line = line.rstrip()
+			if line.startswith('>'):
+				if name: yield (name, ''.join(seq))
+				name, seq = line, []
+			else:
+				seq.append(line)
+		if name: yield (name, ''.join(seq))
+
+	# Read contig fasta file
+	contig_lengths = list()
+	contig_source = args.fasta
+	with open(contig_source) as fp:
+		fastalist = list()
+		for name_contig, seq_contig in read_fasta(fp):
+			innerlist = list()
+			innerlist.append(name_contig.strip('>'))
+			innerlist.append(len(seq_contig))
+			fastalist.append(innerlist)
+
+	large_contigs = list()
+	for contig in fastalist:
+		if int(contig[1]) > 1000000:
+			large_contigs.append(contig[0]) 
+
+	# Filter
 	for i, line in enumerate(lines):
 		if not line.startswith('#'):
 			sp = line.split('\t')
 			if len(sp[2].strip()) == 1 and len(sp[3].strip()) == 1:
-				if args.mut_type.strip() == 'EMS' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')): 
-					limits()
-					ref_b = sp[2]
-					alt_b = sp[3]
-					if (
-							(selector == 1)
-							and ((ref_b.strip() == 'G' and alt_b.strip() == 'A')
-							or (ref_b.strip() == 'C' and alt_b.strip() == 'T'))
-						):
-							f2.write(line)
-							
-				elif args.mut_type.strip() == 'all' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')):
-					limits()
-					if selector == 1: 
-						f2.write(line)	
+				if str(sp[0]).strip() in large_contigs:
+					if args.mut_type.strip() == 'EMS' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')): 
+						limits()
+						ref_b = sp[2]
+						alt_b = sp[3]
+						if (
+								(selector == 1)
+								and ((ref_b.strip() == 'G' and alt_b.strip() == 'A')
+								or (ref_b.strip() == 'C' and alt_b.strip() == 'T'))
+							):
+								f2.write(line)
+								
+					elif args.mut_type.strip() == 'all' and ((str(sp[0].strip())  in chromosome) or (chromosome[0] == '*')):
+						limits()
+						if selector == 1: 
+							f2.write(line)	
+
+	f2.close()
