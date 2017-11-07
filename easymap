@@ -305,6 +305,7 @@ if data_source == "sim":
 			# Process user input
 			if workflow == "snp":
 				if sim_parameters["SimMut"]["NumberMutations"] == "" : error = 1; problems.append("JSON file requires a value for NumberMutations field.")
+				if len(sim_parameters["SimMut"]) != 1 : error = 1; problems.append("Incorrect format for SimMut field in JSON file.") 
 				if len(sim_parameters["SimRecsel"]) != 4 : error = 1; problems.append("Incorrect format for SimRecsel field in JSON file.") 
 				if len(sim_parameters["SimSeq"]) != 8 : error = 1; problems.append("Incorrect format for SimSeq field in JSON file.") 
 			else:

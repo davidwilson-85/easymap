@@ -643,6 +643,7 @@ if mut_type == 'lin':
 
 								'		</table>' + '\n'
 								'		<br>' + '\n'
+
 								)
 
 					switch = "no"
@@ -805,6 +806,7 @@ if mut_type == 'snp':
 					'		    <td>'+gene+'</th>' + '\n'
 					'		    <td>'+aminoacid+'</th>' + '\n'
 					'		  </tr>' + '\n'
+					'		<br>' + '\n'
 						)
 
 					i=i+1
@@ -881,7 +883,8 @@ if mut_type == 'snp':
 					'		</tr>' + '\n'
 
 					'		</table>' + '\n'
-
+					'		<br>' + '\n'
+					'		<br>' + '\n'
 					)
 
 		#Link to images 
