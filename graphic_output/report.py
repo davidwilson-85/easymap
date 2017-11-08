@@ -705,7 +705,7 @@ if mut_type == 'snp':
 
 	#Candidates 
 	for f in sorted(files):
-		if 'candidates_'+selected_chromosome in str(f).lower() and 'zoom' not in str(f):
+		if 'candidates_' in str(f) and selected_chromosome.lower().strip() == ((str(f).split('candidates_')[1]).split('.png')[0]).lower() and 'zoom' not in str(f):
 			output.write(
 			'		<left> <img class="img" src="'  +  str(f).split('3_workflow_output/')[-1]  + ' " align="middle" > </left>' + '\n'
 			)
