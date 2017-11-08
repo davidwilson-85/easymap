@@ -111,7 +111,7 @@ function get_problem_va {
 	then
 		#Run bowtie2 unpaired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive  -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt # --mp 3,2
+			$location/bowtie2/bowtie2 --very-sensitive $problemSample_bowtie_mp -x $f1/$my_ix -U $my_rd -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
@@ -126,7 +126,7 @@ function get_problem_va {
 	then
 		#Run bowtie2 paired to align raw F2 reads to genome 
 		{
-			$location/bowtie2/bowtie2 --very-sensitive -X 1000  -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
+			$location/bowtie2/bowtie2 --very-sensitive  $problemSample_bowtie_mp -X 1000  -x $f1/$my_ix -1 $my_rf -2 $my_rr -S $f1/alignment1.sam 2> $f2/bowtie2_problem-sample_std2.txt
 
 		} || {
 			echo $(date)': Bowtie2 returned an error during the aligment of F2 reads. See log files.' >> $my_log_file
@@ -153,7 +153,7 @@ function get_problem_va {
 	#Variant calling
 	{
 
-		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR -C50 -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_problem-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_problem-sample_std.txt
+		$location/samtools1/samtools mpileup  -B -t DP,ADF,ADR $problemSample_mpileup_C -uf $f1/$my_gs $f1/alignment1.bam 2> $f2/mpileup_problem-sample_std.txt | $location/bcftools-1.3.1/bcftools call -mv -Ov > $f1/raw_variants.vcf 2> $f2/call_problem-sample_std.txt
 		# -B: Disables probabilistic realignment for the computation of base alignment quality (BAQ). Applying this argument reduces the number of false negatives during the variant calling
 		# -t DP,ADF,ADR: output VCF file contains the specified optional columns: read depth (DP), allelic depths on the forward strand (ADF), allelic depths on the reverse strand (ADR)
 		# -uf: uncompressed vcf output / fasta imput genome file
@@ -192,7 +192,7 @@ function get_problem_va {
 	if [ $av_rd -le 25 ]; then dp_min=10 ; fi
 
 	{
-		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -fasta $f1/$my_gs -dp_min $dp_min -qual_min 50 -mut_type $mut_type  2>> $my_log_file
+		python2 $location/scripts_snp/variants-filter.py -a $f1/F2_raw.va -b $f1/F2_filtered.va -step 3 -fasta $f1/$my_gs -dp_min $dp_min -qual_min $problemSample_snpQualityTheshold -mut_type $mut_type  2>> $my_log_file
 
 	} || {
 		echo 'Error during execution of variants-filter.py with F2 data.' >> $my_log_file
