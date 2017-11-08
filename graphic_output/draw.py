@@ -106,316 +106,315 @@ def fa_vs_pos():
 
 	#FA vs POS graphs 
 	for i in fastalist:
-		if int(i[1]) > 1000000: wide=int(880*float(i[1])/max_contig_len) + 120					#<-------------------------------------------------------------------------------- SET IMAGE SIZE
-		elif int(i[1]) <= 1000000: wide=500
-		height=500
-		im = Image.new("RGB", (wide, int(height)), (255,255,255))
-		draw = ImageDraw.Draw(im)
-		
-		#get fonts from foler 'fonts'
-		fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
-
-		r = red(int(i[1]))
-
-		if 'Mb' in r:
-			max_graph_x = int(i[1]) + 10000
-
-		elif 'kb' in r: 
-			max_graph_x = int(i[1])
-
-		#Scaling factors
-		scaling_factor_x = (max_graph_x)/(wide - 120) 								#nts/pixel        
-		scaling_factor_y = (1.001/(63/100.0*height))  								#af/pixels
-
-		#Candidate region 
-		if args.my_mut == 'snp':
-			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
+		if int(i[1]) > 1000000: 
+			wide=int(880*float(i[1])/max_contig_len) + 120					#<-------------------------------------------------------------------------------- SET IMAGE SIZE
+			height=500
+			im = Image.new("RGB", (wide, int(height)), (255,255,255))
+			draw = ImageDraw.Draw(im)
 			
-			#Retrieving candidate region coordinates
-			for line in binput:
-				if line.startswith('?'):
-					sp = line.split()						
-					chromosome = sp[1].strip().lower()
-					chromosome_candidate = chromosome
-					if chromosome == i[0].lower():
-						if int(sp[2]) > 0 :
-							cr_start = int(sp[2])  
-						else:
-							cr_start = 0
-						if  int(sp[3]) < int(i[1]) :
-							cr_end = int(sp[3]) 
-						else:
-							cr_end = int(i[1])
+			#get fonts from foler 'fonts'
+			fnt2 = ImageFont.truetype('fonts/VeraMono.ttf', 14)
 
-			#Drawing candidate region:
-			if chromosome_candidate == i[0].lower():
-				cr_start_im = int(cr_start/scaling_factor_x) + 70
-				cr_end_im = int(cr_end/scaling_factor_x) + 70
-				draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(249, 222, 252) )
+			r = red(int(i[1]))
 
-		# af_candidates: framing the candidate region
-		if args.my_mut == 'af_candidates':
-			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
-			#Retrieving candidate region coordinates
-			for line in binput:
-				if line.startswith('?'):
-					sp = line.split()						
-					chromosome = sp[1].strip().lower()
-					chromosome_candidate = chromosome
-					if chromosome == i[0].lower():
-						cr_start_raw = int(sp[2])
-						cr_end_raw = int(sp[3])
-						if int(sp[2]) > 0 :
-							cr_start = int(sp[2])  
-						else:
-							cr_start = 0
-						if  int(sp[3]) < int(i[1]) :
-							cr_end = int(sp[3]) 
-						else:
-							cr_end = int(i[1])
+			if 'Mb' in r:
+				max_graph_x = int(i[1]) + 10000
 
-			if chromosome_candidate == i[0].lower():
-				#Drawing a frame for the candidate region:
-				cr_start_im = int(cr_start/scaling_factor_x) + 70
-				cr_end_im = int(cr_end/scaling_factor_x) + 70
-				fa_img_08 = int(80/100.0*height) - int(0.8/scaling_factor_y) - 1
-				draw.rectangle( [cr_start_im, int(15/100.0*height)+1, cr_end_im+1, fa_img_08], fill=(249, 222, 252), outline=(112, 112, 112) )
+			elif 'kb' in r: 
+				max_graph_x = int(i[1])
 
-				#Drawing a dotted line in the frame
-				cr_middle = ((cr_start_raw + cr_end_raw)/2)/scaling_factor_x + 70
-				h = int(16/100.0*height)
-				while h in range(int(15/100.0*height), fa_img_08):
-					draw.line((cr_middle, h) + (cr_middle, h+5), fill=(255, 0, 0, 0), width=1)
-					h = h + 10
+			#Scaling factors
+			scaling_factor_x = (max_graph_x)/(wide - 120) 								#nts/pixel        
+			scaling_factor_y = (1.001/(63/100.0*height))  								#af/pixels
+
+			#Candidate region 
+			if args.my_mut == 'snp':
+				binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
 				
-		#snps
-		r, g, b = 31, 120, 180
-		if args.my_mut == 'af_control':
-			r, g, b = 245, 120, 44
+				#Retrieving candidate region coordinates
+				for line in binput:
+					if line.startswith('?'):
+						sp = line.split()						
+						chromosome = sp[1].strip().lower()
+						chromosome_candidate = chromosome
+						if chromosome == i[0].lower():
+							if int(sp[2]) > 0 :
+								cr_start = int(sp[2])  
+							else:
+								cr_start = 0
+							if  int(sp[3]) < int(i[1]) :
+								cr_end = int(sp[3]) 
+							else:
+								cr_end = int(i[1])
 
-		for l, line in enumerate(lines):
-			sp = line.split()
-			if i[0].lower() == sp[0].lower() :
-				fa = float(sp[6])/(float(sp[6])+float(sp[5]))
-				fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
-				pos_img = int(int(sp[1])/scaling_factor_x) + 70
-				draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(r, g, b))
+				#Drawing candidate region:
+				if chromosome_candidate == i[0].lower():
+					cr_start_im = int(cr_start/scaling_factor_x) + 70
+					cr_end_im = int(cr_end/scaling_factor_x) + 70
+					draw.rectangle( [cr_start_im, int(15/100.0*height), cr_end_im, int(80/100.0*height)], fill=(249, 222, 252) )
 
-		if args.my_snp_analysis_type == 'f2wt' and args.my_mut == 'snp':
-			
+			# af_candidates: framing the candidate region
+			if args.my_mut == 'af_candidates':
+				binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
+				#Retrieving candidate region coordinates
+				for line in binput:
+					if line.startswith('?'):
+						sp = line.split()						
+						chromosome = sp[1].strip().lower()
+						chromosome_candidate = chromosome
+						if chromosome == i[0].lower():
+							cr_start_raw = int(sp[2])
+							cr_end_raw = int(sp[3])
+							if int(sp[2]) > 0 :
+								cr_start = int(sp[2])  
+							else:
+								cr_start = 0
+							if  int(sp[3]) < int(i[1]) :
+								cr_end = int(sp[3]) 
+							else:
+								cr_end = int(i[1])
 
-			#Filler variants 
-			problem_var = open(project + '/1_intermediate_files/filler_variants.va', 'r')
-			for line in problem_var:
-				sp = line.split()
-				if i[0].lower() == sp[0].lower():
-					#f2 mut
-					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
-					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
-					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(237, 194, 168)) 
-					#f2wt snps
-					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
-					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
-					pos_img = int(int(sp[1])/scaling_factor_x) + 70
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(167, 190, 206))
+				if chromosome_candidate == i[0].lower():
+					#Drawing a frame for the candidate region:
+					cr_start_im = int(cr_start/scaling_factor_x) + 70
+					cr_end_im = int(cr_end/scaling_factor_x) + 70
+					fa_img_08 = int(80/100.0*height) - int(0.8/scaling_factor_y) - 1
+					draw.rectangle( [cr_start_im, int(15/100.0*height)+1, cr_end_im+1, fa_img_08], fill=(249, 222, 252), outline=(112, 112, 112) )
 
+					#Drawing a dotted line in the frame
+					cr_middle = ((cr_start_raw + cr_end_raw)/2)/scaling_factor_x + 70
+					h = int(16/100.0*height)
+					while h in range(int(15/100.0*height), fa_img_08):
+						draw.line((cr_middle, h) + (cr_middle, h+5), fill=(255, 0, 0, 0), width=1)
+						h = h + 10
+					
+			#snps
+			r, g, b = 31, 120, 180
+			if args.my_mut == 'af_control':
+				r, g, b = 245, 120, 44
 
-			'''
-			# Problem variants
-			problem_var = open(project + '/1_intermediate_files/F2_filtered.va', 'r')
-			for line in problem_var:
-				sp = line.split()
-				if i[0].lower() == sp[0].lower():
-					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
-					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
-					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(167, 190, 206)) 
-
-			#Control variants
-			problem_var = open(project + '/1_intermediate_files/control_filtered.va', 'r')
-			for line in problem_var:
-				sp = line.split()
-				if i[0].lower() == sp[0].lower():
-					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
-					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
-					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(237, 194, 168)) 
-			'''
-
-
-			#Mapping variants
 			for l, line in enumerate(lines):
 				sp = line.split()
-				if i[0].lower() == sp[0].lower():
-					#f2 mut
-					fa = float(sp[8])/(float(sp[8])+float(sp[7]))
-					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
-					pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(245, 120, 44)) 
-					#f2wt snps
+				if i[0].lower() == sp[0].lower() :
 					fa = float(sp[6])/(float(sp[6])+float(sp[5]))
 					fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
 					pos_img = int(int(sp[1])/scaling_factor_x) + 70
-					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(31, 120, 180))
+					draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(r, g, b))
+
+			if args.my_snp_analysis_type == 'f2wt' and args.my_mut == 'snp':
+				
+
+				#Filler variants 
+				problem_var = open(project + '/1_intermediate_files/filler_variants.va', 'r')
+				for line in problem_var:
+					sp = line.split()
+					if i[0].lower() == sp[0].lower():
+						#f2 mut
+						fa = float(sp[8])/(float(sp[8])+float(sp[7]))
+						fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+						pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
+						draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(237, 194, 168)) 
+						#f2wt snps
+						fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+						fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
+						pos_img = int(int(sp[1])/scaling_factor_x) + 70
+						draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(167, 190, 206))
 
 
-		my_cross = str(args.my_cross)
-		#Boost / mm 																						
-		if args.my_mut == 'snp':
-			binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
-			blines = binput.readlines()
+				'''
+				# Problem variants
+				problem_var = open(project + '/1_intermediate_files/F2_filtered.va', 'r')
+				for line in problem_var:
+					sp = line.split()
+					if i[0].lower() == sp[0].lower():
+						fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+						fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+						pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
+						draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(167, 190, 206)) 
 
-			#Boost line
-			if my_cross == 'oc' :
-				for b, bline in enumerate(blines):
-					sp = bline.split()
-					if bline.startswith('!'):
-						boost_max = float(sp[3])
-				for b, bline in enumerate(blines):
-					sp = bline.split()					
-					if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
-						boost_value = float(sp[3].strip())/boost_max
-						boost_value_img = int(80/100.0*height) - int(boost_value/scaling_factor_y )
+				#Control variants
+				problem_var = open(project + '/1_intermediate_files/control_filtered.va', 'r')
+				for line in problem_var:
+					sp = line.split()
+					if i[0].lower() == sp[0].lower():
+						fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+						fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+						pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
+						draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(237, 194, 168)) 
+				'''
 
-						window_position = int(sp[1])
-						window_position_img = int(window_position/scaling_factor_x) + 70
 
-						try:
-							draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=1)	
-							window_position_img_2 = window_position_img
-							boost_value_img_2 = boost_value_img
+				#Mapping variants
+				for l, line in enumerate(lines):
+					sp = line.split()
+					if i[0].lower() == sp[0].lower():
+						#f2 mut
+						fa = float(sp[8])/(float(sp[8])+float(sp[7]))
+						fa_img = int(80/100.0*height) - int(fa/scaling_factor_y)
+						pos_img = int(int(sp[1])/scaling_factor_x) + int(70)
+						draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(245, 120, 44)) 
+						#f2wt snps
+						fa = float(sp[6])/(float(sp[6])+float(sp[5]))
+						fa_img = int(80/100.0*height) - int(fa/scaling_factor_y) - 1
+						pos_img = int(int(sp[1])/scaling_factor_x) + 70
+						draw.ellipse((pos_img-2, fa_img-2, pos_img+2, fa_img+2), fill=(31, 120, 180))
 
-						except:
-							window_position_img_2 = window_position_img
-							boost_value_img_2 = boost_value_img
+
+			my_cross = str(args.my_cross)
+			#Boost / mm 																						
+			if args.my_mut == 'snp':
+				binput = open(project + '/1_intermediate_files/map_info.txt', 'r')
+				blines = binput.readlines()
+
+				#Boost line
+				if my_cross == 'oc' :
+					for b, bline in enumerate(blines):
+						sp = bline.split()
+						if bline.startswith('!'):
+							boost_max = float(sp[3])
+					for b, bline in enumerate(blines):
+						sp = bline.split()					
+						if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+							boost_value = float(sp[3].strip())/boost_max
+							boost_value_img = int(80/100.0*height) - int(boost_value/scaling_factor_y )
+
+							window_position = int(sp[1])
+							window_position_img = int(window_position/scaling_factor_x) + 70
+
+							try:
+								draw.line(((window_position_img, boost_value_img) + (window_position_img_2, boost_value_img_2)), fill=(255, 0, 0, 0), width=1)	
+								window_position_img_2 = window_position_img
+								boost_value_img_2 = boost_value_img
+
+							except:
+								window_position_img_2 = window_position_img
+								boost_value_img_2 = boost_value_img
+
+					window_position_img = None 
+					boost_value_img = None
+					window_position_img_2 = None 
+					boost_value_img_2 = None
+
+				#MM line
+				if my_cross == 'oc' :
+					for b, bline in enumerate(blines):
+						sp = bline.split()					
+						if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
+							mm_value = float(sp[2].strip())
+							mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+							window_position = int(sp[1])
+							window_position_img = int(window_position/scaling_factor_x) + 70
+							try:
+								draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
+								window_position_img_2 = window_position_img
+								mm_value_img_2 = mm_value_img
+							except:
+								window_position_img_2 = window_position_img
+								mm_value_img_2 = mm_value_img
+
+				if my_cross == 'bc' :
+					r, g, bl = 46, 255, 0
+					if args.my_snp_analysis_type == 'f2wt':
+						r, g, bl = 255, 0, 255
+					for b, bline in enumerate(blines):
+						sp = bline.split()					
+						if bline.startswith('@') and sp[3].lower().strip('>') == i[0].lower():
+							mm_value = float(sp[2].strip())
+							mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
+							window_position = int(sp[1])
+							window_position_img = int(window_position/scaling_factor_x) + 70
+							try:
+								draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(r, g, bl), width=1)	
+								window_position_img_2 = window_position_img
+								mm_value_img_2 = mm_value_img
+							except:
+								window_position_img_2 = window_position_img
+								mm_value_img_2 = mm_value_img
 
 				window_position_img = None 
-				boost_value_img = None
+				mm_value_img = None
 				window_position_img_2 = None 
-				boost_value_img_2 = None
-
-			#MM line
-			if my_cross == 'oc' :
-				for b, bline in enumerate(blines):
-					sp = bline.split()					
-					if bline.startswith('@') and sp[4].lower().strip('>') == i[0].lower():
-						mm_value = float(sp[2].strip())
-						mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
-						window_position = int(sp[1])
-						window_position_img = int(window_position/scaling_factor_x) + 70
-						try:
-							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(46, 255, 0), width=1)	
-							window_position_img_2 = window_position_img
-							mm_value_img_2 = mm_value_img
-						except:
-							window_position_img_2 = window_position_img
-							mm_value_img_2 = mm_value_img
-
-			if my_cross == 'bc' :
-				r, g, bl = 46, 255, 0
-				if args.my_snp_analysis_type == 'f2wt':
-					r, g, bl = 255, 0, 255
-				for b, bline in enumerate(blines):
-					sp = bline.split()					
-					if bline.startswith('@') and sp[3].lower().strip('>') == i[0].lower():
-						mm_value = float(sp[2].strip())
-						mm_value_img = int(80/100.0*height) - int(mm_value/scaling_factor_y )
-						window_position = int(sp[1])
-						window_position_img = int(window_position/scaling_factor_x) + 70
-						try:
-							draw.line(((window_position_img, mm_value_img) + (window_position_img_2, mm_value_img_2)), fill=(r, g, bl), width=1)	
-							window_position_img_2 = window_position_img
-							mm_value_img_2 = mm_value_img
-						except:
-							window_position_img_2 = window_position_img
-							mm_value_img_2 = mm_value_img
-
-			window_position_img = None 
-			mm_value_img = None
-			window_position_img_2 = None 
-			mm_value_img_2 = None
+				mm_value_img_2 = None
 
 
-		#Axes
-		draw.line(((wide - 49), int(15/100.0*height)) + ((wide - 49), int(80/100.0*height)), fill=(255, 255, 255, 0), width=2)  #cleanup
-		draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
-		draw.line((68, int(80/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#X axis
-		draw.line(((wide - 50), int(15/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-Y axis
-		draw.line((68, int(15/100.0*height)) + ((wide - 50), int(15/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-X axis
+			#Axes
+			draw.line(((wide - 49), int(15/100.0*height)) + ((wide - 49), int(80/100.0*height)), fill=(255, 255, 255, 0), width=2)  #cleanup
+			draw.line((68, int(15/100.0*height)) + (68, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#Y axis
+			draw.line((68, int(80/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#X axis
+			draw.line(((wide - 50), int(15/100.0*height)) + ((wide - 50), int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-Y axis
+			draw.line((68, int(15/100.0*height)) + ((wide - 50), int(15/100.0*height)), fill=(0, 0, 0, 0), width=1)	#-X axis
 
-		
-		#Axis rulers_____________________
-		#X Axis
+			
+			#Axis rulers_____________________
+			#X Axis
 
-		if int(i[1]) > 1000000:
-			mbs = int(0/scaling_factor_x) + 68
-			x_tag = 0
-			while mbs in range(68, wide-50):
-				draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
-				if len(str(x_tag)) == 1:
-					draw.text(((mbs - 4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-				elif len(str(x_tag)) == 2: 
-					draw.text(((mbs - 8), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-				
-				mbs = mbs + 1000000/scaling_factor_x +1
-				x_tag = x_tag + 1
+			if int(i[1]) > 1000000:
+				mbs = int(0/scaling_factor_x) + 68
+				x_tag = 0
+				while mbs in range(68, wide-50):
+					draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+					if len(str(x_tag)) == 1:
+						draw.text(((mbs - 4), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
+					elif len(str(x_tag)) == 2: 
+						draw.text(((mbs - 8), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
+					
+					mbs = mbs + 1000000/scaling_factor_x +1
+					x_tag = x_tag + 1
 
-		elif int(i[1]) <= 1000000:
-			mbs = int(0/scaling_factor_x) + 68
-			x_tag = 0
-			while mbs in range(68, wide-50):
-				draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
-				draw.text(((mbs - 4*len(str(x_tag))), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
-				mbs = mbs + 100000/scaling_factor_x +1
-				x_tag = x_tag + 100000
+			elif int(i[1]) <= 1000000:
+				mbs = int(0/scaling_factor_x) + 68
+				x_tag = 0
+				while mbs in range(68, wide-50):
+					draw.line((mbs, int(81/100.0*height) ) + (mbs, int(80/100.0*height)), fill=(0, 0, 0, 0), width=1)	
+					draw.text(((mbs - 4*len(str(x_tag))), (int(81.8/100.0*height))), (str(x_tag).strip()), font=fnt2, fill=(0,0,0,255))
+					mbs = mbs + 100000/scaling_factor_x +1
+					x_tag = x_tag + 100000
 
-		#Y axis
-		fa_img_0 = int(80/100.0*height) - int(0/scaling_factor_y) - 1		
-		fa_img_1 = int(80/100.0*height) - int(1/scaling_factor_y) - 1
-		fa_img_05 = int(80/100.0*height) - int(0.5/scaling_factor_y) - 1
-		fa_img_025 = int(80/100.0*height) - int(0.25/scaling_factor_y) - 1
-		fa_img_075 = int(80/100.0*height) - int(0.75/scaling_factor_y) - 1
+			#Y axis
+			fa_img_0 = int(80/100.0*height) - int(0/scaling_factor_y) - 1		
+			fa_img_1 = int(80/100.0*height) - int(1/scaling_factor_y) - 1
+			fa_img_05 = int(80/100.0*height) - int(0.5/scaling_factor_y) - 1
+			fa_img_025 = int(80/100.0*height) - int(0.25/scaling_factor_y) - 1
+			fa_img_075 = int(80/100.0*height) - int(0.75/scaling_factor_y) - 1
 
-		draw.line(( 68 , fa_img_0 +1) + ( 63 , fa_img_0 +1 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_1 ) + ( 63 , fa_img_1 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_05 ) + ( 63 , fa_img_05 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_025 ) + ( 65 , fa_img_025 ), fill=(0, 0, 0, 0), width=1)	
-		draw.line(( 68 , fa_img_075 ) + ( 65 , fa_img_075 ), fill=(0, 0, 0, 0), width=1)	
+			draw.line(( 68 , fa_img_0 +1) + ( 63 , fa_img_0 +1 ), fill=(0, 0, 0, 0), width=1)	
+			draw.line(( 68 , fa_img_1 ) + ( 63 , fa_img_1 ), fill=(0, 0, 0, 0), width=1)	
+			draw.line(( 68 , fa_img_05 ) + ( 63 , fa_img_05 ), fill=(0, 0, 0, 0), width=1)	
+			draw.line(( 68 , fa_img_025 ) + ( 65 , fa_img_025 ), fill=(0, 0, 0, 0), width=1)	
+			draw.line(( 68 , fa_img_075 ) + ( 65 , fa_img_075 ), fill=(0, 0, 0, 0), width=1)	
 
-		draw.text(((48), fa_img_0-6), ( '0' ), font=fnt2, fill=(0,0,0,255))
-		draw.text(((32), fa_img_1-8), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
-		draw.text(((32), fa_img_05-8), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
-
-
-		#Y axis label
-		txt=Image.new('L', (140, 20))
-		d = ImageDraw.Draw(txt)
-		d.text( (0, 0), "Allele frequency",  font=fnt2, fill=255)
-		w=txt.rotate(90,  expand=1)
-		im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,150),  w)
-
-		#X axis label
-		if int(i[1]) > 1000000: x_title = str(i[0]) + ' (Mb)'
-		if int(i[1]) <= 1000000: x_title = str(i[0]) + ' (bp)'
-		w, h = draw.textsize(str(x_title))
-		draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
+			draw.text(((48), fa_img_0-6), ( '0' ), font=fnt2, fill=(0,0,0,255))
+			draw.text(((32), fa_img_1-8), ( '1.0' ), font=fnt2, fill=(0,0,0,255))
+			draw.text(((32), fa_img_05-8), ( '0.5' ), font=fnt2, fill=(0,0,0,255))
 
 
-		#Crop and save image, specifying the format with the extension
-		w, h = im.size
-		if args.my_mut == 'snp':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/mapping_' + str(i[0]) + '.png')
+			#Y axis label
+			txt=Image.new('L', (140, 20))
+			d = ImageDraw.Draw(txt)
+			d.text( (0, 0), "Allele frequency",  font=fnt2, fill=255)
+			w=txt.rotate(90,  expand=1)
+			im.paste( ImageOps.colorize(w, (0,0,0), (0,0,0)), (2,150),  w)
 
-		if args.my_mut == 'af_control':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/control_' + str(i[0]) + '.png')
+			#X axis label
+			if int(i[1]) > 1000000: x_title = str(i[0]) + ' (Mb)'
+			if int(i[1]) <= 1000000: x_title = str(i[0]) + ' (bp)'
+			w, h = draw.textsize(str(x_title))
+			draw.text((( (wide-120)/2- w/2 +70), (int(87/100.0*height))), (x_title), font=fnt2, fill=(0,0,0,255))
 
-		if args.my_mut == 'af_sample':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/problem_' + str(i[0]) + '.png')
 
-		if args.my_mut == 'af_candidates':
-			im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/candidates_' + str(i[0]) + '.png')
+			#Crop and save image, specifying the format with the extension
+			w, h = im.size
+			if args.my_mut == 'snp':
+				im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/mapping_' + str(i[0]) + '.png')
 
+			if args.my_mut == 'af_control':
+				im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/control_' + str(i[0]) + '.png')
+
+			if args.my_mut == 'af_sample':
+				im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/problem_' + str(i[0]) + '.png')
+
+			if args.my_mut == 'af_candidates':
+				im.crop((0, 60, w-0, h-40)).save(project + '/3_workflow_output/candidates_' + str(i[0]) + '.png')
 
 #############################################################################################################
 #																											#
