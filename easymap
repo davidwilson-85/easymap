@@ -362,6 +362,9 @@ if data_source == "sim":
 									already = 1
 									error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format.")
 
+							try: int(v[0]); int(v[1])
+							except: error = 1; problems.append("JSON file - SimRecsel - RecombinationFrequencies: the parameter provided has an incorrect format. Use integers.")
+
 							if len(v) != 2:
 								if already != 1:
 									already = 1
