@@ -1,18 +1,19 @@
 
 {
 	"SimMut": {
-		"NumberMutations":"1"
+		"NumberMutations":"100"
 	},
 	"SimRecsel": {
 		"ContigCausalMutation":"1",
-		"PositionCausalMutation":"300000",
+		"PositionCausalMutation":"3000000",
 		"NumberRecombinantChromosomes":"100",
 		"RecombinationFrequencies": {
-			"1":"0,24-1,42-2,25-3,6-4,1-5,2"
+			"1":"0,24-1,42-2,25-3,6-4,1-5,2",
+			"2":"0,24-1,42-2,25-3,6-4,1-5,2"
 		}
 	},
 	"SimSeq": {
-		"Library":"pe",
+		"Library":"se",
 		"FragmentSize":"500",
 		"FragmentSd":"100",
 		"ReadDepth":"30",
