@@ -32,10 +32,6 @@
 #
 
 
-###################################################
-## TO DO:
-## -ADD SPLICING IN EXONS!!!!!!!!!!!!!!!!!!!!
-###################################################
 
 
 
@@ -209,7 +205,7 @@ with open(gff_source) as input_gff:
 		if not line_gff.startswith("#"):
 			fields_gff = line_gff.split('\t')
 			if fields_gff[2].lower() == 'cds' or fields_gff[2].lower() == 'exon' or fields_gff[2].lower() == 'five_prime_utr' or fields_gff[2].lower() == 'three_prime_utr':
-				useful_gff_info = fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[2].lower(), fields_gff[8][7:18].upper()
+				useful_gff_info = fields_gff[0].lower(), int(fields_gff[3]), int(fields_gff[4]), fields_gff[2].lower(), fields_gff[8]
 				gff_array2.append(useful_gff_info)
 
 # Analyze variants that are marked as interrupting a mRNA or putative regulatory region
@@ -223,113 +219,171 @@ for variant_info in variants_info:
 		
 		for feature in gff_array2:
 			
-			if feature[3] != 'exon': # This if statements is necessary because array also exon records
-				if variant_info[9] == feature[4] and variant_info[2] >= feature[1] and variant_info[2] <= feature[2]:
+			if feature[3] != 'exon': # This if statements is necessary because array also coatains exon records (besides cds and utrs)
+				if variant_info[9] in feature[4] and variant_info[2] >= feature[1] and variant_info[2] <= feature[2]:
 					feature_hit = feature[3]
 		
-		# If feature hit is CDS, evaluate if the protein is modified
-		if feature_hit == 'cds':
-			
-			# Create a list with the start and end coordinates of each cds stretch of the gene
-			cds_list = []
-			for feature in gff_array2:
-				if feature[4] == variant_info[9] and feature[3] == 'cds':
-					cds_coords = feature[1], feature[2]
-					cds_list.append(cds_coords)
-			
-			# Reconstruct the coding sequence of the wild type gene.
-			# Currently, this is implemented for a single fasta file with all the chromosomes in it.
-			# Maybe single-chromosome fasta files will be used.
-			target_fasta_header = '>' + variant_info[1]
-			
-			#######################################
-			#######################################
-			#######################################
-			#######################################
-			#######################################
-			#######################################		
-			with open(contigs_source) as fp:
-				for name_contig, seq_contig in read_fasta(fp): # Create an array with the names and sequences of the contigs in the fasta input using the function 'read_fasta(fp)'
-					if name_contig.lower() == target_fasta_header.lower(): # Only work with the contig where the mutation lies
-						cds_seq_list_wt = []
-						cds_seq_list_mt = []
-						for cds in cds_list:
-							cds_seq = seq_contig[cds[0]-1 : cds[1]]
-							
-							if cds[0]-1 <= variant_info[2] and cds[1] >= variant_info[2]:
-								# Calculate the position of the mutation in the CDS sequence
-								relative_mut_pos = variant_info[2] - cds[0]
-								
-								# Replace wt-base for mut-base at mut-pos (if input is large insertions, 
-								# substitute wt-base for the symbol'-').
-								cds_seq_as_list = list(cds_seq)									
-								cds_seq_as_list[relative_mut_pos] = variant_info[4]
-								cds_seq_mut = ''.join(cds_seq_as_list)
-								
-								# Append cds wt seq to wt list and cds mut seq to mt list
-								# If mRNA is in the reverse strand, reverse complement the cds sequences
-								# when adding them to the lists 'cds_seq_list_wt' and 'cds_seq_list_mt'
-								if variant_info[8] == '+':
-									cds_seq_list_wt.append(cds_seq)
-									cds_seq_list_mt.append(cds_seq_mut)
-								if variant_info[8] == '-':
-									cds_seq_list_wt.append(reverse_complementary(cds_seq))
-									cds_seq_list_mt.append(reverse_complementary(cds_seq_mut))
-							
-							else:
-								if variant_info[8] == '+':
-									cds_seq_list_wt.append(cds_seq)
-									cds_seq_list_mt.append(cds_seq)
-								if variant_info[8] == '-':
-									cds_seq_list_wt.append(reverse_complementary(cds_seq))
-									cds_seq_list_mt.append(reverse_complementary(cds_seq))					
-			
-			# Reconstruct the coding sequence of the mutant gene
-			full_cds_seq_wt = ''.join(cds_seq_list_wt)
-			full_cds_seq_mt = ''.join(cds_seq_list_mt)
-						
-			if input_type == 'snp':
-				# Translate the coding sequences of the wild type and mutant genes
-				prot_wt = dna_to_prot(full_cds_seq_wt)
-				prot_mt = dna_to_prot(full_cds_seq_mt)
-				
-				# Determine if protein has an amino acid change. If so, store its position and the wt and mut aas
-				aa_change = False
-				aa_position = 1
-				for aa_wt, aa_mt in zip(prot_wt, prot_mt):
-					if aa_wt != aa_mt:
-						aa_change = True
-						result_aa_wt, result_aa_mt = aa_wt, aa_mt
-						result_aa_position = aa_position								
-					aa_position += 1
-				
-				if aa_change == False:
-					result_aa_wt, result_aa_mt, result_aa_position = '-', '-', 'no aa change'
-				
-				# Write info as a comma-separated list to the list 'variants_info2'
-				condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], feature_hit, result_aa_position, result_aa_wt, result_aa_mt
-				variants_info2.append(condensed_info)
-			
-			if input_type == 'lim':
-				#Determine position of insertion in protein sequence
-				result_aa_position = full_cds_seq_mt.find('-')
-				
-				# Write info as a comma-separated list to the list 'variants_info2'
-				condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], feature_hit, result_aa_position, '-', '-'
-				variants_info2.append(condensed_info)
+		# Obtain and store the exons coordinates of the current gene (this is needed for both exon and intron muations)
+		exon_coords_list = []
+		for feature in gff_array2:
+			if variant_info[9] == feature[4] and feature[3] == 'exon':
+				exon_coords = feature[1],feature[2]
+				exon_coords_list.append(exon_coords)
 		
-		elif feature_hit == 'intron':
-			# Obtain a list with the start and end coordinates of the exons of the hit gene
-			exon_coords_list = []
-			for feature in gff_array2:
-				if variant_info[9] == feature[4] and feature[3] == 'exon':
-					exon_coords = feature[1],feature[2]
-					exon_coords_list.append(exon_coords)
+		number_of_exons = len(exon_coords_list)
+
+		# Reverse the list with exon coordinates to more easily calculate intron boundaries downstream
+		if variant_info[8] == '-':
+			exon_coords_list.reverse()
+
+		# If feature hit is an exon evaluate if splicing signals are affected
+		if feature_hit != 'intron':
+
+			# Only take into account the first and last bases of each exon (Brent & Guigo 2004 - Recent advances in gene structure prediction. Current Opinion in Structural Biology)
+			numberOfExonBasesConsidered = 1
+
+			exon_counter = 1
+			exon_left_end_hit = False
+			exon_right_end_hit = False
 			
-			# I reverse the list with exon coordinates to more easily calculate intron boundaries downstream
-			if variant_info[8] == '-':
-				exon_coords_list.reverse()
+			# Loop through the exon coordinates and compare them with the mutation position to find possible splicing sites affected
+			exon_splicing_hit = False
+			while exon_counter <= number_of_exons:
+
+				exon_left_coord = exon_coords_list[exon_counter-1][0]
+				exon_right_coord = exon_coords_list[exon_counter-1][1]
+				
+				if exon_counter == 1:
+					if abs(int(variant_info[2]) - exon_right_coord) < numberOfExonBasesConsidered:
+						exon_affected = exon_counter
+						exon_end_affected = 'right'
+						exon_splicing_hit = True
+						break
+				elif exon_counter == number_of_exons:
+					if abs(int(variant_info[2]) - exon_left_coord) < numberOfExonBasesConsidered:
+						exon_affected = exon_counter
+						exon_end_affected = 'left'
+						exon_splicing_hit = True
+						break
+				else:
+					if abs(int(variant_info[2]) - exon_left_coord) < numberOfExonBasesConsidered:
+						exon_affected = exon_counter
+						exon_end_affected = 'left'
+						exon_splicing_hit = True
+						break
+					if abs(int(variant_info[2]) - exon_right_coord) < numberOfExonBasesConsidered:
+						exon_affected = exon_counter
+						exon_end_affected = 'right'
+						exon_splicing_hit = True
+						break
+
+				exon_counter += 1
 			
+			if exon_splicing_hit == True:
+				if variant_info[8] == '-':
+					exon_affected = number_of_exons - exon_affected + 1
+					if exon_end_affected == 'left': exon_end_affected = '3\''
+					if exon_end_affected == 'right': exon_end_affected = '5\''
+				else:
+					if exon_end_affected == 'left': exon_end_affected = '5\''
+					if exon_end_affected == 'right': exon_end_affected = '3\''
+
+				exonSplicingSignal = ' (putative splicing signal in the ' + exon_end_affected + ' end of exon ' + str(exon_affected) + ' affected)'
+			
+			else:
+				exonSplicingSignal = ''
+
+
+			# If feature hit is CDS, evaluate if mutation has an efect on the aminoacid sequence
+			if feature_hit == 'cds':
+
+				# Create a list with the start and end coordinates of each cds stretch of the gene
+				cds_list = []
+				for feature in gff_array2:
+					if variant_info[9] in feature[4] and feature[3] == 'cds':
+						cds_coords = feature[1], feature[2]
+						cds_list.append(cds_coords)
+
+				# Reconstruct the coding sequence of the wild type gene.
+				target_fasta_header = '>' + variant_info[1]
+						
+				with open(contigs_source) as fp:
+					for name_contig, seq_contig in read_fasta(fp): # Create an array with the names and sequences of the contigs in the fasta input using the function 'read_fasta(fp)'
+						if name_contig.lower() == target_fasta_header.lower(): # Only work with the contig where the mutation lies
+							cds_seq_list_wt = []
+							cds_seq_list_mt = []
+							for cds in cds_list:
+								cds_seq = seq_contig[cds[0]-1 : cds[1]]
+								
+								if cds[0]-1 <= variant_info[2] and cds[1] >= variant_info[2]:
+									# Calculate the position of the mutation in the CDS sequence
+									relative_mut_pos = variant_info[2] - cds[0]
+									
+									# Replace wt-base for mut-base at mut-pos (if input is large insertions, 
+									# substitute wt-base for the symbol'-').
+									cds_seq_as_list = list(cds_seq)									
+									cds_seq_as_list[relative_mut_pos] = variant_info[4]
+									cds_seq_mut = ''.join(cds_seq_as_list)
+									
+									# Append cds wt seq to wt list and cds mut seq to mt list
+									# If mRNA is in the reverse strand, reverse complement the cds sequences
+									# when adding them to the lists 'cds_seq_list_wt' and 'cds_seq_list_mt'
+									if variant_info[8] == '+':
+										cds_seq_list_wt.append(cds_seq)
+										cds_seq_list_mt.append(cds_seq_mut)
+									if variant_info[8] == '-':
+										cds_seq_list_wt.append(reverse_complementary(cds_seq))
+										cds_seq_list_mt.append(reverse_complementary(cds_seq_mut))
+								
+								else:
+									if variant_info[8] == '+':
+										cds_seq_list_wt.append(cds_seq)
+										cds_seq_list_mt.append(cds_seq)
+									if variant_info[8] == '-':
+										cds_seq_list_wt.append(reverse_complementary(cds_seq))
+										cds_seq_list_mt.append(reverse_complementary(cds_seq))					
+				
+				# Reconstruct the coding sequence of the mutant gene
+				full_cds_seq_wt = ''.join(cds_seq_list_wt)
+				full_cds_seq_mt = ''.join(cds_seq_list_mt)
+					
+				if input_type == 'snp':	
+					# Translate the coding sequences of the wild type and mutant genes
+					prot_wt = dna_to_prot(full_cds_seq_wt)
+					prot_mt = dna_to_prot(full_cds_seq_mt)
+					
+					# Determine if protein has an amino acid change. If so, store its position and the wt and mut aas
+					aa_change = False
+					aa_position = 1
+					for aa_wt, aa_mt in zip(prot_wt, prot_mt):
+						if aa_wt != aa_mt:
+							aa_change = True
+							result_aa_wt, result_aa_mt = aa_wt, aa_mt
+							result_aa_position = aa_position								
+						aa_position += 1
+					
+					if aa_change == False:
+						result_aa_wt, result_aa_mt, result_aa_position = '-', '-', 'no aa change'
+					
+					# Write info as a comma-separated list to the list 'variants_info2'
+					condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], feature_hit + exonSplicingSignal, result_aa_position, result_aa_wt, result_aa_mt
+					variants_info2.append(condensed_info)
+				
+				if input_type == 'lim':
+					#Determine position of insertion in protein sequence
+					result_nt_position = full_cds_seq_mt.find('-') + 1
+					
+					# Write info as a comma-separated list to the list 'variants_info2'
+					condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], feature_hit, result_nt_position, '-', '-'
+					variants_info2.append(condensed_info)
+			
+			else:
+				condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], feature_hit + exonSplicingSignal, '-', '-', '-'
+				variants_info2.append(condensed_info)
+
+		# If intron is hit, evaluate if splicing is affected
+		elif feature_hit == 'intron' and input_type == 'snp':
+
 			# Obtain a list with the index, start and end coordinates of the introns of the hit gene
 			# First, set some variables to starting values
 			number_of_introns = len(exon_coords_list) - 1
@@ -337,7 +391,7 @@ for variant_info in variants_info:
 			intron_left_end_hit = False
 			intron_right_end_hit = False
 			
-			# Loop through the intron coordinates (determines on the fly based on exon coordinates
+			# Loop through the intron coordinates (determined on the fly based on exon coordinates
 			# in 'exon_coords_list') and compare them with mutation position to find possible splicing
 			# sites affected
 			while intron_counter <= number_of_introns:
@@ -347,6 +401,7 @@ for variant_info in variants_info:
 				if 0 <= distance_left < 2:
 					intron_left_end_hit = True
 					result_intron_number = intron_counter
+					break
 				
 				intron_right_coord = exon_coords_list[intron_counter][0] - 1
 				distance_right = intron_right_coord - variant_info[2]
@@ -354,6 +409,7 @@ for variant_info in variants_info:
 				if 0 <= distance_right < 2:
 					intron_right_end_hit = True
 					result_intron_number = intron_counter
+					break
 					
 				intron_counter += 1
 			
@@ -365,16 +421,17 @@ for variant_info in variants_info:
 					result_intron_number = number_of_introns - result_intron_number +1
 			
 			if intron_left_end_hit == True:
-				intron_result = 'intron, putative splicing ' + str(intron_left_end) + ' sequence of intron ' + str(result_intron_number) + ' affected'
+				intron_result = 'intron (putative splicing ' + str(intron_left_end) + ' sequence of intron ' + str(result_intron_number) + ' affected)'
 			elif intron_right_end_hit == True:
-				intron_result = 'intron, putative splicing ' + str(intron_right_end) + ' sequence of intron ' + str(result_intron_number) + ' affected'
+				intron_result = 'intron (putative splicing ' + str(intron_right_end) + ' sequence of intron ' + str(result_intron_number) + ' affected)'
 			else:
 				intron_result = 'intron'
 			
 			# Write info as a comma-separated list to the list 'variants_info2'
 			condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], intron_result, '-', '-', '-'
 			variants_info2.append(condensed_info)
-				
+	
+		# Introns in and lim input type
 		else:
 			# If transcriptional unit is hit but is neither in cds or in intron
 			condensed_info = variant_info[0], variant_info[1], variant_info[2], variant_info[3], variant_info[4], variant_info[5], variant_info[6], variant_info[7], variant_info[8], variant_info[9], feature_hit, '-', '-', '-'
@@ -392,9 +449,12 @@ del input_mut, input_gff, variants_info
 # Create output file
 output = open(output, 'w')
 
+if input_type == 'snp': header_pos = 'aa_pos'
+if input_type == 'lim': header_pos = 'nt_pos'
+
 # If no gene annotation file provided, simply print 'variants_info2' to output file.
 if gene_ann_source == 'user_data/n/p':
-	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')
+	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\t' + header_pos + '\taa_ref\taa_alt\tgene_annotation_info\n')
 		
 	for variant in variants_info2:	
 		for index, field in enumerate(variant):
@@ -450,8 +510,8 @@ else:
 		else:
 			tmp_variant_info2_list = list(variant_info2); tmp_variant_info2_list.append('-'); variant_info2 = tuple(tmp_variant_info2_list)
 			variants_info3.append(variant_info2)
-	
-	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\taa_pos\taa_ref\taa_alt\tgene_annotation_info\n')	
+
+	output.write('@type\tcontig\tposition\tref_base\talt_base\thit\tmrna_start\tmrna_end\tstrand\tgene_model\tgene_element\t' + header_pos + '\taa_ref\taa_alt\tgene_annotation_info\n')	
 	
 	for variant in variants_info3:		
 		for index, field in enumerate(variant):
