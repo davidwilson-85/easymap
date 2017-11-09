@@ -539,13 +539,13 @@ script_response = proc.stdout.read()
 response = script_response.split(",")
 try:
 	if int(response[0]) >= 100:
-		error = 1; problems.append("The number of gigabytes in the folder /user_projects exceeds the maximum allowed in the config/config file ("+response[2].strip()+")")
+		error = 1; problems.append("The number of gigabytes in the folders /user_data and /user_projects exceeds the maximum allowed in the /config/config file ("+response[2].strip()+" Gb)")
 except:
 	error = 1; problems.append(response[0])
 try:
 	int(response[1])
 	if int(response[1]) >= 100:
-		error = 1; problems.append("The number of projects currently running exceeds the maximum allowed in the config/config file ("+response[3].strip()+") [Manually killed projects can be interpreted as running by easymap. This can be solved by removing the project folder]")
+		error = 1; problems.append("The number of projects currently running exceeds the maximum allowed in the config/config file ("+response[3].strip()+" project) [Manually killed projects can be interpreted as running by easymap. This can be solved by removing the project folder]")
 except:
 	error = 1; problems.append(response[1])
 

@@ -20,7 +20,7 @@ function allowNewProject() {
 			if (responseFields[0] >= 100) {
 				document.getElementById("runNewProject").style.display = "none";
 				document.getElementById("sizeWarning").style.display = "block";
-				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over the maximum space limit set by the machine administrator (" + responseFields[2] + " Gb). Delete past projects to free disk space.";
+				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over the maximum space limit set by the machine administrator (" + responseFields[2] + " Gb). Delete unused input files and/or past projects to free disk space.";
 			} else if (responseFields[0] >= 75 && responseFields[0] < 100) {
 				document.getElementById("sizeWarning").style.display = "block";
 				document.getElementById("sizeWarning").innerHTML = "WARNING: You are over 75% of the maximum space limit set by the machine administrator (" + responseFields[2] + " Gb).";
