@@ -12,7 +12,7 @@ parser.add_argument('-gnm', action="store", dest='basename')
 parser.add_argument('-out_dir', action="store", dest='output_dir')
 args = parser.parse_args()
 
-basename = args.basename
+basename = args.basename.lower()
 output_dir = args.output_dir
 
 # Create a subdirectory to place the reads. If it already exists, remove it first
@@ -39,17 +39,17 @@ def batch_gen(data, batch_size):
 		
 	
 # Create list with all the files in user_data folder
-input_files = sorted(os.listdir('./user_data'))
+input_files = sorted(os.listdir('./contigs2'))
 
 # Create a list with only the files that match the basename provided by the user and end in '.fa'
-ref_files = fnmatch.filter(input_files, '*' + basename + '.fa') # fnmatch filters a list using a string that accepts wildcards 
+ref_files = fnmatch.filter(input_files, basename + '.*.[Ff][Aa]') # fnmatch filters a list using a string that accepts wildcards
 
 # Create and open output file
 output = open(output_dir + '/genome.fa', 'w')
 
 # Get the content of each file and append it to output fasta file
 for ref_file in ref_files:
-	with open('user_data/' + ref_file) as fp:
+	with open('./contigs2/' + ref_file) as fp:
 		for name_contig, seq_contig in read_fasta(fp):
 			split_name_contig = name_contig.split(' ')
 			output.write(split_name_contig[0] + '\n')
@@ -60,3 +60,6 @@ for ref_file in ref_files:
 
 # Close output file
 output.close()
+
+# input_files = sorted(os.listdir('./user_data'))
+# with open('user_data/' + ref_file) as fp:

@@ -68,9 +68,9 @@ window.onload = function() {
 			max_file_size : '100gb',
 			mime_types: [
 				{title : "GFF files", extensions : "gff,gff3"},
-				{title : "Gene annotation files", extensions : "ann,txt"},
+				{title : "Gene annotation files", extensions : "txt"},
 				{title : "FASTA files", extensions : "fa"},
-				{title : "FASTQ files", extensions : "fq"}
+				{title : "FASTQ files", extensions : "fq,fastq"}
 			]
 		},
 
