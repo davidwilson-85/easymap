@@ -110,7 +110,7 @@ fi
 {
 	python2 process_input/fasta-concat.py -gnm $ref_seq -out_dir $ref_seqs_merged_dir 2>> $my_log_file
 } || {
-	echo echo $(date)": Processing of fasta genome input failed: fasta-concat.py could not concatenate fasta files into one file." >> $my_log_file
+	echo  $(date)": Processing of fasta genome input failed: fasta-concat.py could not concatenate fasta files into one file." >> $my_log_file
 	exit_code=1
 }
 echo $(date)": Processing of fasta genome input completed." >> $my_log_file
@@ -119,6 +119,16 @@ echo $(date)": Processing of fasta genome input completed." >> $my_log_file
 # Do this only if analyzing insertions
 
 if [ $analysis_type == 'ins' ]; then
+
+	#Insertion fasta cleanup
+	{
+		python2 process_input/clean-fasta.py -in $ins_seq -out $project_name/$f1/clean-ins.fa 2>> $my_log_file
+	} || {
+		echo  $(date)": Insertion fasta cleanup failed." >> $my_log_file
+		exit_code=1
+	}
+	echo $(date)": Insertion fasta cleanup succeeded." >> $my_log_file
+
 	fa=`python2 process_input/verify-input.py -ins $ins_seq  2>> $my_log_file`
 	
 	if [ $fa == 0 ]; then
@@ -128,6 +138,7 @@ if [ $analysis_type == 'ins' ]; then
 		exit_code=1
 	fi
 fi
+
 
 # Check fastq input file(s)
 # Do this only if data source is exp (reads provided by the user, not simulated)
