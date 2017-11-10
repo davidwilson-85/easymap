@@ -36,10 +36,9 @@ def read_fasta(fp):
 def batch_gen(data, batch_size):
 	for i in range(0, len(data), batch_size):
 		yield data[i:i+batch_size]
-		
-	
+
 # Create list with all the files in user_data folder
-input_files = sorted(os.listdir('./contigs2'))
+input_files = sorted(os.listdir('./user_data'))
 
 # Create a list with only the files that match the basename provided by the user and end in '.fa'
 ref_files = fnmatch.filter(input_files, basename + '.*.[Ff][Aa]') # fnmatch filters a list using a string that accepts wildcards
@@ -49,7 +48,7 @@ output = open(output_dir + '/genome.fa', 'w')
 
 # Get the content of each file and append it to output fasta file
 for ref_file in ref_files:
-	with open('./contigs2/' + ref_file) as fp:
+	with open('user_data/' + ref_file) as fp:
 		for name_contig, seq_contig in read_fasta(fp):
 			split_name_contig = name_contig.split(' ')
 			output.write(split_name_contig[0] + '\n')
@@ -60,6 +59,3 @@ for ref_file in ref_files:
 
 # Close output file
 output.close()
-
-# input_files = sorted(os.listdir('./user_data'))
-# with open('user_data/' + ref_file) as fp:
