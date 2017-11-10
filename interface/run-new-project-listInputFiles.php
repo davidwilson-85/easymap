@@ -31,7 +31,7 @@ foreach ($user_input_files as $name_and_extension) {
 		// Example 2: TAIR10.fa            Basename = TAIR10
 		$name = substr($name_and_extension, 0, $last_dot_pos);
 		if (strpos($name, '.') != false) {
-			$basename = substr($name, strpos($name, '.') + 1);
+			$basename = substr($name, 0, strpos($name, '.'));
 		} else {
 			$basename = $name;
 		}

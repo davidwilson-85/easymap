@@ -1,13 +1,18 @@
-#!/usr/bin/python
 
 import subprocess
 import os
+
+# Get amount of data currently in user_data directory
+proc = subprocess.Popen("du -s ../user_data", shell=True, stdout=subprocess.PIPE)
+folder_size_output = proc.stdout.read()
+user_data_size_gb = float(float(folder_size_output.split("	")[0]) / 1048576)
 
 # Get amount of data currently in user_projects directory
 proc = subprocess.Popen("du -s ../user_projects", shell=True, stdout=subprocess.PIPE)
 folder_size_output = proc.stdout.read()
 user_projects_size_gb = float(float(folder_size_output.split("	")[0]) / 1048576)
 
+user_files_size_gb = user_data_size_gb + user_projects_size_gb
 
 # Get number of projects currently running
 proc = subprocess.Popen("ls ../user_projects", shell=True, stdout=subprocess.PIPE)
@@ -40,7 +45,7 @@ with open("./config") as con_file:
 
 try:
 	if float(size_limit) > 0:
-			percentage_size = (float(user_projects_size_gb)/float(size_limit))*100
+			percentage_size = (float(user_files_size_gb)/float(size_limit))*100
 			percentage_size = str(int(percentage_size))	
 	else:
 		percentage_size = 0

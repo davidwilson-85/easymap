@@ -87,7 +87,7 @@ body {font-size:16px;}
     <h3>Design and execute a new project</h3>
     
     <!-- If the size of data or the number or currently running projects is over the limits established by machine administrator,
-    display Warning messages and do not display id runNewProject -->
+    display Warning messages and do not display div with id runNewProject -->
     
     <div id="sizeWarning" class="warningMessage"></div>
     <div id="simultWarning" class="warningMessage"></div>

@@ -12,7 +12,7 @@ parser.add_argument('-gnm', action="store", dest='basename')
 parser.add_argument('-out_dir', action="store", dest='output_dir')
 args = parser.parse_args()
 
-basename = args.basename
+basename = args.basename.lower()
 output_dir = args.output_dir
 
 # Create a subdirectory to place the reads. If it already exists, remove it first
@@ -36,13 +36,12 @@ def read_fasta(fp):
 def batch_gen(data, batch_size):
 	for i in range(0, len(data), batch_size):
 		yield data[i:i+batch_size]
-		
-	
+
 # Create list with all the files in user_data folder
 input_files = sorted(os.listdir('./user_data'))
 
 # Create a list with only the files that match the basename provided by the user and end in '.fa'
-ref_files = fnmatch.filter(input_files, '*' + basename + '.fa') # fnmatch filters a list using a string that accepts wildcards 
+ref_files = fnmatch.filter(input_files, basename + '*.[Ff][Aa]') # fnmatch filters a list using a string that accepts wildcards
 
 # Create and open output file
 output = open(output_dir + '/genome.fa', 'w')
@@ -60,3 +59,7 @@ for ref_file in ref_files:
 
 # Close output file
 output.close()
+
+
+#input_files = sorted(os.listdir('./user_data'))
+#with open('user_data/' + ref_file) as fp:
