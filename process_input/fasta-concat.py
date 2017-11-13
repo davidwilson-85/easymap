@@ -59,7 +59,3 @@ for ref_file in ref_files:
 
 # Close output file
 output.close()
-
-
-#input_files = sorted(os.listdir('./user_data'))
-#with open('user_data/' + ref_file) as fp:
